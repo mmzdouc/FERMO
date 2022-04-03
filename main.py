@@ -15,11 +15,7 @@
 
 import sys
 import os
-import pickle
 import pandas as pd
-from matchms.importing import load_from_mgf
-import matplotlib.pyplot as plt
-import matplotlib.lines as mlines
 
 ###IMPORTS - INTERNAL###
 
