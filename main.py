@@ -7,7 +7,7 @@
 
 ###TO DO###
 #feature_object_creation.py: implement hash-function
-
+#introduce argparse module to better request command line args
 
 
 
