@@ -1,5 +1,6 @@
 import pickle
 
+
 def load_from_feature_objects(filename):
     """Import function.
     
