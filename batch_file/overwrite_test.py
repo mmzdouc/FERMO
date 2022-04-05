@@ -2,7 +2,6 @@ import sys
 import os
 
 
-
 def overwrite_test(output_file):
     '''Test to prevent overwriting files.
     
@@ -11,14 +10,14 @@ def overwrite_test(output_file):
     to request either a new filename (which is again checked for presence
     in current work directory), or an abort. If a new, nonexistent
     filename is presented, the program returns a filename.
-    
+     
     If file does not exist, the program simply opens and returns a 
     filename.
     '''
     if os.path.isfile(output_file):
         print("A file named ", output_file,
         " is already present in the folder.")
-        print("Overwriting may lead to a malformed and non-functional .xml file.")
+        print("Overwriting may lead to a malformed and non-functional .xml file.") 
         while True:
             answer = input("Overwrite? [y|n] (to abort, press ctrl+c) ").lower()
             if answer in ["y", "ye", "yes"]:
@@ -27,7 +26,7 @@ def overwrite_test(output_file):
                 answer = input("Change the filename? [y|n] ").lower()
                 if answer in ["y", "ye", "yes"]:
                     output_file = input("Type in the new filename: ").lower()
-                    if os.path.isfile(output_file):
+                    if os.path.isfile(output_file): 
                         print("A file named ", output_file, 
                         " is already present in the folder.")
                         continue
@@ -36,7 +35,7 @@ def overwrite_test(output_file):
                 if answer in ["n", "no"]:
                     print("A file named ", output_file, 
                     " is already present in the folder.")
-                    continue
+                    continue 
                 else:
                     print("A file named ", output_file, 
                         " is already present in the folder.")
@@ -46,10 +45,12 @@ def overwrite_test(output_file):
     else:
         return output_file
 
-
+ 
 #testing purposes
 if __name__ == "__main__":
     outfile = "test.xml"
     output_file = overwrite_test(outfile)
     file_out = open(output_file, 'w')
     print("This is a test", file=file_out)
+
+    
