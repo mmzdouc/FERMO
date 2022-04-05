@@ -76,8 +76,14 @@ baseline_level = ''
 
 #####OUTPUT:
 
-#opens filehandle and checks for presence of file in folder
-file_out = overwrite_test(output_file)
+#checks for presence of file in folder
+output_file = overwrite_test(output_file)
+
+#rewrite as with ... as to make writing out safer
+file_out = open(output_file, 'w')
+
+
+#maybe redirect standard output for printing? More flexible with for loop?
 
 #writes output file.
 print(
@@ -89,14 +95,21 @@ print(
 file=file_out)
 
 #add files from input folder -> absolute paths
+#should be in form of for loop
+file_out = open(output_file, 'a')
+
+print(
+'''
+<?xml version="1.0" encoding="UTF-8"?><batch>
+    <batchstep method="io.github.mzmine.modules.io.import_rawdata_all.AllSpectralDataImportModule">
+        <parameter name="File names">
+''',
+file=file_out)
 
 
 
 
-
-
-
-
+file_out.close()
 
 
 #split print into multiple statements to expand dict with filenames with for loop
