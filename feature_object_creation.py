@@ -4,7 +4,6 @@
 #hash-collisions that have the be caught before overwriting and entry
 
 
-
 import pandas as pd
 
 
@@ -37,6 +36,7 @@ class Feature_Object():
         self.tandem_mass_fragmentation = tandem_mass_fragmentation
         self.tandem_mass_intensities = tandem_mass_intensities
 
+        
 def presence_in_samples(series):
     """Auxillary function:
     
@@ -49,6 +49,7 @@ def presence_in_samples(series):
         peak_intensity = samples.loc[entry]
         presence_sample[entry] = peak_intensity
     return presence_sample
+
 
 def feature_object_creation(df, ms2dict):
     """Creates feature objects:
@@ -70,3 +71,4 @@ def feature_object_creation(df, ms2dict):
         retention_time, presence_sample, tandem_mass_fragmentation,
         tandem_mass_intensities)
     return peak_storage
+
