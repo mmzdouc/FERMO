@@ -2,6 +2,7 @@ from pyteomics import mgf
 
 #####
 
+
 def load_from_mgf(arg):
     '''Load spectrum(s) from mgf file.
     
@@ -16,4 +17,3 @@ def load_from_mgf(arg):
         ID = int(spectrum.get('params').get('feature_id'))
         ID_to_msms[ID] = [fragments, intensities]
     return ID_to_msms
-
