@@ -1,5 +1,6 @@
 import pickle
 
+
 def store_feature_objects(feature_objects, filename):
     """Export-function.
     
@@ -9,3 +10,4 @@ def store_feature_objects(feature_objects, filename):
     outfile = open(filename, 'wb')
     pickle.dump(feature_objects, outfile)
     outfile.close()
+ 
