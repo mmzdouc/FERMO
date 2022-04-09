@@ -12,8 +12,8 @@ def samples_listing(peaktable):
     samples = dict()
     for entry in peaktable.filter(regex=".mzML|.mzXML").columns:
         features_in_sample = list()
-        for index, row in peaktable[["row ID", entry]].iterrows():
+        for index, row in peaktable[["feature_ID", entry]].iterrows():
             if int(row[entry]) != 0:
-                features_in_sample.append(int(row["row ID"]))
+                features_in_sample.append(int(row["feature_ID"]))
         samples[entry] = features_in_sample
     return samples
