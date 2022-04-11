@@ -70,5 +70,6 @@ if __name__ == "__main__":
     #rewrite sample_listing completely
     # ~ samples = samples_listing(peaktable)
     precursor_search(feature_objects, 522)
-    print(feature_objects[422].fwhm)
+    print(feature_objects[422].median_fwhm)
+    print(feature_objects[422].feature_max_int)
     # ~ print(feature_objects[131].ms2spectrum.peaks.intensities)

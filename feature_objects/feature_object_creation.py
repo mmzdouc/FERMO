@@ -6,7 +6,8 @@
 import pandas as pd
 from .Feature_Object import Feature_Object
 from .presence_in_samples import presence_in_samples
-from .median_fwhm import median_fwhm
+from .find_median_fwhm import find_median_fwhm
+from .find_max_intensity import find_max_intensity
 
 def feature_object_creation(peaktable: str, 
 ms2spectra: dict) -> dict[int, "Feature_Object"]:
@@ -29,8 +30,6 @@ ms2spectra: dict) -> dict[int, "Feature_Object"]:
     Core of feature object creation. Majority of data extraction.
     Feature creation.
     Iterates over pandas.dataframe and extracts data.
-    TODO: 
-    2) integrate: max:intensity, area
     """
     features = dict()
     for index, row in peaktable.iterrows():
@@ -38,11 +37,12 @@ ms2spectra: dict) -> dict[int, "Feature_Object"]:
         precursor_mz = float(row["precursor_mz"])
         retention_time = float(row["retention_time"])
         presence_sample = presence_in_samples(row)
-        fwhm = median_fwhm(row)
+        median_fwhm = find_median_fwhm(row)
+        feature_max_int = find_max_intensity(row)
         tandem_mass_fragmentation = ms2spectra[feature_ID][0]
         tandem_mass_intensities = ms2spectra[feature_ID][1]
         ###creates objects###
         features[feature_ID] = Feature_Object(feature_ID, precursor_mz, 
-        retention_time, presence_sample, fwhm, tandem_mass_fragmentation,
-        tandem_mass_intensities)
+        retention_time, presence_sample, median_fwhm, feature_max_int, 
+        tandem_mass_fragmentation, tandem_mass_intensities)
     return features

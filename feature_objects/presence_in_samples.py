@@ -25,7 +25,9 @@ def presence_in_samples(row: str) -> dict[str, float]:
     #switch for different input tables: SIMPLE or ALL 
     #MZmine3 table SIMPLE
     if not row.filter(regex="Peak").empty:
-        #extract sample names in which feature was detected
+    #
+    #extract sample names in which feature was detected
+    #
         feature_in_samples = []
         for lable in row[row!=0].filter(regex=".mzML|.mzXML").index:
             feature_in_samples.append(lable.split(" ")[0])
@@ -36,7 +38,9 @@ def presence_in_samples(row: str) -> dict[str, float]:
             peak_intensity = row[query]
             presence_sample[element] = float(peak_intensity)
         return presence_sample
+    #
     #MZmine3 table ALL
+    #
     else:
         #extract sample names in which feature was detected
         feature_in_samples = []
