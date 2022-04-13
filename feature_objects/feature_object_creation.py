@@ -36,13 +36,16 @@ ms2spectra: dict) -> dict[int, "Feature_Object"]:
         feature_ID = int(row["feature_ID"])
         precursor_mz = float(row["precursor_mz"])
         retention_time = float(row["retention_time"])
-        presence_sample = presence_in_samples(row)
+        sample_names_intensities = presence_in_samples(row)
+        presence_samples = sample_names_intensities[0]
+        intensities_samples = sample_names_intensities[1]
         median_fwhm = find_median_fwhm(row)
         feature_max_int = find_max_intensity(row)
         tandem_mass_fragmentation = ms2spectra[feature_ID][0]
         tandem_mass_intensities = ms2spectra[feature_ID][1]
         ###creates objects###
         features[feature_ID] = Feature_Object(feature_ID, precursor_mz, 
-        retention_time, presence_sample, median_fwhm, feature_max_int, 
-        tandem_mass_fragmentation, tandem_mass_intensities)
+        retention_time, presence_samples, intensities_samples, 
+        median_fwhm, feature_max_int, tandem_mass_fragmentation,
+        tandem_mass_intensities)
     return features

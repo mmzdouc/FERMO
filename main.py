@@ -33,9 +33,9 @@ from importing.load_from_mgf import load_from_mgf
 from importing.load_from_pickled_file import load_from_pickled_file
 from exporting.store_as_pickled_file import store_as_pickled_file
 from feature_objects.feature_object_creation import feature_object_creation
+from metrics_calc.calculate_metrics import calculate_metrics
 
 #auxiliary
-from misc_funct.samples_listing import samples_listing
 from misc_funct.precursor_search import precursor_search
 
 #####
@@ -59,17 +59,28 @@ if __name__ == "__main__":
         store_as_pickled_file(feature_objects, 
         "example_data/featureobjects.pickle")
         print("Feature objects stored.")
+    metrics = calculate_metrics(peaktable, feature_objects)
+    
+    
     #TESTING
-    #table ALL
-    # ~ print(feature_objects[131].precursor_mz)
+    #TABLE ALL
+    # ~ print(feature_objects[2].precursor_mz)
     # ~ print(feature_objects[131].presence_sample)
-    #table SIMPLE
+    #TABLE SIMPLE
     # ~ print(feature_objects[422].precursor_mz)
     # ~ print(feature_objects[422].presence_sample)
+
+    # ~ print(samples["7319_7322.mzML"])
     
-    #rewrite sample_listing completely
-    # ~ samples = samples_listing(peaktable)
-    precursor_search(feature_objects, 522)
-    print(feature_objects[422].median_fwhm)
-    print(feature_objects[422].feature_max_int)
+    
+    
+    #apply function complexity metric to samples -> use feature Objects
+    #apply function visualization to return of complexity metric
+    
+    # ~ precursor_search(feature_objects, 522)
+    # ~ print(feature_objects[131].median_fwhm)
+    # ~ print(feature_objects[131].retention_time)
+    # ~ print(feature_objects[131].feature_max_int)
+    # ~ print(feature_objects[131].presence_samples)
+    # ~ print(feature_objects[131].intensities_samples)
     # ~ print(feature_objects[131].ms2spectrum.peaks.intensities)
