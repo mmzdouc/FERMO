@@ -4,16 +4,19 @@ from .calculate_feature_overlap import calculate_feature_overlap
 
 
 
-def calculate_metrics(peaktable, feature_objects):
+def calculate_metrics(
+peaktable, feature_objects, strictness_min: float, strictness_ppm):
     """
     """
-    samples = get_samplespecific_features(peaktable)
-    samples_feature_overlap = calculate_feature_overlap(samples)
+    samples = get_samplespecific_features(peaktable, strictness_min)
+    samples_feature_overlap = calculate_feature_overlap(samples, strictness_ppm)
     
+    return samples_feature_overlap #testing
     
     # ~ for sample in samples:
         # ~ print(sample, type(sample))
         # ~ feature_overlap = calculate_feature_overlap(sample)
+        # in feature overlap:
         #check for adduct (if m/z matches)
         #make stub for possible check if in same similarity clique
     

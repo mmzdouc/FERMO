@@ -59,7 +59,12 @@ if __name__ == "__main__":
         store_as_pickled_file(feature_objects, 
         "example_data/featureobjects.pickle")
         print("Feature objects stored.")
-    metrics = calculate_metrics(peaktable, feature_objects)
+    metrics = calculate_metrics(peaktable,
+    feature_objects, 
+    0.0, #strictness in minutes
+    20) #strictness in ppm
+    print(metrics) # for testing
+    
     
     
     #TESTING

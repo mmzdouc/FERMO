@@ -74,6 +74,9 @@ baseline_level = 250.0
 #Take care: input() returns string by default
 
 
+
+
+
 print(
 """
 Hi! This script can be used to set up a MzMine3 batch processing file,
@@ -104,6 +107,7 @@ available.
 """
 )
 
+#CAVE: EXPORT FUNCTION MUST BE SET TO PEAK HEIGHT
 
 
 
