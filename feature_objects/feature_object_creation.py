@@ -43,9 +43,12 @@ ms2spectra: dict) -> dict[int, "Feature_Object"]:
         feature_max_int = find_max_intensity(row)
         tandem_mass_fragmentation = ms2spectra[feature_ID][0]
         tandem_mass_intensities = ms2spectra[feature_ID][1]
+        bioactivity_associated = False #is added later
+        blank_associated = False #is added later
+        
         ###creates objects###
         features[feature_ID] = Feature_Object(feature_ID, precursor_mz, 
         retention_time, presence_samples, intensities_samples, 
         median_fwhm, feature_max_int, tandem_mass_fragmentation,
-        tandem_mass_intensities)
+        tandem_mass_intensities, bioactivity_associated, blank_associated)
     return features

@@ -1,21 +1,45 @@
 import pandas as pd
 
 
-
 def calculate_feature_overlap(samples: str, strictness_ppm: float
 ) -> dict:
-    """
-    Calculate overlap by checking rectangle x axes
-    If overlap, check if they are different adducts (lookat most 
-    common one from the paper: sodium, water)
-    If overlap, check if they are in the same similarity clique (has
-    to be implemented before
-    If no and overlap, then set flag overlap to True
-    add to column
-    add list of features that collided with each other(?)
+    """Detects feature collision (overlap of peaks) based on 
+    retention time.
     
-    most common adducts: 
-    adduct-check: fiehn-lab website reference
+    Parameters
+    ----------
+    samples : `dict`
+        dict of pandas dataframes of sample-specific features, with
+        key=sample_name : value=pandas.df
+    strictness_ppm : `float`
+        Tolerable mass deviation in ppm. Allows to tweak precision of
+        matching. Should be matched to precision of instrument. E.g.
+        20 ppm is still tolerable
+    
+    Returns
+    -------
+    returned_samples : `dict`
+        dict of pandas dataframes of sample-specific features, with
+        key=sample_name : value=pandas.df
+    
+    Notes
+    -----
+    Calculates overlap of features (peaks) by simplifying them to
+    one-dimensional vectors. Consider two peaks A and B with A(x1,x2)
+    and B(x1,x2), where x is a retention time. If any True in
+    Ax2 < Bx1 or Bx2 < Ax1, peaks do not overlap.
+    In mass spectrometry analysis, different ions for the same analyte
+    are commonly observed (e.g. [M+H]+, [Na+H]+, [M+2H]2+). Since 
+    the [M+H]+ ion is the most common one in ESI, all other adducts 
+    can be considered artefacts. Feature collisions of such adducts 
+    originating from the same analyte can therefore be ignored (not
+    really present in sample). The same is true for duplicate peaks
+    due to retention time drifts that arise from the data preprocessing.
+    Therefore, detected overlaps are checked if they are I) duplicates
+    of each other (same m/z inside mass tolerance); II) are adducts
+    of each other (checked for most common adducts: [M+Na]+, [M+2H]2+,
+    [2M+H]+, [M+3H]3+). If they are duplicates or adducts, this is 
+    noted and the collision is not registered. 
     """
     returned_samples  = dict()
     for sample in samples:
@@ -36,9 +60,9 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
         samples[sample]["possible_duplicate_detection"] = [
         [] for r in range(len(samples[sample]))]
         
-        #Column "adduct_detection": stores adducts in list. 
+        #Column "putative_adduct_detection": stores adducts in list. 
         #For code explanation, see above
-        samples[sample]["adduct_detection"] = [
+        samples[sample]["putative_adduct_detection"] = [
         [] for r in range(len(samples[sample]))]
         
         #make all against all comparison of contained features
@@ -71,7 +95,10 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                         "possible_duplicate_detection"].append(
                         samples[sample]["feature_ID"][i])
                     #ADDUCTS
-                    #True if any of the common adducts
+                    #True if any of the common adducts.
+                    #"Walrus operator" := needs python 3.8 but allows
+                    #to use one function call for condictional and 
+                    #for variable assignment
                     elif True in (adducts := detect_adducts(
                     A_mz, B_mz, strictness_ppm)):
                         #determines which adduct relative to [M+H]+
@@ -79,7 +106,7 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                             #find which one is the adduct + assignment
                             if A_mz > B_mz:
                                 samples[sample].at[i,
-                                "adduct_detection"].append(
+                                "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[1],
                                 " of ",
@@ -87,48 +114,50 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                                 )]))
                             else:
                                 samples[sample].at[j,
-                                "adduct_detection"].append(
+                                "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[1],
                                 " of ",
                                 str(samples[sample]["feature_ID"][i] 
                                 )]))
                         elif "[M+2H]2+" in adducts:
-                            #Find which one is the adduct + assignment;
+                            #Find which one is the adduct + assignment.
                             #Consider two overlapping peaks A and B:
-                            #Peak A with m/z 1648.47;
-                            #Peak B with m/z 824.74;
+                            #peak A with m/z 1648.47;
+                            #peak B with m/z 824.74.
                             #If A is assumed [M+H]+, B would be [M+2H]2+
                             #If B is assumed [M+H]+, A would be [2M+H]+
                             #Thus, assignment is performed for both 
                             #[M+2H]2+ and [2M+H]+ in parallel
                             if A_mz < B_mz:
+                                #peak A is putatively [M+2H]2+
                                 samples[sample].at[i,
-                                "adduct_detection"].append(
+                                "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[1],
                                 " of ",
                                 str(samples[sample]["feature_ID"][j] 
                                 )]))
-                                #
+                                #peak B is putatively [2M+H]+
                                 samples[sample].at[j,
-                                "adduct_detection"].append(
+                                "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[2],
                                 " of ",
                                 str(samples[sample]["feature_ID"][i] 
                                 )]))
                             else:
+                                #peak B is putatively [M+2H]2+
                                 samples[sample].at[j,
-                                "adduct_detection"].append(
+                                "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[1],
                                 " of ",
                                 str(samples[sample]["feature_ID"][i] 
                                 )]))
-                                #
+                                #peak A is putatively [2M+H]+
                                 samples[sample].at[i,
-                                "adduct_detection"].append(
+                                "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[2],
                                 " of ",
@@ -138,7 +167,7 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                             #find which one is the adduct + assignment
                             if A_mz < B_mz:
                                 samples[sample].at[i,
-                                "adduct_detection"].append(
+                                "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[1],
                                 " of ",
@@ -146,7 +175,7 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                                 )]))
                             else:
                                 samples[sample].at[j,
-                                "adduct_detection"].append(
+                                "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[1],
                                 " of ",
@@ -189,14 +218,14 @@ def calc_mass_deviation(A_mz: float, B_mz: float
         
     Notes
     -----
-    Equation as "mass measurement error" taken from
+    "Mass measurement error" taken from publication:
     doi.org/10.1016/j.jasms.2010.06.006 
     """
-    #pos/neg values possible -> make absolute
     mass_deviation = (
     ((A_mz - B_mz) / B_mz)
     * 10**6
     )
+    #pos/neg values possible -> make absolute
     return abs(mass_deviation)
 
 def detect_adducts(A_mz: float, B_mz: float,
@@ -222,13 +251,13 @@ strictness_ppm) -> list:
     and
     doi.org/10.1021/acs.jcim.1c00579 
     """
-    Na = 21.981942 # [M-H+Na]
+    Na = 21.981942 #[M-H+Na]
     H = 1.007276
-    #assumes that A and B are different kinds of adducts 
-    #(the are not both [M+H]+)
-    #if any comparison of peaks A and B returns a mass error of 
-    # < n ppm (default 20), an adduct was found
-    #Na (Sodium)
+    #Assumes that A and B are different kinds of adducts.
+    #If any comparison of peaks A and B returns a mass error of 
+    # < n ppm (default 20), an adduct was found.
+    
+    #M+Na (Sodium)
     if (
     calc_mass_deviation((A_mz + Na), B_mz) < strictness_ppm
     ) or (

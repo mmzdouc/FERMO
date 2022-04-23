@@ -1,66 +1,117 @@
+import pandas as pd
 
 from .get_samplespecific_features import get_samplespecific_features
 from .calculate_feature_overlap import calculate_feature_overlap
+from .filter_for_topn_features import filter_for_topn_features
+from .determine_bioactive_features import determine_bioactive_features
+from .calculate_feature_score import calculate_feature_score
 
 
 
 def calculate_metrics(
-peaktable, feature_objects, strictness_min: float, strictness_ppm):
+peaktable : str, 
+feature_objects : dict,
+bioactivity_samples: dict,
+strictness_min: float, 
+strictness_ppm: float,
+topn: float,
+bioact_factor: int):
+    """Calculate metrics for samples and score them:
+    
+    Parameters
+    ----------
+    peaktable : `pandas.core.frame.DataFrame`
+    feature_objects : `dict`
+        Feature_ID(keys):Feature_Objects(values)
+    bioactivity_samples : `dict`
+        contains two lists (active, inactive) of samples generated
+        by function importing.read_from_bioactiv_table
+    strictness_min : `float`
+        In minutes. Artificially increases width of peak to 
+        detect overlaps more sensitively.
+    strictness_ppm : `float`
+        Tolerable mass deviation in ppm. Allows to tweak precision of
+        matching. Should be matched to precision of instrument. E.g.
+        20 ppm is still tolerable
+    topn : `float`
+        Float between 0 and 1. Is the quantile of features that is 
+        retained. E.g. 0.9 means: 90th quantile -> remove features 
+        that have a relative intensity of less than 0.1 of feature 
+        with highest intensity (1.0).
+    bioact_factor : `int`
+        factor to determine if a feature, detected in both an active
+        and an inactive sample, can be considered to be bioactivity
+        associated
+    
+    Returns
+    -------
+    samples : `dict`
+        Sample_names(keys):pandas.core.frame.DataFrame(values)
+    
+    Notes
+    -----
+    Extracts sample-specific features
+    Filters sample-specific features for topN features
+    Calculates feature overlap per sample
+    Detects bioactivity-associated features
+    ...
+    Calculates scores for samples
     """
-    """
+    #creates dataframes for each sample
     samples = get_samplespecific_features(peaktable, strictness_min)
-    samples_feature_overlap = calculate_feature_overlap(samples, strictness_ppm)
-    
-    return samples_feature_overlap #testing
-    
-    # ~ for sample in samples:
-        # ~ print(sample, type(sample))
-        # ~ feature_overlap = calculate_feature_overlap(sample)
-        # in feature overlap:
-        #check for adduct (if m/z matches)
-        #make stub for possible check if in same similarity clique
+    #Filter for top 95% of ft reg relative int to ft with highest int
+    samples = filter_for_topn_features(samples, topn)
+    #Calculates overlap of features; contains adduct/duplicate info
+    samples = calculate_feature_overlap(samples, strictness_ppm)
+    #calculates associated bioactivity yes/no
+    bioactivity_associated_features = determine_bioactive_features(
+    bioactivity_samples, samples, feature_objects, bioact_factor)
+    #MISSING: medium-association
     
     
+    ###CALCULATION SCORES
+    #temporary score: 
+    sample_count = dict()
+    for sample in samples:
+        #collect feature points per sample
+        feature_list = list()
+        convolutedness = list()
+        bioactivity = list()
+        novelty = list()
+        diversity = list()
+        n_features_per_sample = int(len(samples[sample]))
+        for index, row in samples[sample].iterrows():
+            feature_list.append(int(row["feature_ID"])) 
+            #calculation of score per feature
+            feature_points = calculate_feature_score(
+            row, feature_objects, n_features_per_sample)
+            convolutedness.append(feature_points[0])
+            bioactivity.append(feature_points[1])
+            novelty.append(feature_points[2])
+            diversity.append(feature_points[3])
+        #create dataframe from two lists (uses a dict assignment for pd)
+        samples[sample]['convolutedness_score'] = convolutedness
+        samples[sample]['bioactivity_score'] = bioactivity
+        samples[sample]['novelty_score'] = novelty
+        samples[sample]['diversity_score'] = diversity
+        #create a combined score
+        samples[sample]["combined_score"] = samples[sample].loc[:,[
+        'convolutedness_score',
+        'bioactivity_score',
+        'novelty_score', 
+        'diversity_score']].sum(axis=1)
+        #sorts after "combined score" from high to low
+        samples[sample].sort_values(by=["combined_score"], 
+        inplace=True, ascending=False)
+        #resets index just to clean up
+        samples[sample].reset_index(drop=True, inplace=True)
+    ###
+    return samples
     
-    # ~ return metrics
+    
+    #ADDD
+    #give top 5 samples (sum points for each sample)
+    #give top 5 features per sample
+    #give top 5 features across all samples
+    #END
 
-
-
-
-
-#call feature_collision for peaks
-
-#change range to len of pandas array
-#consider rt k-mers so that no all-against-all needs to be performed?
-#more relevant if there are more features
-#make calls for rt etc to Feature Objects
-# ~ for i in range(1, 10):
-    # ~ for j in range(i+1, 10):
-        # ~ print(i, j)
-
-
-
-# ~ simplyfy to x only!
-
-# ~ if (A_top < B_bottom or B_top < A_bottom):
-    # ~ print ("Rectangles A and B do not overlap")
-# ~ else:
-    # ~ print("Rectangels A and B overlap")
-
-
-# ~ byt_bottom = [(byt_rt-(byt_fwhm*0.5)), 0]
-# ~ byt_top = [(byt_rt+(byt_fwhm*0.5)), (byt_int * 0.5)]
-
-
-
-
-"""NOTES: script to calculate metrics
-
-1) read sample-specific dataframes, calculate overlaps of peaks,
-add column of collision true/false, add column with a list of feature IDs which clashed
-2)annotation features per sample -> top n most intense;
-sample-metric: how many clashes
-bioactivity of samples: are features in samples that are also in samples
-that are not bioactive: if yes, probably not bioactivity-associated
-3)visualize samples by drawing (2d or 3d)
-"""

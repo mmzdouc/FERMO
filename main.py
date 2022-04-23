@@ -3,6 +3,7 @@
 #reads peak table and generates features objects to be stored in DB
 #$1: peaktable in csv format
 #$2: mgf-file
+#$3: bioactivity of samples in csv format (OPTIONAL)
 #output: "featureobjects-storage.pickle"
 
 
@@ -29,11 +30,13 @@ import pandas as pd
 
 #essential
 from importing.read_from_peaktable import read_from_peaktable
+from importing.read_from_bioactiv_table import read_from_bioactiv_table
 from importing.load_from_mgf import load_from_mgf
 from importing.load_from_pickled_file import load_from_pickled_file
 from exporting.store_as_pickled_file import store_as_pickled_file
 from feature_objects.feature_object_creation import feature_object_creation
 from metrics_calc.calculate_metrics import calculate_metrics
+from metrics_calc.display_metrics import display_metrics
 
 #auxiliary
 from misc_funct.precursor_search import precursor_search
@@ -48,6 +51,13 @@ if __name__ == "__main__":
     """
     feature_objects = ""
     peaktable = read_from_peaktable(sys.argv[1])
+    #test if bioactivity file was provided
+    try:
+        bioactivity_samples = read_from_bioactiv_table(sys.argv[3])
+    except IndexError:
+        print("WARNING: No bioactivity file was specified.")
+        bioactivity_samples = False
+    #load pickle file if extisting
     if os.path.isfile("example_data/featureobjects.pickle"):
         feature_objects = load_from_pickled_file(
         "example_data/featureobjects.pickle")
@@ -59,11 +69,21 @@ if __name__ == "__main__":
         store_as_pickled_file(feature_objects, 
         "example_data/featureobjects.pickle")
         print("Feature objects stored.")
-    metrics = calculate_metrics(peaktable,
-    feature_objects, 
+    
+    #calculates metrics for each sample
+    samples = calculate_metrics(peaktable,
+    feature_objects,
+    bioactivity_samples, 
     0.0, #strictness in minutes
-    20) #strictness in ppm
-    print(metrics) # for testing
+    20, #strictness in ppm
+    0.95, #top 95% of activity/discard bottom 5% of peaks reg rel int
+    10) #factor regarding bioactivity-association: how many times 
+        #must a feature be more intense in the active sample than 
+        #in the inactive sample to be still considered bioactivity-associated
+        #Takes into account column bleed, sub-activity concentration
+    
+    #give an overview
+    display_metrics(samples, feature_objects, 5)
     
     
     

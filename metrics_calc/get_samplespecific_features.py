@@ -15,7 +15,7 @@ strictness_min: float) -> dict[str, pd.DataFrame]:
     
     Returns
     -------
-    features : `dict`
+    samples : `dict`
         Sample_names(keys):pandas.core.frame.DataFrame(values)
         
     Notes
