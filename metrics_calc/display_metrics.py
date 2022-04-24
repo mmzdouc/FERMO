@@ -12,6 +12,12 @@ def display_metrics(samples: str, feature_objects: str, topn = int):
     feature_objects : `dict`
         Feature_ID(keys):Feature_Objects(values)
     topn : `int`
+    
+    Notes
+    -----
+    Calculates topN samples by summing the combined_score of 
+    its features.
+    Determines the topN features across all samples.
     """
     
     #for each sample, its score
@@ -55,12 +61,16 @@ def display_metrics(samples: str, feature_objects: str, topn = int):
             [sample, " " ,str(row["feature_ID"])])] = row["combined_score"]
     topn_features = sorted(
     all_features, key=all_features.get, reverse=True)[:topn]
-
+    counter = 0
     print(
     f"""
             These are the top {topn} overall scoring features.
     """ )
-
     for top_features in topn_features:
-        print(f"""{top_features}
-        """) #continue editing printing here
+        counter = counter + 1
+        sample = top_features.split()[0]
+        feature_ID = int(top_features.split()[1])
+        row = samples[sample].loc[samples[sample]["feature_ID"] == feature_ID]
+        print(f"""{counter}) From sample {sample}, feature_ID {feature_ID}""")
+        print(f"""(m/z {row.iloc[0]["precursor_mz"]}, rt {row.iloc[0]["retention_time"]}, intensity {row.iloc[0]["intensity"]}, combined_score {round(row.iloc[0]["combined_score"], 3)})""")
+
