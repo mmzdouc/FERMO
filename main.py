@@ -45,13 +45,11 @@ from misc_funct.precursor_search import precursor_search
 
 
 if __name__ == "__main__":
-    """Switch: 
-    if feature object file (pickled) exists in folder, load it;
-    else generate feature object file and save (pickle) it
-    """
+    #INPUT/OUTPUT PART
     feature_objects = ""
+    #reads Mzmine3-style peaktable
     peaktable = read_from_peaktable(sys.argv[1])
-    #test if bioactivity file was provided
+    #tests if bioactivity.csv file was provided
     try:
         bioactivity_samples = read_from_bioactiv_table(sys.argv[3])
     except IndexError:
@@ -70,38 +68,45 @@ if __name__ == "__main__":
         "example_data/featureobjects.pickle")
         print("Feature objects stored.")
     
-    #calculates metrics for each sample
-    samples = calculate_metrics(peaktable,
-    feature_objects,
-    bioactivity_samples, 
-    0.0, #strictness in minutes
-    20, #strictness in ppm
-    0.95, #top 95% of activity/discard bottom 5% of peaks reg rel int
-    10) #factor regarding bioactivity-association: how many times 
-        #must a feature be more intense in the active sample than 
-        #in the inactive sample to be still considered bioactivity-associated
-        #Takes into account column bleed, sub-activity concentration
+    #METRICS CALCULATION PART
     
-    #give an overview
-    display_metrics(samples, feature_objects, 5)
+    #Strictness (in minutes): artificially increases feature width
+    #so that more collisions are detected.
+    strictness_min = 0.0
+    #Strictness in ppm regarding adduct calculation.
+    strictness_ppm = 20
+    #Factor to discard features with <= (1 - filter_retain_factor)
+    #relative intensity -
+    feature_retain_factor = 0.95
+    #Bioactivity-association of features: How many times 
+    #must a feature be more intense in the active sample than 
+    #in the inactive sample to be still considered bioactivity-associated?
+    #Takes into account column bleed, sub-activity concentration.
+    bioactivity_factor = 10
+    
+    
+    #calculates metrics for each sample
+    samples = calculate_metrics(peaktable, feature_objects, 
+    bioactivity_samples, strictness_min, strictness_ppm,
+    feature_retain_factor,bioactivity_factor) 
+    
+    #give an overview of topn scoring samples and features
+    topn = 5
+    display_metrics(samples, feature_objects, topn)
     
     
     
     #TESTING
+    
+    
+    
     #TABLE ALL
     # ~ print(feature_objects[2].precursor_mz)
-    # ~ print(feature_objects[131].presence_sample)
+    # ~ print(feature_objects[131].presence_samples)
     #TABLE SIMPLE
     # ~ print(feature_objects[422].precursor_mz)
     # ~ print(feature_objects[422].presence_sample)
-
     # ~ print(samples["7319_7322.mzML"])
-    
-    
-    
-    #apply function complexity metric to samples -> use feature Objects
-    #apply function visualization to return of complexity metric
-    
     # ~ precursor_search(feature_objects, 522)
     # ~ print(feature_objects[131].median_fwhm)
     # ~ print(feature_objects[131].retention_time)

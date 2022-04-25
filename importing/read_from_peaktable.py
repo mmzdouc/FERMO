@@ -17,12 +17,22 @@ def read_from_peaktable(arg: str) -> pd.DataFrame:
     
     Notes
     -------
-    Function can be extended to more columns, if the more data is
-    needed in the future. Possible columns are 'area' and 
-    'intensity_range:max'
+    Reads two feature tables from MzMine: SIMPLE and FULL/ALL.
+    Since SIMPLE only provides limited data, user is warned that 
+    this might lead to unexpected behaviour (e.g. fwhm is set to a 
+    generic 0.2 min, which is obviously wrong).
     """
     peaktable = pd.read_csv(arg, sep=',')
     
+    #test which peaktable was provided: "simple" or "full"
+    if peaktable.filter(regex="datafile:").columns.empty:
+        print("""
+        WARNING: Peaktable file provided is in SIMPLE mode.
+        Some functions might not work as expected.
+        Feature width at half maximum not provided (default: 0.2 min).
+        We strongly recommended to provide peaktables in FULL/ALL mode.
+        """)
+
     #compiles regex objects
     feature_ID_regex = re.compile(
     '^id$|^row id$|^feature_id$', flags=re.I)
@@ -49,14 +59,3 @@ def read_from_peaktable(arg: str) -> pd.DataFrame:
     columns={feature_ID[0]:"feature_ID", precursor_mz[0]:"precursor_mz",
     retention_time[0]:"retention_time"}, inplace=True)
     return peaktable
-
-
-
-
-
-if __name__ == "__main__":
-    #Testing of function
-    import sys
-    features = read_from_peaktable(sys.argv[1])
-    print(type(features))
-    print(features)

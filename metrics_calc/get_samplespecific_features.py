@@ -43,7 +43,7 @@ strictness_min: float) -> dict[str, pd.DataFrame]:
             sample_dataframe = min_max_norm(sample_dataframe, "intensity")
             #add start_stop_rt
             sample_dataframe = calc_start_stop_rt(
-            sample_dataframe, "retention_time", "fwhm", strictness)
+            sample_dataframe, "retention_time", "fwhm", strictness_min)
             #reset index
             sample_dataframe.reset_index(drop=True, inplace=True)
             #assign to dict

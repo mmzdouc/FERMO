@@ -89,7 +89,7 @@ bioact_factor: int):
             bioactivity.append(feature_points[1])
             novelty.append(feature_points[2])
             diversity.append(feature_points[3])
-        #create dataframe from two lists (uses a dict assignment for pd)
+        #appends lists to existing dataframe
         samples[sample]['convolutedness_score'] = convolutedness
         samples[sample]['bioactivity_score'] = bioactivity
         samples[sample]['novelty_score'] = novelty
@@ -107,11 +107,4 @@ bioact_factor: int):
         samples[sample].reset_index(drop=True, inplace=True)
     ###
     return samples
-    
-    
-    #ADDD
-    #give top 5 samples (sum points for each sample)
-    #give top 5 features per sample
-    #give top 5 features across all samples
-    #END
 
