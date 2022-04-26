@@ -4,6 +4,7 @@
 #$1: peaktable in csv format
 #$2: mgf-file
 #$3: bioactivity of samples in csv format (OPTIONAL)
+#$4: sample metadata (solvent blank/medium blank) (OPTIONAL)
 #output: "featureobjects-storage.pickle"
 
 
@@ -37,6 +38,7 @@ from exporting.store_as_pickled_file import store_as_pickled_file
 from feature_objects.feature_object_creation import feature_object_creation
 from metrics_calc.calculate_metrics import calculate_metrics
 from metrics_calc.display_metrics import display_metrics
+from importing.read_from_metadata_table import read_from_metadata_table
 
 #auxiliary
 from misc_funct.precursor_search import precursor_search
@@ -49,12 +51,22 @@ if __name__ == "__main__":
     feature_objects = ""
     #reads Mzmine3-style peaktable
     peaktable = read_from_peaktable(sys.argv[1])
+    
     #tests if bioactivity.csv file was provided
     try:
         bioactivity_samples = read_from_bioactiv_table(sys.argv[3])
     except IndexError:
         print("WARNING: No bioactivity file was specified.")
         bioactivity_samples = False
+        
+    #tests if metadata.csv file was provided
+    try:
+        blank_samples = read_from_metadata_table(sys.argv[4])
+    except IndexError:
+        print("WARNING: No metadata file was specified.")
+        blank_samples = False
+        
+        
     #load pickle file if extisting
     if os.path.isfile("example_data/featureobjects.pickle"):
         feature_objects = load_from_pickled_file(
@@ -92,7 +104,7 @@ if __name__ == "__main__":
     
     #give an overview of topn scoring samples and features
     topn = 5
-    display_metrics(samples, feature_objects, topn)
+    # ~ display_metrics(samples, feature_objects, topn)
     
     
     

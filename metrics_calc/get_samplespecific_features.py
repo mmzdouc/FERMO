@@ -25,10 +25,21 @@ strictness_min: float) -> dict[str, pd.DataFrame]:
     Includes feature_ID, intensity, retention_time, normalized_int.
     Also calculates start and stop of each peak and adds "strictness"
     in minutes, which makes the peak artificially wider.
+    Scrapes sample names from peaktable -> no user input is needed
     """
     #MZmine3 table SIMPLE
     if not peaktable.filter(regex="Peak").empty:
         samples = dict()
+        
+        #test for field to scrape sample names from
+        assert not peaktable.filter(
+        regex=".mzML|.mzXML").columns.empty, \
+        """
+        WARNING: Could not find cloumns with 
+        '.mzML|.mzXML' which is used to collect sample names. 
+        Did the Mzmine3 output format change? 
+        Contact the FERMO developers."""
+        
         for label in peaktable.filter(regex=".mzML|.mzXML").columns:
             #get name of sample
             sample_name = label.split(" ")[0]
@@ -52,6 +63,18 @@ strictness_min: float) -> dict[str, pd.DataFrame]:
     #MZmine3 table ALL
     elif not peaktable.filter(regex="^datafile:").empty:
         samples = dict()
+        
+        #test for field to scrape sample names from
+        assert not peaktable.filter(
+        regex=":intensity_range:max").columns.empty, \
+        """
+        WARNING: Could not find cloumns with 
+        'SAMPLE:intensity_range:max' which is used
+        to collect sample names. Did the Mzmine3 output
+        format change? Contact the FERMO developers."""
+        
+        #finds file names via lable ":intensity_range:max", chosen
+        #since there is only one such field per row, can be changed
         for label in peaktable.filter(regex=
         ":intensity_range:max").columns:
             #get name of sample
@@ -76,7 +99,25 @@ strictness_min: float) -> dict[str, pd.DataFrame]:
             #assign to dict
             samples[sample_name] = sample_dataframe
         return samples
+    
+    #Should give a clear error message if input format has changed
     else:
+        #test for field to scrape sample names from
+        assert not peaktable.filter(
+        regex=".mzML|.mzXML").columns.empty, \
+        """
+        WARNING: Could not find cloumns with 
+        '.mzML|.mzXML' which is used to collect sample names. 
+        Did the Mzmine3 output format change? 
+        Contact the FERMO developers."""
+        #test for field to scrape sample names from
+        assert not peaktable.filter(
+        regex=":intensity_range:max").columns.empty, \
+        """
+        WARNING: Could not find cloumns with 
+        'SAMPLE:intensity_range:max' which is used
+        to collect sample names. Did the Mzmine3 output
+        format change? Contact the FERMO developers."""
         raise KeyError
 
 def min_max_norm(df, col_name):

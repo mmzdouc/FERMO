@@ -27,11 +27,12 @@ def read_from_peaktable(arg: str) -> pd.DataFrame:
     #test which peaktable was provided: "simple" or "full"
     if peaktable.filter(regex="datafile:").columns.empty:
         print("""
-        WARNING: Peaktable file provided is in SIMPLE mode.
-        Some functions might not work as expected.
-        Feature width at half maximum not provided (default: 0.2 min).
-        We strongly recommended to provide peaktables in FULL/ALL mode.
-        """)
+WARNING: Peaktable file provided is in SIMPLE mode.
+Some functions might not work as expected.
+Feature width at half maximum (fwhm) not provided (set to 0.2 min).
+We strongly recommended to provide peaktables in FULL/ALL mode.
+"""
+        )
 
     #compiles regex objects
     feature_ID_regex = re.compile(
