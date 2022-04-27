@@ -49,7 +49,9 @@ def display_metrics(samples: str, feature_objects: str, topn = int):
         for i in range(topn):
             print(f"""
             {i+1}) Feature_ID: {samples[sample].at[i, "feature_ID"]}, precursor_mz: {samples[sample].at[i, "precursor_mz"]}, retention_time: {samples[sample].at[i, "retention_time"]}, 
-                intensity: {samples[sample].at[i, "intensity"]}, peak_overlap: {samples[sample].at[i, "feature_collision"]}, bioactivity_linked: {feature_objects[samples[sample].at[i, "feature_ID"]].bioactivity_associated}""", end='')
+                intensity: {samples[sample].at[i, "intensity"]}, peak_overlap: {samples[sample].at[i, "feature_collision"]}, bioactivity_linked: {feature_objects[samples[sample].at[i, "feature_ID"]].bioactivity_associated},
+                putative adducts: {*samples[sample].at[i, "putative_adduct_detection"],},
+                possible duplicates: {*samples[sample].at[i, "possible_duplicate_detection"],}""", end='')
         print("""
         """)
         
@@ -72,5 +74,7 @@ def display_metrics(samples: str, feature_objects: str, topn = int):
         feature_ID = int(top_features.split()[1])
         row = samples[sample].loc[samples[sample]["feature_ID"] == feature_ID]
         print(f"""{counter}) From sample {sample}, feature_ID {feature_ID}""")
-        print(f"""(m/z {row.iloc[0]["precursor_mz"]}, rt {row.iloc[0]["retention_time"]}, intensity {row.iloc[0]["intensity"]}, combined_score {round(row.iloc[0]["combined_score"], 3)})""")
+        print(f"""(m/z {row.iloc[0]["precursor_mz"]}, rt {row.iloc[0]["retention_time"]}, intensity {row.iloc[0]["intensity"]}, combined_score {round(row.iloc[0]["combined_score"], 3)},
+putative adducts: {*row.iloc[0]["putative_adduct_detection"],},
+ossible duplicates: {*row.iloc[0]["possible_duplicate_detection"],})""")
 

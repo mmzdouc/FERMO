@@ -3,8 +3,12 @@ import pandas as pd
 def calculate_feature_score(row : str, 
 # ~ bioactivity_associated_features : list, 
 feature_objects : dict,
-n_features_per_sample : int):
-    """Calculate points for each feature
+n_features_per_sample : int,
+convolutedness_weight : float,
+bioactivity_weight : float,
+novelty_weight : float, 
+diversity_weight : float):
+    """Calculate points for each feature.
     
     Parameters
     ----------
@@ -15,6 +19,14 @@ n_features_per_sample : int):
     feature_objects : `dict`
         Feature_ID(keys):Feature_Objects(values)
     n_features_per_sample : `int`
+    convolutedness_weight : `float`
+        Determines how much points/weight is given to convoluteness
+    bioactivity_weight : `float`
+        Determines how much points/weight is given to bioactivity
+    bioactivity_novelty : `float`
+        Determines how much points/weight is given to novelty
+    diversity_weight : `float`
+        Determines how much points/weight is given to diversity
     
     Returns
     -------
@@ -50,6 +62,8 @@ n_features_per_sample : int):
     TBA (needs more expensive calculations)
 
     """
+    
+    
     ###CONVOLUTEDNESS
     ##factors
     #intensity factor
@@ -58,30 +72,33 @@ n_features_per_sample : int):
     overlap_factor = 1
     if row["feature_collision"]:
         n_overlaps = len(row["feature_collision_list"])
-        overlap_factor = (1 - (n_overlaps / n_features_per_sample))
+        overlap_factor = (overlap_factor - 
+        (n_overlaps / n_features_per_sample))
     #blank associated factor
     blank_associated_factor = 1
     if feature_objects[int(row["feature_ID"])].blank_associated == True:
         blank_associated_factor = 0
     # ...
-    ##point
+    ##point calculation
     convolutedness_point = (
-    1.0 * intensity_factor * overlap_factor * blank_associated_factor)
+    convolutedness_weight * intensity_factor *
+    overlap_factor * blank_associated_factor)
     
     ###BIOACTIVITY
     #could be a bit more elaborated, currently only binary
-    ##point
-    bioactivity_point = 0
+    ##point calculation
     if feature_objects[int(row["feature_ID"])].bioactivity_associated == True:
-        bioactivity_point = 1
+        bioactivity_point = bioactivity_weight
+    else:
+        bioactivity_point = 0
     ###NOVELTY
     #expand; currently set to 0, does not influence metric
-    ##point
-    novelty_point = 0
+    ##point calculation
+    novelty_point = novelty_weight * 0
     ###DIVERSITY
     #expand; currently set to 0, does not influence metric
-    ##point
-    diversity_point = 0
+    ##point calculation
+    diversity_point = diversity_weight * 0
     
     ###CALCULATION
     feature_points = [

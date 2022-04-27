@@ -109,7 +109,7 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                                 "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[1],
-                                " of ",
+                                " of ID",
                                 str(samples[sample]["feature_ID"][j] 
                                 )]))
                             else:
@@ -117,7 +117,7 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                                 "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[1],
-                                " of ",
+                                " of ID",
                                 str(samples[sample]["feature_ID"][i] 
                                 )]))
                         elif "[M+2H]2+" in adducts:
@@ -135,7 +135,7 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                                 "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[1],
-                                " of ",
+                                " of ID",
                                 str(samples[sample]["feature_ID"][j] 
                                 )]))
                                 #peak B is putatively [2M+H]+
@@ -143,7 +143,7 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                                 "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[2],
-                                " of ",
+                                " of ID",
                                 str(samples[sample]["feature_ID"][i] 
                                 )]))
                             else:
@@ -152,7 +152,7 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                                 "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[1],
-                                " of ",
+                                " of ID",
                                 str(samples[sample]["feature_ID"][i] 
                                 )]))
                                 #peak A is putatively [2M+H]+
@@ -160,7 +160,7 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                                 "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[2],
-                                " of ",
+                                " of ID",
                                 str(samples[sample]["feature_ID"][j] 
                                 )]))
                         elif "[M+3H]3+" in adducts:
@@ -170,7 +170,7 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                                 "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[1],
-                                " of ",
+                                " of ID",
                                 str(samples[sample]["feature_ID"][j] 
                                 )]))
                             else:
@@ -178,7 +178,7 @@ def calculate_feature_overlap(samples: str, strictness_ppm: float
                                 "putative_adduct_detection"].append(
                                 "".join([
                                 adducts[1],
-                                " of ",
+                                " of ID",
                                 str(samples[sample]["feature_ID"][i] 
                                 )]))
                     #Peak collision is registered

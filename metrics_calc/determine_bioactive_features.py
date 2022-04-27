@@ -5,7 +5,7 @@ bioactivity_samples: dict,
 samples: dict,
 feature_objects: dict,
 bioact_factor: int) -> list:
-    """Separate bioactive features from 
+    """Determines bioactivity-associated features.
     
     Parameters
     ----------
@@ -36,16 +36,15 @@ bioact_factor: int) -> list:
     If a feature is found only in active samples, count it as an 
     activity-associated feature.
     If a feature is found in both an active and an inactive sample,
-    compare their intensities: the minimum intensity detected
+    compare the intensities: the minimum intensity detected
     for activity, and the maximum intensity detected for inactivity. 
     If the minimum active intensity is n times higher (e.g. 10)
     than the maximum inactive intensity, count as an activity-associated
     feature. Else, consider inactive.
-    Example: Consider a feature from samples A (active) and I (inactive).
+        Example: Consider a feature from samples A (active) and I (inactive).
     If (feature A/feature I) >= 10, consider active. 
     The factor can be user-provided.  
-    
-    This logic works only if:
+        This logic works only if:
     -same injection volume was used for all sample in mass spec analysis
     -samples in bioactivity analysis were in the same dilution as in
     mass spec analysis
