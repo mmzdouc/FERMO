@@ -74,7 +74,7 @@ def display_metrics(samples: str, feature_objects: str, topn = int):
         feature_ID = int(top_features.split()[1])
         row = samples[sample].loc[samples[sample]["feature_ID"] == feature_ID]
         print(f"""{counter}) From sample {sample}, feature_ID {feature_ID}""")
-        print(f"""(m/z {row.iloc[0]["precursor_mz"]}, rt {row.iloc[0]["retention_time"]}, intensity {row.iloc[0]["intensity"]}, combined_score {round(row.iloc[0]["combined_score"], 3)},
-putative adducts: {*row.iloc[0]["putative_adduct_detection"],},
-ossible duplicates: {*row.iloc[0]["possible_duplicate_detection"],})""")
+        print(f"""    (m/z {row.iloc[0]["precursor_mz"]}, rt {row.iloc[0]["retention_time"]}, intensity {row.iloc[0]["intensity"]}, combined_score {round(row.iloc[0]["combined_score"], 3)},
+    putative adducts: {*row.iloc[0]["putative_adduct_detection"],},
+    possible duplicates: {*row.iloc[0]["possible_duplicate_detection"],})""")
 

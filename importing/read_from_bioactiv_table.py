@@ -26,7 +26,15 @@ def read_from_bioactiv_table(arg: str) -> list:
     Once input formats are clearer, script can be adapted to
     interpret floats etc.
     """
-    bioactiv_table = pd.read_csv(arg, sep=',')
+    
+    bioactiv_table = ""
+    #tests if (optional) bioactivity table was provided
+    if not arg:
+        print("WARNING: No bioactivity file was specified.")
+        bioactivity_samples = False
+        return bioactivity_samples
+    else:
+        bioactiv_table = pd.read_csv(arg, sep=',')
     
     #ADD CHANGES TO REGEX QUERIES
     sample_col_list = ["sample", "sample_name"]

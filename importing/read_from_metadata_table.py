@@ -21,7 +21,15 @@ def read_from_metadata_table(arg: str) -> list:
     -------
     In future, can be updated to accept more sample_attributes
     """
-    metadata_table = pd.read_csv(arg, sep=',')
+    
+    metadata_table = ""
+    #tests if (optional) metadata table was provided
+    if not arg:
+        print("WARNING: No metadata file was specified.")
+        blank_samples = False
+        return blank_samples
+    else:
+        metadata_table = pd.read_csv(arg, sep=',')
     
     #ADD CHANGES TO REGEX QUERIES
     sample_col_list = ["^sample$", "sample_name"]
