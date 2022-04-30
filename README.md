@@ -1,8 +1,8 @@
-### FERMO: Formulation of mEtrics from Reproducible Metabolomics Objects
+# FERMO: Formulation of mEtrics from Reproducible Metabolomics Objects
 
 ## Overview
 
-# Attention: **FERMO** is currently in early development and many of the modules are not finished yet.
+### Attention: **FERMO** is currently in early development and many of the modules are not finished yet.
 
 This is the Github repository for **FERMO**, an open-source pipeline for the processing and visualization of mass-spectrometry data. **FERMO** wraps tools for parameter finding, peak picking, annotation, and allows to score samples for complexity, diversity, and novelty. The samples with the highest chemical diversity and novelty, but lowest convolutendess in terms of peak overlap, are highlighted. **FERMO** can also integrate bioactivity data into its metrics. In the future, an interctive web interface will allow to explore results. Aimed to guarantee reproducibility by design, **FERMO** allows to quickly prioritize interesting samples and peaks for targeted isolation and characterization. 
 
@@ -17,7 +17,7 @@ MIT License
 
 **FERMO**  is currently in early development and many of the modules are not finished yet. At the moment, it can only be run from command line.
 
-# Installation
+### Installation
 
 First, clone the **FERMO** Github repository:
 
@@ -37,7 +37,7 @@ It is recommended to use a Python package manager, such as conda.
 ```
 
 
-# Overview and example run
+### Overview and example run
 The typical workflow for FERMO consists of following steps:
 1) Process LCMS/MS data with MzMine 3 and export the peaktable in *ALL/FULL* format using the *GNPS - Feature Based Molecular Networking* function. 
 2) (Optional) Prepare a metadata file (indicating which samples are proper samples and which are blanks) and/or a bioactivity file (indicating active/inactive samples)
@@ -48,7 +48,7 @@ The typical workflow for FERMO consists of following steps:
 ~$ python 3.10 ./main.py -p example_data/peaktable_full.csv -m example_data/msms.mgf -b example_data/bioactivity.csv -M example_data/metadata.csv
 ```
 
-# Comments:
+### Comments:
 - Currently, **FERMO**  accepts a MzMine3 formatted peaktable. In future updates, other peakpicking program output formats will be included as well.
 - **FERMO** accepts additional parameter that influence its behaviour (e.g. precursor m/z tolerance, peak collision detection strictness). To see the parameter options as well as the defaults, use **FERMO's** help function ```main.py --help```
 
