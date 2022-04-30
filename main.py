@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
 
-#reads peak table and generates features objects to be stored in DB
-#$1: peaktable in csv format
-#$2: mgf-file
-#$3: bioactivity of samples in csv format (OPTIONAL)
-#$4: sample metadata (solvent blank/medium blank) (OPTIONAL)
-#output: "featureobjects-storage.pickle"
-
-
 ###TO DO###
 #feature_object_creation.py: implement hash-function
 
@@ -15,8 +7,6 @@
 #Docstrings are formatted following the guidelines on 
 #DOCUMENTING PYTHON APIS WITH DOCSTRINGS
 #https://developer.lsst.io/python/numpydoc.html#py-docstring-parameter-types
-
-
 
 
 ###IMPORTS - EXTERNAL MODULES###
@@ -52,7 +42,7 @@ ______________________________________________________________________
 FERMO: Formulation of mEtrics from Reproducible Metabolomics Objects
 ______________________________________________________________________
 Generic command: python3 main.py -p [peaktable.csv] -m [ms2.mgf] 
--b [bioactivity.csv] --metadata [metadata.csv]
+-b [bioactivity.csv] --M [metadata.csv]
 
 Mandatory arguments:
     -p, --peaktable         
@@ -153,22 +143,6 @@ _____________________________________________________________
     return parser.parse_args()
 
 
-
-#ARGPARSE
-
-#add modification to convolutedness score calculation
-
-
-#Feedback from Mo, Zach, Niek on scoring metrics
-#convolutedness: instead of just looking at relative intensities etc,
-#it should actually take into account A) how much of the area under the 
-#curve is undisturbed; B) how much of the time of the peak is undisturbed
-#score = weight * ((area_curve-sum of area under curve of colliding peaks)/area_curve)
-
-
-
-
-
 ###COMMAND LINE MODE
 
 if __name__ == "__main__":
@@ -201,7 +175,6 @@ if __name__ == "__main__":
     args.column_bleed_factor, args.convolutedness_weight, 
     args.bioactivity_weight, args.novelty_weight,
     args.diversity_weight) 
-    
     
     #VISUALIZATION PART
     #give an overview of topn scoring samples and features

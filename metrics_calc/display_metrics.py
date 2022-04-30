@@ -51,7 +51,11 @@ def display_metrics(samples: str, feature_objects: str, topn = int):
             {i+1}) Feature_ID: {samples[sample].at[i, "feature_ID"]}, precursor_mz: {samples[sample].at[i, "precursor_mz"]}, retention_time: {samples[sample].at[i, "retention_time"]}, 
                 intensity: {samples[sample].at[i, "intensity"]}, peak_overlap: {samples[sample].at[i, "feature_collision"]}, bioactivity_linked: {feature_objects[samples[sample].at[i, "feature_ID"]].bioactivity_associated},
                 putative adducts: {*samples[sample].at[i, "putative_adduct_detection"],},
-                possible duplicates: {*samples[sample].at[i, "possible_duplicate_detection"],}""", end='')
+                possible duplicates: {*samples[sample].at[i, "possible_duplicate_detection"],}
+                convolutedness_score: {samples[sample].at[i, "convolutedness_score"]}
+                bioactivity_score: {samples[sample].at[i, "bioactivity_score"]}
+                novelty_score: {samples[sample].at[i, "novelty_score"]}
+                diversity_score: {samples[sample].at[i, "diversity_score"]}""", end='')
         print("""
         """)
         

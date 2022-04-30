@@ -74,6 +74,7 @@ diversity_weight : float) -> dict:
     Filters sample-specific features for topN features
     Calculates feature overlap per sample
     Detects bioactivity-associated features
+    Detects blank-associated features
     ...
     Calculates scores for samples
     """
@@ -94,7 +95,7 @@ diversity_weight : float) -> dict:
     
     
     ###CALCULATION SCORES
-    #temporary score: 
+
     sample_count = dict()
     for sample in samples:
         #collect feature points per sample
@@ -103,18 +104,23 @@ diversity_weight : float) -> dict:
         bioactivity = list()
         novelty = list()
         diversity = list()
-        n_features_per_sample = int(len(samples[sample]))
+        
+        #for ea
         for index, row in samples[sample].iterrows():
             feature_list.append(int(row["feature_ID"])) 
+            
             #calculation of score per feature
             feature_points = calculate_feature_score(
-            row, feature_objects, n_features_per_sample,
+            row, feature_objects, samples, sample,
             convolutedness_weight, bioactivity_weight, novelty_weight, 
             diversity_weight)
+            
+            #appending to lists
             convolutedness.append(feature_points[0])
             bioactivity.append(feature_points[1])
             novelty.append(feature_points[2])
             diversity.append(feature_points[3])
+
         #appends lists to existing dataframe
         samples[sample]['convolutedness_score'] = convolutedness
         samples[sample]['bioactivity_score'] = bioactivity
