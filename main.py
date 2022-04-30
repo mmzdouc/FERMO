@@ -15,6 +15,10 @@ import sys
 import os
 import pandas as pd
 import argparse
+import matchms
+from pyteomics import mgf
+import numpy
+
 
 ###IMPORTS - INTERNAL FUNCTIONS###
 
@@ -22,8 +26,6 @@ import argparse
 from importing.read_from_peaktable import read_from_peaktable
 from importing.read_from_bioactiv_table import read_from_bioactiv_table
 from importing.load_from_mgf import load_from_mgf
-from importing.load_from_pickled_file import load_from_pickled_file
-from exporting.store_as_pickled_file import store_as_pickled_file
 from feature_objects.feature_object_creation import feature_object_creation
 from metrics_calc.calculate_metrics import calculate_metrics
 from metrics_calc.display_metrics import display_metrics
