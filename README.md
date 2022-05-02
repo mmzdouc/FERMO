@@ -6,7 +6,7 @@
 
 This is the Github repository for **FERMO**, an open-source pipeline for the processing and visualization of mass-spectrometry data. **FERMO** is specifically aimed towards samples coming from natural product discovery experiments. **FERMO** allows to score samples for complexity, diversity, and novelty by wrapping tools for parameter finding, peak picking, annotation. The samples with the highest chemical diversity and novelty, but lowest convolutendess in terms of peak overlap, are highlighted. **FERMO** can also integrate bioactivity data into its metrics. In the future, an interactive web interface will allow to explore results. Aimed to guarantee reproducibility by design, **FERMO** allows to quickly prioritize interesting samples and peaks for targeted isolation and characterization. 
 
-The goal of the project is to provide a user-friendly, modular, and easily extendable pipeline that allows users to quickly process and score their samples, without having to learn to use each of the tools separately or invest extensive amounts of time into parameter optimization. 
+The goal of the project is to provide users with a pragmatic way to score samples for their appeal regarding consecutive isolation (e.g. which samples are most interesting to follow up in terms of peak separation, bioactivty, novelty, and chemical diversity).
 
 For information on how to install and run **FERMO**, check this tutorial. Please, take into account that this tool has been currently only tested on Ubuntu.
 
