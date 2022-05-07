@@ -29,11 +29,10 @@ First, clone the **FERMO** Github repository:
 It is recommended to use a Python package manager, such as conda.
 
 ```
-# Create conda environment
-~$ conda env create FERMO
+# Create conda environment and install dependencies
+~$ conda create --name FERMO numpy pandas matchms pyteomics
+# Activate conda environment
 ~$ conda activate FERMO
-# Install dependecies
-~$ conda install numpy pandas matchms pyteomics
 ```
 
 
@@ -45,7 +44,7 @@ The typical workflow for FERMO consists of following steps:
 
 ```
 # Run FERMO with exmple data:
-~$ python 3.10 ./main.py -p example_data/peaktable_full.csv -m example_data/msms.mgf -b example_data/bioactivity.csv -M example_data/metadata.csv
+~$ python ./main.py -p example_data/peaktable_full.csv -m example_data/msms.mgf -b example_data/bioactivity.csv -M example_data/metadata.csv
 ```
 
 ### Comments:
