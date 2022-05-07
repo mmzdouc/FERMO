@@ -43,7 +43,7 @@ The typical workflow for FERMO consists of following steps:
 3) Run **FERMO's** ```main.py``` function as indicated below
 
 ```
-# Run FERMO with exmple data:
+# Run FERMO with example data:
 ~$ python ./main.py -p example_data/peaktable_full.csv -m example_data/msms.mgf -b example_data/bioactivity.csv -M example_data/metadata.csv
 ```
 
