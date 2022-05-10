@@ -42,8 +42,8 @@ diversity_weight : float):
     For each category, points are given.
     Details:
     A) CONVOLUTEDNESS (crowdedness): #redo
-    A high number of non-overlapping, high-intensity features is desirable.
-    For each feature, a score is calculated as follows:
+    A high number of non-overlapping, high-intensity features is 
+    desirable. For each feature, a score is calculated as follows:
     #
     1) convolutedness_weight *
     2) feature_relative_intensity *

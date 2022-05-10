@@ -2,7 +2,8 @@
 import pandas as pd
 
 
-def display_metrics(samples: str, feature_objects: str, topn = int):
+def display_metrics(
+samples: str, feature_objects: str, topn = int) -> list:
     """Display sample scores and topn of features
     
     Parameters
@@ -12,6 +13,10 @@ def display_metrics(samples: str, feature_objects: str, topn = int):
     feature_objects : `dict`
         Feature_ID(keys):Feature_Objects(values)
     topn : `int`
+    
+    Returns
+    -------
+    topn_samples_features = `list`
     
     Notes
     -----
@@ -28,6 +33,7 @@ def display_metrics(samples: str, feature_objects: str, topn = int):
         "combined_score"].sum(axis=0)
     topn_samples = sorted(
     sample_scores, key=sample_scores.get, reverse=True)[:topn]
+    
     
     print(
     f"""
@@ -67,6 +73,7 @@ def display_metrics(samples: str, feature_objects: str, topn = int):
             [sample, " " ,str(row["feature_ID"])])] = row["combined_score"]
     topn_features = sorted(
     all_features, key=all_features.get, reverse=True)[:topn]
+    
     counter = 0
     print(
     f"""
@@ -81,4 +88,6 @@ def display_metrics(samples: str, feature_objects: str, topn = int):
         print(f"""    (m/z {row.iloc[0]["precursor_mz"]}, rt {row.iloc[0]["retention_time"]}, intensity {row.iloc[0]["intensity"]}, combined_score {round(row.iloc[0]["combined_score"], 3)},
     putative adducts: {*row.iloc[0]["putative_adduct_detection"],},
     possible duplicates: {*row.iloc[0]["possible_duplicate_detection"],})""")
-
+    
+    topn_samples_features = [topn_samples, topn_features]
+    return topn_samples_features

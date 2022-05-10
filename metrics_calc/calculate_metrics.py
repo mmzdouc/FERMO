@@ -4,8 +4,9 @@ from .get_samplespecific_features import get_samplespecific_features
 from .calculate_feature_overlap import calculate_feature_overlap
 from .filter_for_topn_features import filter_for_topn_features
 from .determine_bioactive_features import determine_bioactive_features
-from .calculate_feature_score import calculate_feature_score
 from .determine_blank_features import determine_blank_features
+from .calculate_feature_score import calculate_feature_score
+
 
 
 def calculate_metrics(

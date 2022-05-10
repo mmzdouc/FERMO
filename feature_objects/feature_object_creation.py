@@ -1,8 +1,3 @@
-#TO DO:
-#-> for feature_object_creation(): use hash of int(ID) as key instead of
-#only ind(ID) -> should prevent overwriting; however, there might be 
-#hash-collisions that have the be caught before overwriting and entry
-
 import pandas as pd
 
 from .Feature_Object import Feature_Object

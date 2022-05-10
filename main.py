@@ -15,9 +15,9 @@ import sys
 import os
 import pandas as pd
 import argparse
-import matchms
-from pyteomics import mgf
-import numpy
+
+#keep track of external libraries
+#import matchms pyteomics numpy dash
 
 
 ###IMPORTS - INTERNAL FUNCTIONS###
@@ -30,6 +30,7 @@ from feature_objects.feature_object_creation import feature_object_creation
 from metrics_calc.calculate_metrics import calculate_metrics
 from metrics_calc.display_metrics import display_metrics
 from importing.read_from_metadata_table import read_from_metadata_table
+from visualization.dashboard import dashboard
 
 #auxiliary
 from misc_funct.precursor_search import precursor_search
@@ -43,7 +44,7 @@ def get_arguments():
 ______________________________________________________________________
 FERMO: Formulation of mEtrics from Reproducible Metabolomics Objects
 ______________________________________________________________________
-Generic command: python3 main.py -p [peaktable.csv] -m [ms2.mgf] 
+Generic command: python main.py -p [peaktable.csv] -m [ms2.mgf] 
 -b [bioactivity.csv] --M [metadata.csv]
 
 Mandatory arguments:
@@ -150,6 +151,8 @@ _____________________________________________________________
 if __name__ == "__main__":
         
     #INPUT/OUTPUT PART
+    
+    #argparse
     args = get_arguments()
 
     #reads Mzmine3-style peaktable (mandatory)
@@ -180,9 +183,10 @@ if __name__ == "__main__":
     
     #VISUALIZATION PART
     #give an overview of topn scoring samples and features
-    display_metrics(samples, feature_objects, args.topn)
+    topn_samples_features = display_metrics(samples, feature_objects, args.topn)
     
-    
+    #initialize dash
+    dashboard(samples, feature_objects, topn_samples_features)
     
     #TESTING
     
