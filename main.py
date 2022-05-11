@@ -31,6 +31,7 @@ from metrics_calc.calculate_metrics import calculate_metrics
 from metrics_calc.display_metrics import display_metrics
 from importing.read_from_metadata_table import read_from_metadata_table
 from visualization.dashboard import dashboard
+from importing.test_equal_nr_features_ms2 import test_equal_nr_features_ms2
 
 #auxiliary
 from misc_funct.precursor_search import precursor_search
@@ -81,7 +82,7 @@ Optional arguments:
                 (1 - filter_retain_factor) relative intensity.
                 (e.g. 1: retain all features; 0.95: retain all features
                 greater than > 5%% of rel int; 0: discard all features)
-                Default: 0.95
+                Default: 0.95 (range: 0.1-1)
     --bioactivity_factor         
                 Factor to filter for bioactivity-associated feature
                 below the minimal inhibitory concentration: how many 
@@ -94,22 +95,34 @@ Optional arguments:
                 in a sample than in a blank to be still considered 
                 sample-associated (e.g. due to column bleed).
                 Default: 10
-    --convolutedness_weight         
-                Determines how much weight is given to convoluteness
-                during scoring.
-                Default: 1.0
-    --bioactivity_weight         
-                Determines how much weight is given to bioactivity
-                during scoring.
-                Default: 1.0
-    --novelty_weight         
-                Determines how much weight is given to novelty
-                during scoring. NOT IMPLEMENTED YET.
-                Default: 0
-    --diversity_weight         
-                Determines how much weight is given to diversity
-                during scoring. NOT IMPLEMENTED YET.
-                Default: 0
+    ----rel_intensity_threshold
+                Sets the threshold on how high the relative intensity
+                of a feature must be to be considered interesting
+                for isolation (e.g. 0.5: feature must have an intensity
+                of greater than or equal to 0.5 relative to the most 
+                intense feature in the sample to be considered in 
+                the sample scoring).
+                Default: 0.5 (range: 0-1)
+    --convolutedness_threshold         
+                Sets the threshold on how high the convolutedness score
+                of a feature must be to be considered interesting
+                for isolation (e.g. 0.5: at least 50%% of the feature
+                peak must be without peak collision/overlap to 
+                be considered in the sample scoring).
+                Default: 0.5 (range: 0-1)
+    --bioactivity_threshold         
+                Sets the threshold on how high the bioactivity score
+                of a feature must be to be considered interesting
+                for isolation. Currently only a binary value, 
+                therefore either 0 (bioactivity ignored) or 1
+                (bioactivity considered).
+                Default: 1.0 (range: 0 or 1)
+    --novelty_threshold        
+                PLACEHOLRDER - NOT IMPLEMENTED YET.
+                Default: 0.0
+    --diversity_threshold         
+                PLACEHOLRDER - NOT IMPLEMENTED YET.
+                Default: 0.0
     --topn         
                 Sets number of topN samples/features to report on.
                 Default: 5
@@ -133,14 +146,16 @@ _____________________________________________________________
                         type=int, default=10, required=False)
     parser.add_argument("--column_bleed_factor", help=argparse.SUPPRESS,
                         type=int, default=10, required=False)
-    parser.add_argument("--convolutedness_weight", help=argparse.SUPPRESS,
+    parser.add_argument("--rel_intensity_threshold", help=argparse.SUPPRESS,
+                        type=float, default=0.5, required=False)
+    parser.add_argument("--convolutedness_threshold", help=argparse.SUPPRESS,
+                        type=float, default=0.5, required=False)
+    parser.add_argument("--bioactivity_threshold", help=argparse.SUPPRESS,
                         type=float, default=1.0, required=False)
-    parser.add_argument("--bioactivity_weight", help=argparse.SUPPRESS,
-                        type=float, default=1.0, required=False)
-    parser.add_argument("--novelty_weight", help=argparse.SUPPRESS,
-                        type=float, default=1.0, required=False)
-    parser.add_argument("--diversity_weight", help=argparse.SUPPRESS,
-                        type=float, default=1.0, required=False)
+    parser.add_argument("--novelty_threshold", help=argparse.SUPPRESS,
+                        type=float, default=0.0, required=False)
+    parser.add_argument("--diversity_threshold", help=argparse.SUPPRESS,
+                        type=float, default=0.0, required=False)
     parser.add_argument("--topn", help=argparse.SUPPRESS,
                         type=int, default=5, required=False)
     return parser.parse_args()
@@ -161,6 +176,9 @@ if __name__ == "__main__":
     #reads mgf-file (mandatory)
     ms2spectra_dict = load_from_mgf(args.mgf)
     
+    #tests if each feature has an associated spectrum
+    test_equal_nr_features_ms2(peaktable, ms2spectra_dict)
+    
     #reads from bioactivity.csv file, if provided 
     bioactivity_samples = read_from_bioactiv_table(args.bioactivity)
     
@@ -173,20 +191,18 @@ if __name__ == "__main__":
     #CALCULATION PART
     #calculates metrics for each sample
     samples = calculate_metrics(
-    peaktable, feature_objects, 
-    bioactivity_samples, attributes_samples, 
-    args.strictness_min, args.strictness_ppm,
-    args.feature_retain_factor, args.bioactivity_factor,
-    args.column_bleed_factor, args.convolutedness_weight, 
-    args.bioactivity_weight, args.novelty_weight,
-    args.diversity_weight) 
+    peaktable, 
+    feature_objects, 
+    bioactivity_samples, 
+    attributes_samples, 
+    args) 
     
     #VISUALIZATION PART
     #give an overview of topn scoring samples and features
     topn_samples_features = display_metrics(samples, feature_objects, args.topn)
     
     #initialize dash
-    dashboard(samples, feature_objects, topn_samples_features)
+    # ~ dashboard(samples, feature_objects, topn_samples_features)
     
     #TESTING
     

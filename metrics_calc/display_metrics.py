@@ -1,5 +1,6 @@
 
 import pandas as pd
+import numpy as np
 
 
 def display_metrics(
@@ -25,12 +26,17 @@ samples: str, feature_objects: str, topn = int) -> list:
     Determines the topN features across all samples.
     """
     
+    #CHANGE HERE
+    
     #for each sample, its score
     #create a list of sample names and a list of their overall scores
     sample_scores = dict()
     for sample in samples:
-        sample_scores[sample] = samples[sample].loc[:,
-        "combined_score"].sum(axis=0)
+        
+        #divides the nr of True features by the total nr of features
+        count = (np.count_nonzero(samples[sample].loc[:,
+        "over_threshold"]) / len(samples[sample]))
+        sample_scores[sample] = round(count, 2)
     topn_samples = sorted(
     sample_scores, key=sample_scores.get, reverse=True)[:topn]
     
@@ -41,53 +47,87 @@ samples: str, feature_objects: str, topn = int) -> list:
     """ )
     #use topn_samples to print intensities from sample_scores
     for sample in topn_samples:
-        print(f"""Sample {sample} has a score of {sample_scores[sample]}.
-            From convolutedness_score: {samples[sample].loc[:,
-            "convolutedness_score"].sum(axis=0)}
-            From bioactivity_score: {samples[sample].loc[:,
-            "bioactivity_score"].sum(axis=0)}
-            From novelty_score: {samples[sample].loc[:,
-            "novelty_score"].sum(axis=0)}
-            From diversity_score: {samples[sample].loc[:,
-            "diversity_score"].sum(axis=0)}
-            Total number of features: {len(samples[sample])}""")
-        print(f"""Top {topn} highest scoring features for sample {sample}:""", end='')
-        for i in range(topn):
+        print(f"""
+Sample {sample} has a score of {sample_scores[sample]} (from a maximal score of 1.0).
+From a total of {len(samples[sample])} features, {
+np.count_nonzero(samples[sample].loc[:,"over_threshold"])} 
+were over the defined score threshold(s).
+This included the following features:""")
+
+
+        for i in range(np.count_nonzero(samples[sample].loc[:,
+        "over_threshold"])):
             print(f"""
-            {i+1}) Feature_ID: {samples[sample].at[i, "feature_ID"]}, precursor_mz: {samples[sample].at[i, "precursor_mz"]}, retention_time: {samples[sample].at[i, "retention_time"]}, 
-                intensity: {samples[sample].at[i, "intensity"]}, peak_overlap: {samples[sample].at[i, "feature_collision"]}, bioactivity_linked: {feature_objects[samples[sample].at[i, "feature_ID"]].bioactivity_associated},
-                putative adducts: {*samples[sample].at[i, "putative_adduct_detection"],},
-                possible duplicates: {*samples[sample].at[i, "possible_duplicate_detection"],}
-                convolutedness_score: {samples[sample].at[i, "convolutedness_score"]}
-                bioactivity_score: {samples[sample].at[i, "bioactivity_score"]}
-                novelty_score: {samples[sample].at[i, "novelty_score"]}
-                diversity_score: {samples[sample].at[i, "diversity_score"]}""", end='')
+{i+1})      feature_ID: {samples[sample].at[i, "feature_ID"]}, 
+        precursor_mz: {samples[sample].at[i, "precursor_mz"]}, 
+        retention_time: {samples[sample].at[i, "retention_time"]}, 
+        intensity: {samples[sample].at[i, "intensity"]}, 
+        peak_overlap: {samples[sample].at[i, "feature_collision"]}, 
+        bioactivity_linked: {feature_objects[samples[sample].at[i, "feature_ID"]].bioactivity_associated},
+        putative adducts: {*samples[sample].at[i, "putative_adduct_detection"],},
+        possible duplicates: {*samples[sample].at[i, "possible_duplicate_detection"],}
+        relative_intensity_score: {samples[sample].at[i, "rel_intensity_score"]}
+        convolutedness_score: {samples[sample].at[i, "convolutedness_score"]}
+        bioactivity_score: {samples[sample].at[i, "bioactivity_score"]}
+        novelty_score: {samples[sample].at[i, "novelty_score"]}
+        diversity_score: {samples[sample].at[i, "diversity_score"]}""", end='')
         print("""
         """)
-        
-    #print topn features from total
-    all_features = dict()
-    for sample in samples:
-        for index, row in samples[sample].iterrows():
-            all_features["".join(
-            [sample, " " ,str(row["feature_ID"])])] = row["combined_score"]
-    topn_features = sorted(
-    all_features, key=all_features.get, reverse=True)[:topn]
     
-    counter = 0
-    print(
-    f"""
-            These are the top {topn} overall scoring features.
-    """ )
-    for top_features in topn_features:
-        counter = counter + 1
-        sample = top_features.split()[0]
-        feature_ID = int(top_features.split()[1])
-        row = samples[sample].loc[samples[sample]["feature_ID"] == feature_ID]
-        print(f"""{counter}) From sample {sample}, feature_ID {feature_ID}""")
-        print(f"""    (m/z {row.iloc[0]["precursor_mz"]}, rt {row.iloc[0]["retention_time"]}, intensity {row.iloc[0]["intensity"]}, combined_score {round(row.iloc[0]["combined_score"], 3)},
-    putative adducts: {*row.iloc[0]["putative_adduct_detection"],},
-    possible duplicates: {*row.iloc[0]["possible_duplicate_detection"],})""")
-    
-    topn_samples_features = [topn_samples, topn_features]
+    topn_samples_features = [topn_samples]
     return topn_samples_features
+    
+    
+# ~ DUMP OLD CODE - reuseable?
+# ~ print(
+    # ~ f"""
+            # ~ These are the top {topn} scoring samples.
+    # ~ """ )
+    # ~ #use topn_samples to print intensities from sample_scores
+    # ~ for sample in topn_samples:
+        # ~ print(f"""Sample {sample} has a score of {sample_scores[sample]}.
+            # ~ From convolutedness_score: {samples[sample].loc[:,
+            # ~ "convolutedness_score"].sum(axis=0)}
+            # ~ From bioactivity_score: {samples[sample].loc[:,
+            # ~ "bioactivity_score"].sum(axis=0)}
+            # ~ From novelty_score: {samples[sample].loc[:,
+            # ~ "novelty_score"].sum(axis=0)}
+            # ~ From diversity_score: {samples[sample].loc[:,
+            # ~ "diversity_score"].sum(axis=0)}
+            # ~ Total number of features: {len(samples[sample])}""")
+        # ~ print(f"""Top {topn} highest scoring features for sample {sample}:""", end='')
+        # ~ for i in range(topn):
+            # ~ print(f"""
+            # ~ {i+1}) Feature_ID: {samples[sample].at[i, "feature_ID"]}, precursor_mz: {samples[sample].at[i, "precursor_mz"]}, retention_time: {samples[sample].at[i, "retention_time"]}, 
+                # ~ intensity: {samples[sample].at[i, "intensity"]}, peak_overlap: {samples[sample].at[i, "feature_collision"]}, bioactivity_linked: {feature_objects[samples[sample].at[i, "feature_ID"]].bioactivity_associated},
+                # ~ putative adducts: {*samples[sample].at[i, "putative_adduct_detection"],},
+                # ~ possible duplicates: {*samples[sample].at[i, "possible_duplicate_detection"],}
+                # ~ convolutedness_score: {samples[sample].at[i, "convolutedness_score"]}
+                # ~ bioactivity_score: {samples[sample].at[i, "bioactivity_score"]}
+                # ~ novelty_score: {samples[sample].at[i, "novelty_score"]}
+                # ~ diversity_score: {samples[sample].at[i, "diversity_score"]}""", end='')
+        # ~ print("""
+        # ~ """)
+    #print topn features from total
+    # ~ all_features = dict()
+    # ~ for sample in samples:
+        # ~ for index, row in samples[sample].iterrows():
+            # ~ all_features["".join(
+            # ~ [sample, " " ,str(row["feature_ID"])])] = row["combined_score"]
+    # ~ topn_features = sorted(
+    # ~ all_features, key=all_features.get, reverse=True)[:topn]
+    
+    # ~ counter = 0
+    # ~ print(
+    # ~ f"""
+            # ~ These are the top {topn} overall scoring features.
+    # ~ """ )
+    # ~ for top_features in topn_features:
+        # ~ counter = counter + 1
+        # ~ sample = top_features.split()[0]
+        # ~ feature_ID = int(top_features.split()[1])
+        # ~ row = samples[sample].loc[samples[sample]["feature_ID"] == feature_ID]
+        # ~ print(f"""{counter}) From sample {sample}, feature_ID {feature_ID}""")
+        # ~ print(f"""    (m/z {row.iloc[0]["precursor_mz"]}, rt {row.iloc[0]["retention_time"]}, intensity {row.iloc[0]["intensity"]}, combined_score {round(row.iloc[0]["combined_score"], 3)},
+    # ~ putative adducts: {*row.iloc[0]["putative_adduct_detection"],},
+    # ~ possible duplicates: {*row.iloc[0]["possible_duplicate_detection"],})""")

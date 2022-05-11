@@ -1,35 +1,19 @@
 import pandas as pd
 
 def calculate_feature_score(row : str, 
-# ~ bioactivity_associated_features : list, 
 feature_objects : dict,
 samples : dict,
-sample : str,
-convolutedness_weight : float,
-bioactivity_weight : float,
-novelty_weight : float, 
-diversity_weight : float):
+sample : str) -> list:
     """Calculate points for each feature.
     
     Parameters
     ----------
     row : `pandas.core.frame.Series`
-    # ~ bioactivity_associated_features : `list`
-        # ~ List of features that are bioactivity-associated for 
-        # ~ fast lookup
     feature_objects : `dict`
         Feature_ID(keys):Feature_Objects(values)
     samples : `dict`
     sample : `str`
-    convolutedness_weight : `float`
-        Determines how much points/weight is given to convoluteness
-    bioactivity_weight : `float`
-        Determines how much points/weight is given to bioactivity
-    bioactivity_novelty : `float`
-        Determines how much points/weight is given to novelty
-    diversity_weight : `float`
-        Determines how much points/weight is given to diversity
-    
+
     Returns
     -------
     feature_points = `list`
@@ -41,35 +25,31 @@ diversity_weight : float):
     The more points a feature gets, the better.
     For each category, points are given.
     Details:
-    A) CONVOLUTEDNESS (crowdedness): #redo
+    A)RELATIVE INTENSITY:
+    Features with higher intensity can be considered more interesting 
+    for isolation
+    ...
+    B) CONVOLUTEDNESS (crowdedness):
     A high number of non-overlapping, high-intensity features is 
-    desirable. For each feature, a score is calculated as follows:
-    #
-    1) convolutedness_weight *
-    2) feature_relative_intensity *
-    3) retention_time_overlap_factor *
-    4) blank_associated_factor
-    #
-    1) user-specified value, default 1.0
-    2) intensity relative to most intense peak in sample
-    3) fraction of peak that is not overlapping with other peaks
-    4) binary factor: 0 if feature medium-associated, 1 if not
-    #
-    B) BIOACTIVITY:
+    desirable.
+    ...
+    C) BIOACTIVITY:
     Bioactivity-association of feature generally considered good. 
     Not every experiment provides bioactivity, therefore optional.
     Currently binary, i.e. if bioactive, weight fully attributed to peak
     ...
-    C) NOVELTY:
+    D) NOVELTY:
     TBA (needs more expensive calculations)
     ...
-    D) DIVERSITY:
+    E) DIVERSITY:
     TBA (needs more expensive calculations)
     """
-    ###CONVOLUTEDNESS
-    ##intensity factor
-    feature_relative_intensity = float(row["min_max_norm_intensity"])
     
+    ##RELATIVE INTENSITY
+    rel_intensity_point = 1.0 * float(
+    row["min_max_norm_intensity"])
+    
+    ###CONVOLUTEDNESS
     ##retention_time_overlap_factor
     #assigns to variable to make equations easier to read
     A_s = float(row["rt_start"])
@@ -150,7 +130,7 @@ diversity_weight : float):
             A_rt_remainder = 0
             pass
     #makes the remainder of the rt a fraction of orignial rt of peak
-    retention_time_overlap_factor = A_rt_remainder / A_rt_full
+    retention_time_overlap_factor = (A_rt_remainder / A_rt_full)
     
     ##blank associated factor
     blank_associated_factor = 1
@@ -159,8 +139,7 @@ diversity_weight : float):
 
     ##point calculation
     convolutedness_point = (
-    convolutedness_weight * 
-    feature_relative_intensity *
+    1.0 * 
     retention_time_overlap_factor *
     blank_associated_factor)
     
@@ -169,24 +148,26 @@ diversity_weight : float):
     #could be a bit more elaborated, currently only binary
     ##point calculation
     if feature_objects[
-    int(row["feature_ID"])].bioactivity_associated == True:
-        bioactivity_point = bioactivity_weight
+    int(row["feature_ID"])].bioactivity_associated == True and feature_objects[
+    int(row["feature_ID"])].blank_associated == False:
+        bioactivity_point = 1.0
     else:
-        bioactivity_point = 0
+        bioactivity_point = 0.0
         
     ###NOVELTY
     #expand; currently set to 0, does not influence metric
     ##point calculation
-    novelty_point = novelty_weight * 0
+    novelty_point = 1.0 * 0
     
     ###DIVERSITY
     #expand; currently set to 0, does not influence metric
     ##point calculation
-    diversity_point = diversity_weight * 0
+    diversity_point = 1.0 * 0
     
     
     ###CALCULATION
     feature_points = [
+    rel_intensity_point,
     convolutedness_point,
     bioactivity_point,
     novelty_point,

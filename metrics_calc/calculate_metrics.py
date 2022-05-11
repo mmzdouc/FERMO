@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 from .get_samplespecific_features import get_samplespecific_features
 from .calculate_feature_overlap import calculate_feature_overlap
@@ -14,15 +15,7 @@ peaktable : str,
 feature_objects : dict,
 bioactivity_samples: dict,
 attributes_samples: dict,
-strictness_min: float, 
-strictness_ppm: float,
-topn: float,
-bioact_factor: int,
-column_bleed_factor: int,
-convolutedness_weight : float,
-bioactivity_weight : float,
-novelty_weight : float, 
-diversity_weight : float) -> dict:
+args : str) -> dict:
     """Calculate metrics for samples and score them:
     
     Parameters
@@ -36,34 +29,9 @@ diversity_weight : float) -> dict:
     attributes_samples : `dict`
         contains two lists (samples, blanks) of samples generated
         by function importing.read_from_metadata_table
-    strictness_min : `float`
-        In minutes. Artificially increases width of peak to 
-        detect overlaps more sensitively.
-    strictness_ppm : `float`
-        Tolerable mass deviation in ppm. Allows to tweak precision of
-        matching. Should be matched to precision of instrument. E.g.
-        20 ppm is still tolerable
-    topn : `float`
-        Float between 0 and 1. Is the quantile of features that is 
-        retained. E.g. 0.9 means: 90th quantile -> remove features 
-        that have a relative intensity of less than 0.1 of feature 
-        with highest intensity (1.0).
-    bioact_factor : `int`
-        factor to determine if a feature, detected in both an active
-        and an inactive sample, can be considered to be bioactivity
-        associated
-    column_bleed_factor : `int`
-        factor to determine if a feature, detected in both a sample
-        and a blank, can be not considered a blank-associated feature
-    convolutedness_weight : `float`
-        Determines how much points/weight is given to convoluteness
-    bioactivity_weight : `float`
-        Determines how much points/weight is given to bioactivity
-    bioactivity_novelty : `float`
-        Determines how much points/weight is given to novelty
-    diversity_weight : `float`
-        Determines how much points/weight is given to diversity
-        
+    args : `argparse object`
+        contains all user-provided args
+
     Returns
     -------
     samples : `dict`
@@ -80,17 +48,17 @@ diversity_weight : float) -> dict:
     Calculates scores for samples
     """
     #creates dataframes for each sample
-    samples = get_samplespecific_features(peaktable, strictness_min)
-    #Filter for top 95% of ft reg relative int to ft with highest int
-    samples = filter_for_topn_features(samples, topn)
+    samples = get_samplespecific_features(peaktable, args.strictness_min)
+    #Filter for top n% of ft reg relative int to ft with highest int
+    samples = filter_for_topn_features(samples, args.feature_retain_factor)
     #Calculates overlap of features; contains adduct/duplicate info
-    samples = calculate_feature_overlap(samples, strictness_ppm)
+    samples = calculate_feature_overlap(samples, args.strictness_ppm)
     #calculates associated bioactivity yes/no
     bioactivity_associated_features = determine_bioactive_features(
-    bioactivity_samples, samples, feature_objects, bioact_factor)
+    bioactivity_samples, samples, feature_objects, args.bioactivity_factor)
     #calculates associated medium/blank yes/no
     blank_associated_features = determine_blank_features(
-    attributes_samples, samples, feature_objects, column_bleed_factor)
+    attributes_samples, samples, feature_objects, args.column_bleed_factor)
     
     
     
@@ -101,43 +69,72 @@ diversity_weight : float) -> dict:
     for sample in samples:
         #collect feature points per sample
         feature_list = list()
+        rel_intensity = list()
         convolutedness = list()
         bioactivity = list()
         novelty = list()
         diversity = list()
         
-        #for ea
+        #for each sample
         for index, row in samples[sample].iterrows():
             feature_list.append(int(row["feature_ID"])) 
-            
             #calculation of score per feature
             feature_points = calculate_feature_score(
-            row, feature_objects, samples, sample,
-            convolutedness_weight, bioactivity_weight, novelty_weight, 
-            diversity_weight)
-            
+            row, feature_objects, samples, sample)
             #appending to lists
-            convolutedness.append(feature_points[0])
-            bioactivity.append(feature_points[1])
-            novelty.append(feature_points[2])
-            diversity.append(feature_points[3])
+            rel_intensity.append(feature_points[0])
+            convolutedness.append(feature_points[1])
+            bioactivity.append(feature_points[2])
+            novelty.append(feature_points[3])
+            diversity.append(feature_points[4])
 
         #appends lists to existing dataframe
+        samples[sample]['rel_intensity_score'] = rel_intensity
         samples[sample]['convolutedness_score'] = convolutedness
         samples[sample]['bioactivity_score'] = bioactivity
         samples[sample]['novelty_score'] = novelty
         samples[sample]['diversity_score'] = diversity
-        #create a combined score
-        samples[sample]["combined_score"] = samples[sample].loc[:,[
-        'convolutedness_score',
-        'bioactivity_score',
-        'novelty_score', 
-        'diversity_score']].sum(axis=1)
-        #sorts after "combined score" from high to low
-        samples[sample].sort_values(by=["combined_score"], 
-        inplace=True, ascending=False)
+        
+        
+        #Check if bioactivity table was provided; if yes, check across 
+        #3 values, else only across 2
+        if args.bioactivity: 
+            #check across rel_int, convolutedness, bioactivity
+            #expand once scores are implemented
+            condition = [
+            samples[sample]['rel_intensity_score'].ge(args.rel_intensity_threshold) &
+            samples[sample]['convolutedness_score'].ge(args.convolutedness_threshold) &
+            samples[sample]['bioactivity_score'].ge(args.bioactivity_threshold)]
+            choice = [True]
+            samples[sample]['over_threshold'] = np.select(
+            condition, choice, default=False)
+        else:
+            #check across rel_int and convolutedness
+            condition = [
+            samples[sample]['rel_intensity_score'].ge(args.rel_intensity_threshold) &
+            samples[sample]['convolutedness_score'].ge(args.convolutedness_threshold)]
+            choice = [True]
+            samples[sample]['over_threshold'] = np.select(
+            condition, choice, default=False)
+
+        #sorts after "over_threshold", Trues on top
+        samples[sample].sort_values(
+        by=["over_threshold",
+        "rel_intensity_score",
+        "convolutedness_score",
+        "bioactivity_score",
+        "novelty_score",
+        "diversity_score"
+        ], 
+        inplace=True, 
+        ascending=[False, False, False, False, False, False])
         #resets index just to clean up
         samples[sample].reset_index(drop=True, inplace=True)
+        
+        #TESTING, DELETE LATER
+        # ~ print(samples[sample][["feature_ID", "precursor_mz", "retention_time",
+        # ~ 'rel_intensity_score', 'convolutedness_score', 'over_threshold']])
+    
     ###
     return samples
 
