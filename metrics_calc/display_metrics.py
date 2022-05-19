@@ -37,10 +37,10 @@ samples: str, feature_objects: str, topn = int) -> list:
         count = (np.count_nonzero(samples[sample].loc[:,
         "over_threshold"]) / len(samples[sample]))
         sample_scores[sample] = round(count, 2)
+    #returns a list of the topn highest scoring features
     topn_samples = sorted(
     sample_scores, key=sample_scores.get, reverse=True)[:topn]
-    
-    
+
     print(
     f"""
             These are the top {topn} scoring samples.
@@ -74,8 +74,7 @@ This included the following features:""")
         print("""
         """)
     
-    topn_samples_features = [topn_samples]
-    return topn_samples_features
+    return topn_samples
     
     
 # ~ DUMP OLD CODE - reuseable?

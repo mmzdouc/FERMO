@@ -95,7 +95,7 @@ Optional arguments:
                 in a sample than in a blank to be still considered 
                 sample-associated (e.g. due to column bleed).
                 Default: 10
-    ----rel_intensity_threshold
+    --rel_intensity_threshold
                 Sets the threshold on how high the relative intensity
                 of a feature must be to be considered interesting
                 for isolation (e.g. 0.5: feature must have an intensity
