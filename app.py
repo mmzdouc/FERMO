@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc, Input, Output, callback
+from dash import Dash, html, dcc, Input, Output, callback, dash_table
 import dash_bootstrap_components as dbc
 import dash
 from dash.exceptions import PreventUpdate
