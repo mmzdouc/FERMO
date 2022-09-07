@@ -4,7 +4,12 @@ import dash
 from dash.exceptions import PreventUpdate
 import pickle
 
-from layouts import landing_page, dashboard_page, footer_row, header_row
+#local modules
+from pages_header_footer import footer_row, header_row
+from pages_header_footer import footer_row, header_row
+from pages_landing import landing
+from pages_dashboard import dashboard
+
 import callbacks
 
 
@@ -16,10 +21,6 @@ app = Dash(
     title='FERMO',
     )
 server = app.server
-
-
-
-
 
 app.layout = dbc.Container([
         #header row
@@ -46,10 +47,12 @@ app.layout = dbc.Container([
 )
 def display_page(pathname, ):
     
+    #has to be adapted to individual pages; + a 404 for wrong entries
+    
     if pathname == '/dashboard':
-        return dashboard_page
+        return dashboard
     else:
-        return landing_page
+        return landing
 
 
 if __name__ == '__main__':
