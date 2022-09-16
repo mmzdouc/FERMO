@@ -1,63 +1,18 @@
-from dash import html, dcc, dash_table
+from dash import html, dcc
 import dash_bootstrap_components as dbc
-import pandas as pd
 
-from variables import params_df, uploads_df, input_file_store
-from variables import style_data_table, style_data_cond_table, style_header_table
-
-
-
-#FUNCTIONS
-
-def call_table_params_cache():
-    '''Call set parameter visualization table '''
+def call_dashboard_processing_button():
+    '''Create button that initializes FERMO calc and redir to dashboard'''
     return html.Div([
-        html.Div(
-            dash_table.DataTable(
-                id='table_params',
-                columns=[{
-                    "name": i, 
-                    "id": i, 
-                    "presentation" : 'markdown'}
-                for i in params_df.columns],
-                markdown_options={"html": True},
-                style_as_list_view=True,
-                style_data=style_data_table,
-                style_data_conditional=style_data_cond_table,
-                style_header=style_header_table,
-                ),
-            style={
-                'display': 'inline-block',
-                'float': 'left',
-                },
+        dbc.Button(
+            "Start FERMO",
+            id='call_dashboard_processing',
+            n_clicks=0,
+            className="d-grid gap-2 col-6 mx-auto",
             ),
-        html.Div(id='params_cache', hidden=True)
-    ])
-    
-def call_uploaded_files_cache():
-    '''Call uploaded files visualization table '''
-    return html.Div([
-        html.Div(
-            dash_table.DataTable(
-                id='table_uploaded_files',
-                columns=[{
-                    "name": i, 
-                    "id": i, 
-                    "presentation" : 'markdown'}
-                for i in uploads_df.columns],
-                markdown_options={"html": True},
-                style_as_list_view=True,
-                style_data=style_data_table,
-                style_data_conditional=style_data_cond_table,
-                style_header=style_header_table,
-                ),
-            style={
-                'display': 'inline-block', 
-                'float': 'right'},
-            ),
-    ])
+        ])
 
-def call_mass_dev_dd():
+def call_mass_dev_inp():
     '''Call estimated mass deviation drop down menu'''
     return html.Div([
         html.Div([
@@ -67,7 +22,7 @@ def call_mass_dev_dd():
             html.A(
                 html.Div(
                     "?",
-                    id="mass_dev_dd_tooltip",
+                    id="mass_dev_inp_tooltip",
                     className="info_dot"
                     ),
                 #DUMMY LINK, SPECIFY CORRECT DOC LINK
@@ -86,22 +41,18 @@ def call_mass_dev_dd():
                     ),
                 placement='right',
                 className='info_dot_tooltip',
-                target="mass_dev_dd_tooltip",
+                target="mass_dev_inp_tooltip",
             ),
-        dcc.Dropdown(
-            id='mass_dev_dd',
-            options=[
-                {'label': '30 ppm', 'value': 30},
-                {'label': '20 ppm', 'value': 20},
-                {'label': '15 ppm', 'value': 15},
-                {'label': '10 ppm', 'value': 10},
-                {'label': '5 ppm', 'value': 5},
-                {'label': '2 ppm', 'value': 2},
-                ],
-            value=20,
+        dbc.Input(
+            id='mass_dev_inp',
+            type='number',
+            inputmode='numeric',
+            debounce=False,
+            value=20, 
+            min=0,
+            step=1,
             ),
         ])
-
 
 def call_min_ms2_inpt():
     '''Call minimal nr ms2 fragments input field'''
@@ -262,7 +213,6 @@ def call_bioact_fact_inp():
             step=1,
             ),
         ])
-
 
 def call_column_ret_fact_inp():
     '''Call the column retention factor input field '''
@@ -508,11 +458,11 @@ def call_peaktable_upload():
                         'Upload peaktable (*_quant_full.csv)',
                         id="upload-peaktable-tooltip",
                         ),
-                    id='upload-peaktable'),
+                    id='processing-upload-peaktable'),
                 dbc.Tooltip(
                     html.Div(
                         '''
-                        MZmine3 style peaktable with the 
+                        Reads a MZmine3 style peaktable with the 
                         '_quant_full.csv' suffix
                         (exported in the FULL/ALL mode).
                         For more information on the format, see
@@ -532,14 +482,14 @@ def call_mgf_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Upload .mgf file (*.mgf)',
+                        'Upload the MS/MS file (*.mgf)',
                         id="upload-mgf-tooltip",
                         ),
-                    id='upload-mgf'),
+                    id='processing-upload-mgf'),
                 dbc.Tooltip(
                     html.Div(
                         '''
-                        MZmine3 style .mgf-file containing
+                        Reads a MZmine3 MZmine3 style .mgf-file containing
                         tandem mass (MS/MS) spectra, accompanying
                         the peaktable. Generated through MZmine3 export.
                         For more information on the format, see
@@ -551,8 +501,6 @@ def call_mgf_upload():
                     target="upload-mgf-tooltip",
                     ),
                 ]),
-            html.Div(id='upload-mgf-output'),
-            html.Hr(),
         ])
 
 def call_bioactiv_upload():
@@ -586,8 +534,6 @@ def call_bioactiv_upload():
                     target="upload-bioactiv-tooltip",
                     ),
                 ]),
-            html.Div(id='upload-bioactiv-output'),
-            html.Hr(),
         ])
 
 def call_metadata_upload():
@@ -615,192 +561,178 @@ def call_metadata_upload():
                     target="upload-metadata-tooltip",
                     ),
                 ]),
-            html.Div(id='upload-metadata-output'),
-            html.Hr(),
         ])
 
-
-def call_session_upload():
-    '''Call the session upload field'''
+def call_bioact_type_dd():
+    '''Call dropdown menu for bioactivity data specification'''
     return html.Div([
-            html.Span([
-                dcc.Upload(
-                    html.Button(
-                        'Upload FERMO session file (*.session)',
-                        id="upload-session-tooltip",
-                        ),
-                    id='upload-session'),
-                dbc.Tooltip(
-                    html.Div(
-                        '''
-                        Load a previously created FERMO session file.
-                        ONLY LOAD SESSION FILES FROM TRUSTED SOURCES!
-                        For more information on the format, see
-                        the documentation.
-                        ''',
-                        ),
-                    placement='right',
-                    className='info_dot_tooltip',
-                    target="upload-session-tooltip",
+        html.Div([ 
+            '''
+            Specify the bioactivity table format:
+            ''',
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_bioact_type_tooltip",
+                    className="info_dot"
                     ),
-                ]),
-            html.Div(id='upload-session-output'),
-            html.Hr(),
-        ])
-
-
-
-
-
-def call_start_button_table():
-    '''Call the button that starts FERMO processing'''
-    return html.Div([
-        dbc.Button(
-            "Start FERMO directly!",
-            id='start_button_table',
-            n_clicks=0,
-            className="d-grid gap-2 col-6 mx-auto",
+                #DUMMY LINK, SPECIFY CORRECT DOC LINK
+                href='https://github.com/mmzdouc/fermo', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''
+                Specify the format of the biological activity data.
+                Accepts two formats: concentration and percentage.
+                For both formats, values must be positive numbers.
+                For concentrations, the lowest value will be
+                considered the highest activity, and the highest
+                value the lowest activity.
+                For percentage, the highest value will be considered the 
+                highest activity, and the lowest value the lowest activity.
+                Samples not listed in the bioactivity table will be 
+                considered inactive.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_bioact_type_tooltip",
             ),
-        ])
-
-def call_start_button_mzmine():
-    '''Call the button that starts MZmine3 processing, followed by FERMO'''
-    return html.Div([
-        dbc.Button(
-            "Start MZmine3 -> FERMO!",
-            id='start_button_mzmine',
-            n_clicks=0,
-            className="d-grid gap-2 col-6 mx-auto",
-            ),
-        ])
-
-def call_start_button_loading():
-    '''Call the button that loads FERMO session file'''
-    return html.Div([
-        dbc.Button(
-            "Load FERMO session file!",
-            id='start_button_loading',
-            n_clicks=0,
-            className="d-grid gap-2 col-6 mx-auto",
+        
+        dcc.Dropdown(
+            options=[
+               {'label': 'Concentration (i.e. lowest value = highest activity)', 'value': 'conc'},
+               {'label': 'Percentage (i.e. highest value = highest activity)', 'value': 'perc'},
+               ],
+            value=None,
+            id='bioact_type',
             ),
         ])
 
 
-
-
-landing = html.Div([
+processing = html.Div([
     ###first row###
     dbc.Row([
         #first column#
         dbc.Col([
-                html.Div('Placeholder for introduction text on FERMO'),
+                html.Div('FERMO: Processing mode'),
                 ],
-            id="landing_row_1_col_1",
-            width=6,
-            ),
-        #second column#
-        dbc.Col([
-                #FLOWCHART OF FERMO ANALYSIS
-                html.Div('Placeholder for flowchart of FERMO analysis'),
-                ],
-            id="landing_row_1_col_2",
-            width=6,
+            id="processing_row_1_col_1",
+            width=12,
             ),
         ],
-    id="landing_row_1",
+    id="processing_row_1",
     ),
     ###second row###
     dbc.Row([
         #first column#
         dbc.Col([
-                #SETTINGS/PARAMS GENERAL
-                html.Div('Placeholder for settings/parameters:'),
-                #MASS DEVIATION
-                call_mass_dev_dd(),
-                #MIN MS2 FRAGMENTS
-                call_min_ms2_inpt(),
-                #FEATURE RELATIVE INTENSITY FILTER
-                call_feat_int_filt(),
-                #BIOACTIVITY FACTOR
-                call_bioact_fact_inp(),
-                #COLUMN RETENTION FACTOR
-                call_column_ret_fact_inp(),
-                #SPECTUM SIMILARITY TOLERANCE
-                call_spec_sim_tol_inp(),
-                #SPECTUM SIMILARITY SCORE CUTOFF
-                call_spec_sim_score_cutoff_inp(),
-                #SPECTUM SIMILARITY MAXIMUM NUMBER OF LINKS
-                call_spec_sim_max_links_inp(),
-                #SPECTUM SIMILARITY MINIMUM NUMBER OF MATCHED PEAKS
-                call_spec_sim_min_match_inp(),
-            ],
-            id="landing_row_2_col_1",
-            width=6,
-            ),
-        #second column#
-        dbc.Col([
-                #PREVIEW DATA TABLE
-                html.Div('Placeholder for preview data table'),
-                #PARAMETER TABLE
-                call_table_params_cache(),
-                #UPLOADED FILES TABLE
-                call_uploaded_files_cache(),
-            ],
-            id="landing_row_2_col_2",
-            width=6,
+                html.Div('Placeholder for a brief par on how the processing mode works'),
+                ],
+            id="processing_row_2_col_1",
+            width=12,
             ),
         ],
-    id="landing_row_2",
+    id="processing_row_2",
     ),
     ###third row###
     dbc.Row([
         #first column#
         dbc.Col([
-                #PEAKTABLE UPLOAD FIELD
+                html.Div('Placeholder for files to upload'),
+                html.Hr(),
                 call_peaktable_upload(),
-                html.Div(id='upload-peaktable-output'),
+                html.Div(
+                    id='upload-peaktable-output',
+                    style={
+                        'color' : 'red',
+                        'font-weight' : 'bold',
+                        },
+                    ),
                 html.Hr(),
                 #MGF UPLOAD FIELD
                 call_mgf_upload(),
+                html.Div(
+                    id='upload-mgf-output',
+                    style={
+                        'color' : 'red',
+                        'font-weight' : 'bold',
+                        },
+                    ),
+                html.Hr(),
                 #BIOACTIVITY UPLOAD FIELD
+                call_bioact_type_dd(),
                 call_bioactiv_upload(),
+                html.Div(
+                    id='upload-bioactiv-output',
+                    style={
+                        'font-weight' : 'bold',
+                        },
+                    ),
+                html.Hr(),
                 #METADATA UPLOAD FIELD
                 call_metadata_upload(),
-                #START BUTTON CALCULATION FERMO - PEAKTABLE
-                call_start_button_table(),
+                html.Div(
+                    id='upload-metadata-output',
+                    style={
+                        'font-weight' : 'bold',
+                        },
+                    ),
+                html.Hr(),
+                
+                #Helper functions/fields
+                html.Div(id='store_bioact_type', hidden=True),
                 ],
-            id="landing_row_3_col_1",
-            width=4,
+            id="processing_row_3_col_1",
+            width=6,
             ),
         #second column#
         dbc.Col([
-                #PROCESS RAW DATA W MZMINE3
-                html.Div('Placeholder for preprocessing of raw data (Mzmine3)'),
-                #START BUTTON MZMINE3 + FERMO
-                call_start_button_mzmine(),
-            ],
-            id="landing_row_3_col_2",
-            width=4,
-            ),
-        #third column#
-        dbc.Col([
-                html.Div('Placeholder for loading from session file'),
-                #LOAD FROM SESSION FILE
-                call_session_upload(),
-                #START BUTTON LOADING
-                call_start_button_loading(),
-            ],
-            id="landing_row_3_col_3",
-            width=4,
+                html.Div('Placeholder for parameter settings'),
+                html.Hr(),
+                call_mass_dev_inp(),
+                call_min_ms2_inpt(),
+                call_feat_int_filt(),
+                call_bioact_fact_inp(),
+                call_column_ret_fact_inp(),
+                call_spec_sim_tol_inp(),
+                call_spec_sim_score_cutoff_inp(),
+                call_spec_sim_max_links_inp(),
+                call_spec_sim_min_match_inp(),
+                
+                #Helper functions
+                html.Div(id='params_cache', hidden=True),
+                html.Div(id='out_params_assignment', hidden=True)
+
+                ],
+            id="processing_row_3_col_2",
+            width=6,
             ),
         ],
-    id="landing_row_3",
+    id="processing_row_3",
     ),
-])
-
-
-    
-
+    ###fourth row###
+    dbc.Row([
+        #first column#
+        dbc.Col([
+                call_dashboard_processing_button(),
+                
+                #Helper function
+                html.Div(
+                    id='processing_start_cache',
+                    style={
+                        'text-align' : 'center',
+                    })
+                ],
+            id="processing_row_4_col_1",
+            width=12,
+            ),
+        ],
+    id="processing_row_4",
+    ),
+    ])
 
 
 

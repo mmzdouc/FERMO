@@ -29,6 +29,7 @@ GENERAL
 }
 
 
+
 /*
 ROWS - GENERAL
 */
@@ -47,24 +48,6 @@ ROWS - GENERAL
 
 #footer_row {
     height: 5vh;
-}
-
-
-
-/*
-ROWS - LANDING
-*/
-
-#landing_row_1 {
-    height: 20vh;
-}
-
-#landing_row_2  {
-    height: 30vh;
-}
-
-#landing_row_3  {
-    height: 30vh;
 }
 
 /*
@@ -118,54 +101,250 @@ COLUMNS - GENERAL
 }
 
 /*
+ROWS - LANDING
+*/
+
+#landing_row_1 {
+    height: 35vh;
+}
+
+#landing_row_2  {
+    height: 40vh;
+}
+
+#landing_row_3  {
+    height: 5vh;
+}
+
+
+/*
 COLUMNS - LANDING
 */
 
 #landing_row_1_col_1  {
     background-color: white;
-    height: 20vh;
+    height: 35vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #landing_row_1_col_2  {
     background-color: white;
+    height: 35vh;
+    overflow: scroll;
+}
+
+#landing_row_2_col_1  {
+    background-color: white;
+    height: 40vh;
+    overflow: scroll;
+}
+
+#landing_row_2_col_2  {
+    background-color: white;
+    height: 40vh;
+    overflow: scroll;
+}
+
+#landing_row_2_col_3  {
+    background-color: white;
+    height: 40vh;
+    overflow: scroll;
+}
+
+#landing_row_3_col_1  {
+    background-color: white;
+    height: 5vh;
+    overflow: scroll;
+}
+
+#landing_row_3_col_2  {
+    background-color: white;
+    height: 5vh;
+    overflow: scroll;
+}
+
+#landing_row_3_col_3  {
+    background-color: white;
+    height: 5vh;
+    overflow: scroll;
+}
+
+/*
+ROWS - PROCESSING
+*/
+
+#processing_row_1 {
+    height: 5vh;
+}
+
+#processing_row_2 {
+    height: 20vh;
+}
+
+#processing_row_3 {
+    height: 50vh;
+}
+
+#processing_row_4 {
+    height: 5vh;
+}
+
+
+/*
+COLUMNS - PROCESSING
+*/
+
+#processing_row_1_col_1  {
+    background-color: white;
+    height: 5vh;
+    overflow: scroll;
+    border : 1px dashed #116789;
+}
+
+#processing_row_2_col_1  {
+    background-color: white;
     height: 20vh;
     overflow: scroll;
     border : 1px dashed #116789;
 }
 
-#landing_row_2_col_1  {
+#processing_row_3_col_1  {
     background-color: white;
-    height: 30vh;
+    height: 50vh;
     overflow: scroll;
     border : 1px dashed #116789;
 }
 
-#landing_row_2_col_2  {
+#processing_row_3_col_2  {
     background-color: white;
-    height: 30vh;
+    height: 50vh;
     overflow: scroll;
     border : 1px dashed #116789;
 }
 
-#landing_row_2_col_3  {
+#processing_row_4_col_1  {
     background-color: white;
-    height: 30vh;
+    height: 5vh;
     overflow: scroll;
     border : 1px dashed #116789;
 }
 
-#landing_row_3_col_1  {
+/*
+ROWS - MZMINE
+*/
+
+#mzmine_row_1 {
+    height: 5vh;
+}
+
+#mzmine_row_2 {
+    height: 20vh;
+}
+
+#mzmine_row_3 {
+    height: 50vh;
+}
+
+#mzmine_row_4 {
+    height: 5vh;
+}
+
+
+/*
+COLUMNS - MZMINE
+*/
+
+#mzmine_row_1_col_1  {
     background-color: white;
-    height: 30vh;
+    height: 5vh;
     overflow: scroll;
     border : 1px dashed #116789;
 }
 
-#landing_row_3_col_2  {
+#mzmine_row_2_col_1  {
     background-color: white;
-    height: 30vh;
+    height: 20vh;
+    overflow: scroll;
+    border : 1px dashed #116789;
+}
+
+#mzmine_row_3_col_1  {
+    background-color: white;
+    height: 50vh;
+    overflow: scroll;
+    border : 1px dashed #116789;
+}
+
+#mzmine_row_3_col_2  {
+    background-color: white;
+    height: 50vh;
+    overflow: scroll;
+    border : 1px dashed #116789;
+}
+
+#mzmine_row_4_col_1  {
+    background-color: white;
+    height: 5vh;
+    overflow: scroll;
+    border : 1px dashed #116789;
+}
+
+/*
+ROWS - LOADING
+*/
+
+#loading_row_1 {
+    height: 5vh;
+}
+
+#loading_row_2 {
+    height: 20vh;
+}
+
+#loading_row_3 {
+    height: 50vh;
+}
+
+#loading_row_4 {
+    height: 5vh;
+}
+
+
+/*
+COLUMNS - LOADING
+*/
+
+#loading_row_1_col_1  {
+    background-color: white;
+    height: 5vh;
+    overflow: scroll;
+    border : 1px dashed #116789;
+}
+
+#loading_row_2_col_1  {
+    background-color: white;
+    height: 20vh;
+    overflow: scroll;
+    border : 1px dashed #116789;
+}
+
+#loading_row_3_col_1  {
+    background-color: white;
+    height: 50vh;
+    overflow: scroll;
+    border : 1px dashed #116789;
+}
+
+#loading_row_3_col_2  {
+    background-color: white;
+    height: 50vh;
+    overflow: scroll;
+    border : 1px dashed #116789;
+}
+
+#loading_row_4_col_1  {
+    background-color: white;
+    height: 5vh;
     overflow: scroll;
     border : 1px dashed #116789;
 }

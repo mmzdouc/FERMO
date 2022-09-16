@@ -1,6 +1,8 @@
 import pandas as pd
 
-
+##########
+#STYLES
+##########
 
 style_data_table={
     'color': 'black',
@@ -23,6 +25,10 @@ style_header_table={
     'height': 'auto',
 }
 
+##########
+#STORAGE
+##########
+
 params_df = pd.DataFrame({
     'Parameters' : [
         'Mass deviation (in ppm)',
@@ -42,16 +48,9 @@ input_file_store = {
     'peaktable' : None,
     'peaktable_name' : None,
     'mgf' : None,
+    'mgf_name' : None,
     'metadata' : None,
+    'metadata_name' : None,
     'bioactivity' : None,
+    'bioactivity_name' : None,
 }
-
-uploads_df = pd.DataFrame({
-    'Input files' : [
-        'Peaktable (.csv)',
-        'MS/MS data (.mgf)',
-        'Bioactivity (.csv)',
-        'Metadata (.csv)',
-        ],
-    'Status' : 'Not ready',
-    })
