@@ -6,6 +6,11 @@ import pandas as pd
 from processing.read_from_metadata_table import read_from_metadata_table
 from processing.collect_stats_samples import collect_stats_samples
 from processing.feature_dicts_creation import feature_dicts_creation
+from processing.get_samplespecific_features import get_samplespecific_features
+from processing.determine_blank_features import determine_blank_features
+from processing.determine_bioactive_features import determine_bioactive_features
+from processing.calculate_similarity_cliques import calculate_similarity_cliques
+from processing.library_search import library_search
 
 
 
@@ -256,7 +261,7 @@ def parse_bioactiv_conc(bioactiv_table, value):
 
 
 
-def peaktable_processing(input_file_store, params_df):
+def peaktable_processing(input_file_store, params_dict):
     """FERMO: peaktable processing
     
     Parameters
@@ -271,7 +276,7 @@ def peaktable_processing(input_file_store, params_df):
         'metadata_name'
         'bioactivity'
         'bioactivity_name'
-    params_df : `pandas.core.frame.DataFrame`
+    params_dict : `dict`
         contains user-provided parameters
     
     Returns
@@ -282,19 +287,13 @@ def peaktable_processing(input_file_store, params_df):
     Notes
     ------
     """
-    # ~ print(input_file_store['peaktable'])
-    
+
     #concept: helfer function that serves as intermediate to 
     #launch separate functions that are in the 'processing' folder
     #Collects data, assembles dict, and returns to app for dashboard
     #visualization
     
     #TO DO:
-    #samples = get_samplespecific_features()
-    #determine_blank_features()
-    #determine_bioactive_features()
-    #calculate_similarity_cliques()
-    #library_search()
     #run_ms2query()
     #samples = calculate_feature_overlap()
     #samples = calculate_metrics()
@@ -317,11 +316,57 @@ def peaktable_processing(input_file_store, params_df):
     feature_dicts = feature_dicts_creation(
         input_file_store['peaktable'],
         input_file_store['mgf'],
-        params_df.loc[1,'Values'],
+        params_dict['min_nr_ms2'],
         sample_stats
         )
     
+    #generates dict with pandas dfs - one per sample
+    samples = get_samplespecific_features(
+        input_file_store['peaktable'], 
+        sample_stats,
+        params_dict['feature_rel_int_fact'],
+        )
     
+    #determine non-blank/blank of features and assign to feature_dicts
+    determine_blank_features(
+        samples, 
+        feature_dicts, 
+        params_dict['column_ret_fact'],
+        sample_stats,
+        ) 
+
+    #determine non-active/active of features and assign to feature_dicts
+    determine_bioactive_features(
+        input_file_store['bioactivity'], 
+        samples,
+        feature_dicts, 
+        params_dict['bioact_fact'],
+        sample_stats,
+        )
+    
+    #calculate similarity cliques, append info to feature obj and sample stats
+    calculate_similarity_cliques(
+        feature_dicts,
+        sample_stats,
+        params_dict['spectral_sim_tol'], 
+        params_dict['spec_sim_score_cutoff'], 
+        params_dict['max_nr_links_ss'], 
+        )
+    
+    #if spectral library was provided by user, append info to feature objects
+    library_search(
+        feature_dicts, 
+        input_file_store['user_library'], 
+        params_dict['spectral_sim_tol'],
+        params_dict['spec_sim_score_cutoff'],
+        params_dict['min_nr_matched_peaks'], 
+        )
+    
+    
+    
+    
+    for i in feature_dicts:
+        print(feature_dicts[i])
     
     return 'dummy'
     

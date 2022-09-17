@@ -254,10 +254,10 @@ def feature_dicts_creation(
         ms2spectrum = create_ms2_object(
             ms2_frag,
             ms2_int,
-            int(row["feature_ID"]),
             float(row["precursor_mz"]),
-            min_ms2_peaks,)
-            
+            int(row["feature_ID"]),
+            int(min_ms2_peaks,))
+        
         #Dict assignment
         feature_dicts[int(row["feature_ID"])] = {
             'feature_ID' : int(row["feature_ID"]),

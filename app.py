@@ -20,7 +20,7 @@ import callbacks
 import utils
 
 from variables import (
-    params_df,
+    params_dict,
     input_file_store,
     style_data_table,
     style_data_cond_table,
@@ -190,7 +190,7 @@ def function(signal):
     else:
         FERMO_data = utils.peaktable_processing(
             input_file_store,
-            params_df,
+            params_dict,
             )
         
         

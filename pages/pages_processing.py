@@ -563,6 +563,32 @@ def call_metadata_upload():
                 ]),
         ])
 
+def call_userlib_upload():
+    '''Call the user spectral library upload field'''
+    return html.Div([
+            html.Span([
+                dcc.Upload(
+                    html.Button(
+                        'Upload spectral library (*.mgf)',
+                        id="upload-userlib-tooltip",
+                        ),
+                    id='upload-userlib'),
+                dbc.Tooltip(
+                    html.Div(
+                        '''
+                        Reads a user-provided spectral library in the 
+                        .mgf-format.
+                        For more information on the format, see
+                        the documentation.
+                        ''',
+                        ),
+                    placement='right',
+                    className='info_dot_tooltip',
+                    target="upload-userlib-tooltip",
+                    ),
+                ]),
+        ])
+
 def call_bioact_type_dd():
     '''Call dropdown menu for bioactivity data specification'''
     return html.Div([
@@ -676,6 +702,15 @@ processing = html.Div([
                 call_metadata_upload(),
                 html.Div(
                     id='upload-metadata-output',
+                    style={
+                        'font-weight' : 'bold',
+                        },
+                    ),
+                html.Hr(),
+                #USER LIBRARY UPLOAD FIELD
+                call_userlib_upload(),
+                html.Div(
+                    id='upload-userlib-output',
                     style={
                         'font-weight' : 'bold',
                         },

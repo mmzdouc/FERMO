@@ -3,6 +3,8 @@ from dash import Input, Output, callback, dcc, dash_table, State, html, ctx, Dis
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 import pickle
+import matchms
+from  matchms.Spectrum import Spectrum
 
 from pyteomics import mgf
 
@@ -11,6 +13,7 @@ import os
 import pandas as pd
 import io
 import base64
+import numpy
 
 
 ####LOCAL MODULES AND VARS
@@ -18,7 +21,7 @@ import base64
 import utils
 
 from variables import (
-    params_df,
+    params_dict,
     input_file_store,
     style_data_table,
     style_data_cond_table,
@@ -62,7 +65,6 @@ def bundle_into_cache(
     'spec_sim_min_match' : spec_sim_min_match,
         }
 
-
 @callback(
     Output('out_params_assignment', 'children'),
     Input('params_cache', 'component')
@@ -71,31 +73,31 @@ def update_output(params_cache):
     '''Assign set params to table, with sanity check for None'''
 
     if params_cache is not None:
-        params_df.at[0, "Values"] = (params_cache['mass_dev']
+        params_dict['mass_dev_ppm'] = (params_cache['mass_dev']
             if params_cache['mass_dev'] is not None
             else 20)
-        params_df.at[1, "Values"] = (params_cache['min_ms2']
+        params_dict['min_nr_ms2'] = (params_cache['min_ms2']
             if params_cache['min_ms2'] is not None
             else 0)
-        params_df.at[2, "Values"] = (params_cache['feat_int_filt']
+        params_dict['feature_rel_int_fact'] = (params_cache['feat_int_filt']
             if params_cache['feat_int_filt'] is not None
             else 0)
-        params_df.at[3, "Values"] = (params_cache['bioact_fact']
+        params_dict['bioact_fact'] = (params_cache['bioact_fact']
             if params_cache['bioact_fact'] is not None
             else 0)
-        params_df.at[4, "Values"] = (params_cache['column_ret_fact']
+        params_dict['column_ret_fact'] = (params_cache['column_ret_fact']
             if params_cache['column_ret_fact'] is not None
             else 0)
-        params_df.at[5, "Values"] = (params_cache['spec_sim_tol']
+        params_dict['spectral_sim_tol'] = (params_cache['spec_sim_tol']
             if params_cache['spec_sim_tol'] is not None
             else 0)
-        params_df.at[6, "Values"] = (params_cache['spec_sim_score_cutoff']
+        params_dict['spec_sim_score_cutoff'] = (params_cache['spec_sim_score_cutoff']
             if params_cache['spec_sim_score_cutoff'] is not None
             else 0)
-        params_df.at[7, "Values"] = (params_cache['spec_sim_max_links']
+        params_dict['max_nr_links_ss'] = (params_cache['spec_sim_max_links']
             if params_cache['spec_sim_max_links'] is not None
             else 0)
-        params_df.at[8, "Values"] = (params_cache['spec_sim_min_match']
+        params_dict['min_nr_matched_peaks'] = (params_cache['spec_sim_min_match']
             if params_cache['spec_sim_min_match'] is not None
             else 0)
             
@@ -304,6 +306,73 @@ def function(contents, filename,):
                     'font-weight' : 'bold',
                 })
 
+@callback(
+    Output('upload-userlib-output', 'children'),
+    Input('upload-userlib', 'contents'),
+    State('upload-userlib', 'filename'),
+)
+def function(contents, filename):
+    '''mgf file parsing and format check for user-provided spectral lib'''
+    
+    if contents is None:
+        return html.Div('No spectral library loaded.')
+    else:
+        content_type, content_string = contents.split(',')
+        decoded = base64.b64decode(content_string)
+        
+        try:
+            ref_library = list()
+            for spectrum in mgf.read(
+                io.StringIO(decoded.decode('utf-8')),
+                use_index=False,
+            ):
+                mz = spectrum.get('m/z array')
+                intensities = spectrum.get('intensity array')
+                metadata = spectrum.get('params')
+
+                if not numpy.all(mz[:-1] <= mz[1:]):
+                    idx_sorted = numpy.argsort(mz)
+                    mz = mz[idx_sorted]
+                    intensities = intensities[idx_sorted]
+                
+                ref_library.append(
+                    Spectrum(
+                        mz=mz,
+                        intensities=intensities,
+                        metadata=metadata,
+                        metadata_harmonization=True)
+                    )
+            ref_library = [matchms.filtering.normalize_intensities(s) 
+                for s in ref_library]
+            ref_library = [matchms.filtering.select_by_intensity(s, intensity_from=0.01)
+                for s in ref_library]
+            ref_library = [matchms.filtering.add_precursor_mz(s)
+                for s in ref_library]
+            ref_library = [matchms.filtering.require_precursor_mz(s)
+                for s in ref_library]
+            
+            utils.assert_mgf_format(ref_library)
+
+            input_file_store['user_library'] = ref_library
+            input_file_store['user_library_name'] = filename
+            return html.Div(
+                f'✅ "{filename}" successfully loaded.',
+                style={
+                    'color' : 'green',
+                    'font-weight' : 'bold',
+                    }
+                )
+        except:
+            input_file_store['user_library'] = None
+            input_file_store['user_library_name'] = None
+            return html.Div(
+                f'''
+                ❌ Error: "{filename}" is not a mgf or is erroneously formatted
+                (e.g. 'pepmass' must not be 0.0 or 1.0).
+                
+                Please check the file and try again.
+                ''')
+
 
 @callback(
     Output('upload-session-output', 'children'),
@@ -338,7 +407,6 @@ def function(contents, filename):
             # ~ return 'NO file temp found'
 
         
-        #get the parameters -> params_df
         #get the input files -> input_file_store
         #load in the main -> build step by step
         

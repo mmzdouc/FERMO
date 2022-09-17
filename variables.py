@@ -1,5 +1,3 @@
-import pandas as pd
-
 ##########
 #STYLES
 ##########
@@ -29,20 +27,17 @@ style_header_table={
 #STORAGE
 ##########
 
-params_df = pd.DataFrame({
-    'Parameters' : [
-        'Mass deviation (in ppm)',
-        'Minimal nr of MS<sup>2</sup> peaks',
-        'Feature relative intensity filter',
-        'Bioactivity factor',
-        'Column retention factor',
-        'Spectral similarity tolerance',
-        'Spectral similarity score cutoff',
-        'Maximal number of links in MN',
-        'Min number of matched peaks',
-        ],
-    'Values' : 'N/A',
-    })
+params_dict = {
+    'mass_dev_ppm' : None,
+    'min_nr_ms2' : None,
+    'feature_rel_int_fact' : None,
+    'bioact_fact' : None,
+    'column_ret_fact' : None,
+    'spectral_sim_tol' : None,
+    'spec_sim_score_cutoff' : None,
+    'max_nr_links_ss' : None,
+    'min_nr_matched_peaks' : None,
+    }
 
 input_file_store = {
     'peaktable' : None,
@@ -53,4 +48,6 @@ input_file_store = {
     'metadata_name' : None,
     'bioactivity' : None,
     'bioactivity_name' : None,
+    'user_library' : None,
+    'user_library_name' : None,
 }
