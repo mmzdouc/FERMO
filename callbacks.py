@@ -126,9 +126,17 @@ def function(contents, filename):
                 ❌ Error: "{filename}" does not seem to be a file in the
                 .csv-format. Have you selected the right file?
                 ''')
-        
         return_assert = utils.assert_peaktable_format(peaktable, filename)
         
+        peaktable.rename(
+            columns={
+                'id' : 'feature_ID',
+                'mz' : "precursor_mz",
+                'rt' : "retention_time",
+                },
+            inplace=True,
+            )
+            
         if return_assert is not None:
             input_file_store['peaktable'] = None
             input_file_store['peaktable_name'] = None

@@ -17,6 +17,8 @@ background_callback_manager = DiskcacheManager(cache)
 #local modules
 import callbacks
 
+import utils
+
 from variables import (
     params_df,
     input_file_store,
@@ -34,7 +36,9 @@ from pages.pages_mzmine import mzmine
 from pages.pages_loading import loading
 
 
-#####
+##########
+#LAYOUT
+##########
 
 app = Dash(
     __name__,
@@ -184,18 +188,27 @@ def function(signal):
     if signal is None:
         raise PreventUpdate
     else:
+        FERMO_data = utils.peaktable_processing(
+            input_file_store,
+            params_df,
+            )
+        
+        
         #This is where whole operation of data processing happens
     
         #storage container for data  can be on the main page 
         #(already exists and needs some rewriting)
 
         
+        #return two outputs - routing and separate storage for FERMO_data
         return '/dashboard'
 
 
 
 
-
+##########
+#START APP 
+##########
 
 
 if __name__ == '__main__':
