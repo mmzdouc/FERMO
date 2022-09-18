@@ -1,6 +1,7 @@
 from dash import html
 import re
 import pandas as pd
+import os
 
 #LOCAL MODULES
 from processing.read_from_metadata_table import read_from_metadata_table
@@ -11,6 +12,10 @@ from processing.determine_blank_features import determine_blank_features
 from processing.determine_bioactive_features import determine_bioactive_features
 from processing.calculate_similarity_cliques import calculate_similarity_cliques
 from processing.library_search import library_search
+from processing.ms2query_search import ms2query_search
+from processing.calculate_feature_overlap import calculate_feature_overlap
+from processing.calculate_metrics import calculate_metrics
+from processing.calculate_pseudochrom_traces import calculate_pseudochrom_traces
 
 
 
@@ -287,18 +292,6 @@ def peaktable_processing(input_file_store, params_dict):
     Notes
     ------
     """
-
-    #concept: helfer function that serves as intermediate to 
-    #launch separate functions that are in the 'processing' folder
-    #Collects data, assembles dict, and returns to app for dashboard
-    #visualization
-    
-    #TO DO:
-    #run_ms2query()
-    #samples = calculate_feature_overlap()
-    #samples = calculate_metrics()
-    #samples = calculate_pseudochrom_traces()
-    
     #parse metadata file into a dict of sets
     groups = read_from_metadata_table(
         input_file_store['metadata'],
@@ -342,6 +335,7 @@ def peaktable_processing(input_file_store, params_dict):
         feature_dicts, 
         params_dict['bioact_fact'],
         sample_stats,
+        input_file_store['bioactivity_name'],
         )
     
     #calculate similarity cliques, append info to feature obj and sample stats
@@ -362,13 +356,37 @@ def peaktable_processing(input_file_store, params_dict):
         params_dict['min_nr_matched_peaks'], 
         )
     
+    # ~ #search against embedding using ms2query
+    # ~ input_folder = os.path.join(
+        # ~ os.path.dirname(__file__),
+        # ~ 'libraries',)
+    # ~ if os.path.exists(input_folder):
+        # ~ ms2query_search(
+            # ~ feature_dicts, 
+            # ~ input_folder)
+    print('DEBUG: Switch on MS2Query')
     
+    #Appends adducts/isotopes and determines peak collision
+    samples = calculate_feature_overlap(
+        samples,
+        params_dict['mass_dev_ppm'],
+        )
     
+    #calculates metrics for each feature in each sample
+    samples = calculate_metrics(
+        samples, 
+        feature_dicts,
+        ) 
+
+    samples = calculate_pseudochrom_traces(samples,)
     
-    for i in feature_dicts:
-        print(feature_dicts[i])
+    FERMO_data = {
+        'feature_dicts' : feature_dicts,
+        'samples' : samples,
+        'sample_stats' : sample_stats,
+    }
     
-    return 'dummy'
+    return FERMO_data
     
 
 

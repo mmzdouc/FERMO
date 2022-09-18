@@ -5,7 +5,8 @@ def determine_bioactive_features(
     samples,
     feature_dicts,
     bioact_factor,
-    sample_stats,):
+    sample_stats,
+    filename):
     """Determine bioactivity-associated features, append to feature dicts.
     
     Parameters
@@ -22,6 +23,7 @@ def determine_bioactive_features(
         associated
     sample_stats : `dict`
         dict containing general info on dataset, inclucing sample list
+    filename : `str` or `None`
     
     Notes
     -----
@@ -55,7 +57,7 @@ def determine_bioactive_features(
     following sorting of "presence_samples" attribute.
     """
     #tests if bioactivity was provided
-    if not bioactivity_samples.empty:
+    if filename is not None:
 
         set_active_samples = sample_stats['active_samples_set']
         set_inactive_samples = sample_stats['inactive_samples_set']
