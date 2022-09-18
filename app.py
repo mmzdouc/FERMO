@@ -6,7 +6,7 @@ import pickle
 import time
 import os
 import json
-
+import pandas as pd
 
 #Required for background callbacks
 import diskcache
@@ -237,12 +237,37 @@ def function(signal):
         outfile.close()
         print("ALERT: Saved to session file.")
         
+        #####
+        
+        #Load session file from disk
         with open('FERMO_session.json') as json_file:
             loaded_JSON_dict = json.load(json_file)
         
-        for i in loaded_JSON_dict:
-            print(i)
+        #convert samples from JSON to df
+        samples_DF = dict()
+        for sample in loaded_JSON_dict['samples_JSON']:
+            samples_DF[sample] = pd.read_json(loaded_JSON_dict['samples_JSON'][sample], orient='split')
         
+        print(samples_DF)
+        
+        
+        '''RESTART HERE
+        -move loading module to its respective page
+        -put filenames and params used in separate dict, save also to JSON
+        
+        '''
+        
+        
+        # ~ samples_JSON = dict()
+        # ~ for sample in FERMO_data['samples']:
+            # ~ samples_JSON[sample] = FERMO_data['samples'][sample].to_json(
+                # ~ orient='split')
+        
+        
+        
+        
+        # ~ for i in loaded_JSON_dict['feature_dicts']:
+            # ~ print(i)
         
         
         
