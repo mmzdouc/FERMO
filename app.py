@@ -27,7 +27,8 @@ from variables import (
     style_data_table,
     style_data_cond_table,
     style_header_table,
-)
+    color_dict,
+    )
 
 
 from pages.pages_header_footer import footer_row, header_row
@@ -36,7 +37,6 @@ from pages.pages_dashboard import dashboard
 from pages.pages_processing import processing
 from pages.pages_mzmine import mzmine
 from pages.pages_loading import loading
-
 
 ##########
 #LAYOUT
@@ -54,10 +54,13 @@ framework_app = dbc.Container([
     header_row,
     #content row
     html.Div([
+        ###Stores for routing###
         dcc.Store(id='store_landing'),
         dcc.Store(id='store_processing_slow'),
         dcc.Store(id='store_mzmine'),
         dcc.Store(id='store_loading'),
+        ###Stores for data processing###
+        dcc.Store(id='data_processing_FERMO'),
         # represents the browser address bar, invisible
         dcc.Location(id='url', refresh=False), 
         #variable page content rendered in this element
@@ -180,6 +183,7 @@ def call_pages_loading(dashboard_loading):
 
 @callback(
     Output('store_processing_slow', 'data'),
+    Output('data_processing_FERMO', 'data'),
     Input('processing_start_cache', 'children'),
     background=True,
     manager=background_callback_manager,
@@ -195,39 +199,7 @@ def function(signal):
             params_dict,
             )
         
-        #convert pandas dfs to JSON
-        samples_JSON = dict()
-        for sample in FERMO_data['samples']:
-            samples_JSON[sample] = FERMO_data['samples'][sample].to_json(
-                orient='split')
-        
-        #loop over feature_dicts to prepare for storage
-        for ID in FERMO_data['feature_dicts']:
-            for entry in FERMO_data['feature_dicts'][ID]:
-                #convert all sets to lists
-                if isinstance(FERMO_data['feature_dicts'][ID][entry], set):
-                    set_to_list = list(FERMO_data['feature_dicts'][ID][entry])
-                    FERMO_data['feature_dicts'][ID][entry] = set_to_list
-                
-                #remove matchms Spectrum object
-                FERMO_data['feature_dicts'][ID]['ms2spectrum'] = 'removed_for_JSON_storage'
-        
-        #loop over sample stats to replace sets with lists
-        for entry in FERMO_data['sample_stats']:
-            if isinstance(FERMO_data['sample_stats'][entry], set):
-                set_to_list = list(FERMO_data['sample_stats'][entry])
-                FERMO_data['sample_stats'][entry] = set_to_list
-            
-        for group in FERMO_data['sample_stats']['groups_dict']:
-            set_to_list = list(FERMO_data['sample_stats']['groups_dict'][group])
-            FERMO_data['sample_stats']['groups_dict'][group] = set_to_list
-
-        #construct storage data structure
-        storage_JSON_dict = {
-            'feature_dicts' : FERMO_data['feature_dicts'],
-            'samples_JSON' : samples_JSON,
-            'sample_stats' : FERMO_data['sample_stats'],
-            } 
+        storage_JSON_dict = utils.make_JSON_serializable(FERMO_data)
         
         #save to disk
         dirname = os.path.dirname(__file__)
@@ -237,87 +209,29 @@ def function(signal):
         outfile.close()
         print("ALERT: Saved to session file.")
         
-        #####
+        '''MOVE TO LOADING PAGE'''
         
         #Load session file from disk
         with open('FERMO_session.json') as json_file:
             loaded_JSON_dict = json.load(json_file)
         
         #convert samples from JSON to df
-        samples_DF = dict()
+        samples_from_JSON = dict()
         for sample in loaded_JSON_dict['samples_JSON']:
-            samples_DF[sample] = pd.read_json(loaded_JSON_dict['samples_JSON'][sample], orient='split')
+            samples_from_JSON[sample] = pd.read_json(
+                loaded_JSON_dict['samples_JSON'][sample], orient='split')
         
-        print(samples_DF)
+        loaded_FERMO_data = {
+            'feature_dicts' : loaded_JSON_dict['feature_dicts'],
+            'samples' : samples_from_JSON,
+            'sample_stats' : loaded_JSON_dict['sample_stats'],
+            'params_dict' : loaded_JSON_dict['params_dict'],
+            'input_filenames': loaded_JSON_dict['input_filenames'],
+            }
         
-        
-        '''RESTART HERE
-        -move loading module to its respective page
-        -put filenames and params used in separate dict, save also to JSON
-        
-        '''
-        
-        
-        # ~ samples_JSON = dict()
-        # ~ for sample in FERMO_data['samples']:
-            # ~ samples_JSON[sample] = FERMO_data['samples'][sample].to_json(
-                # ~ orient='split')
-        
-        
-        
-        
-        # ~ for i in loaded_JSON_dict['feature_dicts']:
-            # ~ print(i)
-        
-        
-        
-        
-        #load storage data structure
-        
-        
-        #continue
-        
-        
-        
-        # ~ samples_from_JSON = dict()
-        # ~ for sample in samples_JSON:
-            # ~ samples_from_JSON[sample] = pd.read_json(
-                # ~ samples_JSON[sample],
-                # ~ )
-        
-        # ~ FERMO_data = {
-        # ~ 'feature_dicts' : feature_dicts,
-        # ~ 'samples' : samples,
-        # ~ 'sample_stats' : sample_stats,
-        # ~ }
-        
-        
-        
-        
-        
-        # ~ session_filename = os.path.join(dirname, 'FERMO_cache.session',)
-        
-        
-        
-        #TO DO:
-        #convert samples to json
-        #dump storage file as JSON
-        #convert back from JSON
-        #return value to app.py
-        
-        # ~ session_filename = os.path.join(dirname, 'FERMO_cache.session',)
-        # ~ outfile = open(session_filename, 'wb')
-        # ~ pickle.dump(storage_input, outfile)
-        # ~ outfile.close()
-        # ~ print("ALERT: Saved to session (cache) file.")
-        
-        
-        
-        #store FERMO data in browser in separate Store container
-        #(two output functions)
+        '''MOVE TO LOADING PAGE'''
 
-        #return two outputs - routing and separate storage for FERMO_data
-        return '/dashboard'
+        return '/dashboard', storage_JSON_dict
 
 
 

@@ -368,7 +368,6 @@ def calculate_metrics(samples, feature_dicts,):
         samples[sample]['bioactivity_score'] = bioactivity
         samples[sample]['novelty_score'] = novelty
         samples[sample]['in_blank'] = blank_associatedness
-        samples[sample]['over_threshold'] = False
         samples[sample]['ms1_only'] = ms1_only
         
     return samples

@@ -13,7 +13,7 @@ import os
 import pandas as pd
 import io
 import base64
-import numpy
+import numpy as np
 
 
 ####LOCAL MODULES AND VARS
@@ -29,6 +29,11 @@ from variables import (
 )
 
 
+
+##########
+#PAGES_PROCESSING
+##########
+
 @callback(
     Output('params_cache', 'component'),
     Input('mass_dev_inp', 'value'),
@@ -41,7 +46,7 @@ from variables import (
     Input('spec_sim_max_links_inp', 'value'),
     Input('spec_sim_min_match_inp', 'value'),
     )
-def bundle_into_cache(
+def bundle_params_into_cache(
     mass_dev, 
     min_ms2, 
     feat_int_filt,
@@ -69,7 +74,7 @@ def bundle_into_cache(
     Output('out_params_assignment', 'children'),
     Input('params_cache', 'component')
 )
-def update_output(params_cache):
+def update_params_dict(params_cache):
     '''Assign set params to table, with sanity check for None'''
 
     if params_cache is not None:
@@ -108,7 +113,7 @@ def update_output(params_cache):
     Input('processing-upload-peaktable', 'contents'),
     State('processing-upload-peaktable', 'filename'),
 )
-def function(contents, filename):
+def upload_peaktable(contents, filename):
     '''Peaktable parsing and format check'''
     
     if contents is None:
@@ -158,7 +163,7 @@ def function(contents, filename):
     Input('processing-upload-mgf', 'contents'),
     State('processing-upload-mgf', 'filename'),
 )
-def function(contents, filename):
+def upload_mgf(contents, filename):
     '''mgf file parsing and format check'''
     
     if contents is None:
@@ -204,7 +209,7 @@ def function(contents, filename):
     State('upload-bioactiv', 'filename'),
     Input('bioact_type', 'value'),
 )
-def function(contents, filename, value):
+def upload_bioactiv(contents, filename, value):
     '''Bioactivity table parsing and format check'''
     if contents is None:
         return html.Div('No bioactivity table loaded.')
@@ -251,13 +256,11 @@ def function(contents, filename, value):
                     'font-weight' : 'bold',
                 })
 
-
-
 @callback(
     Output('store_bioact_type', 'children'),
     Input('bioact_type', 'value'),
 )
-def function(value):
+def store_bioactiv_format(value):
     '''Stores the value of bioactivity data format'''
     return html.Div(value)
 
@@ -267,7 +270,7 @@ def function(value):
     Input('upload-metadata', 'contents'),
     State('upload-metadata', 'filename'),
 )
-def function(contents, filename,):
+def upload_metadata(contents, filename,):
     '''Metadata table parsing and format check'''
     if contents is None:
         return html.Div('No metadata table loaded.')
@@ -311,7 +314,7 @@ def function(contents, filename,):
     Input('upload-userlib', 'contents'),
     State('upload-userlib', 'filename'),
 )
-def function(contents, filename):
+def upload_userlib(contents, filename):
     '''mgf file parsing and format check for user-provided spectral lib'''
     
     if contents is None:
@@ -329,9 +332,9 @@ def function(contents, filename):
                 mz = spectrum.get('m/z array')
                 intensities = spectrum.get('intensity array')
                 metadata = spectrum.get('params')
-
-                if not numpy.all(mz[:-1] <= mz[1:]):
-                    idx_sorted = numpy.argsort(mz)
+                
+                if not np.all(mz[:-1] <= mz[1:]):
+                    idx_sorted = np.argsort(mz)
                     mz = mz[idx_sorted]
                     intensities = intensities[idx_sorted]
                 
@@ -340,8 +343,10 @@ def function(contents, filename):
                         mz=mz,
                         intensities=intensities,
                         metadata=metadata,
-                        metadata_harmonization=True)
+                        )
                     )
+            ref_library = [matchms.filtering.add_compound_name(s) 
+                for s in ref_library]
             ref_library = [matchms.filtering.normalize_intensities(s) 
                 for s in ref_library]
             ref_library = [matchms.filtering.select_by_intensity(s, intensity_from=0.01)
@@ -359,9 +364,8 @@ def function(contents, filename):
                 f'✅ "{filename}" successfully loaded.',
                 style={
                     'color' : 'green',
-                    'font-weight' : 'bold',
-                    }
-                )
+                    'font-weight' : 'bold',}
+                    )
         except:
             input_file_store['user_library'] = None
             input_file_store['user_library_name'] = None
@@ -369,20 +373,373 @@ def function(contents, filename):
                 f'''
                 ❌ Error: "{filename}" is not a mgf or is erroneously formatted
                 (e.g. 'pepmass' must not be 0.0 or 1.0).
-                
                 Please check the file and try again.
                 ''')
 
+##########
+#PAGES_LOADING
+##########
 
 @callback(
     Output('upload-session-output', 'children'),
     Input('upload-session', 'contents'),
-    State('upload-session', 'filename'),)
-def function(contents, filename):
+    State('upload-session', 'filename'),
+)
+def upload_sessionfile(contents, filename):
+    '''Placeholder'''
     return html.Div(
                 f'''
                 SESSION FILE UPLOAD NOT YET ACTIVE
                 ''')
+
+
+##########
+#PAGES_DASHBOARD
+##########
+
+@callback(
+    Output('storage_feature_dicts', 'data'),
+    Output('storage_samples_JSON', 'data'),
+    Output('storage_sample_stats', 'data'),
+    Input('data_processing_FERMO', 'data'),
+)
+def FERMO_data_loading(contents):
+    '''Loading function: contents contains the following data (from utils)
+    '''
+    if contents is None:
+        raise PreventUpdate
+    else:  
+        return (
+            contents['feature_dicts'],
+            contents['samples_JSON'],
+            contents['sample_stats'],
+            )
+
+@callback(
+    Output(component_id='threshold_values', component_property='data'),
+    Input(component_id='rel_intensity_threshold', component_property='value'),
+    Input(component_id='convolutedness_threshold', component_property='value'),
+    Input(component_id='bioactivity_threshold', component_property='value'),
+    Input(component_id='novelty_threshold', component_property='value'),
+)
+def read_threshold_values_function(rel_int, conv, bioact, nov,):
+    '''Bundle input values'''
+
+    if None not in [rel_int, conv, bioact, nov,]:
+        return {
+            'rel_int' : float(rel_int),
+            'conv' : float(conv),
+            'bioact' : float(bioact),
+            'nov' : float(nov),
+            }
+    else:
+        raise PreventUpdate
+
+
+@callback(
+        Output(component_id='table_sample_names', component_property='data'),
+        Input(component_id='threshold_values', component_property='data'),
+        Input(component_id='storage_feature_dicts', component_property='data'),
+        Input(component_id='storage_samples_JSON', component_property='data'),
+        Input(component_id='storage_sample_stats', component_property='data'),
+        )
+def calculate_feature_score(
+        thresholds,
+        feature_dicts,
+        samples_JSON,
+        sample_stats,):
+    '''Test if over threshold; calculate diversity score'''
+
+    #temporarily convert from JSON to pandas DF
+    samples = dict()
+    for sample in samples_JSON:
+        samples[sample] = pd.read_json(
+            samples_JSON[sample], orient='split')
+    
+    
+    #for each sample, extract rows that corresponds to thresholds
+    samples_filtered_dfs = dict()
+    for sample in samples:
+        #all features per sample
+        all_feature_set = set(samples[sample]['feature_ID'])
+
+
+        #determine which features are detected in group BLANK
+        features_blanks_set = set()
+        for feature_ID in all_feature_set:
+            if 'BLANK' in feature_dicts[str(feature_ID)]['set_groups']:
+                features_blanks_set.add(feature_ID)
+        
+        #filter for ms1 only
+        ms1_only_df = samples[sample].loc[
+            samples[sample]['ms1_only'] == True
+            ]
+        ms1_only_set = set(ms1_only_df['feature_ID'])
+        
+        #filter for numeric thresholds
+        filtered_thrsh_df = samples[sample].loc[
+            (samples[sample]['rel_intensity_score'] >= thresholds['rel_int']) &
+            (samples[sample]['convolutedness_score'] >= thresholds['conv']) &
+            (samples[sample]['bioactivity_score'] >= thresholds['bioact']) &
+            (samples[sample]['novelty_score'] >= thresholds['nov']) 
+            ]
+        filtered_thrsh_set = set(filtered_thrsh_df['feature_ID'])
+        
+        #combine ms1 and blank features
+        blank_ms1_set = features_blanks_set.union(ms1_only_set)
+        
+        #subtract ms1 and blanks from features over threshold
+        selected_features_set = filtered_thrsh_set.difference(blank_ms1_set)
+        
+        print(sample)
+        print(len(all_feature_set))
+        print(all_feature_set)
+        print(len(filtered_thrsh_set))
+        print(filtered_thrsh_set)
+        print(len(blank_ms1_set))
+        print(blank_ms1_set)
+        print(len(selected_features_set))
+        print(selected_features_set)
+        
+        
+        
+        
+        # ~ samples_filtered_dfs[sample] = set(filtered_df['feature_ID'])
+        
+        #create dict per sample {
+        #list of feature IDs over threshold
+        #list of features in medium + ms1 (
+        #list of features below threshold (but filtered for medium and ms1) -> subtract from all features per sample in sample stats)
+        #}
+        
+    
+    
+    # ~ ms1_bool
+    
+        
+        #extract numbers instead of whole row
+        #take into account possible len of 0
+    
+    
+    #build if conditional that checks if BLANK in groups of feature dict
+    
+    
+    #can be further filtered down by querying feature dicts for true/false etc
+    
+    
+        # ~ print(sample)
+        # ~ print(samples_over[sample])
+        # ~ .query(
+            # ~ 'rel_intensity_score >= thresholds['rel_int']'
+        # ~ )
+        
+
+# ~ feature_scoring[sample]['rel_intensity_score'].ge(thresholds[0]) &
+        # ~ feature_scoring[sample]['convolutedness_score'].ge(thresholds[1]) &
+        # ~ feature_scoring[sample]['bioactivity_score'].ge(thresholds[2]) &
+        # ~ feature_scoring[sample]['novelty_score'].ge(thresholds[3]) &
+        # ~ #tilde (~) negates expression
+        # ~ ~feature_scoring[sample]['in_blank'] &
+        # ~ ~feature_scoring[sample]['ms1_only']
+
+
+
+    
+    return
+
+        # ~ #extract list of sample ids that are over threshold/filters (for each row...?)
+        
+        # ~ #use this list and stuff from sample stats to calculate metrics
+        
+        # ~ #make list of samples over threshold, below, medium-components, unique to samples, unique to group...
+        
+        # ~ #use set with differece for fast calculation
+        
+        # ~ #store the numbers in dataframe plus a storage container for later plotting of chromatogram
+        
+        
+        
+         # ~ #Update over_threshold value in feature_scoring
+        # ~ for sample in feature_scoring:
+
+            # ~ #condition C:
+    # ~ elif args.bioactivity and args.metadata:
+        # ~ feature_scoring[sample]['over_threshold'] = np.select(
+            # ~ utilities.threshold_condition_C(
+                # ~ feature_scoring, 
+                # ~ sample, 
+                # ~ thresholds
+                # ~ ), 
+            # ~ [True], 
+            # ~ default=False
+        # ~ )
+        
+        
+    # ~ return [
+        # ~ feature_scoring[sample]['rel_intensity_score'].ge(thresholds[0]) &
+        # ~ feature_scoring[sample]['convolutedness_score'].ge(thresholds[1]) &
+        # ~ feature_scoring[sample]['bioactivity_score'].ge(thresholds[2]) &
+        # ~ feature_scoring[sample]['novelty_score'].ge(thresholds[3]) &
+        # ~ #tilde (~) negates expression
+        # ~ ~feature_scoring[sample]['in_blank'] &
+        # ~ ~feature_scoring[sample]['ms1_only']
+        # ~ ]
+        
+        
+        
+        
+                        
+       
+            # ~ #condition B:
+            # ~ elif not args.bioactivity and args.metadata:
+                # ~ feature_scoring[sample]['over_threshold'] = np.select(
+                    # ~ utilities.threshold_condition_B(
+                        # ~ feature_scoring, 
+                        # ~ sample, 
+                        # ~ thresholds
+                        # ~ ), 
+                    # ~ [True], 
+                    # ~ default=False
+                # ~ )
+
+            # ~ #condition D:
+            # ~ else:
+                # ~ feature_scoring[sample]['over_threshold'] = np.select(
+                    # ~ utilities.threshold_condition_D(
+                        # ~ feature_scoring, 
+                        # ~ sample, 
+                        # ~ thresholds
+                        # ~ ), 
+                    # ~ [True], 
+                    # ~ default=False
+                # ~ )
+            # ~ #Sort df, reset index
+            # ~ feature_scoring[sample].sort_values(
+                # ~ by=["rel_intensity_score",], 
+                # ~ inplace=True, 
+                # ~ ascending=[False,]
+                # ~ )
+            # ~ feature_scoring[sample].reset_index(drop=True, inplace=True)
+
+        
+        # ~ #Calculate diversity score and check nr features over threshold,
+        # ~ for id, row in sample_scores.iterrows():
+            
+            # ~ #In which group is sample
+            # ~ sample_scores.at[id, 'Group'] = (
+                # ~ sample_stats['samples_dict'][row['Filename']]
+                # ~ )
+
+            # ~ #Total number of features
+            # ~ sample_scores.at[id, 'Total'] = (
+                # ~ np.count_nonzero(feature_scoring[
+                    # ~ row['Filename']].loc[:,"feature_ID"]) 
+                # ~ )
+            
+            # ~ #Nr of features not blank/ms1 associated
+            # ~ set_blnk_ms1 = set()
+            # ~ set_blnk_ms1.update(
+                # ~ list(feature_scoring[row['Filename']].loc[
+                    # ~ :,"in_blank"].to_numpy().nonzero()[0]))
+            # ~ set_blnk_ms1.update(
+                # ~ list(feature_scoring[row['Filename']].loc[
+                    # ~ :,"ms1_only"].to_numpy().nonzero()[0]))
+            
+            # ~ sample_scores.at[id, 'Non-blank'] = (
+                # ~ np.count_nonzero(feature_scoring[
+                    # ~ row['Filename']].loc[:,"feature_ID"])
+                # ~ -
+                # ~ len(set_blnk_ms1)
+                # ~ )
+            
+            
+            # ~ #Features over thresholds
+            # ~ sample_scores.at[id, 'Over cutoff'] = (
+                # ~ np.count_nonzero(feature_scoring[
+                    # ~ row['Filename']].loc[:,"over_threshold"])
+                # ~ )
+            
+            # ~ #Diversity score: how much of the chemistry of sample set 
+            # ~ #is contained in this sample?
+            # ~ #Calculated as nr of cliques per sample/all cliques
+            # ~ sample_scores.at[id, 'Diversity score'] = round(
+                # ~ (
+                # ~ len(
+                    # ~ set(sample_stats["cliques_per_sample"][row['Filename']]
+                        # ~ ).difference(sample_stats["set_blank_cliques"])
+                    # ~ )
+                # ~ / 
+                # ~ (len(
+                    # ~ set(sample_stats["set_all_cliques"]
+                        # ~ ).difference(sample_stats["set_blank_cliques"])
+                    # ~ ))
+                # ~ ),
+            # ~ 2)
+            
+            # ~ #Specificity score: detect which mol networks are unique to the
+            # ~ #group the sample is part of
+            # ~ #report proportion to all mol networks
+            # ~ set_unique_cliques = set()
+            # ~ for index, line in feature_scoring[row['Filename']].iterrows():
+                # ~ feature_ID = line['feature_ID']
+                # ~ if (
+                    # ~ (row['Filename'] in feature_objects[feature_ID].presence_samples)
+                # ~ and not
+                    # ~ (line['in_blank'] == True)
+                # ~ and not
+                    # ~ (line['ms1_only'] == True)
+                # ~ and 
+                    # ~ (len(feature_objects[feature_ID].set_groups_clique) == 1)
+                # ~ ):
+                    # ~ set_unique_cliques.add(
+                        # ~ feature_objects[feature_ID].similarity_clique_number)
+
+            # ~ sample_scores.at[id, 'Specificity score'] = round(
+                # ~ ((len(set_unique_cliques))
+                # ~ / 
+                # ~ (len(
+                    # ~ set(sample_stats["set_all_cliques"]
+                        # ~ ).difference(sample_stats["set_blank_cliques"])
+                    # ~ ))
+                # ~ ),
+            # ~ 2)   
+
+        # ~ #Sort df, reset index
+        # ~ sample_scores.sort_values(
+            # ~ by=[
+                # ~ 'Over cutoff',
+                # ~ 'Diversity score',
+                # ~ 'Total',
+                # ~ 'Non-blank',
+                # ~ ], 
+            # ~ inplace=True, 
+            # ~ ascending=[False, False, False, True]
+            # ~ )
+        # ~ sample_scores.reset_index(drop=True, inplace=True)
+
+        # ~ return sample_scores.to_dict('records')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -417,18 +774,7 @@ def function(contents, filename):
         #write a catch that prevents running FERMO without any input
         
         
-        
-        
-        
-        
-        
-        
-        #put the decision tree here
-        #for first option, the peaktable and optionally, the mgf
-        #and the metadata and bioativity file - probably best to do 
-        #some
-        #
-              
+
         
         # ~ #READ PRE-SPECIFIED INPUT FOLDER
         # ~ dirname = os.path.dirname(__file__)

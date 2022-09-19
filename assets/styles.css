@@ -29,6 +29,19 @@ GENERAL
 }
 
 
+.legend {
+     overflow:hidden;
+}
+
+.legend_rect {
+    height: 15px;
+    width: 15px;
+    margin-right: 10px;
+    display: inline-block;
+    border-style: solid;
+    border-width: 4px;
+}
+
 
 /*
 ROWS - GENERAL
@@ -36,14 +49,6 @@ ROWS - GENERAL
 
 #header_row {
     height: 8vh;
-}
-
-#top_row {
-    height: 40vh;
-}
-
-#bottom_row {
-    height: 40vh;
 }
 
 #footer_row {
@@ -59,46 +64,72 @@ COLUMNS - GENERAL
     background-color: #116789;
 }
 
-#top_left_col {
-    background-color: white;
-    height: 40vh;
-    overflow: scroll;
-}
-
-#top_right_col {
-    background-color: white;
-    height: 40vh;
-    overflow: scroll;
-}
-
-#bottom_first_col {
-    background-color: white;
-    height: 40vh;
-    overflow: scroll;
-}
-
-#bottom_second_col {
-    background-color: white;
-    height: 40vh;
-    overflow: scroll;
-}
-
-#bottom_third_col {
-    background-color: white;
-    height: 40vh;
-    overflow: scroll;
-}
-
-#bottom_fourth_col {
-    background-color: white;
-    height: 40vh;
-    overflow: scroll;
-}
-
 #footer_col {
     border-top: 5px solid #116789;
     height: 5vh;
 }
+
+/*
+ROWS - DASHBOARD
+*/
+
+
+#dashboard_row_1 {
+    height: 40vh;
+}
+
+#dashboard_row_2 {
+    height: 40vh;
+}
+
+
+/*
+COLUMNS - GENERAL
+*/
+
+
+#dashboard_row_1_col_1 {
+    background-color: white;
+    height: 40vh;
+    overflow: scroll;
+}
+
+#dashboard_row_1_col_2 {
+    background-color: white;
+    height: 40vh;
+    overflow: scroll;
+}
+
+#dashboard_row_1_col_3 {
+    background-color: white;
+    height: 40vh;
+    overflow: scroll;
+}
+
+#dashboard_row_2_col_1 {
+    background-color: white;
+    height: 40vh;
+    overflow: scroll;
+}
+
+#dashboard_row_2_col_2 {
+    background-color: white;
+    height: 40vh;
+    overflow: scroll;
+}
+
+#dashboard_row_2_col_3 {
+    background-color: white;
+    height: 40vh;
+    overflow: scroll;
+}
+
+#dashboard_row_2_col_4 {
+    background-color: white;
+    height: 40vh;
+    overflow: scroll;
+}
+
 
 /*
 ROWS - LANDING

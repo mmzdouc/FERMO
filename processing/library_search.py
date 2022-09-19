@@ -105,8 +105,8 @@ def library_search(
                         'name' : x[0].metadata.get('compound_name'),
                         'smiles' : x[0].metadata.get('smiles'),
                         'inchi' : x[0].metadata.get('inchi'),
-                        'score' : x[1]['score'].round(2), 
-                        'nr_matches' : x[1]['matches'], 
+                        'score' : float(x[1]['score'].round(2)), 
+                        'nr_matches' : int(x[1]['matches']), 
                     }
                     for x in best_matches]
                 )

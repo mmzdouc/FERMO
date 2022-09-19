@@ -17,8 +17,6 @@ from processing.calculate_feature_overlap import calculate_feature_overlap
 from processing.calculate_metrics import calculate_metrics
 from processing.calculate_pseudochrom_traces import calculate_pseudochrom_traces
 
-
-
 ############
 #INPUT TESTING
 ############
@@ -254,17 +252,9 @@ def parse_bioactiv_conc(bioactiv_table, value):
             [bioactiv_table.loc[:,'sample_name'], normalized], axis=1)
         return converted_df
 
-
-
-
-
-
 ##########
 #DATA PROCESSING
 ##########
-
-
-
 
 def peaktable_processing(input_file_store, params_dict):
     """FERMO: peaktable processing
@@ -273,14 +263,6 @@ def peaktable_processing(input_file_store, params_dict):
     ----------
     input_file_store : `dict`
         contains parsed user-provided input data
-        'peaktable'
-        'peaktable_name'
-        'mgf'
-        'mgf_name'
-        'metadata'
-        'metadata_name'
-        'bioactivity'
-        'bioactivity_name'
     params_dict : `dict`
         contains user-provided parameters
     
@@ -288,9 +270,6 @@ def peaktable_processing(input_file_store, params_dict):
     --------
     FERMO_data : `dict`
         contains data to feed into dashboard visualization
-    
-    Notes
-    ------
     """
     #parse metadata file into a dict of sets
     groups = read_from_metadata_table(
@@ -380,16 +359,76 @@ def peaktable_processing(input_file_store, params_dict):
 
     samples = calculate_pseudochrom_traces(samples,)
     
+    input_filenames = {
+        'peaktable_name' : input_file_store['peaktable_name'],
+        'mgf_name' : input_file_store['mgf_name'],
+        'metadata_name' : input_file_store['metadata_name'],
+        'bioactivity_name' : input_file_store['bioactivity_name'],
+        'user_library_name' : input_file_store['user_library_name'],
+    }
+    
     FERMO_data = {
         'feature_dicts' : feature_dicts,
         'samples' : samples,
         'sample_stats' : sample_stats,
+        'params_dict' : params_dict,
+        'input_filenames': input_filenames,
     }
     
     return FERMO_data
+
+def make_JSON_serializable(FERMO_data):
+    """Make JSON compatible by removing non-base python data structures
     
+    Parameters
+    ----------
+    FERMO_data : `dict`
+    
+    Returns
+    --------
+    storage_JSON_dict : `dict`
+    """
+    
+    #convert pandas dfs to JSON
+    samples_JSON = dict()
+    for sample in FERMO_data['samples']:
+        samples_JSON[sample] = FERMO_data['samples'][sample].to_json(
+            orient='split')
+    
+    #loop over feature_dicts to prepare for storage
+    for ID in FERMO_data['feature_dicts']:
+        for entry in FERMO_data['feature_dicts'][ID]:
+            #convert all sets to lists
+            if isinstance(FERMO_data['feature_dicts'][ID][entry], set):
+                set_to_list = list(FERMO_data['feature_dicts'][ID][entry])
+                FERMO_data['feature_dicts'][ID][entry] = set_to_list
+            
+            #remove matchms Spectrum object
+            FERMO_data['feature_dicts'][ID]['ms2spectrum'] = 'removed_for_JSON_storage'
+    
+    #loop over sample stats to replace sets with lists
+    for entry in FERMO_data['sample_stats']:
+        if isinstance(FERMO_data['sample_stats'][entry], set):
+            set_to_list = list(FERMO_data['sample_stats'][entry])
+            FERMO_data['sample_stats'][entry] = set_to_list
+        
+    for group in FERMO_data['sample_stats']['groups_dict']:
+        set_to_list = list(FERMO_data['sample_stats']['groups_dict'][group])
+        FERMO_data['sample_stats']['groups_dict'][group] = set_to_list
 
+    #construct storage data structure
+    storage_JSON_dict = {
+        'feature_dicts' : FERMO_data['feature_dicts'],
+        'samples_JSON' : samples_JSON,
+        'sample_stats' : FERMO_data['sample_stats'],
+        'params_dict' : FERMO_data['params_dict'],
+        'input_filenames': FERMO_data['input_filenames'],
+        } 
+    
+    return storage_JSON_dict
 
-
+##########
+#DASHBOARD
+##########
 
 

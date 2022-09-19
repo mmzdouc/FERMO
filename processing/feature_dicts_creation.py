@@ -258,6 +258,10 @@ def feature_dicts_creation(
             int(row["feature_ID"]),
             int(min_ms2_peaks,))
         
+        ms1_bool = False
+        if ms2spectrum is None:
+            ms1_bool = True
+        
         #Dict assignment
         feature_dicts[int(row["feature_ID"])] = {
             'feature_ID' : int(row["feature_ID"]),
@@ -270,6 +274,7 @@ def feature_dicts_creation(
             'fwhm_samples' : samples_fwhm,
             'feature_max_int' : list_intens[0],
             'ms2spectrum' : ms2spectrum,
+            'ms1_bool' : ms1_bool,
             #Dummy values - assigned downstream
             'bioactivity_associated' : False,
             'bioactivity_samples' : [],
