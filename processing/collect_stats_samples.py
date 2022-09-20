@@ -46,7 +46,7 @@ def collect_stats_samples(peaktable, groups, bioactivity_samples,):
         active_samples_set = set()
         inactive_samples_set = copy.deepcopy(samples_set)
     
-    #AD GROOUPS (METADATA)
+    #AD GROUPS (METADATA)
     #Test if all samples have been assigned their groups;
     #If any unassigned samples, assign to reserved group "GENERAL
     grouped_samples_set = set()

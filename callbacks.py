@@ -438,6 +438,8 @@ def read_threshold_values_function(rel_int, conv, bioact, nov,):
 
 @callback(
         Output(component_id='table_sample_names', component_property='data'),
+        Output(component_id='samples_subsets', component_property='data'),
+        Output(component_id='sample_list', component_property='data'),
         Input(component_id='threshold_values', component_property='data'),
         Input(component_id='storage_feature_dicts', component_property='data'),
         Input(component_id='storage_samples_JSON', component_property='data'),
@@ -448,7 +450,7 @@ def calculate_feature_score(
         feature_dicts,
         samples_JSON,
         sample_stats,):
-    '''Test if over threshold; calculate diversity score'''
+    '''For each sample, create subsets of features and calculate scores'''
 
     #temporarily convert from JSON to pandas DF
     samples = dict()
@@ -456,274 +458,123 @@ def calculate_feature_score(
         samples[sample] = pd.read_json(
             samples_JSON[sample], orient='split')
     
-    
     #for each sample, extract rows that corresponds to thresholds
-    samples_filtered_dfs = dict()
+    samples_subsets = dict()
     for sample in samples:
-        #all features per sample
-        all_feature_set = set(samples[sample]['feature_ID'])
-
-
-        #determine which features are detected in group BLANK
-        features_blanks_set = set()
-        for feature_ID in all_feature_set:
-            if 'BLANK' in feature_dicts[str(feature_ID)]['set_groups']:
-                features_blanks_set.add(feature_ID)
-        
-        #filter for ms1 only
-        ms1_only_df = samples[sample].loc[
-            samples[sample]['ms1_only'] == True
-            ]
-        ms1_only_set = set(ms1_only_df['feature_ID'])
-        
-        #filter for numeric thresholds
-        filtered_thrsh_df = samples[sample].loc[
-            (samples[sample]['rel_intensity_score'] >= thresholds['rel_int']) &
-            (samples[sample]['convolutedness_score'] >= thresholds['conv']) &
-            (samples[sample]['bioactivity_score'] >= thresholds['bioact']) &
-            (samples[sample]['novelty_score'] >= thresholds['nov']) 
-            ]
-        filtered_thrsh_set = set(filtered_thrsh_df['feature_ID'])
-        
-        #combine ms1 and blank features
-        blank_ms1_set = features_blanks_set.union(ms1_only_set)
-        
-        #subtract ms1 and blanks from features over threshold
-        selected_features_set = filtered_thrsh_set.difference(blank_ms1_set)
-        
-        print(sample)
-        print(len(all_feature_set))
-        print(all_feature_set)
-        print(len(filtered_thrsh_set))
-        print(filtered_thrsh_set)
-        print(len(blank_ms1_set))
-        print(blank_ms1_set)
-        print(len(selected_features_set))
-        print(selected_features_set)
-        
-        
-        
-        
-        # ~ samples_filtered_dfs[sample] = set(filtered_df['feature_ID'])
-        
-        #create dict per sample {
-        #list of feature IDs over threshold
-        #list of features in medium + ms1 (
-        #list of features below threshold (but filtered for medium and ms1) -> subtract from all features per sample in sample stats)
-        #}
-        
+        samples_subsets[sample] = utils.generate_subsets(
+            samples, 
+            sample,
+            thresholds,
+            feature_dicts,)
     
+    #how many cliques in this sample are only found in group
+    #extract all features per sample (corrected for blanks)
+    sample_unique_cliques = dict()
+    for sample in samples:
+        unique_cliques = set()
+        for ID in samples_subsets[sample]['all_nonblank']:
+            if (
+                (len(feature_dicts[str(ID)]['set_groups_clique']) == 1)
+                and
+                (sample in feature_dicts[str(ID)]['presence_samples'])
+            ):
+                unique_cliques.add(
+                    feature_dicts[str(ID)]['similarity_clique_number']
+                    )
+        sample_unique_cliques[sample] = list(unique_cliques)
+
+    #create dataframe to export to dashboard
+    sample_scores = pd.DataFrame({
+        'Filename' : [i for i in samples],
+        'Group' : [sample_stats['samples_dict'][i] for i in samples],
+        'Diversity score' : [
+            round(
+                (
+                len(
+                    set(sample_stats["cliques_per_sample"][i]).difference(
+                        set(sample_stats["set_blank_cliques"])
+                        )
+                    )
+                / 
+                len(
+                    set(sample_stats["set_all_cliques"]).difference(
+                        set(sample_stats["set_blank_cliques"]))
+                    )
+                ),
+            2) for i in samples],
+        'Spec score' : [
+            round(
+                (
+                (len(sample_unique_cliques[i]))
+                / 
+                len(
+                    set(sample_stats["set_all_cliques"]).difference(
+                        set(sample_stats["set_blank_cliques"]))
+                    )
+                ),
+            2) for i in samples],
+        'Total' : [len(samples_subsets[i]['all_features']) for i in samples],
+        'Non-blank' : [len(samples_subsets[i]['all_nonblank']) for i in samples],
+        'Over cutoff' : [len(samples_subsets[i]['all_select_no_blank']) for i in samples],
+    })
+
+    #Sort df, reset index
+    sample_scores.sort_values(
+        by=[
+            'Diversity score',
+            'Spec score',
+            'Non-blank',
+            ], 
+        inplace=True, 
+        ascending=[False, False, False]
+        )
+    sample_scores.reset_index(drop=True, inplace=True)
     
-    # ~ ms1_bool
+    sample_list = sample_scores['Filename'].tolist()
     
-        
-        #extract numbers instead of whole row
-        #take into account possible len of 0
+    return sample_scores.to_dict('records'), samples_subsets, sample_list
+
+
+@callback(
+    Output(component_id='storage_active_cell', component_property='data'),
+    Input(component_id='table_sample_names', component_property='active_cell'),
+    Input(component_id='table_sample_names', component_property='data'),
+    Input(component_id='sample_list', component_property='data'),
+)
+def storage_active_cell(data, update_table, sample_list):
+    '''Store active cell in dcc.Storage'''
+    #Null coalescing assignment: default value if var not assigned
+    data = data or {'row' : 0,}
     
-    
-    #build if conditional that checks if BLANK in groups of feature dict
-    
-    
-    #can be further filtered down by querying feature dicts for true/false etc
-    
-    
-        # ~ print(sample)
-        # ~ print(samples_over[sample])
-        # ~ .query(
-            # ~ 'rel_intensity_score >= thresholds['rel_int']'
-        # ~ )
+    return sample_list[data["row"]]
+
+
+
+
+
+###RESTART FROM HERE
+
+    @app.callback(
+        Output(component_id='title_central_chrom', component_property='children'),
+        Input(component_id='storage_active_cell', component_property='data'),
+    )
+    def title_central_chrom(selected_sample,):
+        return f"""Chromatogram of Sample {selected_sample}"""
         
-
-# ~ feature_scoring[sample]['rel_intensity_score'].ge(thresholds[0]) &
-        # ~ feature_scoring[sample]['convolutedness_score'].ge(thresholds[1]) &
-        # ~ feature_scoring[sample]['bioactivity_score'].ge(thresholds[2]) &
-        # ~ feature_scoring[sample]['novelty_score'].ge(thresholds[3]) &
-        # ~ #tilde (~) negates expression
-        # ~ ~feature_scoring[sample]['in_blank'] &
-        # ~ ~feature_scoring[sample]['ms1_only']
-
-
-
-    
-    return
-
-        # ~ #extract list of sample ids that are over threshold/filters (for each row...?)
+    @app.callback(
+        Output(component_id='chromat_out', component_property='figure'),
+        Input(component_id='storage_active_cell', component_property='data'),
+        Input(component_id='storage_active_feature', component_property='data'),
+    )
+    def plot_chromatogram(selected_sample, active_feature,):
+        '''Plot central chromatogram'''
         
-        # ~ #use this list and stuff from sample stats to calculate metrics
-        
-        # ~ #make list of samples over threshold, below, medium-components, unique to samples, unique to group...
-        
-        # ~ #use set with differece for fast calculation
-        
-        # ~ #store the numbers in dataframe plus a storage container for later plotting of chromatogram
-        
-        
-        
-         # ~ #Update over_threshold value in feature_scoring
-        # ~ for sample in feature_scoring:
-
-            # ~ #condition C:
-    # ~ elif args.bioactivity and args.metadata:
-        # ~ feature_scoring[sample]['over_threshold'] = np.select(
-            # ~ utilities.threshold_condition_C(
-                # ~ feature_scoring, 
-                # ~ sample, 
-                # ~ thresholds
-                # ~ ), 
-            # ~ [True], 
-            # ~ default=False
-        # ~ )
-        
-        
-    # ~ return [
-        # ~ feature_scoring[sample]['rel_intensity_score'].ge(thresholds[0]) &
-        # ~ feature_scoring[sample]['convolutedness_score'].ge(thresholds[1]) &
-        # ~ feature_scoring[sample]['bioactivity_score'].ge(thresholds[2]) &
-        # ~ feature_scoring[sample]['novelty_score'].ge(thresholds[3]) &
-        # ~ #tilde (~) negates expression
-        # ~ ~feature_scoring[sample]['in_blank'] &
-        # ~ ~feature_scoring[sample]['ms1_only']
-        # ~ ]
-        
-        
-        
-        
-                        
-       
-            # ~ #condition B:
-            # ~ elif not args.bioactivity and args.metadata:
-                # ~ feature_scoring[sample]['over_threshold'] = np.select(
-                    # ~ utilities.threshold_condition_B(
-                        # ~ feature_scoring, 
-                        # ~ sample, 
-                        # ~ thresholds
-                        # ~ ), 
-                    # ~ [True], 
-                    # ~ default=False
-                # ~ )
-
-            # ~ #condition D:
-            # ~ else:
-                # ~ feature_scoring[sample]['over_threshold'] = np.select(
-                    # ~ utilities.threshold_condition_D(
-                        # ~ feature_scoring, 
-                        # ~ sample, 
-                        # ~ thresholds
-                        # ~ ), 
-                    # ~ [True], 
-                    # ~ default=False
-                # ~ )
-            # ~ #Sort df, reset index
-            # ~ feature_scoring[sample].sort_values(
-                # ~ by=["rel_intensity_score",], 
-                # ~ inplace=True, 
-                # ~ ascending=[False,]
-                # ~ )
-            # ~ feature_scoring[sample].reset_index(drop=True, inplace=True)
-
-        
-        # ~ #Calculate diversity score and check nr features over threshold,
-        # ~ for id, row in sample_scores.iterrows():
-            
-            # ~ #In which group is sample
-            # ~ sample_scores.at[id, 'Group'] = (
-                # ~ sample_stats['samples_dict'][row['Filename']]
-                # ~ )
-
-            # ~ #Total number of features
-            # ~ sample_scores.at[id, 'Total'] = (
-                # ~ np.count_nonzero(feature_scoring[
-                    # ~ row['Filename']].loc[:,"feature_ID"]) 
-                # ~ )
-            
-            # ~ #Nr of features not blank/ms1 associated
-            # ~ set_blnk_ms1 = set()
-            # ~ set_blnk_ms1.update(
-                # ~ list(feature_scoring[row['Filename']].loc[
-                    # ~ :,"in_blank"].to_numpy().nonzero()[0]))
-            # ~ set_blnk_ms1.update(
-                # ~ list(feature_scoring[row['Filename']].loc[
-                    # ~ :,"ms1_only"].to_numpy().nonzero()[0]))
-            
-            # ~ sample_scores.at[id, 'Non-blank'] = (
-                # ~ np.count_nonzero(feature_scoring[
-                    # ~ row['Filename']].loc[:,"feature_ID"])
-                # ~ -
-                # ~ len(set_blnk_ms1)
-                # ~ )
-            
-            
-            # ~ #Features over thresholds
-            # ~ sample_scores.at[id, 'Over cutoff'] = (
-                # ~ np.count_nonzero(feature_scoring[
-                    # ~ row['Filename']].loc[:,"over_threshold"])
-                # ~ )
-            
-            # ~ #Diversity score: how much of the chemistry of sample set 
-            # ~ #is contained in this sample?
-            # ~ #Calculated as nr of cliques per sample/all cliques
-            # ~ sample_scores.at[id, 'Diversity score'] = round(
-                # ~ (
-                # ~ len(
-                    # ~ set(sample_stats["cliques_per_sample"][row['Filename']]
-                        # ~ ).difference(sample_stats["set_blank_cliques"])
-                    # ~ )
-                # ~ / 
-                # ~ (len(
-                    # ~ set(sample_stats["set_all_cliques"]
-                        # ~ ).difference(sample_stats["set_blank_cliques"])
-                    # ~ ))
-                # ~ ),
-            # ~ 2)
-            
-            # ~ #Specificity score: detect which mol networks are unique to the
-            # ~ #group the sample is part of
-            # ~ #report proportion to all mol networks
-            # ~ set_unique_cliques = set()
-            # ~ for index, line in feature_scoring[row['Filename']].iterrows():
-                # ~ feature_ID = line['feature_ID']
-                # ~ if (
-                    # ~ (row['Filename'] in feature_objects[feature_ID].presence_samples)
-                # ~ and not
-                    # ~ (line['in_blank'] == True)
-                # ~ and not
-                    # ~ (line['ms1_only'] == True)
-                # ~ and 
-                    # ~ (len(feature_objects[feature_ID].set_groups_clique) == 1)
-                # ~ ):
-                    # ~ set_unique_cliques.add(
-                        # ~ feature_objects[feature_ID].similarity_clique_number)
-
-            # ~ sample_scores.at[id, 'Specificity score'] = round(
-                # ~ ((len(set_unique_cliques))
-                # ~ / 
-                # ~ (len(
-                    # ~ set(sample_stats["set_all_cliques"]
-                        # ~ ).difference(sample_stats["set_blank_cliques"])
-                    # ~ ))
-                # ~ ),
-            # ~ 2)   
-
-        # ~ #Sort df, reset index
-        # ~ sample_scores.sort_values(
-            # ~ by=[
-                # ~ 'Over cutoff',
-                # ~ 'Diversity score',
-                # ~ 'Total',
-                # ~ 'Non-blank',
-                # ~ ], 
-            # ~ inplace=True, 
-            # ~ ascending=[False, False, False, True]
-            # ~ )
-        # ~ sample_scores.reset_index(drop=True, inplace=True)
-
-        # ~ return sample_scores.to_dict('records')
-
-
-
-
-
-
+        return utilities.plot_central_chrom(
+            selected_sample,
+            active_feature,
+            sample_stats,
+            feature_scoring,
+            feature_objects,)
 
 
 

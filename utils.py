@@ -432,3 +432,130 @@ def make_JSON_serializable(FERMO_data):
 ##########
 
 
+def generate_subsets(
+    samples, 
+    sample,
+    thresholds,
+    feature_dicts,
+    ):
+    """Make subsets of features in sample based on thresholds
+    
+    Parameters
+    ----------
+    samples : `dict`
+    sample : `str`
+    thresholds : `dict`
+    feature_dicts : `dict`
+    
+    Returns
+    --------
+    `dict`
+    
+    Notes
+    ------
+    Additional filters can be added with relative ease:
+    Add the filter to the FERMO dashboard
+    Connect filter to the callback calculate_feature_score
+    Simply add a conditional that adds feature ID to all_select_no_blank
+    set. the later operations take care of the right group for plotting
+    """
+    ###STATS###
+    
+    #all features per sample
+    all_feature_set = set(samples[sample]['feature_ID'])
+
+    #which of these features blank associated
+    features_blanks_set = set()
+    for feature_ID in all_feature_set:
+        if 'BLANK' in feature_dicts[str(feature_ID)]['set_groups']:
+            features_blanks_set.add(feature_ID)
+    
+    #extract features w ms1 only from samples table
+    ms1_only_df = samples[sample].loc[
+        samples[sample]['ms1_only'] == True
+        ]
+    ms1_only_set = set(ms1_only_df['feature_ID'])
+    
+    #combine ms1 and blank features
+    blank_ms1_set = features_blanks_set.union(ms1_only_set)
+    
+    #from all features, filter blank and ms1 features
+    all_nonblank_set = all_feature_set.difference(blank_ms1_set)
+    
+    ###FILTERS###
+    
+    #filter for numeric thresholds
+    filtered_thrsh_df = samples[sample].loc[
+        (samples[sample]['rel_intensity_score'] >= thresholds['rel_int']) &
+        (samples[sample]['convolutedness_score'] >= thresholds['conv']) &
+        (samples[sample]['bioactivity_score'] >= thresholds['bioact']) &
+        (samples[sample]['novelty_score'] >= thresholds['nov']) 
+        ]
+    filtered_thrsh_set = set(filtered_thrsh_df['feature_ID'])
+
+    #subtract ms1 and blanks from features over threshold
+    all_select_no_blank = filtered_thrsh_set.difference(blank_ms1_set)
+    
+    #ADDITIONAL FILTERS: ADD HERE (add feature IDs to all_select_no_blank)
+    
+    
+    #subset of selected sample specific features
+    select_sample_spec = set()
+    for ID in all_select_no_blank:
+        if (len(feature_dicts[str(ID)]['presence_samples']) == 1):
+            select_sample_spec.add(ID)
+    
+    #subset of selected group specific features
+    select_group_spec = set()
+    for ID in all_select_no_blank.difference(select_sample_spec):
+        if (
+            (len(feature_dicts[str(ID)]['set_groups']) == 1)
+            and not
+            ('GENERAL' in feature_dicts[str(ID)]['set_groups'])
+        ):
+            select_group_spec.add(ID)
+    
+    #subtract sample spec and group spec features from total
+    select_remainder = all_select_no_blank.difference(select_sample_spec)
+    select_remainder = select_remainder.difference(select_group_spec)
+    
+    #non-selected features (subtracted blanks+ms1)
+    all_nonsel_no_blank = all_nonblank_set.difference(all_select_no_blank)
+    
+    #subset of nonselected sample specific features
+    nonselect_sample_spec = set()
+    for ID in all_nonsel_no_blank:
+        if (len(feature_dicts[str(ID)]['presence_samples']) == 1):
+            nonselect_sample_spec.add(ID)
+    
+    #subset of nonselected group specific features
+    nonselect_group_spec = set()
+    for ID in all_nonsel_no_blank.difference(nonselect_sample_spec):
+        if (
+            (len(feature_dicts[str(ID)]['set_groups']) == 1)
+            and not
+            ('GENERAL' in feature_dicts[str(ID)]['set_groups'])
+        ):
+            nonselect_group_spec.add(ID)
+    
+    #subtract sample spec and group spec features from total
+    nonselect_remainder = all_nonsel_no_blank.difference(nonselect_sample_spec)
+    nonselect_remainder = nonselect_remainder.difference(nonselect_group_spec)
+    
+    return {
+        ###GENERAL
+        'all_features' : list(all_feature_set),
+        'blank_ms1' : list(blank_ms1_set),
+        'all_nonblank' : list(all_nonblank_set),
+        ###SELECTED
+        'all_select_no_blank' : list(all_select_no_blank),
+        'select_sample_spec' : list(select_sample_spec),
+        'select_group_spec' : list(select_group_spec),
+        'select_remainder' : list(select_remainder),
+        ###NONSELECTED
+        'all_nonsel_no_blank' : list(all_nonsel_no_blank),
+        'nonselect_sample_spec' : list(nonselect_sample_spec),
+        'nonselect_group_spec' : list(nonselect_group_spec),
+        'nonselect_remainder' : list(nonselect_remainder),
+        }
+

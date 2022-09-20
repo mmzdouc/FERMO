@@ -171,6 +171,9 @@ dashboard = html.Div([
                 dcc.Store(id='storage_samples_JSON'),
                 dcc.Store(id='storage_sample_stats'),
                 dcc.Store(id='threshold_values'),
+                dcc.Store(id='samples_subsets'),
+                dcc.Store(id='sample_list'),
+                dcc.Store(id='storage_active_cell'),
                 ]),
             ###############
                 html.Div(
@@ -182,7 +185,7 @@ dashboard = html.Div([
                                 'Filename',
                                 'Group',
                                 'Diversity score',
-                                'Specificity score',
+                                'Spec score',
                                 'Total',
                                 'Non-blank',
                                 'Over cutoff',]
