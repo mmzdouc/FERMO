@@ -8,26 +8,18 @@ import dash_cytoscape as cyto
 #LOCAL MODULES
 
 
+
+##########
+#VARIABLES
+##########
+
 #redo this part - not all dicts needed (maybe not even one!)
 from variables import (
     style_data_table,
     style_data_cond_table,
     style_header_table,
     color_dict,
-    stylesheet_cytoscape,
-    info_node_dict,
-    info_edge_dict)
-
-
-##########
-#VARIABLES
-##########
-
-#redo this part - not neede probably
-info_node_df = pd.DataFrame(info_node_dict)
-info_edge_df = pd.DataFrame(info_edge_dict)
-
-
+    stylesheet_cytoscape,)
 
 ##########
 #FUNCTIONS
@@ -326,40 +318,40 @@ dashboard = html.Div([
                     },
             ),
             html.Div(
-                # ~ dash_table.DataTable(
-                    # ~ id='click-nodedata-output',
-                    # ~ columns=[
-                        # ~ {"name": i, "id": i, 'presentation': 'markdown'} 
-                        # ~ for i in info_node_df.columns
-                    # ~ ],
-                    # ~ markdown_options={"html": True},
-                    # ~ style_as_list_view=True,
-                    # ~ style_data=style_data_table,
-                    # ~ style_data_conditional=style_data_cond_table,
-                    # ~ style_header=style_header_table,
-                    # ~ ),
-                # ~ style={
-                    # ~ 'display': 'inline-block', 
-                    # ~ 'width': '49%',
-                    # ~ 'float': 'left'},
+                dash_table.DataTable(
+                    id='click-nodedata-output',
+                    columns=[
+                        {"name": i, "id": i, 'presentation': 'markdown'} 
+                        for i in ['Node info', 'Description']
+                    ],
+                    markdown_options={"html": True},
+                    style_as_list_view=True,
+                    style_data=style_data_table,
+                    style_data_conditional=style_data_cond_table,
+                    style_header=style_header_table,
+                    ),
+                style={
+                    'display': 'inline-block', 
+                    'width': '49%',
+                    'float': 'left'},
                 ),
             html.Div(
-                # ~ dash_table.DataTable(
-                    # ~ id='click-edgedata-output',
-                    # ~ columns=[
-                        # ~ {"name": i, "id": i, 'presentation': 'markdown'} 
-                        # ~ for i in info_edge_df.columns
-                    # ~ ],
-                    # ~ markdown_options={"html": True},
-                    # ~ style_as_list_view=True,
-                    # ~ style_data=style_data_table,
-                    # ~ style_data_conditional=style_data_cond_table,
-                    # ~ style_header=style_header_table,
-                    # ~ ),
-                # ~ style={
-                    # ~ 'display': 'inline-block', 
-                    # ~ 'width': '49%',
-                    # ~ 'float': 'left'},
+                dash_table.DataTable(
+                    id='click-edgedata-output',
+                    columns=[
+                        {"name": i, "id": i, 'presentation': 'markdown'} 
+                        for i in ['Edge info', 'Description']
+                    ],
+                    markdown_options={"html": True},
+                    style_as_list_view=True,
+                    style_data=style_data_table,
+                    style_data_conditional=style_data_cond_table,
+                    style_header=style_header_table,
+                    ),
+                style={
+                    'display': 'inline-block', 
+                    'width': '49%',
+                    'float': 'left'},
                 ),
             ],
             id="dashboard_row_2_col_2",

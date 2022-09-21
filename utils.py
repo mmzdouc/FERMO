@@ -1029,6 +1029,47 @@ def modify_feature_info_df(
     return df.to_dict('records')
 
 
+def empty_feature_info_df():
+    '''Return empty dataframe'''
+    placeholder = '-----'
+    data = [
+        ['Feature ID', None],
+        ['Precursor <i>m/z</i>', None],
+        ['Retention time (min)', None],
+        ['Feature intensity (absolute)', None],
+        [placeholder, placeholder],
+        ['Medium/blank associated', None],
+        ['Intensity score', None], 
+        ['Convolutedness score', None],
+        ['Bioactivity score', None],
+        ['Novelty score', None],
+        [placeholder, placeholder],
+        ['User-library: matches', None],
+        ['MS2Query: best analog/match', None],
+        ['MS2Query: <i>m/z</i> diff. to best analog/match', None],
+        ['MS2Query: pred. class of best analog/match', None],
+        [placeholder, placeholder],
+        ['Found in groups', None],
+        ['Fold-differences groups', None],
+        ['Intensity per sample', None],
+        ['Bioactivity per sample', None],
+        ['Putative adducts', None],
+        [placeholder, placeholder],
+        ['Molecular network ID', None],
+        ['Groups in molecular network', None],
+        ['Number of features in MN', None],
+        ['IDs of features in MN', None],
+    ]
+    
+    df = pd.DataFrame(data, columns=['Attribute', 'Description'])
+    
+    return df.to_dict('records')
+
+
+
+
+
+
 def generate_cyto_elements(
     sel_sample,
     active_feature_id,
@@ -1205,6 +1246,56 @@ def generate_cyto_elements(
         return elements
     else:
         return []
+
+def add_nodedata(
+    data,
+    feat_dicts,
+    ):
+    '''Append node data to df'''
+    
+    annotation = ''.join([
+        (feat_dicts[str(data['id'])]['cosine_annotation_list'][0]['name']
+            if feat_dicts[str(data['id'])]['cosine_annotation']
+            else 'None '),
+        '<b>(user-library)</b>, <br>',
+        (feat_dicts[str(data['id'])]['ms2query_results']['analog_compound_name']
+            if feat_dicts[str(data['id'])]['ms2query'] else "None"),
+        '<b>(MS2Query)</b>',
+        ])
+        
+    combined_list_int = []
+    for i in range(len(feat_dicts[str(data['id'])]['presence_samples'])):
+        combined_list_int.append(''.join([
+            str(feat_dicts[str(data['id'])]['presence_samples'][i]),
+            '<br>', ]))
+
+    content = [
+        ['Feature ID', data['id']],
+        ['Precursor <i>m/z</i>', feat_dicts[str(data['id'])]['precursor_mz']],
+        ['Retention time (avg)', feat_dicts[str(data['id'])]['average_retention_time']],
+        ['Annotation', annotation],
+        ['Detected in samples', ("".join(str(i) for i in combined_list_int))],
+    ]
+    
+    df = pd.DataFrame(content, columns=['Node info', 'Description'])
+    
+    return df.to_dict('records')
+
+
+def add_edgedata(
+    data,
+    feat_dicts,
+    ):
+    '''Append edge data to df'''
+    
+    content = [
+        ['Connected nodes (IDs)', ''.join([data['source'],'--', data['target']])],
+        ['Weight of edge', data['weight']],
+        ['<i>m/z</i> difference between nodes', data['mass_diff']],
+        ]
+    df = pd.DataFrame(content, columns=['Edge info', 'Description'])
+
+    return df.to_dict('records')
 
 
 

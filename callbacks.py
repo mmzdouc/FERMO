@@ -581,6 +581,9 @@ def storage_active_feature(data, selected_sample, contents):
     if data is None:
         raise PreventUpdate
     
+    if ctx.triggered_id == 'storage_active_sample':
+        return None, None
+    
     samples_JSON = contents['samples_JSON']
     #temporarily convert from JSON to pandas DF
     samples = dict()
@@ -720,7 +723,7 @@ def update_selected_feature(
             samples,
             )
     else:
-        raise PreventUpdate
+        return utils.empty_feature_info_df()
 
 @callback(
     Output('cytoscape', 'elements'),
@@ -747,13 +750,71 @@ def update_cytoscape(
             sample_stats,
             )
 
+@callback(
+    Output('click-nodedata-output', 'data'),
+    Input('cytoscape', 'tapNodeData'),
+    Input('storage_active_sample', 'data'),
+    Input('storage_active_feature_id', 'data'),
+    State('data_processing_FERMO', 'data'),
+    )
+def displayTapNodeData(
+    nodedata, 
+    selected_sample, 
+    active_feature_id,
+    contents
+    ):
+    '''Display node data after cytoscape click'''
+    feature_dicts = contents['feature_dicts']
+    
+    if (
+        ctx.triggered_id == 'storage_active_sample'
+    or
+        ctx.triggered_id == 'storage_active_feature_id'
+    ):
+        data = [
+        ['Feature ID', None],
+        ['Precursor <i>m/z</i>', None],
+        ['Retention time (avg)', None],
+        ['Annotation', None],
+        ['Detected in samples', None],
+        ]
+        df = pd.DataFrame(data, columns=['Node info', 'Description'])
+        return df.to_dict('records')
+    
+    elif ctx.triggered_id == 'cytoscape':
+        return utils.add_nodedata(nodedata, feature_dicts,)
 
-
-
-
-
-
-
+@callback(
+    Output('click-edgedata-output', 'data'),
+    Input('cytoscape', 'tapEdgeData'),
+    Input('storage_active_sample', 'data'),
+    Input('storage_active_feature_id', 'data'),
+    State('data_processing_FERMO', 'data'),
+    )
+def displayTapEdgeData(
+    edgedata, 
+    selected_sample, 
+    active_feature_id,
+    contents
+    ):
+    '''Display edge data after cytoscape click'''
+    feature_dicts = contents['feature_dicts']
+    
+    if (
+        ctx.triggered_id == 'storage_active_sample'
+    or
+        ctx.triggered_id == 'storage_active_feature_id'
+    ):
+        data = [
+        ['Connected nodes (IDs)', None],
+        ['Weight of edge', None],
+        ['<i>m/z</i> difference between nodes', None],
+        ]
+        df = pd.DataFrame(data, columns=['Node info', 'Description'])
+        return df.to_dict('records')
+    
+    elif ctx.triggered_id == 'cytoscape':
+        return utils.add_edgedata(edgedata, feature_dicts,)
 
 
 

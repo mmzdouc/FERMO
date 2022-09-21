@@ -82,26 +82,6 @@ input_file_store = {
 
 
 
-info_node_dict = {
-    'Node info' : [
-        'Feature ID',
-        'Precursor m/z',
-        'Retention time (avg)',
-        'Best annotation match',
-        'Detected in samples',
-        ],
-    'Description' : None,
-    }
-
-info_edge_dict = {
-    'Edge info' : [
-        'Connected nodes (IDs)',
-        'Weight of edge',
-        'm/z difference between nodes',
-        ],
-    'Description' : None,
-    }
-
 
 stylesheet_cytoscape = [
             {
