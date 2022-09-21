@@ -3,16 +3,18 @@ from dash import Dash, html, dcc, dash_table
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 import pandas as pd
+import dash_cytoscape as cyto
 
 #LOCAL MODULES
 
+
+#redo this part - not all dicts needed (maybe not even one!)
 from variables import (
     style_data_table,
     style_data_cond_table,
     style_header_table,
     color_dict,
-    feature_info_dict,
-    load_cytoscape_attributes,
+    stylesheet_cytoscape,
     info_node_dict,
     info_edge_dict)
 
@@ -21,7 +23,7 @@ from variables import (
 #VARIABLES
 ##########
 
-feature_info_df = pd.DataFrame(feature_info_dict)
+#redo this part - not neede probably
 info_node_df = pd.DataFrame(info_node_dict)
 info_edge_df = pd.DataFrame(info_edge_dict)
 
@@ -150,13 +152,6 @@ def call_threshold_inp(name):
         step=0.01,)
 
 
-
-
-
-
-
-
-
 ##########
 #PAGE
 ##########
@@ -167,13 +162,12 @@ dashboard = html.Div([
         dbc.Col([
             ####STORAGE####
             html.Div([
-                dcc.Store(id='storage_feature_dicts'),
-                dcc.Store(id='storage_samples_JSON'),
-                dcc.Store(id='storage_sample_stats'),
                 dcc.Store(id='threshold_values'),
                 dcc.Store(id='samples_subsets'),
                 dcc.Store(id='sample_list'),
-                dcc.Store(id='storage_active_cell'),
+                dcc.Store(id='storage_active_sample'),
+                dcc.Store(id='storage_active_feature_index'), 
+                dcc.Store(id='storage_active_feature_id'), 
                 ]),
             ###############
                 html.Div(
@@ -210,8 +204,8 @@ dashboard = html.Div([
                     'margin-left' : '25px',
                         }
                     ),
-                # ~ html.Div(dcc.Graph(id='chromat_out')),
-                # ~ html.Div(dcc.Graph(id='chromat_clique_out')),
+                html.Div(dcc.Graph(id='chromat_out')),
+                html.Div(dcc.Graph(id='chromat_clique_out')),
             ],
             id="dashboard_row_1_col_2",
             width=9,
@@ -287,12 +281,12 @@ dashboard = html.Div([
         #bottom second: spectrum similarity network
         dbc.Col([
             html.Div(
-                # ~ cyto.Cytoscape(
-                    # ~ id='cytoscape',
-                    # ~ layout={'name': 'cose'},
-                    # ~ stylesheet=stylesheet_cytoscape,
-                    # ~ style={'width': '100%', 'height': '30vh'},
-                    # ~ ),
+                cyto.Cytoscape(
+                    id='cytoscape',
+                    layout={'name': 'cose'},
+                    stylesheet=stylesheet_cytoscape,
+                    style={'width': '100%', 'height': '30vh'},
+                    ),
                 ),
             html.Div([
                 call_legend_element(
@@ -374,15 +368,15 @@ dashboard = html.Div([
         #bottom third: mini-chromatograms, sample overview
         dbc.Col([
             html.H3(id='title_mini_chrom',),
-            # ~ html.Div(
-                # ~ dcc.Graph(id='mini-chromatograms',),
-                # ~ style={
-                    # ~ 'width': '100%', 
-                    # 'height': '70vh', #leave switched off
-                    # ~ 'display': 'inline-block',
-                    # ~ 'overflow': 'scroll',
-                    # ~ },
-                # ~ ),
+            html.Div(
+                dcc.Graph(id='mini_chromatograms',),
+                style={
+                    'width': '100%', 
+                    # ~ # 'height': '70vh', #leave switched off
+                    'display': 'inline-block',
+                    'overflow': 'scroll',
+                    },
+                ),
             ],
             id="dashboard_row_2_col_3",
             width=3,

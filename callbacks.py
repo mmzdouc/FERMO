@@ -398,29 +398,11 @@ def upload_sessionfile(contents, filename):
 ##########
 
 @callback(
-    Output('storage_feature_dicts', 'data'),
-    Output('storage_samples_JSON', 'data'),
-    Output('storage_sample_stats', 'data'),
-    Input('data_processing_FERMO', 'data'),
-)
-def FERMO_data_loading(contents):
-    '''Loading function: contents contains the following data (from utils)
-    '''
-    if contents is None:
-        raise PreventUpdate
-    else:  
-        return (
-            contents['feature_dicts'],
-            contents['samples_JSON'],
-            contents['sample_stats'],
-            )
-
-@callback(
-    Output(component_id='threshold_values', component_property='data'),
-    Input(component_id='rel_intensity_threshold', component_property='value'),
-    Input(component_id='convolutedness_threshold', component_property='value'),
-    Input(component_id='bioactivity_threshold', component_property='value'),
-    Input(component_id='novelty_threshold', component_property='value'),
+    Output('threshold_values', 'data'),
+    Input('rel_intensity_threshold', 'value'),
+    Input('convolutedness_threshold', 'value'),
+    Input('bioactivity_threshold', 'value'),
+    Input('novelty_threshold', 'value'),
 )
 def read_threshold_values_function(rel_int, conv, bioact, nov,):
     '''Bundle input values'''
@@ -437,21 +419,21 @@ def read_threshold_values_function(rel_int, conv, bioact, nov,):
 
 
 @callback(
-        Output(component_id='table_sample_names', component_property='data'),
-        Output(component_id='samples_subsets', component_property='data'),
-        Output(component_id='sample_list', component_property='data'),
-        Input(component_id='threshold_values', component_property='data'),
-        Input(component_id='storage_feature_dicts', component_property='data'),
-        Input(component_id='storage_samples_JSON', component_property='data'),
-        Input(component_id='storage_sample_stats', component_property='data'),
+        Output('table_sample_names', 'data'),
+        Output('samples_subsets', 'data'),
+        Output('sample_list', 'data'),
+        Input('threshold_values', 'data'),
+        Input('data_processing_FERMO', 'data'),
         )
 def calculate_feature_score(
         thresholds,
-        feature_dicts,
-        samples_JSON,
-        sample_stats,):
+        contents,
+        ):
     '''For each sample, create subsets of features and calculate scores'''
-
+    feature_dicts = contents['feature_dicts']
+    samples_JSON = contents['samples_JSON']
+    sample_stats = contents['sample_stats']
+    
     #temporarily convert from JSON to pandas DF
     samples = dict()
     for sample in samples_JSON:
@@ -536,12 +518,12 @@ def calculate_feature_score(
 
 
 @callback(
-    Output(component_id='storage_active_cell', component_property='data'),
-    Input(component_id='table_sample_names', component_property='active_cell'),
-    Input(component_id='table_sample_names', component_property='data'),
-    Input(component_id='sample_list', component_property='data'),
+    Output('storage_active_sample', 'data'),
+    Input('table_sample_names', 'active_cell'),
+    Input('table_sample_names', 'data'),
+    Input('sample_list', 'data'),
 )
-def storage_active_cell(data, update_table, sample_list):
+def storage_active_sample(data, update_table, sample_list):
     '''Store active cell in dcc.Storage'''
     #Null coalescing assignment: default value if var not assigned
     data = data or {'row' : 0,}
@@ -549,40 +531,221 @@ def storage_active_cell(data, update_table, sample_list):
     return sample_list[data["row"]]
 
 
+@callback(
+    Output('title_central_chrom', 'children'),
+    Input('storage_active_sample', 'data'),
+)
+def title_central_chrom(selected_sample,):
+    return f"""Chromatogram of Sample {selected_sample}"""
 
 
+@callback(
+    Output('chromat_out', 'figure'),
+    Input('storage_active_sample', 'data'),
+    Input('storage_active_feature_index', 'data'),
+    Input('samples_subsets', 'data'),
+    State('data_processing_FERMO', 'data'),
+)
+def plot_chromatogram(
+    selected_sample, 
+    active_feature_index,
+    samples_subsets,
+    contents,
+    ):
+    '''Plot central chromatogram'''
+    samples_JSON = contents['samples_JSON']
+    sample_stats = contents['sample_stats']
+    
+    #temporarily convert from JSON to pandas DF
+    samples = dict()
+    for sample in samples_JSON:
+        samples[sample] = pd.read_json(
+            samples_JSON[sample], orient='split')
+    
+    return utils.plot_central_chrom(
+        selected_sample,
+        active_feature_index,
+        sample_stats,
+        samples,
+        samples_subsets)
 
-###RESTART FROM HERE
+@callback(
+    Output('storage_active_feature_index', 'data'),
+    Output('storage_active_feature_id', 'data'),
+    Input('chromat_out', 'clickData'),
+    Input('storage_active_sample', 'data'),
+    State('data_processing_FERMO', 'data'),
+)
+def storage_active_feature(data, selected_sample, contents):
+    '''Stores active feature in dcc.Storage'''
+    if data is None:
+        raise PreventUpdate
+    
+    samples_JSON = contents['samples_JSON']
+    #temporarily convert from JSON to pandas DF
+    samples = dict()
+    for sample in samples_JSON:
+        samples[sample] = pd.read_json(
+            samples_JSON[sample], orient='split')
+    
+    data_int = int(data["points"][0]['curveNumber'])
+    
+    feature_ID = int(samples[selected_sample].loc[data_int, 'feature_ID'])
+    
+    if data_int <= len(samples[selected_sample]):
+        return data_int, feature_ID
+    else:
+        return 0, None
 
-    @app.callback(
-        Output(component_id='title_central_chrom', component_property='children'),
-        Input(component_id='storage_active_cell', component_property='data'),
+
+@callback(
+    Output('chromat_clique_out', 'figure'),
+    Input('storage_active_sample', 'data'),
+    Input('storage_active_feature_index', 'data'),
+    Input('storage_active_feature_id', 'data'),
+    State('data_processing_FERMO', 'data'),
+)
+def plot_chromatogram_clique(
+    selected_sample, 
+    active_feature_index,
+    active_feature_id,
+    contents,
+    ):
+    '''Plot clique chromatogram'''
+    feature_dicts = contents['feature_dicts']
+    samples_JSON = contents['samples_JSON']
+    sample_stats = contents['sample_stats']
+    
+    #temporarily convert from JSON to pandas DF
+    samples = dict()
+    for sample in samples_JSON:
+        samples[sample] = pd.read_json(
+            samples_JSON[sample], orient='split')
+
+    return utils.plot_clique_chrom(
+        selected_sample,
+        active_feature_index,
+        active_feature_id,
+        sample_stats,
+        samples,
+        feature_dicts,)
+
+
+@callback(
+    Output('title_mini_chrom', 'children'),
+    Input('storage_active_feature_id', 'data'),
+    State('data_processing_FERMO', 'data'),
+)
+def title_mini_chrom(
+    active_feature_id,
+    contents,
+    ):
+    '''Print title of mini chromatograms'''
+    feature_dicts = contents['feature_dicts']
+    sample_stats = contents['sample_stats']
+    
+    
+    if active_feature_id is None:
+        raise PreventUpdate
+    
+    return f"""Feature {active_feature_id}: Detected Across 
+        {len(feature_dicts[str(active_feature_id)]['presence_samples'])} 
+        of {len(sample_stats["samples_list"])} Samples"""
+
+@callback(
+    Output('mini_chromatograms', 'figure'),
+    Input('storage_active_sample', 'data'),
+    Input('storage_active_feature_id', 'data'),
+    State('data_processing_FERMO', 'data'),
+)
+def plot_chrom_overview(
+    selected_sample, 
+    active_feature_id,
+    contents
+    ):
+    '''Plot mini-chromatograms'''
+    
+    '''Solution to sample name (subplot titles) problem of 
+    stacking on top of the chromatograms is simply to 
+    plot separate small chromatograms instead of subplots!
+    Questionable how scalable but best solution 
+    since more adjustable than subplots'''
+    feature_dicts = contents['feature_dicts']
+    samples_JSON = contents['samples_JSON']
+    sample_stats = contents['sample_stats']
+    
+    #temporarily convert from JSON to pandas DF
+    samples = dict()
+    for sample in samples_JSON:
+        samples[sample] = pd.read_json(
+            samples_JSON[sample], orient='split')
+    
+    return utils.plot_mini_chrom(
+        selected_sample,
+        active_feature_id,
+        sample_stats,
+        samples,
+        feature_dicts,)
+    
+
+@callback(
+    Output('featureinfo_out', 'data'), 
+    Input('storage_active_sample', 'data'),
+    Input('storage_active_feature_id', 'data'),
+    Input('storage_active_feature_index', 'data'),
+    State('data_processing_FERMO', 'data'),
     )
-    def title_central_chrom(selected_sample,):
-        return f"""Chromatogram of Sample {selected_sample}"""
-        
-    @app.callback(
-        Output(component_id='chromat_out', component_property='figure'),
-        Input(component_id='storage_active_cell', component_property='data'),
-        Input(component_id='storage_active_feature', component_property='data'),
-    )
-    def plot_chromatogram(selected_sample, active_feature,):
-        '''Plot central chromatogram'''
-        
-        return utilities.plot_central_chrom(
+def update_selected_feature(
+    selected_sample, 
+    active_feature_id,
+    active_feature_index,
+    contents,
+    ):
+    '''Return info on active feature'''
+    feature_dicts = contents['feature_dicts']
+    samples_JSON = contents['samples_JSON']
+    
+    #temporarily convert from JSON to pandas DF
+    samples = dict()
+    for sample in samples_JSON:
+        samples[sample] = pd.read_json(
+            samples_JSON[sample], orient='split')
+    
+    if isinstance(active_feature_index, int):
+        return utils.modify_feature_info_df(
             selected_sample,
-            active_feature,
+            active_feature_id,
+            active_feature_index,
+            feature_dicts,
+            samples,
+            )
+    else:
+        raise PreventUpdate
+
+@callback(
+    Output('cytoscape', 'elements'),
+    Input('storage_active_sample', 'data'),
+    Input('storage_active_feature_id', 'data'),
+    State('data_processing_FERMO', 'data'),
+    )
+def update_cytoscape(
+    selected_sample,
+    active_feature_id,
+    contents,
+    ):
+    '''Plot spectral similarity network'''
+    feature_dicts = contents['feature_dicts']
+    sample_stats = contents['sample_stats']
+    
+    if active_feature_id is None:
+        return []
+    else:
+        return utils.generate_cyto_elements(
+            selected_sample,
+            active_feature_id,
+            feature_dicts,
             sample_stats,
-            feature_scoring,
-            feature_objects,)
-
-
-
-
-
-
-
-
+            )
 
 
 

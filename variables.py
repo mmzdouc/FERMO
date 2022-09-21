@@ -80,38 +80,7 @@ input_file_store = {
 #DASHBOARD VARIABLES
 ##########
 
-feature_info_dict = {
-    'Attribute' : [
-        'Feature ID',
-        'Precursor <i>m/z</i>',
-        'Retention time (min)',
-        'Feature intensity (absolute)',
-        '-----',
-        'Over threshold',
-        'Medium/blank associated',
-        'Intensity score',
-        'Convolutedness score',
-        'Bioactivity score',
-        'Novelty score',
-        '-----',
-        'User-library: matches',
-        'MS2Query: best analog/match',
-        'MS2Query: <i>m/z</i> diff. to best analog/match',
-        'MS2Query: pred. class of best analog/match',
-        '-----',
-        'Found in groups',
-        'Fold-differences groups',
-        'Intensity per sample', #presence in samples (feature objects)
-        'Bioactivity per sample', #bioactivity scores
-        'Putative adducts',
-        '-----',
-        'Molecular network ID',
-        'Groups in molecular network',
-        'Number of features in MN',
-        'IDs of features in MN',
-        ],
-    'Description' : None,
-    }
+
 
 info_node_dict = {
     'Node info' : [
@@ -134,7 +103,7 @@ info_edge_dict = {
     }
 
 
-load_cytoscape_attributes= [
+stylesheet_cytoscape = [
             {
             'selector': '.selected',
             'style': {

@@ -1,7 +1,11 @@
 from dash import html
 import re
 import pandas as pd
+import numpy as np
 import os
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import copy
 
 #LOCAL MODULES
 from processing.read_from_metadata_table import read_from_metadata_table
@@ -16,6 +20,8 @@ from processing.ms2query_search import ms2query_search
 from processing.calculate_feature_overlap import calculate_feature_overlap
 from processing.calculate_metrics import calculate_metrics
 from processing.calculate_pseudochrom_traces import calculate_pseudochrom_traces
+
+from variables import color_dict
 
 ############
 #INPUT TESTING
@@ -359,6 +365,14 @@ def peaktable_processing(input_file_store, params_dict):
 
     samples = calculate_pseudochrom_traces(samples,)
     
+    for sample in samples:
+        samples[sample].sort_values(
+            by=['norm_intensity',], 
+            inplace=True, 
+            ascending=[False]
+            )
+        samples[sample].reset_index(drop=True, inplace=True)
+
     input_filenames = {
         'peaktable_name' : input_file_store['peaktable_name'],
         'mgf_name' : input_file_store['mgf_name'],
@@ -458,6 +472,10 @@ def generate_subsets(
     Connect filter to the callback calculate_feature_score
     Simply add a conditional that adds feature ID to all_select_no_blank
     set. the later operations take care of the right group for plotting
+    
+    #Extract a row as series using squeeze()
+    samples[selected_sample].loc[
+        samples[selected_sample]['feature_ID'] == ID].squeeze(),
     """
     ###STATS###
     
@@ -558,4 +576,635 @@ def generate_subsets(
         'nonselect_group_spec' : list(nonselect_group_spec),
         'nonselect_remainder' : list(nonselect_remainder),
         }
+
+
+def append_scatter_text(
+    row,
+    fill,
+    line,
+    width,
+    bordercolor
+    ):
+    '''Create scatter trace with hoverlabel'''
+    text = (f'Feature ID <b>{row["feature_ID"]}</b>' +
+            '<br>' +
+            f'<i>m/z</i> <b>{row["precursor_mz"]}</b>' +
+            '<br>' +
+            f'RT (min) <b>{row["retention_time"]}</b>'
+            )
+    return go.Scatter(
+        x=np.array(row['pseudo_chrom_trace'][0]),
+        y=np.array(row['pseudo_chrom_trace'][1]),
+        fill='toself',
+        fillcolor=fill,
+        showlegend=False,
+        mode="lines",
+        line={
+            'color' : line,
+            'shape' : 'spline',
+            'smoothing' : 0.8,
+            'width' : width,
+            },
+        hoverinfo="text", #change to 'skip' if want to suppress
+        text=text,
+        hoverlabel={
+            'bgcolor' : 'white',
+            'bordercolor' : bordercolor}
+        )
+    
+
+def plot_central_chrom(
+    sel_sample,
+    active_feature_index,
+    sample_stats,
+    samples,
+    subsets,
+    ):
+    '''Plot central chromatogram'''
+    fig = go.Figure()
+    fig.update_layout(
+        margin = dict(t=0,b=0, r=0),
+        height = 300,
+        )
+
+    fig.update_xaxes(
+        autorange=False,
+        visible=True,
+        range=[
+            (sample_stats["rt_min"]-(sample_stats["rt_range"]*0.05)),
+            (sample_stats["rt_max"]+(sample_stats["rt_range"]*0.05)),
+            ],
+        )
+    
+    fig.update_yaxes(
+        autorange=False,
+        title_text="Relative Intensity",
+        range=[0, 1.05],
+        )
+    
+    for id, row in samples[sel_sample].iterrows():
+        if int(row['feature_ID']) in subsets[sel_sample]['blank_ms1']:
+            fig.add_trace(
+                append_scatter_text(
+                    row,
+                    color_dict['light_yellow'],
+                    color_dict['yellow'],
+                    4,
+                    color_dict['black'],
+                    )
+                )
+        elif int(row['feature_ID']) in subsets[sel_sample]['select_sample_spec']:
+            fig.add_trace(
+                append_scatter_text(
+                    row,
+                    color_dict['light_green'],
+                    color_dict['purple'],
+                    4,
+                    color_dict['black'],
+                    )
+                )
+        elif int(row['feature_ID']) in subsets[sel_sample]['select_group_spec']:
+            fig.add_trace(
+                append_scatter_text(
+                    row,
+                    color_dict['light_green'],
+                    color_dict['black'],
+                    4,
+                    color_dict['black'],
+                    )
+                )
+        elif int(row['feature_ID']) in subsets[sel_sample]['select_remainder']:
+            fig.add_trace(
+                append_scatter_text(
+                    row,
+                    color_dict['light_green'],
+                    color_dict['green'],
+                    4,
+                    color_dict['black'],
+                    )
+                )
+        elif int(row['feature_ID']) in subsets[sel_sample]['nonselect_sample_spec']:
+            fig.add_trace(
+                append_scatter_text(
+                    row,
+                    color_dict['light_cyan'],
+                    color_dict['purple'],
+                    4,
+                    color_dict['black'],
+                    )
+                )
+        elif int(row['feature_ID']) in subsets[sel_sample]['nonselect_group_spec']:
+            fig.add_trace(
+                append_scatter_text(
+                    row,
+                    color_dict['light_cyan'],
+                    color_dict['black'],
+                    4,
+                    color_dict['black'],
+                    )
+                )
+        elif int(row['feature_ID']) in subsets[sel_sample]['nonselect_remainder']:
+            fig.add_trace(
+                append_scatter_text(
+                    row,
+                    color_dict['light_cyan'],
+                    color_dict['cyan'],
+                    4,
+                    color_dict['black'],
+                    )
+                )
+        else:
+            fig.add_trace(
+                append_scatter_text(
+                    row,
+                    color_dict['black'],
+                    color_dict['black'],
+                    4,
+                    color_dict['black'],
+                    )
+                )
+
+    if isinstance(active_feature_index, int):
+        fig.add_shape(
+            type="rect",
+            xref="x", 
+            yref="y",
+            x0=samples[sel_sample].at[
+                active_feature_index, 'rt_start'],
+            x1=samples[sel_sample].at[
+                active_feature_index, 'rt_stop'], 
+            y0=0, 
+            y1=(samples[sel_sample].at[
+                active_feature_index, 'norm_intensity'] * 1),
+            line={
+                'color' : color_dict['blue'],
+                'width' : 5,
+                'dash' : 'dash',}
+        )
+    
+    return fig
+
+
+
+
+def plot_clique_chrom(
+    selected_sample,
+    active_feature_index,
+    active_feature_id,
+    sample_stats,
+    samples,
+    feature_dicts,
+    ):
+    '''Plot clique chromatogram - overview'''
+    fig = go.Figure()
+    
+    fig.update_layout(
+        margin = dict(t=0,b=0,r=0),
+        height = 100,
+        )
+    
+    fig.update_yaxes(
+        visible=False,
+        )
+    
+    fig.update_xaxes(
+        autorange=False,
+        title_text="Retention Time (min)",
+            range=[
+                (sample_stats["rt_min"]-(sample_stats["rt_range"]*0.05)),
+                (sample_stats["rt_max"]+(sample_stats["rt_range"]*0.05)),
+                ],
+            )
+
+    if isinstance(active_feature_index, int):
+        if feature_dicts[str(active_feature_id)]['similarity_clique']:
+            for clique_member in feature_dicts[
+                str(active_feature_id)]['similarity_clique_list'][0]:
+                if clique_member != active_feature_id:
+                    try:
+                        row = samples[selected_sample].loc[
+                            samples[selected_sample]['feature_ID'] 
+                            == clique_member].squeeze()
+                        fig.add_trace(
+                            append_scatter_text(
+                                row,
+                                color_dict['light_red'],
+                                color_dict['red'],
+                                3,
+                                color_dict['black'],
+                                )
+                            )
+                    except:
+                        pass
+        fig.add_trace(
+                append_scatter_text(
+                    samples[selected_sample].loc[
+                        samples[selected_sample]['feature_ID'] 
+                        == active_feature_id].squeeze(),
+                    color_dict['light_blue'],
+                    color_dict['blue'],
+                    3,
+                    color_dict['black'],
+                    )
+                )
+    return fig
+
+def plot_mini_chrom(
+    selected_sample,
+    active_feature_id,
+    sample_stats,
+    samples,
+    feature_dicts,
+    ):
+    '''Plot mini-chromatogram overview'''
+    
+    fig = make_subplots(rows=1, cols=1)
+
+    if isinstance(active_feature_id, int):
+
+        try: 
+            nr_subplots = len(
+                feature_dicts[str(active_feature_id)]['presence_samples'])
+        except KeyError:
+            nr_subplots = 0
+    
+        fig = make_subplots(
+            rows=nr_subplots, 
+            cols=1,
+            shared_xaxes=True,
+            x_title="Retention Time (min)",
+            subplot_titles=[
+                x for x in 
+                feature_dicts[str(active_feature_id)]['presence_samples']
+                ]
+            )
+        
+        fig.update_annotations(
+            font_size=12
+            )
+
+        fig.update_yaxes(visible=False)
+        
+        row_counter = 1
+        for sample in feature_dicts[str(active_feature_id)]['presence_samples']:
+            feature_row = ""
+            for id, row in samples[sample].iterrows():
+                if row['feature_ID'] == active_feature_id:
+                    active_feature_row = copy.deepcopy(row)
+                elif row['norm_intensity'] > 0.05:
+                    fig.append_trace(append_scatter_text(
+                            row,
+                            color_dict['light_grey'],
+                            color_dict['grey'],
+                            2,
+                            color_dict['grey'],
+                            ),
+                        row=row_counter, 
+                        col=1
+                        )
+            try:
+                fig.append_trace(append_scatter_text(
+                    active_feature_row,
+                    color_dict['blue'],
+                    color_dict['black'],
+                    2,
+                    color_dict['black'],
+                ),
+                row=row_counter, 
+                col=1
+                )
+            except TypeError:
+                pass
+
+            row_counter = row_counter + 1
+
+    fig.update_xaxes(
+        autorange=False,
+        range=[
+            (sample_stats["rt_min"]-(sample_stats["rt_range"]*0.05)),
+            (sample_stats["rt_max"]+(sample_stats["rt_range"]*0.05)),
+            ],
+        )
+    
+    fig.update_yaxes(
+    autorange=False,
+    range=[0, 1],
+    visible=False,
+    )
+    
+    fig.update_layout(
+    margin = dict(r=0,l=0,b=0,t=50),
+    )
+    
+    return fig
+
+
+def modify_feature_info_df(
+    smpl,
+    ID,
+    index,
+    feat_dicts,
+    samples,
+    ):
+    '''Modify feature_info_dataframe for feature info display'''
+    #change to str for feature dict querying
+    ID = str(ID)
+    
+    #Intensity per sample
+    int_sample = ''.join(
+        [str(samples[smpl].at[index, 'intensity']), ' (', smpl,')',]
+        )
+    
+    #best cosine match
+    cosine_annotation = None
+    if feat_dicts[ID]['cosine_annotation']:
+        cosine_annotation = ''.join([
+            '(Name: <b>', feat_dicts[ID]['cosine_annotation_list'][0]['name'],
+            '</b>;', '<br>', 'Score: ',
+            str(feat_dicts[ID]['cosine_annotation_list'][0]['score']), ';',
+            '<br>', 'Nr of matched fragments: ',
+            str(feat_dicts[ID]['cosine_annotation_list'][0]['nr_matches']),
+            ')', ])
+
+    #Best ms2query match
+    ann_ms2query = None
+    mass_diff_ms2query = None
+    class_ms2query = None
+    if feat_dicts[ID]['ms2query']:
+        ann_ms2query = ''.join([
+            'Name: ', feat_dicts[ID]['ms2query_results']['Link(s)'], ';',
+            '<br>', 'Score: ', str(round(feat_dicts[ID]['ms2query_results']
+                ['ms2query_model_prediction'],3)), ])
+        mass_diff_ms2query = ''.join([ 
+            'Δ ', str(round(feat_dicts[ID]['ms2query_results']
+                ['precursor_mz_difference'],3)),
+            ' <i>m/z</i> (',
+            str(round(feat_dicts[ID]['ms2query_results']
+                ['precursor_mz_analog'],3)), ')',])
+        class_ms2query = ''.join([ 
+            str(feat_dicts[ID]['ms2query_results']['npc_class_results']),
+            ' (NP Classifier);', '<br>',
+            str(feat_dicts[ID]['ms2query_results']['cf_subclass']),
+            ' (ClassyFire)' ])
+    
+    fold_diff_list = []
+    if feat_dicts[ID]['dict_fold_diff'] is not None:
+        for comp in feat_dicts[ID]['sorted_fold_diff']:
+            if feat_dicts[ID]['dict_fold_diff'][comp] > 1:
+                fold_diff_list.append(''.join([
+                    str(feat_dicts[ID]['dict_fold_diff'][comp]),
+                    ' (', comp, '),', '<br>',])) 
+
+    combined_list_int = []
+    for i in range(len(feat_dicts[ID]['presence_samples'])):
+        combined_list_int.append(''.join([
+            str(feat_dicts[ID]['intensities_samples'][i]),' (',
+            str(feat_dicts[ID]['presence_samples'][i]), '),', '<br>', ]))
+
+    combined_list_bio = []
+    if feat_dicts[ID]['bioactivity_associated']:
+        for i in range(len(feat_dicts[ID]['presence_samples'])):
+            combined_list_bio.append(''.join([
+                str(feat_dicts[ID]['bioactivity_samples'][i]), ' (',
+                str(feat_dicts[ID]['presence_samples'][i]), '),', '<br>',
+                ]))
+    else:
+        combined_list_bio = [None]
+        
+    combined_list_adducts = []
+    if samples[smpl].at[index, 'putative_adduct_detection']:
+        for i in range(len(samples[smpl].at[index, 'putative_adduct_detection'])):
+            combined_list_adducts.append(''.join([
+                str(samples[smpl].at[index, 'putative_adduct_detection'][i]),
+                ',<br>', ]))
+    else:
+        combined_list_adducts = [None]
+
+    groups_cliques= []
+    if feat_dicts[ID]['similarity_clique']:
+        for group in feat_dicts[ID]['set_groups_clique']:
+            groups_cliques.append(''.join([group, '<br>', ]))
+    else:
+        groups_cliques = [None]
+    
+    sim_clique_len = None
+    sim_clique_list = None
+    if feat_dicts[ID]['similarity_clique']:
+        sim_clique_len = len(feat_dicts[ID]['similarity_clique_list'][0])
+        sim_clique_list = (', '.join(str(i) for i in 
+            feat_dicts[ID]['similarity_clique_list'][0]))
+
+    placeholder = '-----'
+    data = [
+        ['Feature ID', samples[smpl].at[index, 'feature_ID']],
+        ['Precursor <i>m/z</i>', samples[smpl].at[index, 'precursor_mz']],
+        ['Retention time (min)', samples[smpl].at[index, 'retention_time']],
+        ['Feature intensity (absolute)', int_sample],
+        [placeholder, placeholder],
+        ['Medium/blank associated', samples[smpl].at[index, 'in_blank']],
+        ['Intensity score', round(samples[smpl].at[index, 'rel_intensity_score'],2)], 
+        ['Convolutedness score', round(samples[smpl].at[index, 'convolutedness_score'],2)],
+        ['Bioactivity score', round(samples[smpl].at[index, 'bioactivity_score'],2)],
+        ['Novelty score', round(samples[smpl].at[index, 'novelty_score'],2)],
+        [placeholder, placeholder],
+        ['User-library: matches', cosine_annotation],
+        ['MS2Query: best analog/match', ann_ms2query],
+        ['MS2Query: <i>m/z</i> diff. to best analog/match', mass_diff_ms2query],
+        ['MS2Query: pred. class of best analog/match', class_ms2query],
+        [placeholder, placeholder],
+        ['Found in groups', ("".join(f"{i}<br>" for i in feat_dicts[ID]['set_groups']))],
+        ['Fold-differences groups', ("".join(str(i) for i in fold_diff_list))],
+        ['Intensity per sample', ("".join(str(i) for i in combined_list_int))],
+        ['Bioactivity per sample', ("".join(str(i) for i in combined_list_bio))],
+        ['Putative adducts', ("".join(str(i) for i in combined_list_adducts))],
+        [placeholder, placeholder],
+        ['Molecular network ID', feat_dicts[ID]['similarity_clique_number']],
+        ['Groups in molecular network', ("".join(str(i) for i in groups_cliques))],
+        ['Number of features in MN', sim_clique_len],
+        ['IDs of features in MN', sim_clique_list],
+    ]
+    
+    df = pd.DataFrame(data, columns=['Attribute', 'Description'])
+    
+    return df.to_dict('records')
+
+
+def generate_cyto_elements(
+    sel_sample,
+    active_feature_id,
+    feat_dicts,
+    sample_stats,
+    ):
+    '''Generate cytoscape elements.
+    
+    Notes
+    -----
+    Creates nested list of cytoscape elements (nodes and edges).
+    Using conditional expressions, nodes are colored by applying
+    different classes. These classes have stylesheets associated, which 
+    are defined in variables.py, and which is 
+    called at dashboard startup as "global" variables. 
+    
+    List comprehension with multiple conditionals:
+    do A if condition a
+    else do B if condition b
+    else do C if condition c
+    for i in list
+    '''
+    ID = str(active_feature_id)
+
+    #tests if currently selected feature is in a similarity clique
+    if feat_dicts[ID]['similarity_clique']:
+        
+        #Create reference lists for consecutive nodes/edges creation
+        node_list = list(feat_dicts[ID]['similarity_clique_list'][0])
+        edges_list = list(feat_dicts[ID]['similarity_clique_list'][1])
+        precursor_list = [feat_dicts[str(i)]['precursor_mz'] for i in node_list]
+        id_precursor_dict = {
+            node_list[i] : [precursor_list[i],
+                            feat_dicts[str(node_list[i])]['feature_ID'],]
+            for i in range(len(node_list))
+        }
+        
+        #Creates list of nodes, with each node as a dictionary.
+        nodes = [
+        
+            #first condition: selected, unique to sample
+            {
+            'data': {
+                'id': str(i), 
+                'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+            },
+            'classes': 'selected_unique_sample',
+            }
+            if ((id_precursor_dict[i][1] == int(ID))
+            and
+            (len(feat_dicts[str(i)]['presence_samples']) == 1)
+            )
+            
+            #second condition: selected, unique to group
+            else {
+                'data': {
+                    'id': str(i), 
+                    'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+                },
+                'classes': 'selected_unique_group',
+            }
+            if ((id_precursor_dict[i][1] == int(ID))
+            and
+            (len(feat_dicts[str(i)]['set_groups']) == 1)
+            and not 
+            ('GENERAL' in feat_dicts[str(i)]['set_groups'])
+            )
+            
+            #third condition: selected - RETAIN
+            else {
+                'data': {
+                    'id': str(i), 
+                    'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+                },
+                'classes': 'selected',
+            }
+            if (id_precursor_dict[i][1] == int(ID))
+            
+            #fourth condition: in sample, unique to sample
+            else {
+                'data': {
+                    'id': str(i), 
+                    'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+                },
+                'classes': 'sample_unique_sample',
+            }
+            if (
+                (id_precursor_dict[i][1] in 
+                    sample_stats['features_per_sample'][sel_sample])
+            and
+                (sel_sample in feat_dicts[str(i)]['presence_samples'])
+            and
+                (len(feat_dicts[str(i)]['presence_samples']) == 1)
+                )
+                
+            #fifth condition: in sample, unique to group
+            else {
+                'data': {
+                    'id': str(i), 
+                    'label':"".join([str(id_precursor_dict[i][0])," m/z",]),
+                },
+                'classes': 'sample_unique_group',
+            }
+            if (
+                (id_precursor_dict[i][1] in 
+                    sample_stats['features_per_sample'][sel_sample])
+            and
+                (sel_sample in feat_dicts[str(i)]['presence_samples'])
+            and
+                (len(feat_dicts[str(i)]['set_groups']) == 1)
+            and not 
+                ('GENERAL' in feat_dicts[str(i)]['set_groups'])
+            )
+            
+            #sixth condition: in sample, unique to group - RETAIN
+            else {
+                'data': {
+                    'id': str(i), 
+                    'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+                },
+                'classes': 'sample',
+            }
+            if (
+                (id_precursor_dict[i][1] in 
+                    sample_stats['features_per_sample'][sel_sample])
+            )
+            
+            #seventh condition: not in sample, unique to the group
+            #where it is found
+            else {
+                'data': {
+                    'id': str(i), 
+                    'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+                },
+                'classes': 'default_unique_group',
+            }
+            if (
+                (len(feat_dicts[str(i)]['set_groups']) == 1)
+            and
+                (feat_dicts[str(i)]['set_groups'] == feat_dicts[ID]['set_groups'])
+            and not 
+                ('GENERAL' in feat_dicts[str(i)]['set_groups'])
+            )
+            
+            #eight condition: everything else
+            else {
+                'data': {
+                    'id': str(i), 
+                    'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+                },
+                'classes': 'default',
+            }
+            for i in id_precursor_dict
+        ]
+        
+        #Create list of edges (one dictionary per edge)
+        edges = [
+            {'data': {
+                'source': str(edges_list[i][0]),
+                'target': str(edges_list[i][1]),
+                'weight': edges_list[i][2],
+                'mass_diff' : abs(round(
+                    (feat_dicts[str(edges_list[i][0])]['precursor_mz'] -
+                    feat_dicts[str(edges_list[i][1])]['precursor_mz']), 3
+                    )),
+                }
+            }
+            for i in range(len(edges_list))
+        ]
+        
+        #Concatenate nodes and edges into single list
+        elements = nodes + edges
+
+        return elements
+    else:
+        return []
+
+
 
