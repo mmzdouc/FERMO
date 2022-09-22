@@ -32,7 +32,7 @@ def call_loading_page():
             id='call_loading_button',
             n_clicks=0,
             className="d-grid gap-2 col-6 mx-auto",
-            disabled=True, #switch on when ready
+            # ~ disabled=True, #switch on when ready
             ),
         ])
 

@@ -1,5 +1,5 @@
 import dash
-from dash import Dash, html, dcc, Input, Output, callback, dash_table, ctx, DiskcacheManager, CeleryManager
+from dash import Dash, html, dcc, Input, Output, State, callback, dash_table, ctx, DiskcacheManager, CeleryManager
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 import pickle
@@ -61,6 +61,8 @@ framework_app = dbc.Container([
         dcc.Store(id='store_loading'),
         ###Stores for data processing###
         dcc.Store(id='data_processing_FERMO'),
+        dcc.Store(id='data_storage_FERMO'),
+        dcc.Store(id='loaded_data_FERMO'),
         # represents the browser address bar, invisible
         dcc.Location(id='url', refresh=False), 
         #variable page content rendered in this element
@@ -167,23 +169,56 @@ def call_pages_mzmine(dashboard_mzmine):
         return '/dashboard'
 
 @callback(
-    Output('store_loading', 'data'),
+    Output('loading_start_cache', 'children'),
     Input('call_dashboard_loading', 'n_clicks'),
+    State('upload_session_storage', 'data'),
 )
-def call_pages_loading(dashboard_loading):
+def call_pages_loading(dashboard_loading, session_storage):
     '''Set redirect on page "loading". Can't accept input from other pages'''
     if not dashboard_loading:
         raise PreventUpdate
+    elif session_storage is None:
+        raise PreventUpdate
     else:
-        return '/dashboard'
+        return html.Div('Started processing, please wait ...')
+
+
+@callback(
+    Output('store_loading', 'data'),
+    Output('loaded_data_FERMO', 'data'),
+    Input('loading_start_cache', 'children'),
+    State('upload_session_storage', 'data'),
+)
+def function(signal, session_storage):
+    if signal is None:
+        raise PreventUpdate
+    else:
+        return '/dashboard', session_storage
+
+
+        
+
 
 ##########
 #PROCESSING 
 ##########
 
 @callback(
-    Output('store_processing_slow', 'data'),
     Output('data_processing_FERMO', 'data'),
+    Input('data_storage_FERMO', 'data'),
+    Input('loaded_data_FERMO', 'data'),
+    )
+def routing_processing_loading(storage, loading):
+    '''Bundle input values'''
+    if ctx.triggered_id == 'data_storage_FERMO':
+        return storage
+    elif ctx.triggered_id == 'loaded_data_FERMO':
+        return loading
+
+
+@callback(
+    Output('store_processing_slow', 'data'),
+    Output('data_storage_FERMO', 'data'),
     Input('processing_start_cache', 'children'),
     background=True,
     manager=background_callback_manager,
@@ -201,35 +236,15 @@ def function(signal):
         
         storage_JSON_dict = utils.make_JSON_serializable(FERMO_data)
         
-        #save to disk
-        dirname = os.path.dirname(__file__)
-        session_filename = os.path.join(dirname, 'FERMO_session.json',)
-        outfile = open(session_filename, 'w')
-        storage_JSON = json.dump(storage_JSON_dict, outfile, indent=4)
-        outfile.close()
-        print("ALERT: Saved to session file.")
+        # ~ #save to disk
+        # ~ dirname = os.path.dirname(__file__)
+        # ~ session_filename = os.path.join(dirname, 'FERMO_session.json',)
+        # ~ outfile = open(session_filename, 'w')
+        # ~ storage_JSON = json.dump(storage_JSON_dict, outfile, indent=4)
+        # ~ outfile.close()
+        # ~ print("ALERT: Saved to session file.")
         
-        '''MOVE TO LOADING PAGE'''
         
-        #Load session file from disk
-        with open('FERMO_session.json') as json_file:
-            loaded_JSON_dict = json.load(json_file)
-        
-        #convert samples from JSON to df
-        samples_from_JSON = dict()
-        for sample in loaded_JSON_dict['samples_JSON']:
-            samples_from_JSON[sample] = pd.read_json(
-                loaded_JSON_dict['samples_JSON'][sample], orient='split')
-        
-        loaded_FERMO_data = {
-            'feature_dicts' : loaded_JSON_dict['feature_dicts'],
-            'samples' : samples_from_JSON,
-            'sample_stats' : loaded_JSON_dict['sample_stats'],
-            'params_dict' : loaded_JSON_dict['params_dict'],
-            'input_filenames': loaded_JSON_dict['input_filenames'],
-            }
-        
-        '''MOVE TO LOADING PAGE'''
 
         return '/dashboard', storage_JSON_dict
 

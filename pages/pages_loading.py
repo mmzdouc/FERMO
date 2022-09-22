@@ -1,5 +1,12 @@
-from dash import html, dcc
+from dash import html, dcc, dash_table
 import dash_bootstrap_components as dbc
+
+from variables import (
+    style_data_table,
+    style_data_cond_table,
+    style_header_table,)
+
+
 
 def call_session_upload():
     '''Call the session upload field'''
@@ -25,7 +32,7 @@ def call_session_upload():
                     target="upload-session-tooltip",
                     ),
                 ]),
-            html.Div(id='upload-session-output'),
+            html.Div(id='upload_session_output'),
             html.Hr(),
         ])
 
@@ -46,6 +53,8 @@ loading = html.Div([
     dbc.Row([
         #first column#
         dbc.Col([
+                ###STORAGE###
+                dcc.Store(id='upload_session_storage'),
                 html.Div('FERMO: loading mode'),
                 ],
             id="loading_row_1_col_1",
@@ -71,13 +80,35 @@ loading = html.Div([
         #first column#
         dbc.Col([
                 html.Div('Placeholder for files to upload'),
-
+                call_session_upload(),
                 ],
             id="loading_row_3_col_1",
             width=6,
             ),
         #second column#
         dbc.Col([
+                #upload_session_table
+                html.Div(
+                dash_table.DataTable(
+                    id='upload_session_table',
+                    columns=[
+                        {"name": i, "id": i,'presentation': 'markdown'}
+                        for i in ['Attribute','Description']],
+                    markdown_options={"html": True},
+                    style_cell={'textAlign': 'left'},
+                    style_as_list_view=True,
+                    style_data=style_data_table,
+                    style_data_conditional=style_data_cond_table,
+                    style_header=style_header_table,
+                ),
+                style={
+                    'display': 'inline-block',
+                    'width': '50%',
+                    },
+                ),
+        
+        
+        
                 ],
             id="loading_row_3_col_2",
             width=6,
@@ -89,8 +120,13 @@ loading = html.Div([
     dbc.Row([
         #first column#
         dbc.Col([
-                html.Div('Placeholder for start button'),
                 call_dashboard_loading_button(),
+                #Helper function
+                html.Div(
+                    id='loading_start_cache',
+                    style={
+                        'text-align' : 'center',
+                    })
                 ],
             id="loading_row_4_col_1",
             width=12,

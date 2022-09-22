@@ -14,6 +14,7 @@ import pandas as pd
 import io
 import base64
 import numpy as np
+import json
 
 
 ####LOCAL MODULES AND VARS
@@ -381,16 +382,70 @@ def upload_userlib(contents, filename):
 ##########
 
 @callback(
-    Output('upload-session-output', 'children'),
+    Output('upload_session_output', 'children'),
+    Output('upload_session_storage', 'data'),
+    Output('upload_session_table', 'data'),
     Input('upload-session', 'contents'),
     State('upload-session', 'filename'),
 )
 def upload_sessionfile(contents, filename):
-    '''Placeholder'''
-    return html.Div(
+    '''JSON session file parsing and storage'''
+    
+    if contents is None:
+        return html.Div('No session file loaded.'), None, None
+    else:
+        content_type, content_string = contents.split(',')
+        decoded = base64.b64decode(content_string)
+        
+        try:
+            loaded_session_JSON = json.load(
+                io.StringIO(decoded.decode('utf-8')))
+        except:
+            return html.Div(
                 f'''
-                SESSION FILE UPLOAD NOT YET ACTIVE
-                ''')
+                ❌ Error: "{filename}" does not seem to be a FERMO
+                session file in JSON format.
+                '''), None, None
+        try: 
+            params = loaded_session_JSON['params_dict']
+            files = loaded_session_JSON['input_filenames']
+        except:
+            params = None
+            files = None
+        
+        if (params == None) or (files == None):
+            return html.Div(f'''❌ Error: "{filename}" does not seem to be a FERMO
+            session file in JSON format.
+            '''), None, None
+        else:
+            content = [
+                ['peaktable_name', files['peaktable_name']],
+                ['mgf_name', files['mgf_name']],
+                ['metadata_name', files['metadata_name']],
+                ['bioactivity_name', files['bioactivity_name']],
+                ['user_library_name', files['user_library_name']],
+                ['-----', '-----'],
+                ['mass_dev_ppm', params['mass_dev_ppm']],
+                ['min_nr_ms2', params['min_nr_ms2']],
+                ['feature_rel_int_fact', params['feature_rel_int_fact']],
+                ['bioact_fact', params['bioact_fact']],
+                ['column_ret_fact', params['column_ret_fact']],
+                ['spectral_sim_tol', params['spectral_sim_tol']],
+                ['spec_sim_score_cutoff', params['spec_sim_score_cutoff']],
+                ['max_nr_links_ss', params['max_nr_links_ss']],
+                ['min_nr_matched_peaks', params['min_nr_matched_peaks']],
+            ]
+            df = pd.DataFrame(content, columns=['Attribute', 'Description'])
+            return html.Div(
+                f'✅ "{filename}" successfully loaded.',
+                style={
+                    'color' : 'green',
+                    'font-weight' : 'bold',}), loaded_session_JSON, df.to_dict('records')
+    
+
+
+
+
 
 
 ##########
