@@ -229,35 +229,30 @@ COLUMNS - PROCESSING
     background-color: white;
     height: 5vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #processing_row_2_col_1  {
     background-color: white;
     height: 20vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #processing_row_3_col_1  {
     background-color: white;
     height: 50vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #processing_row_3_col_2  {
     background-color: white;
     height: 50vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #processing_row_4_col_1  {
     background-color: white;
     height: 5vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 /*
@@ -289,35 +284,30 @@ COLUMNS - MZMINE
     background-color: white;
     height: 5vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #mzmine_row_2_col_1  {
     background-color: white;
     height: 20vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #mzmine_row_3_col_1  {
     background-color: white;
     height: 50vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #mzmine_row_3_col_2  {
     background-color: white;
     height: 50vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #mzmine_row_4_col_1  {
     background-color: white;
     height: 5vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 /*
@@ -349,33 +339,28 @@ COLUMNS - LOADING
     background-color: white;
     height: 5vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #loading_row_2_col_1  {
     background-color: white;
     height: 20vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #loading_row_3_col_1  {
     background-color: white;
     height: 50vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #loading_row_3_col_2  {
     background-color: white;
     height: 50vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }
 
 #loading_row_4_col_1  {
     background-color: white;
     height: 5vh;
     overflow: scroll;
-    border : 1px dashed #116789;
 }

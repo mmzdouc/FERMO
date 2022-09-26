@@ -62,8 +62,12 @@ mzmine = html.Div([
     dbc.Row([
         #first column#
         dbc.Col([
-                html.Div('Placeholder for start button'),
                 call_dashboard_mzmine_button(),
+                html.Div(
+                    id='mzmine_start_cache',
+                    style={
+                        'text-align' : 'center',
+                    })
                 ],
             id="mzmine_row_4_col_1",
             width=12,

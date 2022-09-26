@@ -6,6 +6,7 @@ import os
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import copy
+from datetime import datetime
 
 #LOCAL MODULES
 from processing.read_from_metadata_table import read_from_metadata_table
@@ -391,12 +392,13 @@ def peaktable_processing(input_file_store, params_dict):
     
     return FERMO_data
 
-def make_JSON_serializable(FERMO_data):
+def make_JSON_serializable(FERMO_data, FERMO_version):
     """Make JSON compatible by removing non-base python data structures
     
     Parameters
     ----------
     FERMO_data : `dict`
+    FERMO_version : `str`
     
     Returns
     --------
@@ -425,11 +427,18 @@ def make_JSON_serializable(FERMO_data):
         if isinstance(FERMO_data['sample_stats'][entry], set):
             set_to_list = list(FERMO_data['sample_stats'][entry])
             FERMO_data['sample_stats'][entry] = set_to_list
-        
     for group in FERMO_data['sample_stats']['groups_dict']:
         set_to_list = list(FERMO_data['sample_stats']['groups_dict'][group])
         FERMO_data['sample_stats']['groups_dict'][group] = set_to_list
 
+    #Add metadata to session file
+    #-time and date
+    
+    session_metadata = {
+        'date' : str(datetime.date(datetime.now())),
+        'time' : str(datetime.time(datetime.now())),
+        }
+    
     #construct storage data structure
     storage_JSON_dict = {
         'feature_dicts' : FERMO_data['feature_dicts'],
@@ -437,6 +446,8 @@ def make_JSON_serializable(FERMO_data):
         'sample_stats' : FERMO_data['sample_stats'],
         'params_dict' : FERMO_data['params_dict'],
         'input_filenames': FERMO_data['input_filenames'],
+        'session_metadata': session_metadata,
+        'FERMO_version' : FERMO_version,
         } 
     
     return storage_JSON_dict
@@ -1282,10 +1293,7 @@ def add_nodedata(
     return df.to_dict('records')
 
 
-def add_edgedata(
-    data,
-    feat_dicts,
-    ):
+def add_edgedata(data, feat_dicts,):
     '''Append edge data to df'''
     
     content = [
@@ -1298,4 +1306,103 @@ def add_edgedata(
     return df.to_dict('records')
 
 
+def export_sel_peaktable(samples, sel_sample):
+    '''Return columns from pandas df'''
+    return samples[sel_sample].loc[:,[
+            'feature_ID',
+            'precursor_mz',
+            'retention_time',
+            'fwhm',
+            'intensity',
+            'norm_intensity',
+            'rt_start',
+            'rt_stop',
+            'putative_adduct_detection',
+            'rel_intensity_score',
+            'convolutedness_score',
+            'bioactivity_score',
+            'novelty_score',
+            'in_blank',
+            'ms1_only',]]
 
+def export_features(feature_dicts):
+    '''From feature dicts, create lists, convert to pandas df'''
+    t_feature_ID = []
+    t_prec_mz = []
+    t_avg_ret_time = []
+    t_rt_samples = []
+    t_presence_samp = []
+    t_int_samples = []
+    t_bioact = []
+    t_blank = []
+    t_sim_cliq_bool = []
+    t_sim_cliq_nr = []
+    t_cos_ann_list = []
+    t_ms2query_list = []
+    t_set_groups = []
+    t_set_groups_clique = []
+    t_dict_fold_diff = []
+        
+    for ID in feature_dicts:
+        t_feature_ID.append(feature_dicts[ID]['feature_ID'])
+        t_prec_mz.append(feature_dicts[ID]['precursor_mz'])
+        t_avg_ret_time.append(feature_dicts[ID]['average_retention_time'])
+        t_rt_samples.append(feature_dicts[ID]['rt_in_samples'])
+        t_presence_samp.append(feature_dicts[ID]['presence_samples'])
+        t_int_samples.append(feature_dicts[ID]['intensities_samples'])
+        t_bioact.append(feature_dicts[ID]['bioactivity_associated'])
+        t_blank.append(feature_dicts[ID]['blank_associated'])
+        t_sim_cliq_bool.append(feature_dicts[ID]['similarity_clique'])
+        t_sim_cliq_nr.append(feature_dicts[ID]['similarity_clique_number'])
+        t_cos_ann_list.append(feature_dicts[ID]['cosine_annotation_list'])
+        t_ms2query_list.append(feature_dicts[ID]['ms2query_results'])
+        t_set_groups.append(feature_dicts[ID]['set_groups'])
+        t_set_groups_clique.append(feature_dicts[ID]['set_groups_clique'])
+        t_dict_fold_diff.append(feature_dicts[ID]['dict_fold_diff'])
+        
+    return pd.DataFrame({
+        'feature_ID': t_feature_ID,
+        'precursor_mz': t_prec_mz,
+        'avg_ret_time': t_avg_ret_time,
+        'presence_samples': t_presence_samp,
+        'ret_time_in_samples': t_rt_samples,
+        'intensities_samples': t_int_samples,
+        'bioact_assoc': t_bioact,
+        'blank_assoc': t_blank,
+        'annotation_user_lib': t_cos_ann_list,
+        'ms2query_results': t_ms2query_list,
+        'groups_assoc': t_set_groups,
+        'similarity_clique': t_sim_cliq_bool,
+        'similarity_clique_number': t_sim_cliq_nr,
+        'similarity_clique_groups': t_set_groups_clique,
+        'groups_fold_differences': t_dict_fold_diff,})
+
+##########
+#DATA PROCESSING
+##########
+
+def session_loading_table(params, files, metadata, version):
+    '''Generate table to return upon session loading on loading page'''
+    content = [
+                ['Filename: peaktable', files['peaktable_name']],
+                ['Filename: MS² data', files['mgf_name']],
+                ['Filename: metadata', files['metadata_name']],
+                ['Filename: bioactivity', files['bioactivity_name']],
+                ['Filename: user-library', files['user_library_name']],
+                ['-----', '-----'],
+                ['Mass deviation (ppm)', params['mass_dev_ppm']],
+                ['Min number of MS² fragments', params['min_nr_ms2']],
+                ['Feature relative intensity filter', params['feature_rel_int_fact']],
+                ['Bioactivity factor', params['bioact_fact']],
+                ['Column retention factor', params['column_ret_fact']],
+                ['Spectrum similarity tolerance', params['spectral_sim_tol']],
+                ['Spectrum similarity score cutoff', params['spec_sim_score_cutoff']],
+                ['Max nr spectrum similarity links', params['max_nr_links_ss']],
+                ['Minimum number of matched peaks', params['min_nr_matched_peaks']],
+                ['-----', '-----'],
+                ['Date of creation', metadata['date']],
+                ['Time of creation', metadata['time']],
+                ['FERMO version', version],
+            ]
+    return pd.DataFrame(content, columns=['Attribute', 'Description'])
+    

@@ -20,7 +20,7 @@ def call_mzmine_page():
             id='call_mzmine_button',
             n_clicks=0,
             className="d-grid gap-2 col-6 mx-auto",
-            disabled=True, #switch on when ready
+            # ~ disabled=True, #switch on when ready
             ),
         ])
 

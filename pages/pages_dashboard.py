@@ -241,30 +241,44 @@ dashboard = html.Div([
                     }
                 ),
             html.Div([
-                # ~ dbc.Button(
-                    # ~ "Export peak table of selected sample (.csv)",
-                    # ~ id='button_peak_table',
-                    # ~ n_clicks=0,
-                    # ~ ),
-                # ~ dcc.Download(id="download_peak_table"),
+                dbc.Button(
+                    "Export peak table of selected sample (.csv)",
+                    id='button_peak_table',
+                    n_clicks=0,
+                    ),
+                dcc.Download(id="download_peak_table"),
                 ]),
             html.Div(style={'margin-top' : '10px',}),
             html.Div([
-                # ~ dbc.Button(
-                    # ~ "Export peak tables of all samples (.csv)",
-                    # ~ id='button_all_peak_table',
-                    # ~ n_clicks=0,
-                    # ~ ),
-                # ~ dcc.Download(id="download_all_peak_table"),
+                dbc.Button(
+                    "Export peak tables of all samples (.csv)",
+                    id='button_all_peak_table',
+                    n_clicks=0,
+                    ),
+                dcc.Download(id="download_all_peak_table"),
                 ]),
             html.Div(style={'margin-top' : '10px',}),
             html.Div([
-                # ~ dbc.Button(
-                    # ~ "Export all feature as table(.csv)",
-                    # ~ id='button_all_features_table',
-                    # ~ n_clicks=0,
-                    # ~ ),
-                # ~ dcc.Download(id="download_all_features_table"),
+                dbc.Button(
+                    "Export all feature as table(.csv)",
+                    id='button_all_features_table',
+                    n_clicks=0,
+                    ),
+                dcc.Download(id="download_all_features_table"),
+                ]),
+            html.Hr(
+                style={
+                    'margin-top' : '10px',
+                    'margin-bottom' : '10px',
+                    }
+                ),
+            html.Div([
+                dbc.Button(
+                    "Save FERMO session file (JSON)",
+                    id='button_export_session',
+                    n_clicks=0,
+                    ),
+                dcc.Download(id="export_session_file"),
                 ]),
             ],
             id="dashboard_row_2_col_1",
