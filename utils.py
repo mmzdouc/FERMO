@@ -263,83 +263,112 @@ def parse_bioactiv_conc(bioactiv_table, value):
 #DATA PROCESSING
 ##########
 
-def peaktable_processing(input_file_store, params_dict):
+def peaktable_processing(
+    uploaded_files_store, 
+    dict_params,
+    ms2spectra,
+    userlib,
+    ):
     """FERMO: peaktable processing
     
     Parameters
     ----------
-    input_file_store : `dict`
+    uploaded_files_store : `dict`
         contains parsed user-provided input data
-    params_dict : `dict`
+    dict_params : `dict`
         contains user-provided parameters
+    ms2spectra : `dict`
+        contains MS2 spectra
+    userlib : `dict` or None
+        contains matchms.Spectrum objects of optional user-provided lib
     
     Returns
     --------
     FERMO_data : `dict`
         contains data to feed into dashboard visualization
     """
+    
+    peaktable_name = uploaded_files_store['peaktable_name']
+    peaktable = pd.read_json(uploaded_files_store['peaktable'], orient='split')
+    
+    mgf_name =  uploaded_files_store['mgf_name']
+
+    metadata_name = uploaded_files_store['metadata_name']
+    metadata = None
+    if metadata_name is not None:
+        metadata = pd.read_json(uploaded_files_store['metadata'], orient='split')
+
+    bioactivity_name = uploaded_files_store['bioactivity_name']
+    bioactivity = None
+    if bioactivity_name is not None:
+        bioactivity = pd.read_json(uploaded_files_store['bioactivity'], orient='split')
+
+    user_library_name = uploaded_files_store['user_library_name']
+    
+
+    
     #parse metadata file into a dict of sets
     groups = read_from_metadata_table(
-        input_file_store['metadata'],
-        input_file_store['metadata_name'],
+        metadata,
+        metadata_name,
         )
     
     #collect general sample stats into a dict
     sample_stats = collect_stats_samples(
-        input_file_store['peaktable'],
+        peaktable,
         groups,
-        input_file_store['bioactivity'],
+        bioactivity,
         )
     
     #generate nested dict with feature information
     feature_dicts = feature_dicts_creation(
-        input_file_store['peaktable'],
-        input_file_store['mgf'],
-        params_dict['min_nr_ms2'],
+        peaktable,
+        ms2spectra,
+        dict_params['min_nr_ms2'],
         sample_stats
         )
     
     #generates dict with pandas dfs - one per sample
     samples = get_samplespecific_features(
-        input_file_store['peaktable'], 
+        peaktable, 
         sample_stats,
-        params_dict['feature_rel_int_fact'],
+        dict_params['feature_rel_int_fact'],
         )
     
     #determine non-blank/blank of features and assign to feature_dicts
     determine_blank_features(
         samples, 
         feature_dicts, 
-        params_dict['column_ret_fact'],
+        dict_params['column_ret_fact'],
         sample_stats,
         ) 
 
     #determine non-active/active of features and assign to feature_dicts
     determine_bioactive_features(
-        input_file_store['bioactivity'], 
+        bioactivity, 
         samples,
         feature_dicts, 
-        params_dict['bioact_fact'],
+        dict_params['bioact_fact'],
         sample_stats,
-        input_file_store['bioactivity_name'],
+        bioactivity_name,
         )
     
     #calculate similarity cliques, append info to feature obj and sample stats
     calculate_similarity_cliques(
         feature_dicts,
         sample_stats,
-        params_dict['spectral_sim_tol'], 
-        params_dict['spec_sim_score_cutoff'], 
-        params_dict['max_nr_links_ss'], 
+        dict_params['spectral_sim_tol'], 
+        dict_params['spec_sim_score_cutoff'], 
+        dict_params['max_nr_links_ss'], 
         )
     
     #if spectral library was provided by user, append info to feature objects
     library_search(
         feature_dicts, 
-        input_file_store['user_library'], 
-        params_dict['spectral_sim_tol'],
-        params_dict['spec_sim_score_cutoff'],
-        params_dict['min_nr_matched_peaks'], 
+        userlib, 
+        dict_params['spectral_sim_tol'],
+        dict_params['spec_sim_score_cutoff'],
+        dict_params['min_nr_matched_peaks'], 
         )
     
     # ~ #search against embedding using ms2query
@@ -355,7 +384,7 @@ def peaktable_processing(input_file_store, params_dict):
     #Appends adducts/isotopes and determines peak collision
     samples = calculate_feature_overlap(
         samples,
-        params_dict['mass_dev_ppm'],
+        dict_params['mass_dev_ppm'],
         )
     
     #calculates metrics for each feature in each sample
@@ -363,9 +392,11 @@ def peaktable_processing(input_file_store, params_dict):
         samples, 
         feature_dicts,
         ) 
-
+    
+    #add pseudo-chromatogram traces for dashboard plotting
     samples = calculate_pseudochrom_traces(samples,)
     
+    #filter features in samples after normalized intensity
     for sample in samples:
         samples[sample].sort_values(
             by=['norm_intensity',], 
@@ -373,20 +404,22 @@ def peaktable_processing(input_file_store, params_dict):
             ascending=[False]
             )
         samples[sample].reset_index(drop=True, inplace=True)
-
+    
+    #prepare output
     input_filenames = {
-        'peaktable_name' : input_file_store['peaktable_name'],
-        'mgf_name' : input_file_store['mgf_name'],
-        'metadata_name' : input_file_store['metadata_name'],
-        'bioactivity_name' : input_file_store['bioactivity_name'],
-        'user_library_name' : input_file_store['user_library_name'],
+        'peaktable_name' : uploaded_files_store['peaktable_name'],
+        'mgf_name' : uploaded_files_store['mgf_name'],
+        'metadata_name' : uploaded_files_store['metadata_name'],
+        'bioactivity_name' : uploaded_files_store['bioactivity_name'],
+        'user_library_name' : uploaded_files_store['user_library_name'],
     }
     
+    #prepare output
     FERMO_data = {
         'feature_dicts' : feature_dicts,
         'samples' : samples,
         'sample_stats' : sample_stats,
-        'params_dict' : params_dict,
+        'params_dict' : dict_params,
         'input_filenames': input_filenames,
     }
     

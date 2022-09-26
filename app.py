@@ -25,8 +25,6 @@ import time
 import utils
 
 from variables import (
-    params_dict, #temporary
-    input_file_store, #temporary
     style_data_table,
     style_data_cond_table,
     style_header_table,
@@ -159,21 +157,43 @@ def landing_call_pages(
 
 @callback(
     Output('processing_start_cache', 'children'),
+    Output('uploaded_files_store', 'data'),
     Input('call_dashboard_processing', 'n_clicks'),
+    State('upload_peaktable_store', 'data'),
+    State('upload_mgf_store', 'data'),
+    State('upload_bioactiv_store', 'data'),
+    State('upload_metadata_store', 'data'),
+    State('upload_userlib_store', 'data'),
 )
-def processing_start_click(start_processing):
+def processing_start_click(
+    start_processing,
+    peaktable_store,
+    mgf_store,
+    bioactiv_store,
+    metadata_store,
+    userlib_store,
+    ):
     '''On button click, test for starting conditions for processing'''
     if not start_processing:
         raise PreventUpdate
     elif (
-        (input_file_store['peaktable'] is None) 
+        (peaktable_store['peaktable_name'] is None) 
     or
-        (input_file_store['mgf'] is None)
+        (mgf_store['mgf_name'] is None)
     ):
-    #Needs to be changed to cached storage in a later step
         raise PreventUpdate
     else:
-        return html.Div('Started processing, please wait ...')
+        dict_uploaded_files = {
+            'peaktable' : peaktable_store['peaktable'],
+            'peaktable_name' : peaktable_store['peaktable_name'],
+            'mgf_name' : mgf_store['mgf_name'],
+            'bioactivity' : bioactiv_store['bioactivity'],
+            'bioactivity_name' : bioactiv_store['bioactivity_name'],
+            'metadata' : metadata_store['metadata'],
+            'metadata_name' : metadata_store['metadata_name'],
+            'user_library_name' : userlib_store['user_library_name'],
+        }
+        return html.Div('Started processing, please wait ...'), dict_uploaded_files
 
 
 @callback(
@@ -213,7 +233,7 @@ def loading_start_click(start_loading, session_storage):
     Input('loaded_data_FERMO', 'data'),
     )
 def app_bundle_inputs_dashboard(storage, loading): #add mzmine to args
-    '''Bundle inputs, return active option for dashboard vis'''
+    '''Bundle inputs, return active option for dashboard visualization'''
     if ctx.triggered_id == 'processed_data_FERMO':
         return storage
     # ~ elif ctx.triggered_id == 'mzmine_data_FERMO':
@@ -229,29 +249,56 @@ def app_bundle_inputs_dashboard(storage, loading): #add mzmine to args
     Output('store_processing', 'data'),
     Output('processed_data_FERMO', 'data'),
     Input('processing_start_cache', 'children'),
+    State('out_params_assignment', 'data'),
+    State('uploaded_files_store', 'data'),
     background=True,
     manager=background_callback_manager,
     running=[(Output("call_dashboard_processing", "disabled"), True, False),],
 )
-def app_peaktable_processing(signal):
+def app_peaktable_processing(
+    signal, 
+    dict_params,
+    uploaded_files_store
+    ):
     '''Call FERMO processing functions, serialize data and store'''
     if signal is None:
         raise PreventUpdate
     else:
-        #put pickle loading here (not-serializable Spectrum objects)
+        try:
+            ms2_pickle_path = os.path.join(
+                os.path.dirname(__file__),
+                'assets',
+                'FERMO_MS2.pickle',
+                )
+            ms2spectra = ''
+            with open(ms2_pickle_path, 'rb') as handle:
+                ms2spectra = pickle.load(handle)
+        except:
+            print('ERROR: FERMO_MS2.pickle reloading failed.')
         
-        
+        userlib = None
+        if uploaded_files_store['user_library_name'] is not None:
+            try:
+                userlib_pickle_path = os.path.join(
+                    os.path.dirname(__file__),
+                    'assets',
+                    'FERMO_USERLIB.pickle',
+                    )
+                with open(userlib_pickle_path, 'rb') as handle:
+                    userlib = pickle.load(handle)
+            except:
+                print('ERROR: FERMO_USERLIB.pickle reloading failed.')
+
         FERMO_data = utils.peaktable_processing(
-            input_file_store,
-            params_dict,
-            #add unpickled Spectrum objects here
+            uploaded_files_store,
+            dict_params,
+            ms2spectra,
+            userlib,
             )
+        
         storage_JSON_dict = utils.make_JSON_serializable(FERMO_data, FERMO_version)
         
         return '/dashboard', storage_JSON_dict
-
-        
-        
 
 @callback(
     Output('store_mzmine', 'data'),
@@ -334,72 +381,63 @@ def bundle_params_into_cache(
         }
 
 @callback(
-    Output('out_params_assignment', 'children'),
+    Output('out_params_assignment', 'data'),
     Input('params_cache', 'component')
 )
 def update_params_dict(params_cache):
-    '''Assign set params to table, with sanity check for None'''
-    
-    #Redirect output into Storage
+    '''Assign set params to dict, with catch for None'''
     
     if params_cache is not None:
-        params_dict['mass_dev_ppm'] = (params_cache['mass_dev']
-            if params_cache['mass_dev'] is not None
-            else 20)
-        params_dict['min_nr_ms2'] = (params_cache['min_ms2']
-            if params_cache['min_ms2'] is not None
-            else 0)
-        params_dict['feature_rel_int_fact'] = (params_cache['feat_int_filt']
-            if params_cache['feat_int_filt'] is not None
-            else 0)
-        params_dict['bioact_fact'] = (params_cache['bioact_fact']
-            if params_cache['bioact_fact'] is not None
-            else 0)
-        params_dict['column_ret_fact'] = (params_cache['column_ret_fact']
-            if params_cache['column_ret_fact'] is not None
-            else 0)
-        params_dict['spectral_sim_tol'] = (params_cache['spec_sim_tol']
-            if params_cache['spec_sim_tol'] is not None
-            else 0)
-        params_dict['spec_sim_score_cutoff'] = (params_cache['spec_sim_score_cutoff']
-            if params_cache['spec_sim_score_cutoff'] is not None
-            else 0)
-        params_dict['max_nr_links_ss'] = (params_cache['spec_sim_max_links']
-            if params_cache['spec_sim_max_links'] is not None
-            else 0)
-        params_dict['min_nr_matched_peaks'] = (params_cache['spec_sim_min_match']
-            if params_cache['spec_sim_min_match'] is not None
-            else 0)
-            
-        return html.Div()
+        dict_params = dict()
+        dict_params['mass_dev_ppm'] = (params_cache['mass_dev']
+            if params_cache['mass_dev'] is not None else 20)
+        dict_params['min_nr_ms2'] = (params_cache['min_ms2']
+            if params_cache['min_ms2'] is not None else 0)
+        dict_params['feature_rel_int_fact'] = (params_cache['feat_int_filt']
+            if params_cache['feat_int_filt'] is not None else 0)
+        dict_params['bioact_fact'] = (params_cache['bioact_fact']
+            if params_cache['bioact_fact'] is not None else 0)
+        dict_params['column_ret_fact'] = (params_cache['column_ret_fact']
+            if params_cache['column_ret_fact'] is not None else 0)
+        dict_params['spectral_sim_tol'] = (params_cache['spec_sim_tol']
+            if params_cache['spec_sim_tol'] is not None else 0)
+        dict_params['spec_sim_score_cutoff'] = (params_cache['spec_sim_score_cutoff']
+            if params_cache['spec_sim_score_cutoff'] is not None else 0)
+        dict_params['max_nr_links_ss'] = (params_cache['spec_sim_max_links']
+            if params_cache['spec_sim_max_links'] is not None else 0)
+        dict_params['min_nr_matched_peaks'] = (params_cache['spec_sim_min_match']
+            if params_cache['spec_sim_min_match'] is not None else 0)
+        return dict_params
 
 @callback(
     Output('upload-peaktable-output', 'children'),
+    Output('upload_peaktable_store', 'data'),
     Input('processing-upload-peaktable', 'contents'),
     State('processing-upload-peaktable', 'filename'),
 )
 def upload_peaktable(contents, filename):
     '''Peaktable parsing and format check'''
     
-    #Redirect output into dcc.Store
+    file_store = {
+        'peaktable' : None,
+        'peaktable_name' : None,}
     
     if contents is None:
-        return html.Div('No peaktable loaded.',)
+        return html.Div('No peaktable loaded.'), file_store
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
 
         try:
-            peaktable = pd.read_csv(
-                    io.StringIO(decoded.decode('utf-8')))
+            peaktable = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
         except:
-            input_file_store['peaktable'] = None
-            input_file_store['peaktable_name'] = None
+            file_store['peaktable'] = None
+            file_store['peaktable_name'] = None
             return html.Div(
-                f'''
-                ❌ Error: "{filename}" does not seem to be a file in the
-                .csv-format. Have you selected the right file?
-                ''')
+                f'''❌ Error: "{filename}" does not seem to be a file
+                 in the .csv-format. Have you selected the right file?'''
+                ), file_store
+        
         return_assert = utils.assert_peaktable_format(peaktable, filename)
         
         peaktable.rename(
@@ -407,36 +445,33 @@ def upload_peaktable(contents, filename):
                 'id' : 'feature_ID',
                 'mz' : "precursor_mz",
                 'rt' : "retention_time",
-                },
-            inplace=True,
-            )
+                }, inplace=True,)
             
         if return_assert is not None:
-            input_file_store['peaktable'] = None
-            input_file_store['peaktable_name'] = None
-            return return_assert
+            file_store['peaktable'] = None
+            file_store['peaktable_name'] = None
+            return return_assert, file_store
         else:
-            input_file_store['peaktable'] = peaktable
-            input_file_store['peaktable_name'] = filename
+            file_store['peaktable'] = peaktable.to_json(orient='split')
+            file_store['peaktable_name'] = filename
             return html.Div(
                 f'✅ "{filename}" successfully loaded.',
-                style={
-                    'color' : 'green',
-                    'font-weight' : 'bold',
-                })
+                style={'color' : 'green', 'font-weight' : 'bold', }
+                ), file_store
+
 
 @callback(
     Output('upload-mgf-output', 'children'),
+    Output('upload_mgf_store', 'data'),
     Input('processing-upload-mgf', 'contents'),
     State('processing-upload-mgf', 'filename'),
 )
 def upload_mgf(contents, filename):
     '''mgf file parsing and format check'''
-    
-    #Redirect output into dcc.Store, dump ms2spectra as pickle
-    
+    file_store = {'mgf_name' : None,}
+
     if contents is None:
-        return html.Div('No .mgf-file loaded.')
+        return html.Div('No .mgf-file loaded.'), file_store
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
@@ -454,56 +489,64 @@ def upload_mgf(contents, filename):
             
             utils.assert_mgf_format(ms2spectra)
             
-            input_file_store['mgf'] = ms2spectra
-            input_file_store['mgf_name'] = filename
+            ms2_pickle_path = os.path.join(
+                os.path.dirname(__file__),
+                'assets',
+                'FERMO_MS2.pickle',
+                )
+            with open(ms2_pickle_path, 'wb') as handle:
+                pickle.dump(
+                    ms2spectra, 
+                    handle, 
+                    protocol=pickle.HIGHEST_PROTOCOL
+                )
+            
+            file_store['mgf_name'] = filename
             return html.Div(
                 f'✅ "{filename}" successfully loaded.',
-                style={
-                    'color' : 'green',
-                    'font-weight' : 'bold',
-                })
+                style={'color' : 'green', 'font-weight' : 'bold', }
+                ), file_store
             
         except:
-            input_file_store['mgf'] = None
-            input_file_store['mgf_name'] = None
-            return html.Div(
-                f'''
-                ❌ Error: "{filename}" is not a mgf or is erroneously formatted.
-                 Please check the file and try again.
-                ''')
+            file_store['mgf_name'] = None
+            return html.Div(f'''❌ Error: "{filename}" is not a mgf or
+            is falsely formatted. Please check the file and try again.'''
+            ), file_store
+
 
 @callback(
     Output('upload-bioactiv-output', 'children'),
+    Output('upload_bioactiv_store', 'data'),
     Input('upload-bioactiv', 'contents'),
     State('upload-bioactiv', 'filename'),
     Input('bioact_type', 'value'),
 )
 def upload_bioactiv(contents, filename, value):
     '''Bioactivity table parsing and format check'''
+    
+    file_store = {
+        'bioactivity' : None,
+        'bioactivity_name' : None,}
+    
     if contents is None:
-        return html.Div('No bioactivity table loaded.')
+        return html.Div('No bioactivity table loaded.'), file_store
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
 
         try:
-            bioactiv_table = pd.read_csv(
-                    io.StringIO(decoded.decode('utf-8')))
+            bioactiv_table = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
         except:
-            input_file_store['bioactivity'] = None
-            input_file_store['bioactivity_name'] = None
-            return html.Div(
-                f'''
-                ❌ Error: "{filename}" does not seem to be a file in the
-                .csv-format. Have you selected the right file?
-                ''')
+            file_store['bioactivity'] = None
+            file_store['bioactivity_name'] = None
+            return html.Div(f'''❌ Error: "{filename}" does not seem to 
+                be a file in the .csv-format. Is this the right file?
+                '''), file_store
         
         if value is None:
-            return html.Div(
-                f'''
-                ❌ Error: Please specify the bioactivity table format.
-                Currently, the value is {value}.
-                ''')
+            return html.Div(f'''❌ Error: Please specify the bioactivity
+                table format. Currently, the value is {value}.
+                '''), file_store
         
         return_assert = utils.assert_bioactivity_format(
             bioactiv_table, 
@@ -511,19 +554,17 @@ def upload_bioactiv(contents, filename, value):
             )
         
         if return_assert is not None:
-            input_file_store['bioactivity'] = None
-            input_file_store['bioactivity_name'] = None
-            return return_assert
+            file_store['bioactivity'] = None
+            file_store['bioactivity_name'] = None
+            return return_assert, file_store
         else:
             converted_df = utils.parse_bioactiv_conc(bioactiv_table, value)
-            input_file_store['bioactivity'] = converted_df
-            input_file_store['bioactivity_name'] = filename
+            file_store['bioactivity'] = converted_df.to_json(orient='split')
+            file_store['bioactivity_name'] = filename
             return html.Div(
                 f'✅ "{filename}" successfully loaded.',
-                style={
-                    'color' : 'green',
-                    'font-weight' : 'bold',
-                })
+                style={'color' : 'green','font-weight' : 'bold',}
+                ), file_store
 
 @callback(
     Output('store_bioact_type', 'children'),
@@ -536,31 +577,31 @@ def store_bioactiv_format(value):
 
 @callback(
     Output('upload-metadata-output', 'children'),
+    Output('upload_metadata_store', 'data'),
     Input('upload-metadata', 'contents'),
     State('upload-metadata', 'filename'),
 )
 def upload_metadata(contents, filename,):
     '''Metadata table parsing and format check'''
     
-    #Redirect output into dcc.Store
+    file_store = {
+        'metadata' : None,
+        'metadata_name' : None,}
     
     if contents is None:
-        return html.Div('No metadata table loaded.')
+        return html.Div('No metadata table loaded.'), file_store
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
     
         try:
-            metadata_table = pd.read_csv(
-                    io.StringIO(decoded.decode('utf-8')))
+            metadata_table = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
         except:
-            input_file_store['metadata'] = None
-            input_file_store['metadata_name'] = None
-            return html.Div(
-                f'''
-                ❌ Error: "{filename}" does not seem to be a file in the
-                .csv-format. Have you selected the right file?
-                ''')
+            file_store['metadata'] = None
+            file_store['metadata_name'] = None
+            return html.Div(f'''❌ Error: "{filename}" does not seem to 
+            be a file in the .csv-format. Is this the right file?'''
+            ), file_store
         
         return_assert = utils.assert_metadata_format(
             metadata_table, 
@@ -568,31 +609,30 @@ def upload_metadata(contents, filename,):
             )
         
         if return_assert is not None:
-            input_file_store['metadata'] = None
-            input_file_store['metadata_name'] = None
-            return return_assert
+            file_store['metadata'] = None
+            file_store['metadata_name'] = None
+            return return_assert, file_store
         else:
-            input_file_store['metadata'] = metadata_table
-            input_file_store['metadata_name'] = filename
-            return html.Div(
-                f'✅ "{filename}" successfully loaded.',
-                style={
-                    'color' : 'green',
-                    'font-weight' : 'bold',
-                })
+            file_store['metadata'] = metadata_table.to_json(orient='split')
+            file_store['metadata_name'] = filename
+            return html.Div(f'✅ "{filename}" successfully loaded.',
+                style={'color' : 'green', 'font-weight' : 'bold',}
+                ), file_store
+
 
 @callback(
     Output('upload-userlib-output', 'children'),
+    Output('upload_userlib_store', 'data'),
     Input('upload-userlib', 'contents'),
     State('upload-userlib', 'filename'),
 )
 def upload_userlib(contents, filename):
     '''mgf file parsing and format check for user-provided spectral lib'''
     
-    #Redirect output into dcc.Store
+    file_store = {'user_library_name' : None,}
     
     if contents is None:
-        return html.Div('No spectral library loaded.')
+        return html.Div('No spectral library loaded.'), file_store
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
@@ -632,24 +672,37 @@ def upload_userlib(contents, filename):
             
             utils.assert_mgf_format(ref_library)
 
-            input_file_store['user_library'] = ref_library
-            input_file_store['user_library_name'] = filename
-            return html.Div(
-                f'✅ "{filename}" successfully loaded.',
-                style={
-                    'color' : 'green',
-                    'font-weight' : 'bold',}
-                    )
+            userlib_pickle_path = os.path.join(
+                os.path.dirname(__file__),
+                'assets',
+                'FERMO_USERLIB.pickle',
+                )
+            with open(userlib_pickle_path, 'wb') as handle:
+                pickle.dump(
+                    ref_library, 
+                    handle, 
+                    protocol=pickle.HIGHEST_PROTOCOL
+                )
+
+            file_store['user_library_name'] = filename
+            return html.Div(f'✅ "{filename}" successfully loaded.',
+                style={'color' : 'green', 'font-weight' : 'bold',}
+                    ), file_store
         except:
-            input_file_store['user_library'] = None
-            input_file_store['user_library_name'] = None
-            return html.Div(
-                f'''
-                ❌ Error: "{filename}" is not a mgf or is erroneously formatted
-                (e.g. 'pepmass' must not be 0.0 or 1.0).
-                Please check the file and try again.
-                ''')
-                
+            file_store['user_library_name'] = None
+            return html.Div(f'''❌ Error: "{filename}" is not a mgf or 
+                is erroneously formatted (e.g. 'pepmass' must not be 0.0 or 1.0).
+                Please check the file and try again.'''
+                ), file_store
+
+
+
+
+
+
+
+
+
 #######################
 ###CALLBACKS LOADING###
 #######################
@@ -736,7 +789,6 @@ def read_threshold_values_function(rel_int, conv, bioact, nov,):
             }
     else:
         raise PreventUpdate
-
 
 @callback(
         Output('table_sample_names', 'data'),
@@ -836,7 +888,6 @@ def calculate_feature_score(
     
     return sample_scores.to_dict('records'), samples_subsets, sample_list
 
-
 @callback(
     Output('storage_active_sample', 'data'),
     Input('table_sample_names', 'active_cell'),
@@ -850,14 +901,12 @@ def storage_active_sample(data, update_table, sample_list):
     
     return sample_list[data["row"]]
 
-
 @callback(
     Output('title_central_chrom', 'children'),
     Input('storage_active_sample', 'data'),
 )
 def title_central_chrom(selected_sample,):
     return f"""Chromatogram of Sample {selected_sample}"""
-
 
 @callback(
     Output('chromat_out', 'figure'),
@@ -920,7 +969,6 @@ def storage_active_feature(data, selected_sample, contents):
     else:
         return 0, None
 
-
 @callback(
     Output('chromat_clique_out', 'figure'),
     Input('storage_active_sample', 'data'),
@@ -952,7 +1000,6 @@ def plot_chromatogram_clique(
         sample_stats,
         samples,
         feature_dicts,)
-
 
 @callback(
     Output('title_mini_chrom', 'children'),
@@ -1009,7 +1056,6 @@ def plot_chrom_overview(
         sample_stats,
         samples,
         feature_dicts,)
-    
 
 @callback(
     Output('featureinfo_out', 'data'), 
@@ -1017,7 +1063,7 @@ def plot_chrom_overview(
     Input('storage_active_feature_id', 'data'),
     Input('storage_active_feature_index', 'data'),
     State('data_processing_FERMO', 'data'),
-    )
+)
 def update_selected_feature(
     selected_sample, 
     active_feature_id,
@@ -1050,7 +1096,7 @@ def update_selected_feature(
     Input('storage_active_sample', 'data'),
     Input('storage_active_feature_id', 'data'),
     State('data_processing_FERMO', 'data'),
-    )
+)
 def update_cytoscape(
     selected_sample,
     active_feature_id,
@@ -1136,7 +1182,6 @@ def displayTapEdgeData(
     elif ctx.triggered_id == 'cytoscape':
         return utils.add_edgedata(edgedata, feature_dicts,)
 
-
 @callback(
     Output("download_peak_table", "data"),
     Input("button_peak_table", "n_clicks"),
@@ -1187,11 +1232,10 @@ def export_all_samples(n_clicks, contents):
         df_all = pd.concat(list_dfs)
         return dcc.send_data_frame(df_all.to_csv, 'FERMO_all_samples.csv')
 
-
 @callback(
-Output("download_all_features_table", "data"),
-Input("button_all_features_table", "n_clicks"),
-State('data_processing_FERMO', 'data'),
+    Output("download_all_features_table", "data"),
+    Input("button_all_features_table", "n_clicks"),
+    State('data_processing_FERMO', 'data'),
 )
 def export_all_features(n_clicks, contents):
     '''Convert feature dicts into df and export'''
@@ -1202,11 +1246,10 @@ def export_all_features(n_clicks, contents):
         df = utils.export_features(feature_dicts)
         return dcc.send_data_frame(df.to_csv, 'FERMO_all_features.csv')
 
-
 @callback(
-Output("export_session_file", "data"),
-Input("button_export_session", "n_clicks"),
-State('data_processing_FERMO', 'data'),
+    Output("export_session_file", "data"),
+    Input("button_export_session", "n_clicks"),
+    State('data_processing_FERMO', 'data'),
 )
 def export_all_features(n_clicks, contents):
     '''Export FERMO data as JSON'''

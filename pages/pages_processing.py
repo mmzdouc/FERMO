@@ -736,10 +736,7 @@ processing = html.Div([
                 call_spec_sim_score_cutoff_inp(),
                 call_spec_sim_max_links_inp(),
                 call_spec_sim_min_match_inp(),
-                
-                #Helper functions
-                html.Div(id='params_cache', hidden=True),
-                html.Div(id='out_params_assignment', hidden=True)
+
 
                 ],
             id="processing_row_3_col_2",
@@ -754,7 +751,17 @@ processing = html.Div([
         dbc.Col([
                 call_dashboard_processing_button(),
                 
-                #Helper function
+                ###STORAGE###
+                #Parameter storage
+                html.Div(id='params_cache', hidden=True),
+                dcc.Store(id='out_params_assignment'),
+                #File storage
+                dcc.Store(id='upload_peaktable_store'),
+                dcc.Store(id='upload_mgf_store'),
+                dcc.Store(id='upload_bioactiv_store'),
+                dcc.Store(id='upload_metadata_store'),
+                dcc.Store(id='upload_userlib_store'),
+                dcc.Store(id='uploaded_files_store'),
                 html.Div(
                     id='processing_start_cache',
                     style={

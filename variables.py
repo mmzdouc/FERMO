@@ -51,31 +51,6 @@ color_dict = {
 #STORAGE PROCESSING
 ##########
 
-params_dict = {
-    'mass_dev_ppm' : None,
-    'min_nr_ms2' : None,
-    'feature_rel_int_fact' : None,
-    'bioact_fact' : None,
-    'column_ret_fact' : None,
-    'spectral_sim_tol' : None,
-    'spec_sim_score_cutoff' : None,
-    'max_nr_links_ss' : None,
-    'min_nr_matched_peaks' : None,
-    }
-
-input_file_store = {
-    'peaktable' : None,
-    'peaktable_name' : None,
-    'mgf' : None,
-    'mgf_name' : None,
-    'metadata' : None,
-    'metadata_name' : None,
-    'bioactivity' : None,
-    'bioactivity_name' : None,
-    'user_library' : None,
-    'user_library_name' : None,
-}
-
 ##########
 #DASHBOARD VARIABLES
 ##########
