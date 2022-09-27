@@ -315,18 +315,10 @@ ROWS - LOADING
 */
 
 #loading_row_1 {
-    height: 5vh;
+    height: 75vh;
 }
 
 #loading_row_2 {
-    height: 20vh;
-}
-
-#loading_row_3 {
-    height: 50vh;
-}
-
-#loading_row_4 {
     height: 5vh;
 }
 
@@ -337,29 +329,17 @@ COLUMNS - LOADING
 
 #loading_row_1_col_1  {
     background-color: white;
-    height: 5vh;
+    height: 75vh;
+    overflow: scroll;
+}
+
+#loading_row_1_col_2  {
+    background-color: white;
+    height: 75vh;
     overflow: scroll;
 }
 
 #loading_row_2_col_1  {
-    background-color: white;
-    height: 20vh;
-    overflow: scroll;
-}
-
-#loading_row_3_col_1  {
-    background-color: white;
-    height: 50vh;
-    overflow: scroll;
-}
-
-#loading_row_3_col_2  {
-    background-color: white;
-    height: 50vh;
-    overflow: scroll;
-}
-
-#loading_row_4_col_1  {
     background-color: white;
     height: 5vh;
     overflow: scroll;

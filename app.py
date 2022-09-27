@@ -696,13 +696,6 @@ def upload_userlib(contents, filename):
                 ), file_store
 
 
-
-
-
-
-
-
-
 #######################
 ###CALLBACKS LOADING###
 #######################
@@ -717,8 +710,10 @@ def upload_userlib(contents, filename):
 def upload_sessionfile(contents, filename):
     '''JSON session file parsing and storage'''
     
+    empty_df = utils.empty_loading_table()
+    
     if contents is None:
-        return html.Div('No session file loaded.'), None, None
+        return html.Div('No session file loaded.'), None, empty_df.to_dict('records')
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
@@ -731,7 +726,7 @@ def upload_sessionfile(contents, filename):
                 f'''
                 ❌ Error: "{filename}" does not seem to be a FERMO
                 session file in JSON format.
-                '''), None, None
+                '''), None, empty_df.to_dict('records')
         try: 
             params = loaded_session_JSON['params_dict']
             files = loaded_session_JSON['input_filenames']
@@ -751,7 +746,7 @@ def upload_sessionfile(contents, filename):
             ):
             return html.Div(f'''❌ Error: "{filename}" does not seem to be a FERMO
             session file in JSON format, or is somehow malformed.
-            '''), None, None
+            '''), None, empty_df.to_dict('records')
         elif version != FERMO_version:
             df = utils.session_loading_table(params, files, metadata, version)
             return html.Div(f'''❗ Warning: The loaded session file "{filename}"

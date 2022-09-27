@@ -1417,6 +1417,10 @@ def export_features(feature_dicts):
 def session_loading_table(params, files, metadata, version):
     '''Generate table to return upon session loading on loading page'''
     content = [
+                ['Date of creation', metadata['date']],
+                ['Time of creation', metadata['time']],
+                ['FERMO version', version],
+                ['-----', '-----'],
                 ['Filename: peaktable', files['peaktable_name']],
                 ['Filename: MS² data', files['mgf_name']],
                 ['Filename: metadata', files['metadata_name']],
@@ -1432,10 +1436,31 @@ def session_loading_table(params, files, metadata, version):
                 ['Spectrum similarity score cutoff', params['spec_sim_score_cutoff']],
                 ['Max nr spectrum similarity links', params['max_nr_links_ss']],
                 ['Minimum number of matched peaks', params['min_nr_matched_peaks']],
-                ['-----', '-----'],
-                ['Date of creation', metadata['date']],
-                ['Time of creation', metadata['time']],
-                ['FERMO version', version],
             ]
     return pd.DataFrame(content, columns=['Attribute', 'Description'])
-    
+
+
+def empty_loading_table():
+    '''Generate empty table for loading page'''
+    content = [
+                ['Date of creation', None],
+                ['Time of creation', None],
+                ['FERMO version', None],
+                ['-----', '-----'],
+                ['Filename: peaktable', None],
+                ['Filename: MS² data', None],
+                ['Filename: metadata', None],
+                ['Filename: bioactivity', None],
+                ['Filename: user-library', None],
+                ['-----', '-----'],
+                ['Mass deviation (ppm)', None],
+                ['Min number of MS² fragments', None],
+                ['Feature relative intensity filter', None],
+                ['Bioactivity factor', None],
+                ['Column retention factor', None],
+                ['Spectrum similarity tolerance', None],
+                ['Spectrum similarity score cutoff', None],
+                ['Max nr spectrum similarity links', None],
+                ['Minimum number of matched peaks', None],
+            ]
+    return pd.DataFrame(content, columns=['Attribute', 'Description'])

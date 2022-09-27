@@ -6,7 +6,26 @@ from variables import (
     style_data_cond_table,
     style_header_table,)
 
-
+def call_loading_intro_text():
+    '''Introduction text for loading page'''
+    return html.Div([
+        html.Div('''On this page, you can load your previously created FERMO session files, or load session files from others, such as your collaborators. Reloading is very fast, since time-consuming computation steps are omitted. However, the parameters set during initial computation cannot be altered anymore.
+            '''),
+        html.Div(style={'margin-top' : '10px'}),
+        html.Div('''To upload a FERMO session file, click the button with the name 'Upload FERMO Session File' on the left side of the page. A upload window will appear, in which you can navigate to the session file. Once a file is uploaded, a message will appear that will indicate the outcome of the upload. 
+            '''),
+        html.Div(style={'margin-top' : '10px'}),
+        html.Div('''If successful, session file metadata will be shown in the table on the right side of the window, including the time, date, and version of FERMO during creation, the names of the files used for processing, and the used parameter settings. 
+            '''),
+        html.Div(style={'margin-top' : '10px'}),
+        html.Div('''If the upload was not successful, a message will indicate possible solutions. 
+            '''),
+        ],
+        style={
+        'line-height' : '1.5',
+        'text-align' : 'justify',
+        }
+    )
 
 def call_session_upload():
     '''Call the session upload field'''
@@ -14,7 +33,7 @@ def call_session_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Upload FERMO session file (*.session)',
+                        'Upload FERMO Session File (*.json)',
                         id="upload-session-tooltip",
                         ),
                     id='upload-session'),
@@ -22,7 +41,6 @@ def call_session_upload():
                     html.Div(
                         '''
                         Load a previously created FERMO session file.
-                        ONLY LOAD SESSION FILES FROM TRUSTED SOURCES!
                         For more information on the format, see
                         the documentation.
                         ''',
@@ -32,8 +50,6 @@ def call_session_upload():
                     target="upload-session-tooltip",
                     ),
                 ]),
-            html.Div(id='upload_session_output'),
-            html.Hr(),
         ])
 
 def call_dashboard_loading_button():
@@ -52,43 +68,31 @@ loading = html.Div([
     ###first row###
     dbc.Row([
         #first column#
-        dbc.Col([
+        dbc.Col(
+            html.Div([
                 ###STORAGE###
                 dcc.Store(id='upload_session_storage'),
-                html.Div('FERMO: loading mode'),
-                ],
-            id="loading_row_1_col_1",
-            width=12,
-            ),
-        ],
-    id="loading_row_1",
-    ),
-    ###second row###
-    dbc.Row([
-        #first column#
-        dbc.Col([
-                html.Div('Placeholder for a brief par on how the loading mode works'),
-                ],
-            id="loading_row_2_col_1",
-            width=12,
-            ),
-        ],
-    id="loading_row_2",
-    ),
-    ###third row###
-    dbc.Row([
-        #first column#
-        dbc.Col([
-                html.Div('Placeholder for files to upload'),
+                #############
+                html.H2('Restart session (loading mode)'),
+                call_loading_intro_text(),
+                html.Div(style={'margin-top' : '100px'}),
+                html.Hr(),
                 call_session_upload(),
+                html.Div(id='upload_session_output',
+                    style={'margin-top' : '10px', 'margin-bottom' : '10px'}
+                    ),
+                html.Hr(),
                 ],
-            id="loading_row_3_col_1",
+                style={
+                        'margin-left':'30px',
+                        'margin-top':'30px',
+                        },
+                ),
+            id="loading_row_1_col_1",
             width=6,
             ),
-        #second column#
-        dbc.Col([
-                #upload_session_table
-                html.Div(
+        dbc.Col(
+            html.Div(
                 dash_table.DataTable(
                     id='upload_session_table',
                     columns=[
@@ -102,24 +106,23 @@ loading = html.Div([
                     style_header=style_header_table,
                 ),
                 style={
+                    'margin-top':'35px',
+                    'margin-left':'30px',
                     'display': 'inline-block',
-                    'width': '50%',
+                    'width': '60%',
                     },
                 ),
-        
-        
-        
-                ],
-            id="loading_row_3_col_2",
+            id="loading_row_1_col_2",
             width=6,
             ),
         ],
-    id="loading_row_3",
+    id="loading_row_1",
     ),
-    ###fourth row###
+    ###second row###
     dbc.Row([
         #first column#
         dbc.Col([
+                html.Div(style={'margin-top' : '10px'}),
                 call_dashboard_loading_button(),
                 #Helper function
                 html.Div(
@@ -128,13 +131,13 @@ loading = html.Div([
                         'text-align' : 'center',
                     })
                 ],
-            id="loading_row_4_col_1",
+            id="loading_row_2_col_1",
             width=12,
             ),
         ],
-    id="loading_row_4",
+    id="loading_row_2",
     ),
-    ])
+])
 
 
 
