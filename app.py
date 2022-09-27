@@ -47,9 +47,6 @@ background_callback_manager = DiskcacheManager(cache)
 ###VERSIONING###
 FERMO_version = 'FERMO_version_0.5'
 
-###OPEN BROWSER WINDOW###
-webbrowser.open('http://127.0.0.1:8050/')
-
 
 ##########
 #LAYOUT
