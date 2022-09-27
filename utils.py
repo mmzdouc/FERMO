@@ -371,15 +371,14 @@ def peaktable_processing(
         dict_params['min_nr_matched_peaks'], 
         )
     
-    # ~ #search against embedding using ms2query
-    # ~ input_folder = os.path.join(
-        # ~ os.path.dirname(__file__),
-        # ~ 'libraries',)
-    # ~ if os.path.exists(input_folder):
-        # ~ ms2query_search(
-            # ~ feature_dicts, 
-            # ~ input_folder)
-    print('DEBUG: Switch on MS2Query')
+    #search against embedding using ms2query
+    input_folder = os.path.join(
+        os.path.dirname(__file__),
+        'libraries',)
+    if os.path.exists(input_folder):
+        ms2query_search(
+            feature_dicts, 
+            input_folder)
     
     #Appends adducts/isotopes and determines peak collision
     samples = calculate_feature_overlap(
@@ -976,19 +975,19 @@ def modify_feature_info_df(
     class_ms2query = None
     if feat_dicts[ID]['ms2query']:
         ann_ms2query = ''.join([
-            'Name: ', feat_dicts[ID]['ms2query_results']['Link(s)'], ';',
-            '<br>', 'Score: ', str(round(feat_dicts[ID]['ms2query_results']
+            'Name: ', feat_dicts[ID]['ms2query_results'][0]['Link'], ';',
+            '<br>', 'Score: ', str(round(feat_dicts[ID]['ms2query_results'][0]
                 ['ms2query_model_prediction'],3)), ])
         mass_diff_ms2query = ''.join([ 
-            'Δ ', str(round(feat_dicts[ID]['ms2query_results']
+            'Δ ', str(round(feat_dicts[ID]['ms2query_results'][0]
                 ['precursor_mz_difference'],3)),
             ' <i>m/z</i> (',
-            str(round(feat_dicts[ID]['ms2query_results']
+            str(round(feat_dicts[ID]['ms2query_results'][0]
                 ['precursor_mz_analog'],3)), ')',])
         class_ms2query = ''.join([ 
-            str(feat_dicts[ID]['ms2query_results']['npc_class_results']),
+            str(feat_dicts[ID]['ms2query_results'][0]['npc_class_results']),
             ' (NP Classifier);', '<br>',
-            str(feat_dicts[ID]['ms2query_results']['cf_subclass']),
+            str(feat_dicts[ID]['ms2query_results'][0]['cf_subclass']),
             ' (ClassyFire)' ])
     
     fold_diff_list = []
@@ -1302,7 +1301,7 @@ def add_nodedata(
             if feat_dicts[str(data['id'])]['cosine_annotation']
             else 'None '),
         '<b>(user-library)</b>, <br>',
-        (feat_dicts[str(data['id'])]['ms2query_results']['analog_compound_name']
+        (feat_dicts[str(data['id'])]['ms2query_results'][0]['analog_compound_name']
             if feat_dicts[str(data['id'])]['ms2query'] else "None"),
         '<b>(MS2Query)</b>',
         ])
