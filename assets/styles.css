@@ -204,19 +204,12 @@ COLUMNS - LANDING
 ROWS - PROCESSING
 */
 
+
 #processing_row_1 {
-    height: 5vh;
+    height: 75vh;
 }
 
 #processing_row_2 {
-    height: 20vh;
-}
-
-#processing_row_3 {
-    height: 50vh;
-}
-
-#processing_row_4 {
     height: 5vh;
 }
 
@@ -227,29 +220,17 @@ COLUMNS - PROCESSING
 
 #processing_row_1_col_1  {
     background-color: white;
-    height: 5vh;
+    height: 75vh;
+    overflow: scroll;
+}
+
+#processing_row_1_col_2  {
+    background-color: white;
+    height: 75vh;
     overflow: scroll;
 }
 
 #processing_row_2_col_1  {
-    background-color: white;
-    height: 20vh;
-    overflow: scroll;
-}
-
-#processing_row_3_col_1  {
-    background-color: white;
-    height: 50vh;
-    overflow: scroll;
-}
-
-#processing_row_3_col_2  {
-    background-color: white;
-    height: 50vh;
-    overflow: scroll;
-}
-
-#processing_row_4_col_1  {
     background-color: white;
     height: 5vh;
     overflow: scroll;

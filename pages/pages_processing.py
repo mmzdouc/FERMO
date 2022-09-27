@@ -1,6 +1,28 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 
+def call_processing_intro_text():
+    '''Introduction text for processing page'''
+    return html.Div([
+        html.Div('''On this page, you can process your data with FERMO. The program is flexible in terms of which files must be provided. However, the minimum requirements are a peaktable (produced by MZmine3, in the "_quant_full.csv" format) and the accompanying .mgf-file, containing MS2 information. Optionally, a table containing bioactivity data on samples, a table containing group metadata, and a spectral library in the .mgf-format can be provided. For details on the format of the tables, see the documentation or the provided example files.
+            '''),
+        html.Div(style={'margin-top' : '10px'}),
+        html.Div('''You can upload files by clicking the upload buttons on the left side of the page. An upload window will appear, in which you can navigate to the respective file. Once a file is uploaded, a message will appear that will indicate the outcome of the upload.
+            '''),
+        html.Div(style={'margin-top' : '10px'}),
+        html.Div('''On the right side of the page, processing parameters can be set. The default parameter have been determined empirically, and should suit most kinds of data. More information on the individual parameters can be found when hovering on the blue info-fields and in the documentation.  
+            '''),
+        html.Div(style={'margin-top' : '10px'}),
+        html.Div('''Once files are uploaded and parameters are set, the analysis can be started by clicking on the 'Start FERMO' button at the bottom of the page. The page will automatically reload to display the FERMO dashboard. Take note that during the first run, databases for feature annotation will be downloaded, which can take some time. 
+            '''),
+        ],
+        style={
+        'line-height' : '1.5',
+        'text-align' : 'justify',
+        }
+    )
+
+
 def call_dashboard_processing_button():
     '''Create button that initializes FERMO calc and redir to dashboard'''
     return html.Div([
@@ -32,11 +54,7 @@ def call_mass_dev_inp():
             ]),
         dbc.Tooltip(
                 html.Div(
-                    '''
-                    Used as precision threshold during different 
-                    calculation steps, such as ion adduct 
-                    calculation. For more information, 
-                    click this info-button to access the docs.
+                    '''Used as precision threshold during different calculation steps, such as ion adduct calculation. For more information, click this info-button to access the docs.
                     ''',
                     ),
                 placement='right',
@@ -59,8 +77,7 @@ def call_min_ms2_inpt():
     return html.Div([
         html.Div([ 
             '''
-            Minimal required number of fragments 
-            per MS² spectrum:
+            Minimal required number of fragments per MS² spectrum:
             ''',
             html.A(
                 html.Div(
@@ -75,16 +92,7 @@ def call_min_ms2_inpt():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''
-                Quality control parameter.
-                If a MS/MS spectrum does not meet the
-                requirement, it is dropped, and the
-                associated feature is considered MS1 only. 
-                MS/MS spectra with a low number of peaks 1)
-                have low information content and 2) 
-                may lead to false positive similarity 
-                assumptions. For more information, 
-                click this info-button to access the docs.
+                '''Quality control parameter. If a MS/MS spectrum does not meet the requirement, it is dropped, and the associated feature is considered MS1 only. MS/MS spectra with a low number of peaks 1) have low information content and 2) may lead to false positive similarity assumptions. For more information, click this info-button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -122,22 +130,7 @@ def call_feat_int_filt():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''
-                Value used to filter out low-intensity features 
-                ('cut the grass'). Indicates the minimal 
-                relative intensity (relative to the feature
-                with the highest intensity in the sample)
-                a feature must have to be considered for
-                further analysis. A value of
-                0.05 would exclude all features with a 
-                relative intensity below 0.05, i.e. the
-                bottom 5% of features; 
-                a value of 0 would include all
-                features. By default, this value is 0,
-                and should be chosen with respect to the 
-                underlying data. 
-                For more information, 
-                click this info-button to access the docs.
+                '''Value used to filter out low-intensity features ('cut the grass'). Indicates the minimal relative intensity (relative to the feature with the highest intensity in the sample) a feature must have to be considered for further analysis. A value of 0.05 would exclude all features with a relative intensity below 0.05, i.e. the bottom 5% of features; a value of 0 would include all features. By default, this value is 0, and should be chosen with respect to the underlying data. For more information, click this info-button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -176,27 +169,7 @@ def call_bioact_fact_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''
-                Factor used in the identification of 
-                bioactivity-associated features (if
-                bioactivity data was provided). 
-                If a feature
-                was detected in both bioactive and inactive
-                samples, how many times must the feature
-                be more intense in the active sample with the lowest
-                activity
-                than the highest intensity detected in in the 
-                inactive samples to be still 
-                considered bioactivity-associated. 
-                This allows to consider sub-active 
-                concentrations.
-                For example, a value of 10 would 
-                mean that the intensity of a feature must 
-                be 10 times higher in a bioactive sample than
-                in an inactive sample to be considered 
-                bioactivity-associated.
-                For more information and full reasoning,
-                click this info-button to access the docs.
+                '''Factor used in the identification of bioactivity-associated features (if bioactivity data was provided). If a feature was detected in both bioactive and inactive samples, how many times must the feature be more intense in the active sample with the lowest activity than the highest intensity detected in in the inactive samples to be still considered bioactivity-associated. This allows to consider sub-active concentrations. For example, a value of 10 would mean that the intensity of a feature must be 10 times higher in a bioactive sample than in an inactive sample to be considered bioactivity-associated. For more information and full reasoning, click this info-button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -234,24 +207,7 @@ def call_column_ret_fact_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''
-                Factor used in the identification of 
-                medium-blank/sample-blank associated features (if
-                metadata was provided). 
-                If a feature
-                was detected in both authentic samples and 
-                medium/sample blanks, how many times must the feature
-                be more intense in sample than in a blank to be 
-                still considered sample-associated.
-                This calculation takes into account retention of
-                compounds by the chromatography column and bleed into
-                blank analysis runs. 
-                For example, a column retention factor of 10 would mean
-                that the average intensity of the features across 
-                samples must be 10 times higher than the average 
-                intensity across blanks.
-                For more information and full reasoning,
-                click this info-button to access the docs.
+                '''Factor used in the identification of medium-blank/sample-blank associated features (if metadata was provided). If a feature was detected in both authentic samples and medium/sample blanks, how many times must the feature be more intense in sample than in a blank to be still considered sample-associated. This calculation takes into account retention of compounds by the chromatography column and bleed into blank analysis runs. For example, a column retention factor of 10 would mean that the average intensity of the features across samples must be 10 times higher than the average intensity across blanks. For more information and full reasoning, click this info-button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -289,14 +245,7 @@ def call_spec_sim_tol_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''
-                Tolerance in m/z used in the calculation of spectra 
-                similarity scores between MS2 spectra. Two peaks will be 
-                considered a match if their difference is less then 
-                or equal to the m/z tolerance. Dependent on the 
-                precision and mass deviation of the instrument.
-                For more information and full reasoning,
-                click this info-button to access the docs.
+                '''Tolerance in m/z used in the calculation of spectra similarity scores between MS2 spectra. Two peaks will be considered a match if their difference is less then or equal to the m/z tolerance. Dependent on the precision and mass deviation of the instrument. For more information and full reasoning, click this info-button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -334,14 +283,7 @@ def call_spec_sim_score_cutoff_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''
-                Score cutoff used in the evaluation of modified 
-                cosine scores between MS2 spectra. Two spectra will be 
-                considered related only if their score exceeds the 
-                cutoff threshold. Therefore, this parameter controls 
-                how strict the similarity between two spectra must be.
-                For more information and full reasoning,
-                click this info-button to access the docs.
+                '''Score cutoff used in the evaluation of modified cosine scores between MS2 spectra. Two spectra will be considered related only if their score exceeds the cutoff threshold. Therefore, this parameter controls how strict the similarity between two spectra must be. For more information and full reasoning, click this info-button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -380,13 +322,7 @@ def call_spec_sim_max_links_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''
-                Maximal number of links to other nodes, per node. 
-                Makes spectral similarity network less convoluted since
-                it restricts the number of links between nodes to the 
-                highest n ones.
-                For more information and full reasoning,
-                click this info-button to access the docs.
+                '''Maximal number of links to other nodes, per node. Makes spectral similarity network less convoluted since it restricts the number of links between nodes to the highest n ones. For more information and full reasoning, click this info-button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -408,9 +344,7 @@ def call_spec_sim_min_match_inp():
     '''Call the spectrum similarity minimal matched peaks input field '''
     return html.Div([
         html.Div([ 
-            '''
-            Enter the minimum number of matched peaks used 
-            in spectrum similarity calculation:
+            '''Enter the minimum number of matched peaks used in spectrum similarity calculation:
             ''',
             html.A(
                 html.Div(
@@ -425,12 +359,7 @@ def call_spec_sim_min_match_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''
-                In spectrum similarity matching, the minimum number of 
-                peaks that have to be matched between two spectra to be
-                considered a match.
-                For more information and full reasoning,
-                click this info-button to access the docs.
+                '''In spectrum similarity matching, the minimum number of peaks that have to be matched between two spectra to be considered a match. For more information and full reasoning, click this info-button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -461,12 +390,7 @@ def call_peaktable_upload():
                     id='processing-upload-peaktable'),
                 dbc.Tooltip(
                     html.Div(
-                        '''
-                        Reads a MZmine3 style peaktable with the 
-                        '_quant_full.csv' suffix
-                        (exported in the FULL/ALL mode).
-                        For more information on the format, see
-                        the documentation.
+                        ''' Reads a MZmine3 style peaktable with the  '_quant_full.csv' suffix (exported in the FULL/ALL mode). For more information on the format, see the documentation.
                         ''',
                         ),
                     placement='right',
@@ -488,12 +412,7 @@ def call_mgf_upload():
                     id='processing-upload-mgf'),
                 dbc.Tooltip(
                     html.Div(
-                        '''
-                        Reads a MZmine3 MZmine3 style .mgf-file containing
-                        tandem mass (MS/MS) spectra, accompanying
-                        the peaktable. Generated through MZmine3 export.
-                        For more information on the format, see
-                        the documentation.
+                        ''' Reads a MZmine3 MZmine3 style .mgf-file containing tandem mass (MS/MS) spectra, accompanying the peaktable. Generated through MZmine3 export. For more information on the format, see the documentation.
                         ''',
                         ),
                     placement='right',
@@ -515,18 +434,7 @@ def call_bioactiv_upload():
                     id='upload-bioactiv'),
                 dbc.Tooltip(
                     html.Div(
-                        '''
-                        Bioactivity annotation file in .csv format.
-                        FERMO expects on each row a sample name and
-                        bioactivity information, which can be in three
-                        different formats: 1) the signal word 'active'; 
-                        OR 2) a positive integer (whole) number, with
-                        the sample with the highest integer considered
-                        most active; OR a positive float (dot) number,
-                        with the sample with the lowest float considered
-                        most active. 
-                        For more information on the format, see
-                        the documentation.
+                        '''Bioactivity annotation file in .csv format. FERMO expects on each row a sample name and bioactivity information, which can be integer or float numbers. The field 'bioactivity table format' indicates if the values are percentages (the higher the value, the better) or concentrations (the lower the value, the better). For more information on the format, see the documentation.
                         ''',
                         ),
                     placement='right',
@@ -548,12 +456,7 @@ def call_metadata_upload():
                     id='upload-metadata'),
                 dbc.Tooltip(
                     html.Div(
-                        '''
-                        Metadata annotation file in .csv format.
-                        Marks the files that should be considered blanks.
-                        FERMO expects on each row a sample name 
-                        For more information on the format, see
-                        the documentation.
+                        '''Metadata annotation file in .csv format. Marks the files that should be considered blanks. FERMO expects on each row a sample name. Use the signal word 'BLANK' to indicate blank samples. The signal word 'GENERAL' is forbidden, since it is used by FERMO internally. For more information on the format, see the documentation. 
                         ''',
                         ),
                     placement='right',
@@ -575,11 +478,7 @@ def call_userlib_upload():
                     id='upload-userlib'),
                 dbc.Tooltip(
                     html.Div(
-                        '''
-                        Reads a user-provided spectral library in the 
-                        .mgf-format.
-                        For more information on the format, see
-                        the documentation.
+                        '''Reads a user-provided spectral library in the .mgf-format. For more information on the format, see the documentation.
                         ''',
                         ),
                     placement='right',
@@ -609,17 +508,7 @@ def call_bioact_type_dd():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''
-                Specify the format of the biological activity data.
-                Accepts two formats: concentration and percentage.
-                For both formats, values must be positive numbers.
-                For concentrations, the lowest value will be
-                considered the highest activity, and the highest
-                value the lowest activity.
-                For percentage, the highest value will be considered the 
-                highest activity, and the lowest value the lowest activity.
-                Samples not listed in the bioactivity table will be 
-                considered inactive.
+                '''Specify the format of the biological activity data. Accepts two formats: concentration and percentage. For both formats, values must be positive numbers. For concentrations, the lowest value will be considered the highest activity, and the highest value the lowest activity. For percentage, the highest value will be considered the highest activity, and the lowest value the lowest activity. Samples not listed in the bioactivity table will be considered inactive.
                 ''',
                 ),
             placement='right',
@@ -638,43 +527,27 @@ def call_bioact_type_dd():
         ])
 
 
+
+
+
 processing = html.Div([
     ###first row###
     dbc.Row([
         #first column#
-        dbc.Col([
-                html.Div('FERMO: Processing mode'),
-                ],
-            id="processing_row_1_col_1",
-            width=12,
-            ),
-        ],
-    id="processing_row_1",
-    ),
-    ###second row###
-    dbc.Row([
-        #first column#
-        dbc.Col([
-                html.Div('Placeholder for a brief par on how the processing mode works'),
-                ],
-            id="processing_row_2_col_1",
-            width=12,
-            ),
-        ],
-    id="processing_row_2",
-    ),
-    ###third row###
-    dbc.Row([
-        #first column#
-        dbc.Col([
-                html.Div('Placeholder for files to upload'),
+        dbc.Col(
+            html.Div([
+                html.H2('Peaktable processing (standard mode)'),
+                call_processing_intro_text(),
+                html.Div(style={'margin-top' : '30px'}),
                 html.Hr(),
+                #PEAKTABLE UPLOAD FIELD
                 call_peaktable_upload(),
                 html.Div(
                     id='upload-peaktable-output',
                     style={
                         'color' : 'red',
                         'font-weight' : 'bold',
+                        'margin-top' : '10px', 
                         },
                     ),
                 html.Hr(),
@@ -685,16 +558,19 @@ processing = html.Div([
                     style={
                         'color' : 'red',
                         'font-weight' : 'bold',
+                        'margin-top' : '10px', 
                         },
                     ),
                 html.Hr(),
                 #BIOACTIVITY UPLOAD FIELD
                 call_bioact_type_dd(),
+                html.Div(style={'margin-top' : '5px'}),
                 call_bioactiv_upload(),
                 html.Div(
                     id='upload-bioactiv-output',
                     style={
                         'font-weight' : 'bold',
+                        'margin-top' : '10px', 
                         },
                     ),
                 html.Hr(),
@@ -704,6 +580,7 @@ processing = html.Div([
                     id='upload-metadata-output',
                     style={
                         'font-weight' : 'bold',
+                        'margin-top' : '10px', 
                         },
                     ),
                 html.Hr(),
@@ -713,45 +590,60 @@ processing = html.Div([
                     id='upload-userlib-output',
                     style={
                         'font-weight' : 'bold',
+                        'margin-top' : '10px', 
                         },
                     ),
                 html.Hr(),
-                
-                #Helper functions/fields
-                html.Div(id='store_bioact_type', hidden=True),
-                ],
-            id="processing_row_3_col_1",
-            width=6,
+            ],
+            style={
+                'margin-left':'30px',
+                'margin-top':'30px',
+                },
+            
+            ),
+            id="processing_row_1_col_1",
+            width=7,
             ),
         #second column#
-        dbc.Col([
-                html.Div('Placeholder for parameter settings'),
-                html.Hr(),
+        dbc.Col(
+            html.Div([
                 call_mass_dev_inp(),
+                html.Div(style={'margin-top' : '20px'}),
                 call_min_ms2_inpt(),
+                html.Div(style={'margin-top' : '20px'}),
                 call_feat_int_filt(),
+                html.Div(style={'margin-top' : '20px'}),
                 call_bioact_fact_inp(),
+                html.Div(style={'margin-top' : '20px'}),
                 call_column_ret_fact_inp(),
+                html.Div(style={'margin-top' : '20px'}),
                 call_spec_sim_tol_inp(),
+                html.Div(style={'margin-top' : '20px'}),
                 call_spec_sim_score_cutoff_inp(),
+                html.Div(style={'margin-top' : '20px'}),
                 call_spec_sim_max_links_inp(),
+                html.Div(style={'margin-top' : '20px'}),
                 call_spec_sim_min_match_inp(),
-
-
-                ],
-            id="processing_row_3_col_2",
-            width=6,
+            ],
+            style={
+                'margin-left':'80px',
+                'margin-top':'80px',
+                },
+            ),
+            id="processing_row_1_col_2",
+            width=5,
             ),
         ],
-    id="processing_row_3",
+    id="processing_row_1",
     ),
-    ###fourth row###
+    ###second row###
     dbc.Row([
         #first column#
         dbc.Col([
                 call_dashboard_processing_button(),
-                
                 ###STORAGE###
+                #Helper function
+                html.Div(id='store_bioact_type', hidden=True),
                 #Parameter storage
                 html.Div(id='params_cache', hidden=True),
                 dcc.Store(id='out_params_assignment'),
@@ -768,11 +660,11 @@ processing = html.Div([
                         'text-align' : 'center',
                     })
                 ],
-            id="processing_row_4_col_1",
+            id="processing_row_2_col_1",
             width=12,
             ),
         ],
-    id="processing_row_4",
+    id="processing_row_2",
     ),
     ])
 

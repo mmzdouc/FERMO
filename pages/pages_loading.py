@@ -20,6 +20,9 @@ def call_loading_intro_text():
         html.Div(style={'margin-top' : '10px'}),
         html.Div('''If the upload was not successful, a message will indicate possible solutions. 
             '''),
+        html.Div(style={'margin-top' : '10px'}),
+        html.Div('''After loading your data, click the button 'Start FERMO Dashboard' to go to the dashboard view.
+            '''),
         ],
         style={
         'line-height' : '1.5',
@@ -56,7 +59,7 @@ def call_dashboard_loading_button():
     '''Create button that initializes FERMO calc and redir to dashboard'''
     return html.Div([
         dbc.Button(
-            "Start FERMO",
+            "Start FERMO Dashboard",
             id='call_dashboard_loading',
             n_clicks=0,
             className="d-grid gap-2 col-6 mx-auto",
