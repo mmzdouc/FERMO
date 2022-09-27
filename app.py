@@ -20,6 +20,7 @@ import pickle
 from pyteomics import mgf
 import sys
 import time
+import webbrowser
 
 ###INTERNAL MODULES###
 import utils
@@ -46,6 +47,8 @@ background_callback_manager = DiskcacheManager(cache)
 ###VERSIONING###
 FERMO_version = 'FERMO_version_0.5'
 
+###OPEN BROWSER WINDOW###
+webbrowser.open('http://127.0.0.1:8050/')
 
 
 ##########
@@ -1259,4 +1262,4 @@ def export_all_features(n_clicks, contents):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False) #switch to True for debugging
