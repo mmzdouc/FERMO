@@ -16,7 +16,7 @@ def call_mzmine_page():
     '''Create button that redirects to MZmine3 preprocessing page'''
     return html.Div([
         dbc.Button(
-            "Pre-processing (raw data mode)",
+            "NOT IMPLEMENTED YET",
             id='call_mzmine_button',
             n_clicks=0,
             className="d-grid gap-2 col-6 mx-auto",
@@ -32,7 +32,6 @@ def call_loading_page():
             id='call_loading_button',
             n_clicks=0,
             className="d-grid gap-2 col-6 mx-auto",
-            # ~ disabled=True, #switch on when ready
             ),
         ])
 
