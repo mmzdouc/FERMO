@@ -143,6 +143,115 @@ def call_threshold_inp(name):
         max=1.0,
         step=0.01,)
 
+def call_rel_int_title():
+    '''Relative intensity factor title + info button'''
+    return html.Div([
+        html.Div([ 
+            "Relative intensity score: ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_rel_int_title_tooltip",
+                    className="info_dot"
+                    ),
+                #DUMMY LINK, SPECIFY CORRECT DOC LINK
+                href='https://github.com/mmzdouc/fermo', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for feature intensity (height) relative to the most intense (highest) feature per sample. A value of 0 selects all features, a value of 1 only the most intense one. For more information, click this info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_rel_int_title_tooltip",
+            ),
+        ])
+
+def call_convolutedness_title():
+    '''Convolutedness factor title + info button'''
+    return html.Div([
+        html.Div([ 
+            "Convolutedness score: ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_convolutedness_title_tooltip",
+                    className="info_dot"
+                    ),
+                #DUMMY LINK, SPECIFY CORRECT DOC LINK
+                href='https://github.com/mmzdouc/fermo', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for convolutedness (i.e. peak collisions) of each feature. Score represent proportion of feature not overlapping with other features (also detects various adducts and isotopic peaks and ignores overlaps between related features). For filtering, 0 would select all features, 0.5 would select features with at least 50% of retention time window not overlapping with any peaks, and 1 would only select features that are not overlapping with any other feature.For more information, click this info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_convolutedness_title_tooltip",
+            ),
+        ])
+
+def call_bioactivity_title():
+    '''Bioactivity factor title + info button'''
+    return html.Div([
+        html.Div([ 
+            "Bioactivity score: ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_bioactivity_title_tooltip",
+                    className="info_dot"
+                    ),
+                #DUMMY LINK, SPECIFY CORRECT DOC LINK
+                href='https://github.com/mmzdouc/fermo', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for associatedness to bioactivity of each feature. Only functional if a bioactivity table was provided by user. A feature is considered bioactive if 1) it has been detected only in samples that were designated as active; OR if 2) the minimum intensity across all bioactive samples is n times higher than the maximum intensity across all inactive samples, where n is a user-provided parameter with the name "Bioactivity factor". For filtering, any value greater than 0 selects all bioactivity-associated features. If multiple bioactive samples with different activity levels were designated, values between 0.1 and 1 can be used to differentiate features less or more likely to be bioactivity-associated. Keep in mind that a positive bioactivity score does not guarantee bioactivity of a compound. For more information, click this info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_bioactivity_title_tooltip",
+            ),
+        ])
+
+def call_novelty_title():
+    '''Novelty factor title + info button'''
+    return html.Div([
+        html.Div([ 
+            "Novelty score: ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_novelty_title_tooltip",
+                    className="info_dot"
+                    ),
+                #DUMMY LINK, SPECIFY CORRECT DOC LINK
+                href='https://github.com/mmzdouc/fermo', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for probability that feature is unknown, compared against external data. Indicates likeliness that the compound represented by the feature has not been described yet. Score calculated from results of MS2Query matching against a  spectral library containing approximately 300.000 compounds, and, if provided, from results of matching against a user-provided spectral library. For filtering, a score of 1 would indicate that the feature is most likely novel, while a score of 0 would indicate that the feature is most likely known. Keep in mind that the estimation of novelty is imperfect and dependent on external data provided. For more information, click this info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_novelty_title_tooltip",
+            ),
+        ])
+
+
 
 ##########
 #PAGE
@@ -180,6 +289,12 @@ dashboard = html.Div([
                         style_data=style_data_table,
                         style_data_conditional=style_data_cond_table,
                         style_header=style_header_table,
+                        tooltip_header={
+                            'Diversity score' : 'Number of different spectral similarity cliques per sample, divided by the total number of spectral similarity cliques across all samples. Indicates chemical diversity of sample.',
+                            'Spec score' : 'Specificity score: Number of spectral similarity cliques unique to the sample and to the group this sample is in, divided by the total number of spectral similarity cliques across all samples. Indicates chemistry specific to sample/group.'
+                            },
+                        tooltip_delay=0,
+                        tooltip_duration=None,
                         ),
                     style={'display': 'inline-block'},
                 ),
@@ -221,13 +336,13 @@ dashboard = html.Div([
                         'margin': '10px 5px 20px',
                         'font-size': '17px'},
                     ),
-                html.Div("Relative intensity: "),
+                call_rel_int_title(),
                 html.Div(call_threshold_inp('rel_intensity_threshold')),
-                html.Div("Convolutedness: "),
+                call_convolutedness_title(),
                 html.Div(call_threshold_inp('convolutedness_threshold')),
-                html.Div("Bioactivity: "),
+                call_bioactivity_title(),
                 html.Div(call_threshold_inp('bioactivity_threshold')),
-                html.Div("Novelty: "),
+                call_novelty_title(),
                 html.Div(call_threshold_inp('novelty_threshold')),
                 ],
                 style={

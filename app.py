@@ -919,6 +919,7 @@ def plot_chromatogram(
     '''Plot central chromatogram'''
     samples_JSON = contents['samples_JSON']
     sample_stats = contents['sample_stats']
+    feature_dicts = contents['feature_dicts']
     
     #temporarily convert from JSON to pandas DF
     samples = dict()
@@ -931,7 +932,9 @@ def plot_chromatogram(
         active_feature_index,
         sample_stats,
         samples,
-        samples_subsets)
+        samples_subsets,
+        feature_dicts,
+        )
 
 @callback(
     Output('storage_active_feature_index', 'data'),

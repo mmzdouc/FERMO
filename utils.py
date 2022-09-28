@@ -626,14 +626,36 @@ def append_scatter_text(
     fill,
     line,
     width,
-    bordercolor
+    bordercolor,
+    feat_dicts
     ):
     '''Create scatter trace with hoverlabel'''
+    ID=str(row["feature_ID"])
+    
+    cosine_ann = "None"
+    if feat_dicts[ID]['cosine_annotation']:
+        cosine_ann = ''.join([
+            feat_dicts[ID]['cosine_annotation_list'][0]['name'],
+            ])
+    cosine_ann = (cosine_ann[:75] + '...') if len(cosine_ann) > 75 else cosine_ann
+    
+    ms2query_ann = "None"
+    if feat_dicts[ID]['ms2query']:
+        ms2query_ann = ''.join([
+            feat_dicts[ID]['ms2query_results'][0]['analog_compound_name'],
+            ])
+    ms2query_ann = (ms2query_ann[:75] + '...') if len(ms2query_ann) > 75 else ms2query_ann
+    
     text = (f'Feature ID <b>{row["feature_ID"]}</b>' +
             '<br>' +
             f'<i>m/z</i> <b>{row["precursor_mz"]}</b>' +
             '<br>' +
-            f'RT (min) <b>{row["retention_time"]}</b>'
+            f'RT (min) <b>{row["retention_time"]}</b>' +
+            '<br>' +
+            f'Lib. annot. <b>{cosine_ann}</b>' +
+            '<br>' +
+            f'MS2Query <b>{ms2query_ann}</b>' +
+            '<br>'
             )
     return go.Scatter(
         x=np.array(row['pseudo_chrom_trace'][0]),
@@ -662,6 +684,7 @@ def plot_central_chrom(
     sample_stats,
     samples,
     subsets,
+    feature_dicts,
     ):
     '''Plot central chromatogram'''
     fig = go.Figure()
@@ -694,6 +717,7 @@ def plot_central_chrom(
                     color_dict['yellow'],
                     4,
                     color_dict['black'],
+                    feature_dicts,
                     )
                 )
         elif int(row['feature_ID']) in subsets[sel_sample]['select_sample_spec']:
@@ -704,6 +728,7 @@ def plot_central_chrom(
                     color_dict['purple'],
                     4,
                     color_dict['black'],
+                    feature_dicts,
                     )
                 )
         elif int(row['feature_ID']) in subsets[sel_sample]['select_group_spec']:
@@ -714,6 +739,7 @@ def plot_central_chrom(
                     color_dict['black'],
                     4,
                     color_dict['black'],
+                    feature_dicts,
                     )
                 )
         elif int(row['feature_ID']) in subsets[sel_sample]['select_remainder']:
@@ -724,6 +750,7 @@ def plot_central_chrom(
                     color_dict['green'],
                     4,
                     color_dict['black'],
+                    feature_dicts,
                     )
                 )
         elif int(row['feature_ID']) in subsets[sel_sample]['nonselect_sample_spec']:
@@ -734,6 +761,7 @@ def plot_central_chrom(
                     color_dict['purple'],
                     4,
                     color_dict['black'],
+                    feature_dicts,
                     )
                 )
         elif int(row['feature_ID']) in subsets[sel_sample]['nonselect_group_spec']:
@@ -744,6 +772,7 @@ def plot_central_chrom(
                     color_dict['black'],
                     4,
                     color_dict['black'],
+                    feature_dicts,
                     )
                 )
         elif int(row['feature_ID']) in subsets[sel_sample]['nonselect_remainder']:
@@ -754,6 +783,7 @@ def plot_central_chrom(
                     color_dict['cyan'],
                     4,
                     color_dict['black'],
+                    feature_dicts,
                     )
                 )
         else:
@@ -764,6 +794,7 @@ def plot_central_chrom(
                     color_dict['black'],
                     4,
                     color_dict['black'],
+                    feature_dicts,
                     )
                 )
 
@@ -835,6 +866,7 @@ def plot_clique_chrom(
                                 color_dict['red'],
                                 3,
                                 color_dict['black'],
+                                feature_dicts,
                                 )
                             )
                     except:
@@ -848,6 +880,7 @@ def plot_clique_chrom(
                     color_dict['blue'],
                     3,
                     color_dict['black'],
+                    feature_dicts,
                     )
                 )
     return fig
@@ -901,6 +934,7 @@ def plot_mini_chrom(
                             color_dict['grey'],
                             2,
                             color_dict['grey'],
+                            feature_dicts,
                             ),
                         row=row_counter, 
                         col=1
@@ -912,6 +946,7 @@ def plot_mini_chrom(
                     color_dict['black'],
                     2,
                     color_dict['black'],
+                    feature_dicts,
                 ),
                 row=row_counter, 
                 col=1
