@@ -1,12 +1,13 @@
+import copy
 from dash import html
-import re
-import pandas as pd
+from datetime import datetime
 import numpy as np
 import os
+import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import copy
-from datetime import datetime
+import re
+
 
 #LOCAL MODULES
 from processing.read_from_metadata_table import read_from_metadata_table
@@ -23,6 +24,7 @@ from processing.calculate_metrics import calculate_metrics
 from processing.calculate_pseudochrom_traces import calculate_pseudochrom_traces
 
 from variables import color_dict
+
 
 ############
 #INPUT TESTING
@@ -100,7 +102,8 @@ def assert_bioactivity_format(bioactiv_table, filename):
         return html.Div(
         f'''
         ❌ Error: Field containing only whitespace in column 
-        'sample_name' in file {filename} detected. This is forbidden.'''
+        'sample_name' in file {filename} detected. This is forbidden.
+        Please correct and try again.'''
             )
     elif bioactiv_table.loc[:,'bioactivity'].dtypes == "object": 
         return html.Div(
@@ -108,7 +111,14 @@ def assert_bioactivity_format(bioactiv_table, filename):
         ❌ Error: Field containing text values (strings) in column 
         'bioactivity' in file {filename} detected.
         This might be also whitespace at the bottom of the column.
-        This is forbidden.'''
+        This is not allowed. Please correct and try again.'''
+            )
+    elif bioactiv_table.loc[:,'sample_name'].duplicated().any():
+        return html.Div(
+        f'''
+        ❌ Error: Duplicate values in column 'sample_name'
+        in file {filename} detected. This is not allowed.
+        Please correct and try again.'''
             )
     else:
         return None
@@ -372,13 +382,14 @@ def peaktable_processing(
         )
     
     #search against embedding using ms2query
-    input_folder = os.path.join(
-        os.path.dirname(__file__),
-        'libraries',)
-    if os.path.exists(input_folder):
-        ms2query_search(
-            feature_dicts, 
-            input_folder)
+    # ~ input_folder = os.path.join(
+        # ~ os.path.dirname(__file__),
+        # ~ 'libraries',)
+    # ~ if os.path.exists(input_folder):
+        # ~ ms2query_search(
+            # ~ feature_dicts, 
+            # ~ input_folder)
+    print('WARNING: MS2QUERY switched off')
     
     #Appends adducts/isotopes and determines peak collision
     samples = calculate_feature_overlap(
@@ -619,6 +630,49 @@ def generate_subsets(
         'nonselect_group_spec' : list(nonselect_group_spec),
         'nonselect_remainder' : list(nonselect_remainder),
         }
+
+
+def calc_diversity_score(sample_stats, samples):
+    '''Calculate diversity scores for each sample, return list'''
+    list_div_scores = list()
+    for sample in samples:
+        try:
+            list_div_scores.append(round(
+                (
+                len(
+                    set(sample_stats["cliques_per_sample"][sample]).difference(
+                        set(sample_stats["set_blank_cliques"])
+                        )
+                    )
+                / 
+                len(
+                    set(sample_stats["set_all_cliques"]).difference(
+                        set(sample_stats["set_blank_cliques"]))
+                    )
+                ),
+            2))
+        except:
+            list_div_scores.append(0)
+    return list_div_scores
+
+def calc_specificity_score(sample_stats, samples, sample_unique_cliques):
+    '''Calculate specificity scores for each sample, return list'''
+    list_spec_scores = list()
+    for sample in samples:
+        try:
+            list_spec_scores.append(round(
+                (
+                (len(sample_unique_cliques[sample]))
+                / 
+                len(
+                    set(sample_stats["cliques_per_sample"][sample]).difference(
+                        set(sample_stats["set_blank_cliques"]))
+                    )
+                ),
+            2))
+        except:
+            list_spec_scores.append(0)
+    return list_spec_scores
 
 
 def append_scatter_text(

@@ -290,8 +290,8 @@ dashboard = html.Div([
                         style_data_conditional=style_data_cond_table,
                         style_header=style_header_table,
                         tooltip_header={
-                            'Diversity score' : 'Number of different spectral similarity cliques per sample, divided by the total number of spectral similarity cliques across all samples. Indicates chemical diversity of sample.',
-                            'Spec score' : 'Specificity score: Number of spectral similarity cliques unique to the sample and to the group this sample is in, divided by the total number of spectral similarity cliques across all samples. Indicates chemistry specific to sample/group.'
+                            'Diversity score' : 'Indicates chemical diversity of sample. Calculated by dividing number of different spectral similarity cliques per sample by the total number of spectral similarity cliques across all samples.',
+                            'Spec score' : 'Specificity score: Indicates proportion of sample/group-specific chemistry per sample. Calculated by dividing number of spectral similarity cliques unique to the sample and its group by the total number of spectral similarity cliques in this sample.'
                             },
                         tooltip_delay=0,
                         tooltip_duration=None,

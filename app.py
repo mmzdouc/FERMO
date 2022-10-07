@@ -12,7 +12,7 @@ import diskcache
 import io
 import json
 import matchms
-from  matchms.Spectrum import Spectrum
+from matchms.Spectrum import Spectrum
 import numpy as np
 import os
 import pandas as pd
@@ -836,32 +836,13 @@ def calculate_feature_score(
     sample_scores = pd.DataFrame({
         'Filename' : [i for i in samples],
         'Group' : [sample_stats['samples_dict'][i] for i in samples],
-        'Diversity score' : [
-            round(
-                (
-                len(
-                    set(sample_stats["cliques_per_sample"][i]).difference(
-                        set(sample_stats["set_blank_cliques"])
-                        )
-                    )
-                / 
-                len(
-                    set(sample_stats["set_all_cliques"]).difference(
-                        set(sample_stats["set_blank_cliques"]))
-                    )
-                ),
-            2) for i in samples],
-        'Spec score' : [
-            round(
-                (
-                (len(sample_unique_cliques[i]))
-                / 
-                len(
-                    set(sample_stats["set_all_cliques"]).difference(
-                        set(sample_stats["set_blank_cliques"]))
-                    )
-                ),
-            2) for i in samples],
+        'Diversity score' : utils.calc_diversity_score(
+            sample_stats, 
+            samples),
+        'Spec score' : utils.calc_specificity_score(
+            sample_stats, 
+            samples, 
+            sample_unique_cliques),
         'Total' : [len(samples_subsets[i]['all_features']) for i in samples],
         'Non-blank' : [len(samples_subsets[i]['all_nonblank']) for i in samples],
         'Over cutoff' : [len(samples_subsets[i]['all_select_no_blank']) for i in samples],
