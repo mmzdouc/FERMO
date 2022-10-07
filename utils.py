@@ -12,8 +12,9 @@ import re
 #LOCAL MODULES
 from processing.read_from_metadata_table import read_from_metadata_table
 from processing.collect_stats_samples import collect_stats_samples
-from processing.feature_dicts_creation import feature_dicts_creation
 from processing.get_samplespecific_features import get_samplespecific_features
+from processing.set_from_sample_tables import set_from_sample_tables
+from processing.feature_dicts_creation import feature_dicts_creation
 from processing.determine_blank_features import determine_blank_features
 from processing.determine_bioactive_features import determine_bioactive_features
 from processing.calculate_similarity_cliques import calculate_similarity_cliques
@@ -315,8 +316,6 @@ def peaktable_processing(
 
     user_library_name = uploaded_files_store['user_library_name']
     
-
-    
     #parse metadata file into a dict of sets
     groups = read_from_metadata_table(
         metadata,
@@ -330,19 +329,23 @@ def peaktable_processing(
         bioactivity,
         )
     
-    #generate nested dict with feature information
-    feature_dicts = feature_dicts_creation(
-        peaktable,
-        ms2spectra,
-        dict_params['min_nr_ms2'],
-        sample_stats
-        )
-    
     #generates dict with pandas dfs - one per sample
     samples = get_samplespecific_features(
         peaktable, 
         sample_stats,
         dict_params['feature_rel_int_fact'],
+        )
+    
+    #create set of features that are in samples
+    detected_features = set_from_sample_tables(samples)
+
+    #generate nested dict with feature information
+    feature_dicts = feature_dicts_creation(
+        peaktable,
+        ms2spectra,
+        dict_params['min_nr_ms2'],
+        sample_stats,
+        detected_features
         )
     
     #determine non-blank/blank of features and assign to feature_dicts

@@ -65,7 +65,7 @@ Instructions for the generation of the files, as well as the required format, ca
 
 6. Activate the newly created virtual environment by entering the command `conda activate FERMO_v_0.5`. The prefix of the command prompt should switch to `(FERMO_v_0.5)`, to indicate the change in environment .This has to be done whenever FERMO is started.
 
-7. Install the packages required by FERMO in the newly created virtual environment by entering the command `pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.3.3" dash[diskcache] dash[celery]`. This has to be done only at the first start of FERMO.
+7. Install the packages required by FERMO in the newly created virtual environment by entering the command `pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.3.3" "dash[diskcache]" "dash[celery]"`. This has to be done only at the first start of FERMO.
 
 9. To start FERMO, enter the command `python app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. Example data for testing can be found in the folder `example_data`. 
 

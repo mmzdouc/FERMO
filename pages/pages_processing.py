@@ -169,7 +169,7 @@ def call_bioact_fact_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Factor used in the identification of bioactivity-associated features (if bioactivity data was provided). If a feature was detected in both bioactive and inactive samples, how many times must the feature be more intense in the active sample with the lowest activity than the highest intensity detected in in the inactive samples to be still considered bioactivity-associated. This allows to consider sub-active concentrations. For example, a value of 10 would mean that the intensity of a feature must be 10 times higher in a bioactive sample than in an inactive sample to be considered bioactivity-associated. For more information and full reasoning, click this info-button to access the docs.
+                '''Factor used in the identification of bioactivity-associated features (if bioactivity data was provided). For features that were detected in both active and inactive samples, intensity of the feature in the sample with the lowest bioactivity must be n times higher than the highest feature intensity across all inactive samples, while n is the Bioactivity factor. For example, a value of 10 would mean that the intensity of a feature must be 10 times higher in a bioactive sample than across the inactive samples to be still considered bioactivity-associated.
                 ''',
                 ),
             placement='right',
@@ -192,7 +192,7 @@ def call_column_ret_fact_inp():
     return html.Div([
         html.Div([ 
             '''
-            Enter the column retention factor:
+            Enter the blank factor:
             ''',
             html.A(
                 html.Div(
@@ -207,7 +207,7 @@ def call_column_ret_fact_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Factor used in the identification of medium-blank/sample-blank associated features (if metadata was provided). If a feature was detected in both authentic samples and medium/sample blanks, how many times must the feature be more intense in sample than in a blank to be still considered sample-associated. This calculation takes into account retention of compounds by the chromatography column and bleed into blank analysis runs. For example, a column retention factor of 10 would mean that the average intensity of the features across samples must be 10 times higher than the average intensity across blanks. For more information and full reasoning, click this info-button to access the docs.
+                '''Factor used in the identification of medium-blank/sample-blank associated features (if metadata was provided). For features that were detected in both samples and blanks, the average intensity across samples must be n times higher than the average intensity across blanks, while n is the Blank factor. This takes into account column retention and bleed/cross contamination into blanks. In case of cross-contamination, the intensity in the blank will be low in comparison to the sample, while for real blank-associate features, intensities between samples and blanks will be similar. For more information and full reasoning, click this info-button to access the docs.
                 ''',
                 ),
             placement='right',

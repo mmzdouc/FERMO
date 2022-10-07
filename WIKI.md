@@ -1,9 +1,25 @@
-# User Guide
+# GITHUB WIKI
 
-
-
-
-
+Hello and welcome to the FERMO Dashboard wiki pages. 
+This wiki can be separated into three parts:
+- User-guides
+    - Peaktable generation tutorial (LINK)
+    - Metadata file preparation tutorial (LINK)
+    - Bioactivity data file preparation tutorial (LINK)
+    - Spectral library preparation (LINK)
+    - Data interpretation (LINK)
+- Pages
+    - Landing page (LINK)
+    - Processing page (processing mode) (LINK)
+    - MZmine page (raw data mode) (LINK)
+    - Loading page (loading mode) (LINK)
+    - Dashboard page (LINK)
+- References
+    - Scores (LINK)
+    - Adduct detection (LINK)
+    - Peak collision detection (LINK)
+    - Chromatogram drawing (LINK)
+    - FAQ (LINK)
 
 
 ## Peaktable generation tutorial
@@ -96,7 +112,8 @@ Additionally, the following conditions must be met; else, there will be an error
 
 Furthermore, there are some suggestions:
 
-- The use of whitespace (tabs, spaces) is discouraged. Instead, replace with underscore '_' or hyphen '-'
+-We advise the following naming convention for group names: single words made up by lowercase letters (a-z) and digits (0-9), without any whitespace, punctuation, or special characters (except for the underscore symbol '_'. Good group names would be for example `group_1`, `group_2`, or `marine`, `terrestrial`, or `treatment`, `control`. Bad group names would be for example `45%-78%`, `+#.-.`, `XxXxxXx`, or `*`.
+- Group names are case-sensitive, meaning that `group1`, `Group1` and `GROUP1` would be interpreted as three different groups by the program. 
 - While there is no limit on the number of different groups used, it is suggested to keep this number low, to make it easier to detect differences between groups. 
 - The nesting of groups is not supported. 
 
@@ -104,9 +121,6 @@ Common mistakes during metadata file preparation are:
 
 - The metadata file format was mistaken with the one used in GNPS molecular networking
 - Instead of a comma `,`, some other delimiter (e.g. `tab`, `;`, `|`) was used in the .csv-file (can be checked by opening the file in a text editor (e.g. Notepad)
-
-
-
 
 
 ## Bioactivity data file preparation tutorial
@@ -170,20 +184,68 @@ Keep in mind that library matching is computationally expensive, and might add s
 
 ## Data interpretation
 
+Data interpretation strongly depends on the research question in mind. For a bioactive natural product discovery research question, following analysis workflow can be imagined: 
 
+1. Assuming bioactivity data and metadata were provided, the bioactivity filter can be used to identify features associated with biological activity. Combining with the novelty filter (set to a low setting, such as 0.2) can help to exclude features that are well annotated and therefore have a low probability of being novel.
 
+2. After having applied the filters, the remaining features can be inspected for their likelihood to be associated to bioactivity. It is advisable to export the selected features as table, using the dedicated button, to keep track which features were already inspected. 
 
+3. A possible way of assessing the bioactivity-likelihood is to look at the field *'Groups in molecular network'* in the element **feature information table**. If also groups contribute to the network that are not associated to bioactivity, chances are slim that the features in this network are really responsible for the bioactivity. However, if the network is specific to the bioactivity-associated group, chances are good that this group of features might be responsible for bioactivity.
 
+4. Another clue can be taken by looking at the field *'Bioactivity per sample'* and *'Intensity per sample'* in the **feature information table**. Bioactivity and feature intensity should correlate, since a higher concentration of a compound should also lead to a higher biological activity signal. If they do not (e.g.  low intensity of a feature in a highly active sample, and high intensity of a feature in a sample with low activity), chances are slim that the feature is responsible for bioactivity. Since the same feature (belonging to the same compound) is compared across samples, the feature intensity can be taken as semiquantitative measure). 
 
-# Scratch
+5. By exclusion of features/networks unlikely to be associated for bioactivity, the search can be narrowed down to a couple of features, which can then be further investigated by chromatographic fractionation and re-testing. In the best case, this would decrease the number of fractions needed to analyze. 
 
 ## Landing page 
 
+The landing page allows to select the mode in which FERMO should be run. The user can choose between three options:
+
+- **Peaktable processing page (standard mode)** (LINK)
+- **Data pre-processing page (raw data mode)** (not implemented yet) (LINK)
+- **Restart session page (loading mode)** (LINK)
+
 ## Processing page (processing mode)
+
+On the **Peaktable processing page**, data can be loaded into the app, and processing parameters can be set. Load the files by clicking on the respective buttons. The minimum requirement to run the Peaktable processing mode are a **peaktable** and its accompanying **.mgf-file**. Optionally, users can provide **metadata**, **bioactivity data**, and a targeted **spectral library**, which are described in their respective wiki pages. Input files are tested for correct formatting, and a message indicates pass or fail of the assessment. With respect to parameter settings, the default settings should match most data types but can be adjusted as needed:
+
+- **Mass deviation** - *"Select the estimated mass deviation of your data (in ppm)"*:
+States the expected mass deviation of the data. Used as precision threshold during different calculation steps, such as ion adduct calculation. This parameter should be set respective to the input data. As a rule of thumb, using the same mass deviation that was used for MZmine3 processing is suggested.
+
+- **Min MS2 frags** - *"Minimal required number of fragments per MS² spectrum"*:
+Quality control parameter. Sets the minimal number of fragments that have to be detected in a MS² spectrum. If a MS² spectrum has fragments and does not meet the requirement, it is dropped, and the associated feature is considered MS1 only. This is done because MS² spectra with a low number of peaks have (i) low information content and (ii) may lead to false matches in (modified) cosine-based similarity searches, since their low number of fragments automatically lead to a high 'coverage' of the spectrum. In case this filter is not desired, it can be effectively switched off by setting the value to 0. 
+
+- **Intensity cutoff** - *'Enter the feature relative intensity filter'*:
+Value used to filter out low-intensity features ('cut the grass'). Indicates the minimal relative intensity (relative to the feature with the highest intensity in the sample) a feature must have to be considered for further analysis. A value of 0.05 would exclude all features with a relative intensity below 0.05, i.e. the bottom 5% of features; a value of 0 would include all features, and a value of 0.99 would exclude all features except for the most intense peak. By default, this value is 0, and should be chosen with respect to the underlying data. This parameter can be also used to reduce the number of low-intensity features in case of very large peaktables.
+
+- **Bioactivity factor** - *'Enter the bioactivity factor'*:
+Factor used in the identification of bioactivity-associated features (if bioactivity data was provided). If a feature was only detected in bioactive samples, it is possible that it is associated to bioactivity. If a feature is detected only in inactive samples, it is very unlikely that it is associated to bioactivity. However, if a feature was detected in both bioactive and inactive samples, it is more complicated, since a compound could be present in sub-inhibitory concentration and therefore lead to a missing bioactivity signal, but it could be still detected by the instrument. A pragmatic solution is to use a fold-difference between active and inactive samples: The intensity of the feature in the sample with the lowest bioactivity must be n times higher than the highest feature intensity across all inactive samples, while n is the user-specifiable Bioactivity factor. For example, a value of 10 would mean that the intensity of a feature must be 10 times higher in a bioactive sample than across the inactive samples to be still considered bioactivity-associated. 
+
+- **Blank factor** - *'Enter the blank factor'*:
+Factor used in the identification of medium-blank/sample-blank associated features (if metadata  on blank samples was provided). If a feature was only detected in blank samples, it is clearly blank-associated. If a feature is detected only in normal samples, it is unlikely to be blank-associated. However, if a feature was detected in both blank and normal samples, it is more complicated, since a high-concentration compound could be retained by the column and bleed into the blank, where it is detected by the instrument. Therefore, a simple blank subtraction is not ideal. Instead, we compare the average intensity of the feature across blanks with the average intensity across samples. Blank-associated features should be present in similar intensities across blanks and samples, while cross-contaminated features should be much lower in the blank than in the samples. Therefore, if the average intensity in samples is n times higher than the average intensity across blanks, the feature is not considered blank-associated, while n is the Blank factor. For example, a Blank factor of 10 would mean that the average intensity of the features across samples must be 10 times higher than the average intensity across blanks.
+
+
+- **Spectrum similarity tolerance** - *'Enter the spectrum similarity tolerance'*:
+Tolerance in m/z used in the calculation of modified cosine-based spectra similarity scores between MS² spectra. Two peaks will be considered a match if their difference is less then or equal to the m/z tolerance. Dependent on the precision and mass deviation of the instrument.
+
+- **Spectrum similarity score cutoff** - *'Enter the spectrum similarity score cutoff'*:
+Score cutoff used in the evaluation of modified cosine scores between MS2 spectra. Two spectra will be considered related only if their score exceeds the cutoff threshold. Therefore, this parameter controls how strict the similarity between two spectra must be. Keep in mind that the Diversity and Specificity scores are built upon spectral similarity, and a low score might lead to the clustering of hardly related spectra.
+
+- **Max spectral links** - *'Enter the maximal number of spectrum similarity links'*:
+Maximal number of links to other nodes, per node. Makes spectral similarity network less convoluted since it restricts the number of links between nodes to the highest n ones. 
+
+- **Min matched peaks** - *'Enter the minimum number of matched peaks used in spectrum similarity calculation'*:
+In spectrum similarity matching, the minimum number of peaks that have to be matched between two spectra to be considered a match.
 
 ## MZmine page (raw data mode)
 
+TBA - not implemented yet
+
 ## Loading page (loading mode)
+
+session-file: a FERMO-specific file in the .pickle-format (a Python-specific data storage format). It is created during FERMO processing (as 'FERMO_cache.session') and used to cache data, to prevent redundant re-calculations. User can also load the session file only, by starting FERMO in the loading mode (see References -> Modes). This also allows users to share their analysis with collaborators by sending a single file. However, keep in mind to load FERMO session files from TRUSTED SOURCES ONLY! This has to do with the file format of the session file. In theory, a wrongdoer might insert malicious code into the file, which is executed upon loading and may cause harm. If in doubt, do not load the session file. Instead, ask for the original files (i.e. peaktable).
+When working with session files, it is recommended to rename any file that needs to be stored as soon as possible, since FERMO may overwrite file that are named 'FERMO_cache.session'. While no naming conventions need to be followed, it is recommended to include FERMO as prefix and .session as suffix, to make the purpose of the file clear.
+
+
 
 ## Dashboard page
 
@@ -222,128 +284,115 @@ The **filter and download panel** **(6)** allows to set thresholds, which are th
 
 - Convolutedness score: represents the proportion of the feature not overlapping with other features, based on retention time. Feature overlaps represent co-elution of peaks in the chromatogram, which are considered unfavorable since they complicate consecutive isolation. In the convolutedness score, a value of 1 would indicate no overlap with other peaks, while a value of 0 would indicate complete overlap. Isotopic peaks (e.g. the +1 peak of a \[M+H]<sup>+</sup> adduct) and different adducts originating from the same compound (e.g., \[M+H]<sup>+</sup> and \[M+Na]<sup>+</sup> ) are detected and not considered in the calculation, since they do not represent different molecules. More details can be found in the references.
 
-- Bioactivity score: represents putative association to bioactivity, if a bioactivity table was provided in step 1. A feature is considered bioactivity-associated if it was only detected in samples designated as active, or if the minimal intensity across all bioactive samples is n times (by default 10 times, can be user-specified) higher than the maximal intensity across all inactive samples. This takes into account sub-inhibitory concentrations, which cause a sample to be considered inactive, even though the feature can be detected. A bioactivity score of 0 would indicate that the feature is not bioactivity-associated, while a value greater than 0 or equal to 1 would indicate bioactivity-associatedness. Keep in mind that a positive bioactivity score does not guarantee bioactivity of a compound. Instead, it tells which features are possibly bioactivity-associated. For more details and limitations, see the references. 
+- Bioactivity score: represents putative association to bioactivity, if a bioactivity table was provided. A feature is considered bioactivity-associated if it was only detected in samples designated as active, or if the minimal intensity across all bioactive samples is n times (by default 10 times, can be user-specified) higher than the maximal intensity across all inactive samples. This takes into account sub-inhibitory concentrations, which cause a sample to be considered inactive, even though the feature can be detected. A bioactivity score of 0 would indicate that the feature is not bioactivity-associated, while a value greater than 0 or equal to 1 would indicate bioactivity-associatedness. Keep in mind that a positive bioactivity score does not guarantee bioactivity of a compound. Instead, it tells which features are possibly bioactivity-associated. For more details and limitations, see the references. 
 
 - Novelty score: represents putative novelty of feature, compared to external data. Indicates likeliness that the compound represented by the feature has not been described yet. This score is calculated from the results of the matching against the user-specified spectral library, and the MS2Query matching. If no reliable match was found, the feature is considered to be likely novel. Therefore, a score of 1 would indicate high probability of novelty, a score between 1-0.1 would indicate a less reliable match and therefore, putative novelty, and a score of 0 would indicate no novelty. 
 
 ![dashboard_filters_export.png](/assets/dashboard_filters_export.png)
 
+## References
 
+### Scores
 
-
-## Scores
-
-## FAQ
-
-## In depth: concepts, references, show logical flow figure
-
-
-
-
-
-# Scratch
-    
-
-### References
-
-- Adduct detection (calculate_feature_overlap.py):
-    In mass spectrometry analaysis, many different signals can be detected from a single compound. These signals can be various adducts (e.g. \[M+H]<sup>+</sup>, \[M+Na]<sup>+</sup>), or stem from variable isotope composition of the compound (e.g. the +1 peak of a \[M+H]<sup>+</sup> adduct, from the 13C isotope). These signals are often registered as individual features and obfuscate analysis (see Peak collision detection for details).
-    FERMO attempts to annotate related adducts and isotopic peaks during peak collision analysis. If two peaks overlap with each other (i.e. have a similar retention time window), FERMO will compare their *m/z* ratios. [Blumer et al.](https://doi.org/10.1021/acs.jcim.1c00579) reported that the \[M+H]<sup>+</sup> ion is the most commonly observed adduct in ESI-LC-MS instruments. Therefore, FERMO considers one of the two adducts (peak A) to be the \[M+H]<sup>+</sup> adduct, and the other one (peak B) an other adduct, such as \[M+Na]<sup>+</sup>. For a list of commonly observed adduct types, FERMO performs the adequate mathematical operation to calculate the mass of peak A if it was that other adduct ( \[M+Na]<sup>+</sup>). If the mass deviation between the theoretical mass of peak A and the observed mass of peak B are within a user-set threshold (by default, 20 ppm), the two peaks are considered related adducts, stemming from the same compound. 
-    Consider two overlapping peaks A (*m/z* 415.2098) and B (*m/z* 437.1912). Peak A is considered to be the \[M+H]<sup>+</sup> adduct. We hypothesize that peak B is the \[M+Na]<sup>+</sup>) adduct. Therefore, we perform (415.2098 - 1.0072 + 22.9897) and calculate the mass deviation between the result and peak B. The mass error between 437.1923 (peak A) and 437.1912 amounts to 2.5 ppm and is well within the tolerance of 20 ppm. Therefore, we can assume that peak B is indeed the \[M+Na]<sup>+</sup> adduct and peak A the \[M+H]<sup>+</sup> adduct.
-    Currently, 16 different adducts and isotopes are considered and the calculation described below. A_mz denotes peak A and is considered the \[M+H]<sup>+</sup>. Masses are defined as: Na = 21.981942 )(proton already subtracted), H = 1.007276 (mass of proton), C13_12 = 1.0033548 (mass difference between 13C and 12C isotopes).
-
-    - \[M+Na\]<sup>+</sup>: (A_mz + Na)
-        
-    - \[2M+Na\]<sup>+</sup>: ((2 * (A_mz - H)) + Na + H)
-    
-    - \[M+2H\]<sup>2+</sup>, \[2M+H\]<sup>+</sup>: ((A_mz + H)/2)
-    Comment: Here, one of the ions is the \[2M+H\]<sup>+</sup> ion, the other one is the \[M+2H\]<sup>2+</sup> ion. Lack of isotopic pattern makes it not possible to say which is which, so both are annotated. Consider two overlapping peaks A and B: peak A with *m/z* 1648.47; peak B with *m/z* 824.74. If A is assumed \[M+H\]<sup>+</sup>, B would be \[M+2H\]<sup>2+</sup>. If B is assumed \[M+H\]<sup>+</sup>, A would be \[2M+H\]<sup>+</sup>. Thus, assignment is performed for \[M+2H\]<sup>2+</sup> and \[2M+H\]<sup>+</sup> in parallel.
-    
-    - \[M+3H\]<sup>3+</sup>: ((A_mz + (2 * H))/3)
-    
-    - \[M+1+H\]<sup>+</sup>: (A_mz + C13_12)
-    
-    - \[M+2+H\]<sup>+</sup>: (A_mz + (2 * C13_12))
-    
-    - \[M+3+H\]<sup>+</sup>: (A_mz + (3 * C13_12))
-    
-    - \[M+4+H\]<sup>+</sup>: (A_mz + (4 * C13_12))
-    
-    - \[M+5+H\]<sup>+</sup>: (A_mz + (5 * C13_12))
-    
-    - \[M+1+2H\]<sup>2+</sup>: ((A_mz + (C13_12 + H)) / 2)
-    
-    - \[M+2+2H\]<sup>2+</sup>: ((A_mz + ((2 * C13_12) + H)) / 2)
-    
-    - \[M+3+2H\]<sup>2+</sup>: ((A_mz + ((3 * C13_12) + H)) / 2)
-    
-    - \[M+4+2H\]<sup>2+</sup>: ((A_mz + ((4 * C13_12) + H)) / 2)
-    
-    - \[M+5+2H\]<sup>2+</sup>: ((A_mz + ((5 * C13_12) + H)) / 2)
-    
-    - +1 isotopic peak of \[M+2H\]<sup>2+</sup>: (A_mz + (C13_12/2))
-    Comment: For certain compounds classes, such as thiopeptides, the \[M+H]<sup>+</sup> adduct is only poorly or not at all detected, while the \[M+2H\]<sup>2+</sup> adduct is detected well. In this case, the \[M+1+2H\]<sup>2+</sup> isotope of \[M+2H\]<sup>2+</sup> is not annotated, since it misses its corresponding protonated adduct. Consider two overlapping peaks A and B: peak A with *m/z* 790.2263; peak B with *m/z* 790.7269. If A is assumed to be \[M+2H\]<sup>2+</sup>, B would be the \[M+1+2H\]<sup>2+</sup>. In theory, two unrelated peaks with a mass difference of 0.5017 could appear at the same retention time, but chances for that are very slim.
-
-- Chromatogram drawing: 
-    In mass spectrometry, a *m/z* chromatogram peak represents a specific *m/z* that has been detected across a number of consecutive scans. Therefore, it is an continuous trace, with each datapoint having a specific retention time and intensity. Peak picking algorithms transform these continuous traces into discrete parameters such as retention time at the start/stop of the peak, feature width at half maximum intensity, or retention time at maximum intensity. This form of representation is more memory-efficient then the continuous one and generally justifies the loss in information about the original chromatogram trace. 
-    In FERMO, the chromatograms peaks are drawn only from the discrete parameters mentioned above, since the peaktable used as input does not contain continuous chromatogram traces. Therefore, FERMO actually draws pseudo-chromatograms. Manual inspection showed that pseudo-chromatograms are accurate representations of the original chromatograms. Still, they remain abstractions of the original data, and users are advised to inspect the original chromatograms before important decision-making (e.g. before prioritization). 
-    Pseudo-chromatograms are drawn using following data points (x/y, where x is the retention time (rt), and y is the relative intensity (int):
-        - (rt at start of peak/0*int)
-        - (rt at start of feature width at half maximum/0.5*int)
-        - (rt at maximum int/int)
-        - (rt at stop of feature width at half maximum/0.5*int)
-        - (rt at stop of peak/0*int)
-    This form of representation comes with certain limitations: for example, shoulder peaks arising from co-eluting isomers are not considered. Also, the MZmine3 peaktable does not report asymmetry and tailing factors for all features, limiting their use in chromatogram drawing. Despite these limitations, we consider the use of pseudo-chromatograms a computationally efficient way of peak representation, with sufficient accuracy. 
-    
-    
-    
-- Diversity score (dashboard.py):
+- Diversity score (utils.py)
     Measure for the chemical diversity of a sample, compared against the total chemical diversity in the dataset. Sample-specific measure.
     The chemical diversity detected in a biological sample can vary substantially, depending on variables such as the source organism, culturing conditions, extraction methods or analysis instrument. High chemical diversity of a sample is beneficial during isolation procedures, since it diversifies the risk of investing resources into the redundant characterization of structurally similar compounds. Therefore, a comprehensive metric to represent the chemical diversity of a sample is highly desirable.
     The chemical diversity metric used in FERMO is based on spectral similarity cliques/networks. Such networks are created by calculating pairwise similarity between all MS2 spectra in a dataset, and connecting the most similar ones based on user-defined parameters. Since similar chemical structures tend to lead to similar mass fragmentation spectra, it has been hypothesized that spectral similarity can act as a proxy for chemical similarity. Following this logic, individual spectral similarity cliques/networks can be considered proxies of chemical classes, since they are a collection of similar MS/MS fragmentation spectra, stemming from putatively similar chemical structures. More precisely, they can be considered spectral similarity classes. 
-    FERMO calculates its diversity metrics as follows: For each sample, the number of detected spectral similarity cliques specific to the sample and/or group is divided by the total number of similarity cliques across all samples, excluding medium components. The diversity score allows to estimate the amount of specific chemistry per sample. However, there are some limitations to consider: First, the networks/cliques are based on MS2 spectral similarity, and not necessarily every clique represents a discrete chemical class, since it has been observed that different adducts of the same compound (e.g. \[M+H\]<sup>+</sup>, \[M+2H\]<sup>2+</sup>) can have very different MS2 spectra and will end up in different cliques. Second, also singleton nodes (i.e. not connected to any other node due to lack of spectral similarity) are considered distinct chemical classes in the diversity score calculation. If MS2 spectra have not been filtered for quality control (e.g. to assure a minimal number of fragmentation peaks) before spectral similarity calculation, it can lead to a high number of singleton peaks, simply because their MS2 spectra lack information content. This can falsely bloat the diversity score of a sample. 
+    FERMO calculates its diversity score as follows: Excluding cliques containing media components, for each sample, the number of detected spectral similarity cliques is divided by the total number of similarity cliques across all samples. A sample with a large number of similarity cliques will have a higher diversity score than a sample with a low number of similarity cliques.
+    However, there are some limitations to consider: First, the networks/cliques are based on MS2 spectral similarity, and not necessarily every clique represents a discrete chemical class, since it has been observed that different adducts of the same compound (e.g. \[M+H\]<sup>+</sup>, \[M+2H\]<sup>2+</sup>) can have very different MS2 spectra and will end up in different cliques. Second, also singleton nodes (i.e. not connected to any other node due to lack of spectral similarity) are considered distinct chemical classes in the diversity score calculation. If MS2 spectra have not been filtered for quality control (e.g. to assure a minimal number of fragmentation peaks) before spectral similarity calculation, it can lead to a high number of singleton peaks, simply because their MS2 spectra lack information content. This can falsely bloat the diversity score of a sample. 
     
+- Specificity score (utils.py)
+    Measure for the proportion of specific chemistry of a sample. Derivative of the Diversity score described in the previous paragraph. Calculated as follows: Excluding cliques containing media components, for each sample, the number of detected spectral similarity cliques that are specific to the sample and the group it belongs to, divided by the total number of similarity cliques detected in this sample. A sample with a large number of specific similarity cliqies will have a higher specificity score than a sample with a low number of specific cliques. However, this score should always be considered in tandem with the diversity score, since it relates to the sample, and not to the overall chemistry. For example, a sample can have a specificity score of 0.5 (half of the detected cliques are specific to the sample), but if the total number of cliques in this sample is low (e.g. a diversity score of 0.05), it is still overall poor. A much more interesting sample would be one with a high diversity score (e.g. 0.4, meaning 40% of the chemical diversity across all samples) and a high specificity score (e.g. 0.5, meaning that 50% of the cliques in this sample are specific for it, which amounts to 20% of the total cliques across all samples).
+    
+- Convolutedness score (calculate_feature_overlap.py)
+    Represents the proportion of the feature not overlapping with other features, based on retention time. Feature overlaps represent co-elution of peaks in the chromatogram, which are considered unfavorable since they complicate consecutive isolation. In the convolutedness score, a value of 1 would indicate no overlap with other peaks, while a value of 0 would indicate complete overlap. Isotopic peaks (e.g. the +1 peak of a \[M+H]<sup>+</sup> adduct) and different adducts originating from the same compound (e.g., \[M+H]<sup>+</sup> and \[M+Na]<sup>+</sup> ) are detected and excluded from the colvolutedness, since they stem from the same compounds and are only adducts caused by the instrument.
+
 - Novelty score (dashboard.py):
     Measure for putative novelty of the feature, compared against an external database. Feature-specific measure.
     In the search for novel natural products, it is essential to ensure that metabolites have not already been isolated before. This process, called dereplication, takes place during prioritization, and is usually performed by comparing the attributes of features against databases. A common automated way of doing dereplication is library matching: comparison of the MS/MS spectrum of the metabolite against a library of MS/MS spectra of standards. Even though library matching is a fast and convenient way of dereplication, if comes with  some limitations: For one, the number of MS/MS spectra in spectral libraries is orders of magnitude lower than the number of known metabolites, thus creating a "blind spot" of "known unknowns". Furthermore, in commonly used library matching algorithms, spectrum matches must match across the whole spectrum, limiting the identification of analogues that may have a good partial match due to a common substructure. Recently, the issue of inadequate library size has been partially addressed by the MASST algorithm by Wang et al, which swaps the spectral library of identified standards with community-provided experimental data. In theory, this should hugely increase coverage of the reference library, allowing to form hypotheses about commonly occurring compounds even though the exact identity of the compounds is unknown. Also, the problem of analogue search has been recently addressed by introduction of the MS2Query tool (De Jonge et al), which uses vectorization (more specifically, spectral embeddings) for MS/MS spectra representation, allowing for partial matches between compounds. Furthermore, comparison of spectral embeddings is computationally efficient, which allows for faster search times in larger spectral libraries. 
-    For the novelty score in FERMO, we combine both concepts. In addition to standard library matching against a user-provided spectral library (employing a modified cosine score), we use MS2Query to compare against a library of spectra of both standards and non-annotated community-provided spectra. The large size of the library (currently, over 600,000 diversified spectra, with growing tendency) allows for the hypothesis that compounds that are not found in it are reasonably rare, and therefore, unlikely to have been isolated before. Using MS2Query also allows to search for analogues, increasing the coverage even further. (comment for Sylvia: this still needs to be fully implemented)
-    The novelty score is a value between or equal to 0 and 1: a value of 0 indicates that the compound is most likely known and/or commonly occurring, while 1 indicates that the compound is most likely unknown and/or rarely occurring. This value is calculated from the results of library and/or embedding matching. If library matching yields a reliable match (highest modified cosine hit higher or equal to 0.95, highest ms2query hit higher or equal to 0.95), it is assumed to be dereplicated, and its novelty score is set to 0. If the library matching yields a less reliable match (0.95-0.8 for modified cosine, 0.95-0.4 for ms2query), the compound is assumed to be in the "twilight zone" which requires further evaluation, and it gets a score between 0 and 1, with a score closer to 1 indicating higher chances of novelty. If a compound is below the threshold (0.8 for modified cosine, 0.4 for ms2query), it is assumed to be novel, and its novelty score is set to 1. Using the threshold filters allows to search for the score.     
+    For the novelty score in FERMO, we combine both concepts. In addition to standard library matching against a user-provided spectral library (employing a modified cosine score), we use MS2Query to compare against a library of spectra of both standards and non-annotated community-provided spectra. The large size of the library (currently, over 600,000 diversified spectra, with growing tendency) allows for the hypothesis that compounds that are not found in it are reasonably rare, and therefore, unlikely to have been isolated before. Using MS2Query also allows to search for analogues, increasing the coverage even further. 
+    The novelty score is a value between or equal to 0 and 1: a value of 0 indicates that the compound is most likely known and/or commonly occurring, while 1 indicates that the compound is most likely unknown and/or rarely occurring. This value is calculated from the results of library and/or embedding matching. If library matching yields a reliable match (highest modified cosine hit higher or equal to 0.95, highest ms2query hit higher or equal to 0.95), it is assumed to be dereplicated, and its novelty score is set to 0. If the library matching yields a less reliable match (0.95-0.8 for modified cosine, 0.95-0.4 for ms2query), the compound is assumed to be in the "twilight zone" which requires further evaluation, and it gets a score between 0 and 1, with a score closer to 1 indicating higher chances of novelty. If a compound is below the threshold (0.8 for modified cosine, 0.4 for ms2query), it is assumed to be novel, and its novelty score is set to 1. Using the threshold filters allows to search for the score.    
 
-- Input files overview (main.py)
-    FERMO supports two working modes: the (normal) calculation mode, and the loading mode. The calculation mode is intended to process new data. It takes a peaktable and, optionally, a .mgf-file containing MS2 information, a metadata file containing information on which samples are blanks, and a bioactivity file denoting the bioactivity of samples. The results are displayed in the FERMO dashboard and written in a file with the title 'FERMO_cache.session'. The loading mode is intended to let the user examine previously analyzed data or display analyses of other users. It allows to load a previously crated FERMO session file, which is then displayed in the FERMO dashboard without the need of any other input files or calculations. The specifications of the files are as follows:
-    
-    - Peaktable: a .csv-file containing information on features and their properties, such as *m/z*, retention time, or signal intensity. Currently, FERMO only accepts peaktables produced by MZmine 3, when exporting data by 'Feature List Methods' -> 'Export Feature List' -> 'GNPS feature based molecular networking'. The recommended parameters for the export module are: Filter rows: ALL; Feature intensity: Peak height; CSV export: ALL. The parameter 'Merge MS/MS' may be used, but requires exhaustive parameter optimization and is currently not recommended. Export will result in three files: a .mgf-file (containing the MS2 information) and two peaktables, of which one has the addition 'full' in its filename. This is the file that is necessary for FERMO to function correctly, since it contains much more data than the other peaktable. The following columns are parsed by FERMO: 'id', 'intensity_range:max', 'mz', 'rt', 'datafile:SAMPLENAME:fwhm', 'datafile:SAMPLENAME:intensity_range:max', 'datafile:SAMPLENAME:rt_range:min', 'datafile:SAMPLENAME:rt_range:max', 'datafile:SAMPLENAME:rt'. Keep in mind that for each sample provided, a separate column starting with 'datafile:SAMPLENAME:...' needs to be present. 
-    
-    - MS/MS data file: a .mgf-file (MASCOT generic file format) containing information on the MS/MS properties of features. Produced automatically by data processing and exporting using MZmine 3. The .mgf-file is loaded by using the [Matchms](https://github.com/matchms/matchms) package. For quality control reasons, each MS/MS spectrum is inspected for the number of fragmentation peaks. The more peaks and the higher their intensity, the higher is also the information content of an MS/MS spectrum, and the more valuable it is for data analysis. Conversely, a spectrum with a low number of fragmentation peaks contains little information. During development of FERMO, we observed that such spectra are even detrimental to analysis, since they lead to false positive connections in spectral similarity calculations. Therefore, spectra with less than a user-specified number of peaks (default value: 8) are not considered, and their associated features are treated as if they had no MS/MS information to begin with. However, the features still appear in the analysis. If the user does not wish to perform quality control of spectra, the minimal number of peaks required can be set to 0 (e.g. `--min_ms2_peaks 0`) to effectively disable the function. 
-    
-    - bioactivity file: a .csv-file containing information on biologically active samples and their activities. It is assumed that all samples were measured at the same concentration/dilution, that one bioactivity table contains only a single experiment, that there is only a single bioactivity value per sample, and that only active samples are included in the table (for format, see below). Generally speaking, there is a multitude of ways bioactivity can be expressed (e.g. MIC, IC50, LD50, active/inactive, percentages, mm of inhibition halos). Therefore, exhaustively encoding all possible input formats is a tedious task. A possible solution to this problem is to interpret input data based on formatting. For example, integers (e.g. the number 5) can be interpreted as percentages, while floats (e.g. 0.5) can be interpreted as concentrations. Following this logic, FERMO can interpret 3 different bioactivity input formats: integers, floats, and strings: integers must be positive, whole numbers, and are interpreted so that the highest number signifies the maximum activity, while the lowest number represents the lowest activity (meaning to represent bioactivities such as percentage of inhibition, percentage of dead specimen, or mm of inhibition halo in an antibiotic growth inhibition assay); float point numbers must also be positive and are interpreted so that the lowest number signifies the maximum activity, while the highest number represents the lowest activity (meaning to represent concentrations in bioactivity assays such as IC50, IC90, LD50, LD90, MIC); strings (words) are limited to 'active', which is considered 100% activity (meaning to represent qualitative experimental results). 
-    FERMO expects only one format per table (either integer OR floats OR strings, but not mixed), and all three tables to follow the following format: in the first row, there must be 'sample_name,bioactivity' (as column labels). In the following rows, each sample is denoted with its full name, followed by the bioactivity value. For strings, this could be 'sample1.mzML,active', for integers, this could be 'sample1.mzML,100', and for floats, this would be 'sample1.mzML,0.7'. Only active samples should be included in the bioactivity table. Samples that are not in the bioactivity table are automatically considered inactive.
-    
-    16.09.22: Bioactivity has been reworked: signal words (active) are not accepted anymore. Also, no distinction is made based on the kind of numbers (int, float).
-    Instead, the user must input which kind of data it is (percentage or concentration), with percentage interpreted on a 'the highest is most active' principle, and the concentration on a 'the lowest is the most active' principle. If a sample is inactive, it should not be included in the bioactivity table. This should also lead to nice table that are not cluttered with null values. 
-    
-    
-    - metadata file: a comma-separated table file (.csv) containing information on sample groupings. This file is defined to have two columns: one with the header 'sample_name', the other with the header 'attribute'. FERMO expects the names of samples in the column 'sample_names', and their group affiliation in the column 'attribute'. FERMO processes the metadata file in a row-wise fashion and groups samples with identical values/names in the 'attribute' column. Group names can be chosen arbitrarily by the user, except for the signal words 'GENERAL' and 'BLANK'. 'BLANK' must be only used to designate instrument/medium blanks. This is important because FERMO will treat samples in the group 'BLANKS' differently from the other samples. The signal word 'GENERAL' is reserved too, and used to group any samples that were not grouped by the user.
-    Users are advised to take special care during the construction of the metadata table, especially in grouping samples. Group names are case-sensitive, meaning that 'group1', 'Group1' and 'GROUP1' would be interpreted as three different groups by the program. 
-    The authors advise the following naming convention for group names: single words made up by lowercase letters (a-z) and digits (0-9), without any whitespace, punctuation, or special characters (except for the underscore symbol '_'. Good group names would be for example 'group_1', 'group_2', or 'marine', 'terrestrial', or 'treatment', 'control'. Bad group names would be for example '45%-78%', '+#.-.', 'XxXxxXx', or '*'.
-    
-    - session-file: a FERMO-specific file in the .pickle-format (a Python-specific data storage format). It is created during FERMO processing (as 'FERMO_cache.session') and used to cache data, to prevent redundant re-calculations. User can also load the session file only, by starting FERMO in the loading mode (see References -> Modes). This also allows users to share their analysis with collaborators by sending a single file. However, keep in mind to load FERMO session files from TRUSTED SOURCES ONLY! This has to do with the file format of the session file. In theory, a wrongdoer might insert malicious code into the file, which is executed upon loading and may cause harm. If in doubt, do not load the session file. Instead, ask for the original files (i.e. peaktable).
-    When working with session files, it is recommended to rename any file that needs to be stored as soon as possible, since FERMO may overwrite file that are named 'FERMO_cache.session'. While no naming conventions need to be followed, it is recommended to include FERMO as prefix and .session as suffix, to make the purpose of the file clear.
-
-- Modes (main.py)
-    FERMO can be run in two different modes: the (normal) calculation mode, and the loading mode. When FERMO is run on a dataset for the first time, all necessary calculations are performed, and the results are stored as 'FERMO_cache.session' in the FERMO directory. If FERMO is run again on the same dataset, it will automatically look for such a file in the FERMO directory. If 'FERMO_cache.session' is present, FERMO will load results directly from the file with no need for new computation, provided that all files and parameters stayed the same as in the previous run. If parameters or files were changed, FERMO will redo all computations and overwrite the existing 'FERMO_cache.session' file. 
-    User can also manually specify a FERMO session file, using the option `python main.py -l filename.session`. This allows users to store their calculations, or share them with collaborators. It is recommended to rename any file that needs to be stored as soon as possible, since FERMO may overwrite file that are named 'FERMO_cache.session'. While no naming conventions need to be followed, it is recommended to include FERMO as prefix and .session as suffix, to make the purpose of the file clear. When loading session files, keep in mind that ONLY session files from TRUSTED SOURCES SHOULD BE LOADED! In theory, people could insert malicious code in the session file, which may be harmful. AGAIN, ONLY LOAD SESSION FILES FROM TRUSTED SOURCES. For an exact explanation, see References -> Input files overview -> Session-file.
-    
-    
-
-- Peak collision detection (calculate_feature_overlap.py): 
-    In LC-MS(MS) analysis, it is a common occurrence that two compounds leave the chromatography column at the same time. This is also known as co-elution or peak collision, and both compounds will be in the same acquisition scan of the mass spectrometer. If the compounds have different molecular masses, the instrument can distinguish and register them as individual, overlapping peaks. 
-    Co-elution of compounds is unfavorable since it complicates consecutive isolation of each of the compounds. Therefore, it is an important factor to consider during the metabolite prioritization procedure. FERMO detects co-elution of two peaks by calculation of retention time window overlap. Each peak is simplified to a one-dimensional vector, denoted with two points x1 (retention time of the beginning of the peak) and x2 (retention time of the end of the peak). Consider two peaks A and B with A(x1,x2) and B(x1,x2). If any of (Ax2 < Bx1) or (Bx2 < Ax1) is False, peaks do overlap. FERMO checks for collisions by performing a pairwise comparison between all peaks (all-against-all).
-    However, not all peak collisions stem from co-elution of discrete compounds. A single compound can lead to many different peaks, due to detection of different adducts (e.g. \[M+H]<sup>+</sup>, \[M+Na]<sup>+</sup>), isotopes (e.g. the +1 peak of a \[M+H]<sup>+</sup> adduct, from the 13C isotope), and combinations thereof (e.g. \[M+1+2H]<sup>2+</sup>). Such 'artifacts' usually have a similar retention time window, and can be related to each other by discrete mathematical operations. They are often filtered out by pre-processing programs (e.g. MZmine), but can also persist until in the final peaktable. Overlaps between such 'artificial' peaks do not affect consecutive isolation, since they stem from the same compound (even though they can give valuable information about the chemical structure of an unknown analyte). 
-    Therefore, FERMO examines each peak collision, and if one of the two peaks results to be a plausible adduct of the other, the overlap is not considered a collision. The relationship between the two peaks is registered and presented to the user in the dashboard in the Feature information table in the field 'Putative adducts'.
-    For more information on how which adducts or isotopes are detected, see the point 'Adduct detection' of this references. 
+- Bioactivity score: 
+    Represents putative association to bioactivity, if a bioactivity table was provided. A feature is considered bioactivity-associated if it was only detected in samples designated as active, or if the minimal intensity across all bioactive samples is n times (by default 10 times, can be user-specified) higher than the maximal intensity across all inactive samples. This takes into account sub-inhibitory concentrations, which cause a sample to be considered inactive, even though the feature can be detected. A bioactivity score of 0 would indicate that the feature is not bioactivity-associated, while a value greater than 0 or equal to 1 would indicate bioactivity-associatedness. Keep in mind that a positive bioactivity score does not guarantee bioactivity of a compound. The bioactivity score is not resulting from any statistical calculation or prediction. Instead, it tells which features are possibly bioactivity-associated, and leaves it to the user to decide if this is plausible or not. Eventually, any bioactivity prediction must be confirmed by consecutive fractionation and retesting, until it is confirmed by isolation and testing of the pure compound. However, the bioactivity score can help to save time and resources by narrowing down possibilities. 
 
 
+### Adduct detection (calculate_feature_overlap.py):
+
+In mass spectrometry analaysis, many different signals can be detected from a single compound. These signals can be various adducts (e.g. \[M+H]<sup>+</sup>, \[M+Na]<sup>+</sup>), or stem from variable isotope composition of the compound (e.g. the +1 peak of a \[M+H]<sup>+</sup> adduct, from the 13C isotope). These signals are often registered as individual features and obfuscate analysis (see Peak collision detection for details).
+
+FERMO attempts to annotate related adducts and isotopic peaks during peak collision analysis. If two peaks overlap with each other (i.e. have a similar retention time window), FERMO will compare their *m/z* ratios. [Blumer et al.](https://doi.org/10.1021/acs.jcim.1c00579) reported that the \[M+H]<sup>+</sup> ion is the most commonly observed adduct in ESI-LC-MS instruments. Therefore, FERMO considers one of the two adducts (peak A) to be the \[M+H]<sup>+</sup> adduct, and the other one (peak B) an other adduct, such as \[M+Na]<sup>+</sup>. For a list of commonly observed adduct types, FERMO performs the adequate mathematical operation to calculate the mass of peak A if it was that other adduct ( \[M+Na]<sup>+</sup>). If the mass deviation between the theoretical mass of peak A and the observed mass of peak B are within a user-set threshold (by default, 20 ppm), the two peaks are considered related adducts, stemming from the same compound. 
+
+Consider two overlapping peaks A (*m/z* 415.2098) and B (*m/z* 437.1912). Peak A is considered to be the \[M+H]<sup>+</sup> adduct. We hypothesize that peak B is the \[M+Na]<sup>+</sup>) adduct. Therefore, we perform (415.2098 - 1.0072 + 22.9897) and calculate the mass deviation between the result and peak B. The mass error between 437.1923 (peak A) and 437.1912 amounts to 2.5 ppm and is well within the tolerance of 20 ppm. Therefore, we can assume that peak B is indeed the \[M+Na]<sup>+</sup> adduct and peak A the \[M+H]<sup>+</sup> adduct.
+
+Currently, 16 different adducts and isotopes are considered and the calculation described below. A_mz denotes peak A and is considered the \[M+H]<sup>+</sup>. Masses are defined as: Na = 21.981942 )(proton already subtracted), H = 1.007276 (mass of proton), C13_12 = 1.0033548 (mass difference between 13C and 12C isotopes).
+
+- **\[M+Na\]<sup>+</sup>:** `(A_mz + Na)`
+    
+- **\[2M+Na\]<sup>+</sup>:** `((2 * (A_mz - H)) + Na + H)`
+
+- **\[M+2H\]<sup>2+</sup>, \[2M+H\]<sup>+</sup>**: `((A_mz + H)/2)` **\[1\]**
+
+- **\[M+3H\]<sup>3+</sup>**: `((A_mz + (2 * H))/3)`
+
+- **\[M+1+H\]<sup>+</sup>**: `(A_mz + C13_12)`
+
+- **\[M+2+H\]<sup>+</sup>**: `(A_mz + (2 * C13_12))`
+
+- **\[M+3+H\]<sup>+</sup>**: `(A_mz + (3 * C13_12))`
+
+- **\[M+4+H\]<sup>+</sup>**: `(A_mz + (4 * C13_12))`
+
+- **\[M+5+H\]<sup>+</sup>**: `(A_mz + (5 * C13_12))`
+
+- **\[M+1+2H\]<sup>2+</sup>**: `((A_mz + (C13_12 + H)) / 2)`
+
+- **\[M+2+2H\]<sup>2+</sup>**: `((A_mz + ((2 * C13_12) + H)) / 2)`
+
+- **\[M+3+2H\]<sup>2+</sup>**: `((A_mz + ((3 * C13_12) + H)) / 2)`
+
+- **\[M+4+2H\]<sup>2+</sup>**: `((A_mz + ((4 * C13_12) + H)) / 2)`
+
+- **\[M+5+2H\]<sup>2+</sup>**: `((A_mz + ((5 * C13_12) + H)) / 2)`
+
+- **+1 isotopic peak of \[M+2H\]<sup>2+</sup>**: `(A_mz + (C13_12/2))` **\[2\]**
+
+**\[1\]**: Here, one of the ions is the \[2M+H\]<sup>+</sup> ion, the other one is the \[M+2H\]<sup>2+</sup> ion. Lack of isotopic pattern makes it not possible to say which is which, so both are annotated. Consider two overlapping peaks A and B: peak A with *m/z* 1648.47; peak B with *m/z* 824.74. If A is assumed \[M+H\]<sup>+</sup>, B would be \[M+2H\]<sup>2+</sup>. If B is assumed \[M+H\]<sup>+</sup>, A would be \[2M+H\]<sup>+</sup>. Thus, assignment is performed for \[M+2H\]<sup>2+</sup> and \[2M+H\]<sup>+</sup> in parallel.
+
+**\[2\]**: For certain compounds classes, such as thiopeptides, the \[M+H]<sup>+</sup> adduct is only poorly or not at all detected, while the \[M+2H\]<sup>2+</sup> adduct is detected well. In this case, the \[M+1+2H\]<sup>2+</sup> isotope of \[M+2H\]<sup>2+</sup> is not annotated, since it misses its corresponding protonated adduct. Consider two overlapping peaks A and B: peak A with *m/z* 790.2263; peak B with *m/z* 790.7269. If A is assumed to be \[M+2H\]<sup>2+</sup>, B would be the \[M+1+2H\]<sup>2+</sup>. In theory, two unrelated peaks with a mass difference of 0.5017 could appear at the same retention time, but chances for that are very slim.
+
+### Peak collision detection (calculate_feature_overlap.py)
+
+In LC-MS(MS) analysis, it is a common occurrence that two compounds leave the chromatography column at the same time. This is also known as co-elution or peak collision, and both compounds will be in the same acquisition scan of the mass spectrometer. If the compounds have different molecular masses, the instrument can distinguish and register them as individual, overlapping peaks. 
+
+Co-elution of compounds is unfavorable since it complicates consecutive isolation of each of the compounds. Therefore, it is an important factor to consider during the metabolite prioritization procedure. FERMO detects co-elution of two peaks by calculation of retention time window overlap. Each peak is simplified to a one-dimensional vector, denoted with two points x1 (retention time of the beginning of the peak) and x2 (retention time of the end of the peak). Consider two peaks A and B with A(x1,x2) and B(x1,x2). If any of (Ax2 < Bx1) or (Bx2 < Ax1) is False, peaks do overlap. FERMO checks for collisions by performing a pairwise comparison between all peaks (all-against-all).
+
+However, not all peak collisions stem from co-elution of discrete compounds. A single compound can lead to many different peaks, due to detection of different adducts (e.g. \[M+H]<sup>+</sup>, \[M+Na]<sup>+</sup>), isotopes (e.g. the +1 peak of a \[M+H]<sup>+</sup> adduct, from the 13C isotope), and combinations thereof (e.g. \[M+1+2H]<sup>2+</sup>). Such 'artifacts' usually have a similar retention time window, and can be related to each other by discrete mathematical operations. They are often filtered out by pre-processing programs (e.g. MZmine), but can also persist until in the final peaktable. Overlaps between such 'artificial' peaks do not affect consecutive isolation, since they stem from the same compound (even though they can give valuable information about the chemical structure of an unknown analyte). 
+
+Therefore, FERMO examines each peak collision, and if one of the two peaks results to be a plausible adduct of the other, the overlap is not considered a collision. The relationship between the two peaks is registered and presented to the user in the dashboard in the Feature information table in the field 'Putative adducts'.
+
+For more information on how which adducts or isotopes are detected, see the point 'Adduct detection' of this references. 
+
+
+
+### Chromatogram drawing (calculate_pseudochrom_traces.py)
+
+In mass spectrometry, a *m/z* chromatogram peak represents a specific *m/z* that has been detected across a number of consecutive scans. Therefore, it is an continuous trace, with each datapoint having a specific retention time and intensity. Peak picking algorithms transform these continuous traces into discrete parameters such as retention time at the start/stop of the peak, feature width at half maximum intensity, or retention time at maximum intensity. This form of representation is more memory-efficient then the continuous one and generally justifies the loss in information about the original chromatogram trace. 
+
+In FERMO, the chromatograms peaks are drawn only from the discrete parameters mentioned above, since the peaktable used as input does not contain continuous chromatogram traces. Therefore, FERMO actually draws pseudo-chromatograms. Manual inspection showed that pseudo-chromatograms are good representations of the original chromatograms. Still, they remain abstractions of the original data, and users are advised to inspect the original chromatograms before important decision-making (e.g. before prioritization). 
+
+Pseudo-chromatograms are drawn using following data points (x/y, where x is the retention time (rt), and y is the relative intensity (int):
+- `rt at start of peak/0*int`
+- `rt at start of feature width at half maximum/0.5*int`
+- `rt at maximum int/int`
+- `rt at stop of feature width at half maximum/0.5*int`
+- `rt at stop of peak/0*int`
+    
+This form of representation comes with certain limitations: for example, shoulder peaks arising from co-eluting isomers are not considered. Also, the MZmine3 peaktable does not report asymmetry and tailing factors for all features, limiting their use in chromatogram drawing. Despite these limitations, we consider the use of pseudo-chromatograms a computationally efficient way of peak representation, with sufficient accuracy. 
+
+### FAQ
+
+TBA
 
 
 

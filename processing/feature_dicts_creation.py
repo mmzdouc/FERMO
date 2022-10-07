@@ -195,6 +195,7 @@ def feature_dicts_creation(
     ms2spectra,
     min_ms2_peaks,
     sample_stats,
+    detected_features
     ):
     """Scrape data, create feature dicts, store in dict.
     
@@ -206,6 +207,9 @@ def feature_dicts_creation(
     min_ms2_peaks : `int`
         Quality control parameter. MS2 spectra <= nr peaks are discarded
     sample_stats : `dict`
+    detected_features : `set`
+        Set of all features detected in samples; used to filter out
+        features if an intensity threshold was set
     
     Returns
     -------
@@ -215,82 +219,84 @@ def feature_dicts_creation(
     feature_dicts = dict()
     
     for id, row in peaktable.iterrows():
-        
-        #returns a pandas dataframe sorted after intensity
-        df_samples = extract_from_peaktable(row)
-        
-        #Df easier to sort than lists
-        list_presence = df_samples.loc[:,'presence'].to_list()
-        list_intens = df_samples.loc[:,'intens'].to_list()
-        list_rt = df_samples.loc[:,'rt'].to_list()
-        fwhm = df_samples.loc[:,'fwhm'].to_list()
-        
-        #construct dict from lists
-        samples_fwhm = dict(zip(list_presence, fwhm))
-        samples_rt = dict(zip(list_presence, list_rt))
-        samples_intens = dict(zip(list_presence, list_intens))
-        
-        #retrieve groups 
-        set_groups = set()
-        for sample in list_presence:
-            set_groups.add(sample_stats['samples_dict'][sample])
-        
-        #calculate fold differences between groups
-        dict_fold_diff, sorted_fold_diff = calc_fold_diff(
-            set_groups,
-            list_presence,
-            samples_intens,
-            sample_stats
-            )
-        
-        #retrieve MS2 spectra per feature
-        try:
-            ms2_frag = ms2spectra[int(row["feature_ID"])][0]
-            ms2_int = ms2spectra[int(row["feature_ID"])][1]
-        except KeyError:
-            ms2_frag = None
-            ms2_int = None
-        
-        ms2spectrum = create_ms2_object(
-            ms2_frag,
-            ms2_int,
-            float(row["precursor_mz"]),
-            int(row["feature_ID"]),
-            int(min_ms2_peaks,))
-        
-        ms1_bool = False
-        if ms2spectrum is None:
-            ms1_bool = True
-        
-        #Dict assignment
-        feature_dicts[int(row["feature_ID"])] = {
-            'feature_ID' : int(row["feature_ID"]),
-            'precursor_mz' : float(row["precursor_mz"]),
-            'average_retention_time' : float(row["retention_time"]),
-            'rt_in_samples' : samples_rt,
-            'presence_samples' : list_presence,
-            'intensities_samples' : list_intens,
-            'median_fwhm' : round(df_samples.loc[:,'fwhm'].median(), 2),
-            'fwhm_samples' : samples_fwhm,
-            'feature_max_int' : list_intens[0],
-            'ms2spectrum' : ms2spectrum,
-            'ms1_bool' : ms1_bool,
-            #Dummy values - assigned downstream
-            'bioactivity_associated' : False,
-            'bioactivity_samples' : [],
-            'blank_associated' : False,
-            'similarity_clique' : False,
-            'similarity_clique_number' : "",
-            'similarity_clique_list' : [],
-            'cosine_annotation' : False,
-            'cosine_annotation_list' : [],
-            'ms2query' : False,
-            'ms2query_results' : '',
-            'set_groups' : set_groups,
-            'set_groups_clique' : set(),
-            'dict_fold_diff' : dict_fold_diff,
-            'sorted_fold_diff' : sorted_fold_diff,
-            }
+        if int(row["feature_ID"]) not in detected_features:
+            pass
+        else:
+            #returns a pandas dataframe sorted after intensity
+            df_samples = extract_from_peaktable(row)
+            
+            #Df easier to sort than lists
+            list_presence = df_samples.loc[:,'presence'].to_list()
+            list_intens = df_samples.loc[:,'intens'].to_list()
+            list_rt = df_samples.loc[:,'rt'].to_list()
+            fwhm = df_samples.loc[:,'fwhm'].to_list()
+            
+            #construct dict from lists
+            samples_fwhm = dict(zip(list_presence, fwhm))
+            samples_rt = dict(zip(list_presence, list_rt))
+            samples_intens = dict(zip(list_presence, list_intens))
+            
+            #retrieve groups 
+            set_groups = set()
+            for sample in list_presence:
+                set_groups.add(sample_stats['samples_dict'][sample])
+            
+            #calculate fold differences between groups
+            dict_fold_diff, sorted_fold_diff = calc_fold_diff(
+                set_groups,
+                list_presence,
+                samples_intens,
+                sample_stats
+                )
+            
+            #retrieve MS2 spectra per feature
+            try:
+                ms2_frag = ms2spectra[int(row["feature_ID"])][0]
+                ms2_int = ms2spectra[int(row["feature_ID"])][1]
+            except KeyError:
+                ms2_frag = None
+                ms2_int = None
+            
+            ms2spectrum = create_ms2_object(
+                ms2_frag,
+                ms2_int,
+                float(row["precursor_mz"]),
+                int(row["feature_ID"]),
+                int(min_ms2_peaks,))
+            
+            ms1_bool = False
+            if ms2spectrum is None:
+                ms1_bool = True
+            
+            #Dict assignment
+            feature_dicts[int(row["feature_ID"])] = {
+                'feature_ID' : int(row["feature_ID"]),
+                'precursor_mz' : float(row["precursor_mz"]),
+                'average_retention_time' : float(row["retention_time"]),
+                'rt_in_samples' : samples_rt,
+                'presence_samples' : list_presence,
+                'intensities_samples' : list_intens,
+                'median_fwhm' : round(df_samples.loc[:,'fwhm'].median(), 2),
+                'fwhm_samples' : samples_fwhm,
+                'feature_max_int' : list_intens[0],
+                'ms2spectrum' : ms2spectrum,
+                'ms1_bool' : ms1_bool,
+                #Dummy values - assigned downstream
+                'bioactivity_associated' : False,
+                'bioactivity_samples' : [],
+                'blank_associated' : False,
+                'similarity_clique' : False,
+                'similarity_clique_number' : "",
+                'similarity_clique_list' : [],
+                'cosine_annotation' : False,
+                'cosine_annotation_list' : [],
+                'ms2query' : False,
+                'ms2query_results' : '',
+                'set_groups' : set_groups,
+                'set_groups_clique' : set(),
+                'dict_fold_diff' : dict_fold_diff,
+                'sorted_fold_diff' : sorted_fold_diff,
+                }
     
     return feature_dicts
         
