@@ -330,7 +330,7 @@ def peaktable_processing(
         for i in userlib_dict:
             mz = np.array(userlib_dict[i][0], dtype=float)
             intensities = np.array(userlib_dict[i][1], dtype=float)
-            metadata = userlib_dict[i][2]
+            metadata_ms2 = userlib_dict[i][2]
             
             if not np.all(mz[:-1] <= mz[1:]):
                 idx_sorted = np.argsort(mz)
@@ -341,7 +341,7 @@ def peaktable_processing(
                 Spectrum(
                     mz=mz,
                     intensities=intensities,
-                    metadata=metadata,)
+                    metadata=metadata_ms2,)
                 )
         ref_library = [matchms.filtering.add_compound_name(s) 
                 for s in ref_library]

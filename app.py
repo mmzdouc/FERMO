@@ -266,28 +266,10 @@ def app_peaktable_processing(
     if signal is None:
         raise PreventUpdate
     else:
-        
-        ### clean up - remove
-        userlib = None
-        if uploaded_files_store['user_library_name'] is not None:
-            try:
-                userlib_pickle_path = os.path.join(
-                    os.path.dirname(__file__),
-                    'assets',
-                    'FERMO_USERLIB.pickle',
-                    )
-                with open(userlib_pickle_path, 'rb') as handle:
-                    userlib = pickle.load(handle)
-            except:
-                print('ERROR: FERMO_USERLIB.pickle reloading failed.')
-        ###
-
-
         FERMO_data = utils.peaktable_processing(
             uploaded_files_store,
             dict_params,
             )
-        
         
         storage_JSON_dict = utils.make_JSON_serializable(FERMO_data, FERMO_version)
         
@@ -629,7 +611,6 @@ def upload_userlib(contents, filename):
         
         try:
             reflib_dict = dict()
-            ref_library = list() #clean up - remove
             counter = 1
             for spectrum in mgf.read(
                 io.StringIO(decoded.decode('utf-8')),
@@ -641,55 +622,8 @@ def upload_userlib(contents, filename):
                 
                 reflib_dict[counter] = [mz.tolist(), intensities.tolist(), metadata]
                 counter = counter + 1
-                
-                
-                # clean up - remove (moved to file creation in utils)
-                if not np.all(mz[:-1] <= mz[1:]):
-                    idx_sorted = np.argsort(mz)
-                    mz = mz[idx_sorted]
-                    intensities = intensities[idx_sorted]
-                
-                ref_library.append(
-                    Spectrum(
-                        mz=mz,
-                        intensities=intensities,
-                        metadata=metadata,
-                        )
-                    )
-                ###
             
-            #clean up - remove 
-            ref_library = [matchms.filtering.add_compound_name(s) 
-                for s in ref_library]
-            ref_library = [matchms.filtering.normalize_intensities(s) 
-                for s in ref_library]
-            ref_library = [matchms.filtering.select_by_intensity(s, intensity_from=0.01)
-                for s in ref_library]
-            ref_library = [matchms.filtering.add_precursor_mz(s)
-                for s in ref_library]
-            ref_library = [matchms.filtering.require_precursor_mz(s)
-                for s in ref_library]
-            ###
-            
-            utils.assert_mgf_format(ref_library) # clean up - remove
             utils.assert_mgf_format(reflib_dict)
-            
-            
-            
-            
-            # clean up - remove
-            userlib_pickle_path = os.path.join(
-                os.path.dirname(__file__),
-                'assets',
-                'FERMO_USERLIB.pickle',
-                )
-            with open(userlib_pickle_path, 'wb') as handle:
-                pickle.dump(
-                    ref_library, 
-                    handle, 
-                    protocol=pickle.HIGHEST_PROTOCOL
-                )
-            ####
 
             file_store['user_library_dict'] = reflib_dict
             file_store['user_library_name'] = filename
