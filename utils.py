@@ -1,9 +1,12 @@
 import copy
 from dash import html
 from datetime import datetime
+import matchms
+from matchms.Spectrum import Spectrum
 import numpy as np
 import os
 import pandas as pd
+from pyteomics import mgf
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import re
@@ -277,7 +280,6 @@ def parse_bioactiv_conc(bioactiv_table, value):
 def peaktable_processing(
     uploaded_files_store, 
     dict_params,
-    userlib,
     ):
     """FERMO: peaktable processing
     
@@ -287,8 +289,6 @@ def peaktable_processing(
         contains parsed user-provided input data
     dict_params : `dict`
         contains user-provided parameters
-    userlib : `dict` or None
-        contains matchms.Spectrum objects of optional user-provided lib
     
     Returns
     --------
@@ -313,6 +313,7 @@ def peaktable_processing(
         bioactivity = pd.read_json(uploaded_files_store['bioactivity'], orient='split')
 
     user_library_name = uploaded_files_store['user_library_name']
+    userlib_dict = uploaded_files_store['user_library_dict']
     
     
     #convert mgf lists into np arrays
@@ -322,6 +323,37 @@ def peaktable_processing(
             np.array(mgf[ID][0], dtype=float), 
             np.array(mgf[ID][1], dtype=float),
             ]
+    
+    #prepare user-provided spectral library - convert in matchms objects
+    ref_library = list()
+    if user_library_name is not None:
+        for i in userlib_dict:
+            mz = np.array(userlib_dict[i][0], dtype=float)
+            intensities = np.array(userlib_dict[i][1], dtype=float)
+            metadata = userlib_dict[i][2]
+            
+            if not np.all(mz[:-1] <= mz[1:]):
+                idx_sorted = np.argsort(mz)
+                mz = mz[idx_sorted]
+                intensities = intensities[idx_sorted]
+            
+            ref_library.append(
+                Spectrum(
+                    mz=mz,
+                    intensities=intensities,
+                    metadata=metadata,)
+                )
+        ref_library = [matchms.filtering.add_compound_name(s) 
+                for s in ref_library]
+        ref_library = [matchms.filtering.normalize_intensities(s) 
+            for s in ref_library]
+        ref_library = [matchms.filtering.select_by_intensity(s, intensity_from=0.01)
+            for s in ref_library]
+        ref_library = [matchms.filtering.add_precursor_mz(s)
+            for s in ref_library]
+        ref_library = [matchms.filtering.require_precursor_mz(s)
+            for s in ref_library]
+    
     
     #parse metadata file into a dict of sets
     groups = read_from_metadata_table(
@@ -385,7 +417,7 @@ def peaktable_processing(
     #if spectral library was provided by user, append info to feature objects
     library_search(
         feature_dicts, 
-        userlib, 
+        ref_library,
         dict_params['spectral_sim_tol'],
         dict_params['spec_sim_score_cutoff'],
         dict_params['min_nr_matched_peaks'], 

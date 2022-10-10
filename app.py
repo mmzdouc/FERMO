@@ -192,6 +192,7 @@ def processing_start_click(
             'bioactivity_name' : bioactiv_store['bioactivity_name'],
             'metadata' : metadata_store['metadata'],
             'metadata_name' : metadata_store['metadata_name'],
+            'user_library_dict' : userlib_store['user_library_dict'],
             'user_library_name' : userlib_store['user_library_name'],
         }
         return html.Div('Started processing, please wait ...'), dict_uploaded_files
@@ -266,7 +267,7 @@ def app_peaktable_processing(
         raise PreventUpdate
     else:
         
-        ###
+        ### clean up - remove
         userlib = None
         if uploaded_files_store['user_library_name'] is not None:
             try:
@@ -285,7 +286,6 @@ def app_peaktable_processing(
         FERMO_data = utils.peaktable_processing(
             uploaded_files_store,
             dict_params,
-            userlib,
             )
         
         
@@ -616,7 +616,10 @@ def upload_metadata(contents, filename,):
 def upload_userlib(contents, filename):
     '''mgf file parsing and format check for user-provided spectral lib'''
     
-    file_store = {'user_library_name' : None,}
+    file_store = {
+        'user_library_dict' : None,
+        'user_library_name' : None,
+        }
     
     if contents is None:
         return html.Div('No spectral library loaded.'), file_store
@@ -625,7 +628,9 @@ def upload_userlib(contents, filename):
         decoded = base64.b64decode(content_string)
         
         try:
-            ref_library = list()
+            reflib_dict = dict()
+            ref_library = list() #clean up - remove
+            counter = 1
             for spectrum in mgf.read(
                 io.StringIO(decoded.decode('utf-8')),
                 use_index=False,
@@ -634,6 +639,11 @@ def upload_userlib(contents, filename):
                 intensities = spectrum.get('intensity array')
                 metadata = spectrum.get('params')
                 
+                reflib_dict[counter] = [mz.tolist(), intensities.tolist(), metadata]
+                counter = counter + 1
+                
+                
+                # clean up - remove (moved to file creation in utils)
                 if not np.all(mz[:-1] <= mz[1:]):
                     idx_sorted = np.argsort(mz)
                     mz = mz[idx_sorted]
@@ -646,6 +656,9 @@ def upload_userlib(contents, filename):
                         metadata=metadata,
                         )
                     )
+                ###
+            
+            #clean up - remove 
             ref_library = [matchms.filtering.add_compound_name(s) 
                 for s in ref_library]
             ref_library = [matchms.filtering.normalize_intensities(s) 
@@ -656,9 +669,15 @@ def upload_userlib(contents, filename):
                 for s in ref_library]
             ref_library = [matchms.filtering.require_precursor_mz(s)
                 for s in ref_library]
+            ###
             
-            utils.assert_mgf_format(ref_library)
-
+            utils.assert_mgf_format(ref_library) # clean up - remove
+            utils.assert_mgf_format(reflib_dict)
+            
+            
+            
+            
+            # clean up - remove
             userlib_pickle_path = os.path.join(
                 os.path.dirname(__file__),
                 'assets',
@@ -670,12 +689,15 @@ def upload_userlib(contents, filename):
                     handle, 
                     protocol=pickle.HIGHEST_PROTOCOL
                 )
+            ####
 
+            file_store['user_library_dict'] = reflib_dict
             file_store['user_library_name'] = filename
             return html.Div(f'✅ "{filename}" successfully loaded.',
                 style={'color' : 'green', 'font-weight' : 'bold',}
                     ), file_store
         except:
+            file_store['user_library_dict'] = None
             file_store['user_library_name'] = None
             return html.Div(f'''❌ Error: "{filename}" is not a mgf or 
                 is erroneously formatted (e.g. 'pepmass' must not be 0.0 or 1.0).
