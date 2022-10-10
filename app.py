@@ -186,6 +186,7 @@ def processing_start_click(
         dict_uploaded_files = {
             'peaktable' : peaktable_store['peaktable'],
             'peaktable_name' : peaktable_store['peaktable_name'],
+            'mgf' : mgf_store['mgf'],
             'mgf_name' : mgf_store['mgf_name'],
             'bioactivity' : bioactiv_store['bioactivity'],
             'bioactivity_name' : bioactiv_store['bioactivity_name'],
@@ -264,18 +265,8 @@ def app_peaktable_processing(
     if signal is None:
         raise PreventUpdate
     else:
-        try:
-            ms2_pickle_path = os.path.join(
-                os.path.dirname(__file__),
-                'assets',
-                'FERMO_MS2.pickle',
-                )
-            ms2spectra = ''
-            with open(ms2_pickle_path, 'rb') as handle:
-                ms2spectra = pickle.load(handle)
-        except:
-            print('ERROR: FERMO_MS2.pickle reloading failed.')
         
+        ###
         userlib = None
         if uploaded_files_store['user_library_name'] is not None:
             try:
@@ -288,13 +279,15 @@ def app_peaktable_processing(
                     userlib = pickle.load(handle)
             except:
                 print('ERROR: FERMO_USERLIB.pickle reloading failed.')
+        ###
+
 
         FERMO_data = utils.peaktable_processing(
             uploaded_files_store,
             dict_params,
-            ms2spectra,
             userlib,
             )
+        
         
         storage_JSON_dict = utils.make_JSON_serializable(FERMO_data, FERMO_version)
         
@@ -468,7 +461,10 @@ def upload_peaktable(contents, filename):
 )
 def upload_mgf(contents, filename):
     '''mgf file parsing and format check'''
-    file_store = {'mgf_name' : None,}
+    file_store = {
+        'mgf' : None,
+        'mgf_name' : None,
+        }
 
     if contents is None:
         return html.Div('No .mgf-file loaded.'), file_store
@@ -477,7 +473,7 @@ def upload_mgf(contents, filename):
         decoded = base64.b64decode(content_string)
         
         try:
-            ms2spectra = dict()
+            ms2dict_store = dict()
             for spectrum in mgf.read(
                 io.StringIO(decoded.decode('utf-8')),
                 use_index=False
@@ -485,22 +481,12 @@ def upload_mgf(contents, filename):
                 fragments = spectrum.get('m/z array')
                 intensities = spectrum.get('intensity array')
                 feature_ID = int(spectrum.get('params').get('feature_id'))
-                ms2spectra[feature_ID] = [fragments, intensities]
-            
-            utils.assert_mgf_format(ms2spectra)
-            
-            ms2_pickle_path = os.path.join(
-                os.path.dirname(__file__),
-                'assets',
-                'FERMO_MS2.pickle',
-                )
-            with open(ms2_pickle_path, 'wb') as handle:
-                pickle.dump(
-                    ms2spectra, 
-                    handle, 
-                    protocol=pickle.HIGHEST_PROTOCOL
-                )
-            
+
+                ms2dict_store[feature_ID] = [fragments.tolist(), intensities.tolist()]
+
+            utils.assert_mgf_format(ms2dict_store)
+
+            file_store['mgf'] = ms2dict_store
             file_store['mgf_name'] = filename
             return html.Div(
                 f'✅ "{filename}" successfully loaded.',
@@ -508,6 +494,7 @@ def upload_mgf(contents, filename):
                 ), file_store
             
         except:
+            file_store['mgf'] = None
             file_store['mgf_name'] = None
             return html.Div(f'''❌ Error: "{filename}" is not a mgf or
             is falsely formatted. Please check the file and try again.'''

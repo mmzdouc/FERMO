@@ -277,7 +277,6 @@ def parse_bioactiv_conc(bioactiv_table, value):
 def peaktable_processing(
     uploaded_files_store, 
     dict_params,
-    ms2spectra,
     userlib,
     ):
     """FERMO: peaktable processing
@@ -288,8 +287,6 @@ def peaktable_processing(
         contains parsed user-provided input data
     dict_params : `dict`
         contains user-provided parameters
-    ms2spectra : `dict`
-        contains MS2 spectra
     userlib : `dict` or None
         contains matchms.Spectrum objects of optional user-provided lib
     
@@ -303,6 +300,7 @@ def peaktable_processing(
     peaktable = pd.read_json(uploaded_files_store['peaktable'], orient='split')
     
     mgf_name =  uploaded_files_store['mgf_name']
+    mgf = uploaded_files_store['mgf']
 
     metadata_name = uploaded_files_store['metadata_name']
     metadata = None
@@ -315,6 +313,15 @@ def peaktable_processing(
         bioactivity = pd.read_json(uploaded_files_store['bioactivity'], orient='split')
 
     user_library_name = uploaded_files_store['user_library_name']
+    
+    
+    #convert mgf lists into np arrays
+    ms2_dict = dict()
+    for ID in mgf:
+        ms2_dict[int(ID)] = [
+            np.array(mgf[ID][0], dtype=float), 
+            np.array(mgf[ID][1], dtype=float),
+            ]
     
     #parse metadata file into a dict of sets
     groups = read_from_metadata_table(
@@ -342,7 +349,7 @@ def peaktable_processing(
     #generate nested dict with feature information
     feature_dicts = feature_dicts_creation(
         peaktable,
-        ms2spectra,
+        ms2_dict,
         dict_params['min_nr_ms2'],
         sample_stats,
         detected_features
