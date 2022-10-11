@@ -330,6 +330,7 @@ def app_loading_processing(signal, session_storage):
     Input('spec_sim_score_cutoff_inp', 'value'),
     Input('spec_sim_max_links_inp', 'value'),
     Input('spec_sim_min_match_inp', 'value'),
+    Input('ms2query_toggle_input', 'value'),
     )
 def bundle_params_into_cache(
     mass_dev, 
@@ -341,6 +342,7 @@ def bundle_params_into_cache(
     spec_sim_score_cutoff,
     spec_sim_max_links,
     spec_sim_min_match,
+    ms2query,
     ):
     '''Bundle parameter input values'''
     return {
@@ -353,6 +355,7 @@ def bundle_params_into_cache(
     'spec_sim_score_cutoff' : spec_sim_score_cutoff,
     'spec_sim_max_links' : spec_sim_max_links,
     'spec_sim_min_match' : spec_sim_min_match,
+    'ms2query' : ms2query,
         }
 
 @callback(
@@ -382,6 +385,7 @@ def update_params_dict(params_cache):
             if params_cache['spec_sim_max_links'] is not None else 0)
         dict_params['min_nr_matched_peaks'] = (params_cache['spec_sim_min_match']
             if params_cache['spec_sim_min_match'] is not None else 0)
+        dict_params['ms2query'] = params_cache['ms2query']
         return dict_params
 
 @callback(
@@ -1186,4 +1190,4 @@ def export_all_features(n_clicks, contents):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False) #switch to True for debugging
+    app.run_server(debug=True) #switch to True for debugging

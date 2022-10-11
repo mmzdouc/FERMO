@@ -423,15 +423,17 @@ def peaktable_processing(
         dict_params['min_nr_matched_peaks'], 
         )
     
+    if dict_params['ms2query']:
     #search against embedding using ms2query
-    # ~ input_folder = os.path.join(
-        # ~ os.path.dirname(__file__),
-        # ~ 'libraries',)
-    # ~ if os.path.exists(input_folder):
-        # ~ ms2query_search(
-            # ~ feature_dicts, 
-            # ~ input_folder)
-    print('WARNING: MS2QUERY switched off')
+        input_folder = os.path.join(
+            os.path.dirname(__file__),
+            'libraries',)
+        if os.path.exists(input_folder):
+            ms2query_search(
+                feature_dicts, 
+                input_folder)
+    else:
+        print('WARNING: MS2QUERY switched off')
     
     #Appends adducts/isotopes and determines peak collision
     samples = calculate_feature_overlap(

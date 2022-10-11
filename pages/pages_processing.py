@@ -526,7 +526,51 @@ def call_bioact_type_dd():
             ),
         ])
 
+def call_ms2query_toggle():
+    '''Call toggle for ms2query switch'''
+    return html.Div([
+        html.Div([
+            '''
+            Run MS2Query annotation?
+            ''',
+            html.A(
+                html.Div(
+                    "?",
+                    id="ms2query_tooltip",
+                    className="info_dot"
+                    ),
+                #DUMMY LINK, SPECIFY CORRECT DOC LINK
+                href='https://github.com/mmzdouc/fermo', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+                html.Div(
+                    '''Toggle to switch MS2Query annotation on or off. MS2Query requires considerable time to run (on a standard laptop, 1 second per feature) and should be ideally run only after initial parameter finding.
+                    ''',
+                    ),
+                placement='right',
+                className='info_dot_tooltip',
+                target="ms2query_tooltip",
+            ),
+        dcc.RadioItems(
+            options=[
+                {
+                "label": 'ON',
+                "value": True,
+                },
+                {
+                "label": 'OFF',
+                "value": False,
+                },
+            ], 
+            value=False,
+            id='ms2query_toggle_input',
+            inline=False,
+            )
+        ])
 
+#figure out how to bring radio butons on same row
 
 
 
@@ -607,6 +651,8 @@ processing = html.Div([
         #second column#
         dbc.Col(
             html.Div([
+                call_ms2query_toggle(),
+                html.Div(style={'margin-top' : '20px'}),
                 call_mass_dev_inp(),
                 html.Div(style={'margin-top' : '20px'}),
                 call_min_ms2_inpt(),
