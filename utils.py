@@ -324,6 +324,8 @@ def peaktable_processing(
             np.array(mgf[ID][1], dtype=float),
             ]
     
+    print('DONE: convert mgf lists into np arrays')
+    
     #prepare user-provided spectral library - convert in matchms objects
     ref_library = list()
     if user_library_name is not None:
@@ -361,12 +363,16 @@ def peaktable_processing(
         metadata_name,
         )
     
+    print('DONE: parse metadata file into a dict of sets')
+    
     #collect general sample stats into a dict
     sample_stats = collect_stats_samples(
         peaktable,
         groups,
         bioactivity,
         )
+    
+    print('DONE: collect general sample stats into a dict')
     
     #generates dict with pandas dfs - one per sample
     samples = get_samplespecific_features(
@@ -375,8 +381,12 @@ def peaktable_processing(
         dict_params['feature_rel_int_fact'],
         )
     
+    print('DONE: generates dict with pandas dfs - one per sample')
+    
     #create set of features that are in samples
     detected_features = set_from_sample_tables(samples)
+
+    print('DONE: create set of features that are in samples')
 
     #generate nested dict with feature information
     feature_dicts = feature_dicts_creation(
@@ -387,6 +397,8 @@ def peaktable_processing(
         detected_features
         )
     
+    print('DONE: generate nested dict with feature information')
+    
     #determine non-blank/blank of features and assign to feature_dicts
     determine_blank_features(
         samples, 
@@ -394,6 +406,8 @@ def peaktable_processing(
         dict_params['column_ret_fact'],
         sample_stats,
         ) 
+    
+    print('DONE: determine non-blank/blank of features and assign to feature_dicts')
 
     #determine non-active/active of features and assign to feature_dicts
     determine_bioactive_features(
@@ -405,6 +419,8 @@ def peaktable_processing(
         bioactivity_name,
         )
     
+    print('DONE: determine non-active/active of features and assign to feature_dicts')
+    
     #calculate similarity cliques, append info to feature obj and sample stats
     calculate_similarity_cliques(
         feature_dicts,
@@ -414,6 +430,11 @@ def peaktable_processing(
         dict_params['max_nr_links_ss'], 
         )
     
+    print('DONE: calculate similarity cliques, append info to feature obj and sample stats')
+    
+    #add if clause here
+    
+    
     #if spectral library was provided by user, append info to feature objects
     library_search(
         feature_dicts, 
@@ -422,6 +443,8 @@ def peaktable_processing(
         dict_params['spec_sim_score_cutoff'],
         dict_params['min_nr_matched_peaks'], 
         )
+    
+    print('DONE: if spectral library was provided by user, append info to feature objects')
     
     if dict_params['ms2query']:
     #search against embedding using ms2query
@@ -435,11 +458,14 @@ def peaktable_processing(
     else:
         print('WARNING: MS2QUERY switched off')
     
+    
     #Appends adducts/isotopes and determines peak collision
     samples = calculate_feature_overlap(
         samples,
         dict_params['mass_dev_ppm'],
         )
+    
+    print('DONE: Appends adducts/isotopes and determines peak collision')
     
     #calculates metrics for each feature in each sample
     samples = calculate_metrics(
@@ -447,8 +473,12 @@ def peaktable_processing(
         feature_dicts,
         ) 
     
+    print('DONE: calculates metrics for each feature in each sample')
+    
     #add pseudo-chromatogram traces for dashboard plotting
     samples = calculate_pseudochrom_traces(samples,)
+    
+    print('DONE: add pseudo-chromatogram traces for dashboard plotting')
     
     #filter features in samples after normalized intensity
     for sample in samples:
@@ -458,6 +488,8 @@ def peaktable_processing(
             ascending=[False]
             )
         samples[sample].reset_index(drop=True, inplace=True)
+    
+    print('DONE: filter features in samples after normalized intensity')
     
     #prepare output
     input_filenames = {
@@ -476,6 +508,8 @@ def peaktable_processing(
         'params_dict' : dict_params,
         'input_filenames': input_filenames,
     }
+    
+    print('Finished output')
     
     return FERMO_data
 
@@ -1563,7 +1597,7 @@ def session_loading_table(params, files, metadata, version):
                 ['Min number of MS² fragments', params['min_nr_ms2']],
                 ['Feature relative intensity filter', params['feature_rel_int_fact']],
                 ['Bioactivity factor', params['bioact_fact']],
-                ['Column retention factor', params['column_ret_fact']],
+                ['Blank factor', params['column_ret_fact']],
                 ['Spectrum similarity tolerance', params['spectral_sim_tol']],
                 ['Spectrum similarity score cutoff', params['spec_sim_score_cutoff']],
                 ['Max nr spectrum similarity links', params['max_nr_links_ss']],
@@ -1589,7 +1623,7 @@ def empty_loading_table():
                 ['Min number of MS² fragments', None],
                 ['Feature relative intensity filter', None],
                 ['Bioactivity factor', None],
-                ['Column retention factor', None],
+                ['Blank factor', None],
                 ['Spectrum similarity tolerance', None],
                 ['Spectrum similarity score cutoff', None],
                 ['Max nr spectrum similarity links', None],

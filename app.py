@@ -23,6 +23,8 @@ import time
 import webbrowser
 
 ###INTERNAL MODULES###
+from __version__ import __version__
+
 import utils
 
 from variables import (
@@ -43,10 +45,6 @@ from pages.pages_loading import loading
 #Required for background callbacks
 cache = diskcache.Cache("./cache")
 background_callback_manager = DiskcacheManager(cache)
-
-###VERSIONING###
-FERMO_version = 'FERMO_version_0.5'
-
 
 ##########
 #LAYOUT
@@ -271,7 +269,7 @@ def app_peaktable_processing(
             dict_params,
             )
         
-        storage_JSON_dict = utils.make_JSON_serializable(FERMO_data, FERMO_version)
+        storage_JSON_dict = utils.make_JSON_serializable(FERMO_data, __version__)
         
         return '/dashboard', storage_JSON_dict
 
@@ -694,11 +692,11 @@ def upload_sessionfile(contents, filename):
             return html.Div(f'''❌ Error: "{filename}" does not seem to be a FERMO
             session file in JSON format, or is somehow malformed.
             '''), None, empty_df.to_dict('records')
-        elif version != FERMO_version:
+        elif version != __version__:
             df = utils.session_loading_table(params, files, metadata, version)
             return html.Div(f'''❗ Warning: The loaded session file "{filename}"
             has been created using "{df.at[18,'Description']}", while the currently running version is 
-            "{FERMO_version}". This might lead to unforseen behaviour of the application. 
+            "{__version__}". This might lead to unforseen behaviour of the application. 
             '''), loaded_session_JSON, df.to_dict('records')
         else:
             df = utils.session_loading_table(params, files, metadata, version)
@@ -738,6 +736,8 @@ def read_threshold_values_function(rel_int, conv, bioact, nov,):
         Output('sample_list', 'data'),
         Input('threshold_values', 'data'),
         Input('data_processing_FERMO', 'data'),
+        background=True,
+        manager=background_callback_manager,
         )
 def calculate_feature_score(
         thresholds,
@@ -748,11 +748,15 @@ def calculate_feature_score(
     samples_JSON = contents['samples_JSON']
     sample_stats = contents['sample_stats']
     
+    print('calculate_feature_score 1')
+    
     #temporarily convert from JSON to pandas DF
     samples = dict()
     for sample in samples_JSON:
         samples[sample] = pd.read_json(
             samples_JSON[sample], orient='split')
+    
+    print('calculate_feature_score 2')
     
     #for each sample, extract rows that corresponds to thresholds
     samples_subsets = dict()
@@ -762,6 +766,8 @@ def calculate_feature_score(
             sample,
             thresholds,
             feature_dicts,)
+    
+    print('calculate_feature_score 3')
     
     #how many cliques in this sample are only found in group
     #extract all features per sample (corrected for blanks)
@@ -779,6 +785,8 @@ def calculate_feature_score(
                     )
         sample_unique_cliques[sample] = list(unique_cliques)
 
+    print('calculate_feature_score 4')
+
     #create dataframe to export to dashboard
     sample_scores = pd.DataFrame({
         'Filename' : [i for i in samples],
@@ -795,6 +803,8 @@ def calculate_feature_score(
         'Over cutoff' : [len(samples_subsets[i]['all_select_no_blank']) for i in samples],
     })
 
+    print('calculate_feature_score 5')
+    
     #Sort df, reset index
     sample_scores.sort_values(
         by=[

@@ -8,8 +8,8 @@ GENERAL
 }
 
 .info_dot {
-    height: 25px;
-    width: 25px;
+    height: 19px;
+    width: 19px;
     background-color: #116789;
     border-radius: 50%;
     display: inline-block;
@@ -40,6 +40,17 @@ GENERAL
     display: inline-block;
     border-style: solid;
     border-width: 4px;
+}
+
+.button_general_class {
+    background-color: #116789;
+    text-align: center;
+    color: white;
+    border-style: none;
+    font-weight: bold; 
+    padding: 10px;
+    font-size: 20px;
+    border-radius: 4px;
 }
 
 
@@ -206,11 +217,11 @@ ROWS - PROCESSING
 
 
 #processing_row_1 {
-    height: 75vh;
+    height: 70vh;
 }
 
 #processing_row_2 {
-    height: 5vh;
+    height: 10vh;
 }
 
 
@@ -220,19 +231,19 @@ COLUMNS - PROCESSING
 
 #processing_row_1_col_1  {
     background-color: white;
-    height: 75vh;
+    height: 70vh;
     overflow: scroll;
 }
 
 #processing_row_1_col_2  {
     background-color: white;
-    height: 75vh;
+    height: 70vh;
     overflow: scroll;
 }
 
 #processing_row_2_col_1  {
     background-color: white;
-    height: 5vh;
+    height: 10vh;
     overflow: scroll;
 }
 

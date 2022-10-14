@@ -4,23 +4,31 @@ import dash_bootstrap_components as dbc
 def call_processing_intro_text():
     '''Introduction text for processing page'''
     return html.Div([
-        html.Div('''On this page, you can process your data with FERMO. The program is flexible in terms of which files must be provided. However, the minimum requirements are a peaktable (produced by MZmine3, in the "_quant_full.csv" format) and the accompanying .mgf-file, containing MS2 information. Optionally, a table containing bioactivity data on samples, a table containing group metadata, and a spectral library in the .mgf-format can be provided. For details on the format of the tables, see the documentation or the provided example files.
+        html.Div('''On this page, you can process your data with FERMO. The minimum requirements are:'''),
+        dcc.Markdown('''
+            * a **peaktable** (in the "_quant_full.csv" format, created by MZmine3)
+            * the corresponding **.mgf-file** (also created by MZmine3)
+        '''),
+        html.Div('''Optionally, you can provide:'''),
+        dcc.Markdown('''
+            * **bioactivity data** on samples (as .csv-file)
+            * **group metadata** of samples (as .csv-file)
+            * a **spectral library** (as .mgf-file)
+        '''),
+        html.Div(style={'margin-top' : '10px'}),
+        dcc.Markdown('''You can load files into FERMO by clicking the load buttons on the left side of the page. For information on input data format, refer to the [documentation](https://github.com/mmzdouc/F-wiki/wiki).'''),
+        html.Div(style={'margin-top' : '10px'}),
+        dcc.Markdown('''**Processing parameters** can be adjusted following the information in the [documentation](https://github.com/mmzdouc/F-wiki/wiki/Pages---Processing-page). 
             '''),
         html.Div(style={'margin-top' : '10px'}),
-        html.Div('''You can upload files by clicking the upload buttons on the left side of the page. An upload window will appear, in which you can navigate to the respective file. Once a file is uploaded, a message will appear that will indicate the outcome of the upload.
-            '''),
-        html.Div(style={'margin-top' : '10px'}),
-        html.Div('''On the right side of the page, processing parameters can be set. The default parameter have been determined empirically, and should suit most kinds of data. More information on the individual parameters can be found when hovering on the blue info-fields and in the documentation.  
-            '''),
-        html.Div(style={'margin-top' : '10px'}),
-        html.Div('''Once files are uploaded and parameters are set, the analysis can be started by clicking on the 'Start FERMO' button at the bottom of the page. The page will automatically reload to display the FERMO dashboard. Take note that during the first run, databases for feature annotation will be downloaded, which can take some time. 
+        dcc.Markdown('''The analysis can be started by clicking on the **'Start FERMO'** button at the bottom of the page.
             '''),
         ],
-        style={
-        'line-height' : '1.5',
-        'text-align' : 'justify',
-        }
-    )
+    style={
+    'line-height' : '1.5',
+    'text-align' : 'justify',
+    }
+)
 
 
 def call_dashboard_processing_button():
@@ -30,9 +38,18 @@ def call_dashboard_processing_button():
             "Start FERMO",
             id='call_dashboard_processing',
             n_clicks=0,
-            className="d-grid gap-2 col-6 mx-auto",
+            class_name="button_general_class",
+            style={
+                'width' : '100%',
+                # ~ 'margin' : 'auto',
+                }
             ),
-        ])
+        ],
+        style={
+            'margin' : 'auto',
+            'width' : '50%',
+        }
+        )
 
 def call_mass_dev_inp():
     '''Call estimated mass deviation drop down menu'''
@@ -384,7 +401,7 @@ def call_peaktable_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Upload peaktable (*_quant_full.csv)',
+                        'Load peaktable (*_quant_full.csv)',
                         id="upload-peaktable-tooltip",
                         ),
                     id='processing-upload-peaktable'),
@@ -406,7 +423,7 @@ def call_mgf_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Upload the MS/MS file (*.mgf)',
+                        'Load the MS/MS file (*.mgf)',
                         id="upload-mgf-tooltip",
                         ),
                     id='processing-upload-mgf'),
@@ -428,7 +445,7 @@ def call_bioactiv_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Upload bioactivity table (*.csv)',
+                        'Load bioactivity table (*.csv)',
                         id="upload-bioactiv-tooltip",
                         ),
                     id='upload-bioactiv'),
@@ -450,7 +467,7 @@ def call_metadata_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Upload metadata table (*.csv)',
+                        'Load metadata table (*.csv)',
                         id="upload-metadata-tooltip",
                         ),
                     id='upload-metadata'),
@@ -472,7 +489,7 @@ def call_userlib_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Upload spectral library (*.mgf)',
+                        'Load spectral library (*.mgf)',
                         id="upload-userlib-tooltip",
                         ),
                     id='upload-userlib'),
@@ -686,6 +703,7 @@ processing = html.Div([
     dbc.Row([
         #first column#
         dbc.Col([
+                html.Div(style={'margin-top' : '10px'}),
                 call_dashboard_processing_button(),
                 ###STORAGE###
                 #Helper function
@@ -700,11 +718,7 @@ processing = html.Div([
                 dcc.Store(id='upload_metadata_store'),
                 dcc.Store(id='upload_userlib_store'),
                 dcc.Store(id='uploaded_files_store'),
-                html.Div(
-                    id='processing_start_cache',
-                    style={
-                        'text-align' : 'center',
-                    })
+                html.Div(id='processing_start_cache',),
                 ],
             id="processing_row_2_col_1",
             width=12,

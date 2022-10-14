@@ -1,12 +1,15 @@
 from dash import html
 import dash_bootstrap_components as dbc
 
+from __version__ import __version__
 
+
+#span the divs together
 
 header_row = html.Div(
     dbc.Row([
         dbc.Col([
-                html.Div(
+                html.Div([
                     html.A([
                         html.Img(
                             src='/assets/Fermo_logo.svg',
@@ -16,7 +19,15 @@ header_row = html.Div(
                         href='https://github.com/mmzdouc/fermo',
                         target="_blank",
                     ),
-                ),
+                    # ~ html.Div(__version__),
+                    html.Div(__version__, 
+                        style={
+                            'display': 'inline-block',
+                            'color' : 'white',
+                            'font-style':'italic'
+                            },
+                    ),
+                ]),
             ],
         id="header_col",
         width="True",
