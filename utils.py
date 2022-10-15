@@ -295,7 +295,7 @@ def peaktable_processing(
     FERMO_data : `dict`
         contains data to feed into dashboard visualization
     """
-    
+
     peaktable_name = uploaded_files_store['peaktable_name']
     peaktable = pd.read_json(uploaded_files_store['peaktable'], orient='split')
     
@@ -315,16 +315,12 @@ def peaktable_processing(
     user_library_name = uploaded_files_store['user_library_name']
     userlib_dict = uploaded_files_store['user_library_dict']
     
-    
-    #convert mgf lists into np arrays
     ms2_dict = dict()
     for ID in mgf:
         ms2_dict[int(ID)] = [
             np.array(mgf[ID][0], dtype=float), 
             np.array(mgf[ID][1], dtype=float),
             ]
-    
-    print('DONE: convert mgf lists into np arrays')
     
     #prepare user-provided spectral library - convert in matchms objects
     ref_library = list()
@@ -357,38 +353,37 @@ def peaktable_processing(
             for s in ref_library]
     
     
-    #parse metadata file into a dict of sets
+    
+    
+    print('BEGIN: parse metadata file')
     groups = read_from_metadata_table(
         metadata,
         metadata_name,
         )
+    print('DONE')
     
-    print('DONE: parse metadata file into a dict of sets')
     
-    #collect general sample stats into a dict
+    print('BEGIN: collect sample stats')
     sample_stats = collect_stats_samples(
         peaktable,
         groups,
         bioactivity,
         )
+    print('DONE')
     
-    print('DONE: collect general sample stats into a dict')
-    
-    #generates dict with pandas dfs - one per sample
+    print('BEGIN: for each sample, collect associated features')
     samples = get_samplespecific_features(
         peaktable, 
         sample_stats,
         dict_params['feature_rel_int_fact'],
         )
-    
-    print('DONE: generates dict with pandas dfs - one per sample')
-    
-    #create set of features that are in samples
+    print('DONE')
+
+    print('BEGIN: collect features')
     detected_features = set_from_sample_tables(samples)
+    print('DONE')
 
-    print('DONE: create set of features that are in samples')
-
-    #generate nested dict with feature information
+    print('BEGIN: generate feature dicts')
     feature_dicts = feature_dicts_creation(
         peaktable,
         ms2_dict,
@@ -396,20 +391,19 @@ def peaktable_processing(
         sample_stats,
         detected_features
         )
+    print('DONE')
     
-    print('DONE: generate nested dict with feature information')
-    
-    #determine non-blank/blank of features and assign to feature_dicts
+    print('BEGIN: determine blank-associatedness of features')
     determine_blank_features(
         samples, 
         feature_dicts, 
         dict_params['column_ret_fact'],
         sample_stats,
-        ) 
+        )
+    print('DONE')
     
-    print('DONE: determine non-blank/blank of features and assign to feature_dicts')
 
-    #determine non-active/active of features and assign to feature_dicts
+    print('BEGIN: determine bioactivity-associatedness of features')
     determine_bioactive_features(
         bioactivity, 
         samples,
@@ -418,10 +412,9 @@ def peaktable_processing(
         sample_stats,
         bioactivity_name,
         )
+    print('DONE')
     
-    print('DONE: determine non-active/active of features and assign to feature_dicts')
-    
-    #calculate similarity cliques, append info to feature obj and sample stats
+    print('BEGIN: calculate spectral similarity network')
     calculate_similarity_cliques(
         feature_dicts,
         sample_stats,
@@ -429,25 +422,21 @@ def peaktable_processing(
         dict_params['spec_sim_score_cutoff'], 
         dict_params['max_nr_links_ss'], 
         )
-    
-    print('DONE: calculate similarity cliques, append info to feature obj and sample stats')
-    
-    #add if clause here
-    
-    
-    #if spectral library was provided by user, append info to feature objects
-    library_search(
-        feature_dicts, 
-        ref_library,
-        dict_params['spectral_sim_tol'],
-        dict_params['spec_sim_score_cutoff'],
-        dict_params['min_nr_matched_peaks'], 
-        )
-    
-    print('DONE: if spectral library was provided by user, append info to feature objects')
-    
+    print('DONE')
+
+    if user_library_name:
+        print('BEGIN: compare against spectral library')
+        library_search(
+            feature_dicts, 
+            ref_library,
+            dict_params['spectral_sim_tol'],
+            dict_params['spec_sim_score_cutoff'],
+            dict_params['min_nr_matched_peaks'], 
+            )
+        print('DONE')
+
     if dict_params['ms2query']:
-    #search against embedding using ms2query
+        print('BEGIN: MS2Query matching')
         input_folder = os.path.join(
             os.path.dirname(__file__),
             'libraries',)
@@ -455,32 +444,29 @@ def peaktable_processing(
             ms2query_search(
                 feature_dicts, 
                 input_folder)
-    else:
-        print('WARNING: MS2QUERY switched off')
+        print('DONE')
     
-    
-    #Appends adducts/isotopes and determines peak collision
+    print('BEGIN: calculate peak overlap')
     samples = calculate_feature_overlap(
         samples,
         dict_params['mass_dev_ppm'],
         )
+    print('DONE')
     
-    print('DONE: Appends adducts/isotopes and determines peak collision')
-    
-    #calculates metrics for each feature in each sample
+    print('BEGIN: calculate feature scores')
     samples = calculate_metrics(
         samples, 
         feature_dicts,
-        ) 
+        )
+    print('DONE')
     
-    print('DONE: calculates metrics for each feature in each sample')
+    print('BEGIN: calculate pseudo-chromatogram traces')
+    samples = calculate_pseudochrom_traces(
+        samples,
+        )
+    print('DONE')
     
-    #add pseudo-chromatogram traces for dashboard plotting
-    samples = calculate_pseudochrom_traces(samples,)
-    
-    print('DONE: add pseudo-chromatogram traces for dashboard plotting')
-    
-    #filter features in samples after normalized intensity
+    print('BEGIN: sort features in sample for normalized intensity')
     for sample in samples:
         samples[sample].sort_values(
             by=['norm_intensity',], 
@@ -488,10 +474,8 @@ def peaktable_processing(
             ascending=[False]
             )
         samples[sample].reset_index(drop=True, inplace=True)
+    print('DONE')
     
-    print('DONE: filter features in samples after normalized intensity')
-    
-    #prepare output
     input_filenames = {
         'peaktable_name' : uploaded_files_store['peaktable_name'],
         'mgf_name' : uploaded_files_store['mgf_name'],
@@ -500,7 +484,6 @@ def peaktable_processing(
         'user_library_name' : uploaded_files_store['user_library_name'],
     }
     
-    #prepare output
     FERMO_data = {
         'feature_dicts' : feature_dicts,
         'samples' : samples,
@@ -508,9 +491,7 @@ def peaktable_processing(
         'params_dict' : dict_params,
         'input_filenames': input_filenames,
     }
-    
-    print('Finished output')
-    
+
     return FERMO_data
 
 def make_JSON_serializable(FERMO_data, FERMO_version):
@@ -541,7 +522,7 @@ def make_JSON_serializable(FERMO_data, FERMO_version):
                 FERMO_data['feature_dicts'][ID][entry] = set_to_list
             
             #remove matchms Spectrum object
-            FERMO_data['feature_dicts'][ID]['ms2spectrum'] = 'removed_for_JSON_storage'
+            FERMO_data['feature_dicts'][ID]['ms2spectrum'] = 'removed'
     
     #loop over sample stats to replace sets with lists
     for entry in FERMO_data['sample_stats']:
@@ -551,16 +532,12 @@ def make_JSON_serializable(FERMO_data, FERMO_version):
     for group in FERMO_data['sample_stats']['groups_dict']:
         set_to_list = list(FERMO_data['sample_stats']['groups_dict'][group])
         FERMO_data['sample_stats']['groups_dict'][group] = set_to_list
-
-    #Add metadata to session file
-    #-time and date
     
     session_metadata = {
         'date' : str(datetime.date(datetime.now())),
         'time' : str(datetime.time(datetime.now())),
         }
     
-    #construct storage data structure
     storage_JSON_dict = {
         'feature_dicts' : FERMO_data['feature_dicts'],
         'samples_JSON' : samples_JSON,
@@ -984,8 +961,11 @@ def plot_clique_chrom(
 
     if isinstance(active_feature_index, int):
         if feature_dicts[str(active_feature_id)]['similarity_clique']:
-            for clique_member in feature_dicts[
-                str(active_feature_id)]['similarity_clique_list'][0]:
+            for clique_member in (
+                sample_stats['cliques']
+                    [str(feature_dicts[str(active_feature_id)]['similarity_clique_number'])]
+                    [0]
+                ):
                 if clique_member != active_feature_id:
                     try:
                         row = samples[selected_sample].loc[
@@ -1115,6 +1095,7 @@ def modify_feature_info_df(
     index,
     feat_dicts,
     samples,
+    sample_stats,
     ):
     '''Modify feature_info_dataframe for feature info display'''
     #change to str for feature dict querying
@@ -1200,9 +1181,15 @@ def modify_feature_info_df(
     sim_clique_len = None
     sim_clique_list = None
     if feat_dicts[ID]['similarity_clique']:
-        sim_clique_len = len(feat_dicts[ID]['similarity_clique_list'][0])
+        sim_clique_len = len(
+            sample_stats['cliques'][
+                str(feat_dicts[ID]['similarity_clique_number'])][0]
+            )
         sim_clique_list = (', '.join(str(i) for i in 
-            feat_dicts[ID]['similarity_clique_list'][0]))
+            sample_stats['cliques'][
+                str(feat_dicts[ID]['similarity_clique_number'])][0]))
+
+
 
     placeholder = '-----'
     data = [
@@ -1276,10 +1263,6 @@ def empty_feature_info_df():
     return df.to_dict('records')
 
 
-
-
-
-
 def generate_cyto_elements(
     sel_sample,
     active_feature_id,
@@ -1307,153 +1290,160 @@ def generate_cyto_elements(
     #tests if currently selected feature is in a similarity clique
     if feat_dicts[ID]['similarity_clique']:
         
-        #Create reference lists for consecutive nodes/edges creation
-        node_list = list(feat_dicts[ID]['similarity_clique_list'][0])
-        edges_list = list(feat_dicts[ID]['similarity_clique_list'][1])
+        node_list = list(
+            sample_stats['cliques'][
+                str(feat_dicts[ID]['similarity_clique_number'])][0]
+            )
+        edges_list = list(
+            sample_stats['cliques'][
+                str(feat_dicts[ID]['similarity_clique_number'])][1]
+            )
         precursor_list = [feat_dicts[str(i)]['precursor_mz'] for i in node_list]
         id_precursor_dict = {
             node_list[i] : [precursor_list[i],
                             feat_dicts[str(node_list[i])]['feature_ID'],]
             for i in range(len(node_list))
-        }
+            }
         
-        #Creates list of nodes, with each node as a dictionary.
-        nodes = [
-        
-            #first condition: selected, unique to sample
-            {
-            'data': {
-                'id': str(i), 
-                'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
-            },
-            'classes': 'selected_unique_sample',
-            }
-            if ((id_precursor_dict[i][1] == int(ID))
-            and
-            (len(feat_dicts[str(i)]['presence_samples']) == 1)
-            )
+        if len(node_list) <= 250:
+            #Creates list of nodes, with each node as a dictionary.
+            nodes = [
             
-            #second condition: selected, unique to group
-            else {
+                #first condition: selected, unique to sample
+                {
                 'data': {
                     'id': str(i), 
                     'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
                 },
-                'classes': 'selected_unique_group',
-            }
-            if ((id_precursor_dict[i][1] == int(ID))
-            and
-            (len(feat_dicts[str(i)]['set_groups']) == 1)
-            and not 
-            ('GENERAL' in feat_dicts[str(i)]['set_groups'])
-            )
-            
-            #third condition: selected - RETAIN
-            else {
-                'data': {
-                    'id': str(i), 
-                    'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
-                },
-                'classes': 'selected',
-            }
-            if (id_precursor_dict[i][1] == int(ID))
-            
-            #fourth condition: in sample, unique to sample
-            else {
-                'data': {
-                    'id': str(i), 
-                    'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
-                },
-                'classes': 'sample_unique_sample',
-            }
-            if (
-                (id_precursor_dict[i][1] in 
-                    sample_stats['features_per_sample'][sel_sample])
-            and
-                (sel_sample in feat_dicts[str(i)]['presence_samples'])
-            and
+                'classes': 'selected_unique_sample',
+                }
+                if ((id_precursor_dict[i][1] == int(ID))
+                and
                 (len(feat_dicts[str(i)]['presence_samples']) == 1)
                 )
                 
-            #fifth condition: in sample, unique to group
-            else {
-                'data': {
-                    'id': str(i), 
-                    'label':"".join([str(id_precursor_dict[i][0])," m/z",]),
-                },
-                'classes': 'sample_unique_group',
-            }
-            if (
-                (id_precursor_dict[i][1] in 
-                    sample_stats['features_per_sample'][sel_sample])
-            and
-                (sel_sample in feat_dicts[str(i)]['presence_samples'])
-            and
-                (len(feat_dicts[str(i)]['set_groups']) == 1)
-            and not 
-                ('GENERAL' in feat_dicts[str(i)]['set_groups'])
-            )
-            
-            #sixth condition: in sample, unique to group - RETAIN
-            else {
-                'data': {
-                    'id': str(i), 
-                    'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
-                },
-                'classes': 'sample',
-            }
-            if (
-                (id_precursor_dict[i][1] in 
-                    sample_stats['features_per_sample'][sel_sample])
-            )
-            
-            #seventh condition: not in sample, unique to the group
-            #where it is found
-            else {
-                'data': {
-                    'id': str(i), 
-                    'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
-                },
-                'classes': 'default_unique_group',
-            }
-            if (
-                (len(feat_dicts[str(i)]['set_groups']) == 1)
-            and
-                (feat_dicts[str(i)]['set_groups'] == feat_dicts[ID]['set_groups'])
-            and not 
-                ('GENERAL' in feat_dicts[str(i)]['set_groups'])
-            )
-            
-            #eight condition: everything else
-            else {
-                'data': {
-                    'id': str(i), 
-                    'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
-                },
-                'classes': 'default',
-            }
-            for i in id_precursor_dict
-        ]
-        
-        #Create list of edges (one dictionary per edge)
-        edges = [
-            {'data': {
-                'source': str(edges_list[i][0]),
-                'target': str(edges_list[i][1]),
-                'weight': edges_list[i][2],
-                'mass_diff' : abs(round(
-                    (feat_dicts[str(edges_list[i][0])]['precursor_mz'] -
-                    feat_dicts[str(edges_list[i][1])]['precursor_mz']), 3
-                    )),
+                #second condition: selected, unique to group
+                else {
+                    'data': {
+                        'id': str(i), 
+                        'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+                    },
+                    'classes': 'selected_unique_group',
                 }
-            }
-            for i in range(len(edges_list))
-        ]
-        
-        #Concatenate nodes and edges into single list
-        elements = nodes + edges
-
-        return elements
+                if ((id_precursor_dict[i][1] == int(ID))
+                and
+                (len(feat_dicts[str(i)]['set_groups']) == 1)
+                and not 
+                ('GENERAL' in feat_dicts[str(i)]['set_groups'])
+                )
+                
+                #third condition: selected - RETAIN
+                else {
+                    'data': {
+                        'id': str(i), 
+                        'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+                    },
+                    'classes': 'selected',
+                }
+                if (id_precursor_dict[i][1] == int(ID))
+                
+                #fourth condition: in sample, unique to sample
+                else {
+                    'data': {
+                        'id': str(i), 
+                        'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+                    },
+                    'classes': 'sample_unique_sample',
+                }
+                if (
+                    (id_precursor_dict[i][1] in 
+                        sample_stats['features_per_sample'][sel_sample])
+                and
+                    (sel_sample in feat_dicts[str(i)]['presence_samples'])
+                and
+                    (len(feat_dicts[str(i)]['presence_samples']) == 1)
+                    )
+                    
+                #fifth condition: in sample, unique to group
+                else {
+                    'data': {
+                        'id': str(i), 
+                        'label':"".join([str(id_precursor_dict[i][0])," m/z",]),
+                    },
+                    'classes': 'sample_unique_group',
+                }
+                if (
+                    (id_precursor_dict[i][1] in 
+                        sample_stats['features_per_sample'][sel_sample])
+                and
+                    (sel_sample in feat_dicts[str(i)]['presence_samples'])
+                and
+                    (len(feat_dicts[str(i)]['set_groups']) == 1)
+                and not 
+                    ('GENERAL' in feat_dicts[str(i)]['set_groups'])
+                )
+                
+                #sixth condition: in sample, unique to group - RETAIN
+                else {
+                    'data': {
+                        'id': str(i), 
+                        'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+                    },
+                    'classes': 'sample',
+                }
+                if (
+                    (id_precursor_dict[i][1] in 
+                        sample_stats['features_per_sample'][sel_sample])
+                )
+                
+                #seventh condition: not in sample, unique to the group
+                #where it is found
+                else {
+                    'data': {
+                        'id': str(i), 
+                        'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+                    },
+                    'classes': 'default_unique_group',
+                }
+                if (
+                    (len(feat_dicts[str(i)]['set_groups']) == 1)
+                and
+                    (feat_dicts[str(i)]['set_groups'] == feat_dicts[ID]['set_groups'])
+                and not 
+                    ('GENERAL' in feat_dicts[str(i)]['set_groups'])
+                )
+                
+                #eight condition: everything else
+                else {
+                    'data': {
+                        'id': str(i), 
+                        'label': "".join([str(id_precursor_dict[i][0])," m/z",]),
+                    },
+                    'classes': 'default',
+                }
+                for i in id_precursor_dict
+            ]
+            
+            #Create list of edges (one dictionary per edge)
+            edges = [
+                {'data': {
+                    'source': str(edges_list[i][0]),
+                    'target': str(edges_list[i][1]),
+                    'weight': edges_list[i][2],
+                    'mass_diff' : abs(round(
+                        (feat_dicts[str(edges_list[i][0])]['precursor_mz'] -
+                        feat_dicts[str(edges_list[i][1])]['precursor_mz']), 3
+                        )),
+                    }
+                }
+                for i in range(len(edges_list))
+            ]
+            
+            #Concatenate nodes and edges into single list
+            elements = nodes + edges
+            return elements
+        else:
+            return []
     else:
         return []
 
@@ -1593,15 +1583,15 @@ def session_loading_table(params, files, metadata, version):
                 ['Filename: bioactivity', files['bioactivity_name']],
                 ['Filename: user-library', files['user_library_name']],
                 ['-----', '-----'],
-                ['Mass deviation (ppm)', params['mass_dev_ppm']],
-                ['Min number of MS² fragments', params['min_nr_ms2']],
-                ['Feature relative intensity filter', params['feature_rel_int_fact']],
+                ['Mass deviation', params['mass_dev_ppm']],
+                ['Min fragments per MS² spectrum', params['min_nr_ms2']],
+                ['Relative intensity filter', params['feature_rel_int_fact']],
                 ['Bioactivity factor', params['bioact_fact']],
                 ['Blank factor', params['column_ret_fact']],
-                ['Spectrum similarity tolerance', params['spectral_sim_tol']],
+                ['Fragment similarity tolerance', params['spectral_sim_tol']],
                 ['Spectrum similarity score cutoff', params['spec_sim_score_cutoff']],
-                ['Max nr spectrum similarity links', params['max_nr_links_ss']],
-                ['Minimum number of matched peaks', params['min_nr_matched_peaks']],
+                ['Max spectral links', params['max_nr_links_ss']],
+                ['Min matched peaks', params['min_nr_matched_peaks']],
             ]
     return pd.DataFrame(content, columns=['Attribute', 'Description'])
 
@@ -1619,14 +1609,14 @@ def empty_loading_table():
                 ['Filename: bioactivity', None],
                 ['Filename: user-library', None],
                 ['-----', '-----'],
-                ['Mass deviation (ppm)', None],
-                ['Min number of MS² fragments', None],
-                ['Feature relative intensity filter', None],
+                ['Mass deviation', None],
+                ['Min fragments per MS² spectrum', None],
+                ['Relative intensity filter', None],
                 ['Bioactivity factor', None],
                 ['Blank factor', None],
-                ['Spectrum similarity tolerance', None],
+                ['Fragment similarity tolerance', None],
                 ['Spectrum similarity score cutoff', None],
-                ['Max nr spectrum similarity links', None],
-                ['Minimum number of matched peaks', None],
+                ['Max spectral links', None],
+                ['Min matched peaks', None],
             ]
     return pd.DataFrame(content, columns=['Attribute', 'Description'])

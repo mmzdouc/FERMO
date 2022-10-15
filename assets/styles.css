@@ -28,7 +28,6 @@ GENERAL
     padding: 10px;
 }
 
-
 .legend {
      overflow:hidden;
 }
@@ -50,6 +49,28 @@ GENERAL
     font-weight: bold; 
     padding: 10px;
     font-size: 20px;
+    border-radius: 4px;
+}
+
+.button_small_class {
+    background-color: #116789;
+    text-align: center;
+    color: white;
+    border-style: none;
+    font-weight: bold; 
+    padding: 5px;
+    width: 30%;
+    border-radius: 4px;
+}
+
+.button_dashboard_class {
+    background-color: #116789;
+    text-align: center;
+    color: white;
+    border-style: none;
+    font-weight: bold; 
+    padding: 5px;
+    width: 100%;
     border-radius: 4px;
 }
 
@@ -151,12 +172,9 @@ ROWS - LANDING
 }
 
 #landing_row_2  {
-    height: 40vh;
+    height: 45vh;
 }
 
-#landing_row_3  {
-    height: 5vh;
-}
 
 
 /*
@@ -177,37 +195,13 @@ COLUMNS - LANDING
 
 #landing_row_2_col_1  {
     background-color: white;
-    height: 40vh;
+    height: 45vh;
     overflow: scroll;
 }
 
 #landing_row_2_col_2  {
     background-color: white;
-    height: 40vh;
-    overflow: scroll;
-}
-
-#landing_row_2_col_3  {
-    background-color: white;
-    height: 40vh;
-    overflow: scroll;
-}
-
-#landing_row_3_col_1  {
-    background-color: white;
-    height: 5vh;
-    overflow: scroll;
-}
-
-#landing_row_3_col_2  {
-    background-color: white;
-    height: 5vh;
-    overflow: scroll;
-}
-
-#landing_row_3_col_3  {
-    background-color: white;
-    height: 5vh;
+    height: 45vh;
     overflow: scroll;
 }
 
@@ -248,55 +242,55 @@ COLUMNS - PROCESSING
 }
 
 /*
-ROWS - MZMINE
+ROWS - peakpicking
 */
 
-#mzmine_row_1 {
+#peakpicking_row_1 {
     height: 5vh;
 }
 
-#mzmine_row_2 {
+#peakpicking_row_2 {
     height: 20vh;
 }
 
-#mzmine_row_3 {
+#peakpicking_row_3 {
     height: 50vh;
 }
 
-#mzmine_row_4 {
+#peakpicking_row_4 {
     height: 5vh;
 }
 
 
 /*
-COLUMNS - MZMINE
+COLUMNS - peakpicking
 */
 
-#mzmine_row_1_col_1  {
+#peakpicking_row_1_col_1  {
     background-color: white;
     height: 5vh;
     overflow: scroll;
 }
 
-#mzmine_row_2_col_1  {
+#peakpicking_row_2_col_1  {
     background-color: white;
     height: 20vh;
     overflow: scroll;
 }
 
-#mzmine_row_3_col_1  {
+#peakpicking_row_3_col_1  {
     background-color: white;
     height: 50vh;
     overflow: scroll;
 }
 
-#mzmine_row_3_col_2  {
+#peakpicking_row_3_col_2  {
     background-color: white;
     height: 50vh;
     overflow: scroll;
 }
 
-#mzmine_row_4_col_1  {
+#peakpicking_row_4_col_1  {
     background-color: white;
     height: 5vh;
     overflow: scroll;
@@ -307,11 +301,11 @@ ROWS - LOADING
 */
 
 #loading_row_1 {
-    height: 75vh;
+    height: 70vh;
 }
 
 #loading_row_2 {
-    height: 5vh;
+    height: 10vh;
 }
 
 
@@ -321,18 +315,18 @@ COLUMNS - LOADING
 
 #loading_row_1_col_1  {
     background-color: white;
-    height: 75vh;
+    height: 70vh;
     overflow: scroll;
 }
 
 #loading_row_1_col_2  {
     background-color: white;
-    height: 75vh;
+    height: 70vh;
     overflow: scroll;
 }
 
 #loading_row_2_col_1  {
     background-color: white;
-    height: 5vh;
+    height: 10vh;
     overflow: scroll;
 }

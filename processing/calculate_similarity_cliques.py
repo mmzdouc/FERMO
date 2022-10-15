@@ -68,6 +68,8 @@ def calculate_similarity_cliques(
         identifier_key="id",
         score_cutoff=spec_sim_score_cutoff,
         max_links=spec_sim_max_links,
+        top_n=10,
+        link_method='mutual',
         )
         
     #calculates spectral similarity network 
@@ -125,7 +127,12 @@ def calculate_similarity_cliques(
             edge = sorted(edge, 
                     key=lambda i: (isinstance(i, int), i), reverse=True)
             nr_edges.append(edge)
-            
+        
+        #add a dict with similarity clique lists to sample stats
+        
+        sample_stats['cliques'][i] = [nodes, nr_edges]
+        
+        
         #Append info to feature object
         #Each feature object has:
         #-similarity clique (is in one (True) or none (False)
@@ -136,6 +143,7 @@ def calculate_similarity_cliques(
             feature_dicts[j]['similarity_clique'] = True
             feature_dicts[j]['similarity_clique_number'] = i
             feature_dicts[j]['similarity_clique_list'] = [nodes, nr_edges]
+            #add to sample stats
             sample_stats['set_all_cliques'].add(i)
             if feature_dicts[j]['blank_associated']:
                 sample_stats['set_blank_cliques'].add(i)
@@ -147,8 +155,10 @@ def calculate_similarity_cliques(
             for member in feature_dicts[ID]['similarity_clique_list'][0]:
                 for group in feature_dicts[member]['set_groups']:
                     feature_dicts[ID]['set_groups_clique'].add(group)
+            feature_dicts[ID]['similarity_clique_list'] = []
         else:
             feature_dicts[ID]['set_groups_clique'] = None
+            feature_dicts[ID]['similarity_clique_list'] = []
 
     #For each sample, create list of cliques that it contains
     for sample in sample_stats["samples_list"]:
@@ -159,7 +169,6 @@ def calculate_similarity_cliques(
             if
             (feature_dicts[i]['similarity_clique'] == True)
             }
-        sample_stats[
-            "cliques_per_sample"][sample] = list(sample_stats[
+        sample_stats["cliques_per_sample"][sample] = list(sample_stats[
             "cliques_per_sample"][sample])
 

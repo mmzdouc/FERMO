@@ -76,6 +76,7 @@ def collect_stats_samples(peaktable, groups, bioactivity_samples,):
         "groups_dict" : groups,
         "features_per_sample" : {},
         "cliques_per_sample" : {},
+        "cliques" : {},
         "nr_all_cliques" : "",
         "set_all_cliques" : set(),
         "set_blank_cliques" : set(),

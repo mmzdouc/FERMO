@@ -16,7 +16,6 @@ from matchms.Spectrum import Spectrum
 import numpy as np
 import os
 import pandas as pd
-import pickle
 from pyteomics import mgf
 import sys
 import time
@@ -38,7 +37,7 @@ from pages.pages_header_footer import footer_row, header_row
 from pages.pages_landing import landing
 from pages.pages_dashboard import dashboard
 from pages.pages_processing import processing
-from pages.pages_mzmine import mzmine
+# ~ from pages.pages_peakpicking import peakpicking
 from pages.pages_loading import loading
 
 
@@ -66,14 +65,17 @@ framework_app = dbc.Container(
         ###Stores for routing###
         dcc.Store(id='store_landing'),
         dcc.Store(id='store_processing'),
-        dcc.Store(id='store_mzmine'),
+        # ~ dcc.Store(id='store_peakpicking'),
         dcc.Store(id='store_loading'),
+        
         ###Stores for data processing###
         dcc.Store(id='data_processing_FERMO'),
         dcc.Store(id='processed_data_FERMO'),
-        # ~ dcc.Store(id='mzmine_data_FERMO'), #switch on when mzmine is implemented
+        # ~ dcc.Store(id='peakpicking_data_FERMO'), #needs peakpicking impl
         dcc.Store(id='loaded_data_FERMO'),
-        # represents the browser address bar, invisible
+        
+        ###Routing###
+        #represents the browser address bar, invisible
         dcc.Location(id='url', refresh=False), 
         #variable page content rendered in this element
         html.Div(id='page-content')
@@ -107,8 +109,8 @@ def app_display_page(pathname):
         return dashboard
     elif pathname == '/processing':
         return processing
-    elif pathname == '/mzmine':
-        return mzmine
+    # ~ elif pathname == '/peakpicking':
+        # ~ return peakpicking
     elif pathname == '/loading':
         return loading
     else:
@@ -118,38 +120,48 @@ def app_display_page(pathname):
     Output('url', 'pathname'),
     Input('store_landing', 'data'),
     Input('store_processing', 'data'),
-    Input('store_mzmine', 'data'),
+    # ~ Input('store_peakpicking', 'data'),
     Input('store_loading', 'data'),
 )
-def app_return_pathname(landing, processing, mzmine, loading):
+def app_return_pathname(
+    landing, 
+    processing, 
+    # ~ peakpicking,
+    loading,
+    ):
     '''Combine callback input for routing. ctx decides which page to return'''
     if ctx.triggered_id == 'store_landing':
         return landing
     elif ctx.triggered_id == 'store_processing':
         return processing
-    elif ctx.triggered_id == 'store_mzmine':
-        return mzmine
+    # ~ elif ctx.triggered_id == 'store_peakpicking':
+        # ~ return peakpicking
     elif ctx.triggered_id == 'store_loading':
         return loading
 
 @callback(
     Output('store_landing', 'data'),
     Input('call_processing_button', 'n_clicks'),
-    Input('call_mzmine_button', 'n_clicks'),
+    # ~ Input('call_peakpicking_button', 'n_clicks'),
     Input('call_loading_button', 'n_clicks'),
 )
 def landing_call_pages(
     processing_page, 
-    mzmine_page,
-    loading_page,):
+    # ~ peakpicking_page,
+    loading_page,
+    ):
     '''On button click, redirect to respective page'''
-    if not any((processing_page, mzmine_page, loading_page,)):
+    if not any((
+        processing_page, 
+        # ~ peakpicking_page, 
+        loading_page,
+        )):
         raise PreventUpdate
     else:
         if processing_page:
             return '/processing'
-        elif mzmine_page:
-            return '/mzmine'
+        # ~ elif peakpicking_page:
+            # ~ return '/peakpicking'
         elif loading_page:
             return '/loading'
 
@@ -196,18 +208,18 @@ def processing_start_click(
         return html.Div('Started processing, please wait ...'), dict_uploaded_files
 
 
-@callback(
-    Output('mzmine_start_cache', 'children'),
-    Input('call_dashboard_mzmine', 'n_clicks'),
-)
-def mzmine_start_click(start_mzmine):
-    '''On button click, should check for starting conditions for mzmine
-    STILL NEEDS TO BE IMPLEMENTED '''
-    if not start_mzmine:
-        raise PreventUpdate
-    #elif clause that tests if input params and data were given -> see call_pages_loading
-    else:
-        return html.Div('Started processing, please wait ...')
+# ~ @callback(
+    # ~ Output('peakpicking_start_cache', 'children'),
+    # ~ Input('call_dashboard_peakpicking', 'n_clicks'),
+# ~ )
+# ~ def peakpicking_start_click(start_peakpicking):
+    # ~ '''On button click, should check for starting conditions for peakpicking
+    # ~ STILL NEEDS TO BE IMPLEMENTED '''
+    # ~ if not start_peakpicking:
+        # ~ raise PreventUpdate
+    # ~ #elif clause that tests if input params and data were given -> see call_pages_loading
+    # ~ else:
+        # ~ return html.Div('Started processing, please wait ...')
 
 
 @callback(
@@ -229,15 +241,21 @@ def loading_start_click(start_loading, session_storage):
 @callback(
     Output('data_processing_FERMO', 'data'),
     Input('processed_data_FERMO', 'data'),
-    # ~ Input('mzmine_data_FERMO', 'data'),
+    # ~ Input('peakpicking_data_FERMO', 'data'),
     Input('loaded_data_FERMO', 'data'),
+    # ~ background=True,
+    # ~ manager=background_callback_manager,
     )
-def app_bundle_inputs_dashboard(storage, loading): #add mzmine to args
+def app_bundle_inputs_dashboard(
+    storage,
+    # ~ peakpicking,
+    loading,
+    ):
     '''Bundle inputs, return active option for dashboard visualization'''
     if ctx.triggered_id == 'processed_data_FERMO':
         return storage
-    # ~ elif ctx.triggered_id == 'mzmine_data_FERMO':
-        # ~ return mzmine
+    # ~ elif ctx.triggered_id == 'peakpicking_data_FERMO':
+        # ~ return peakpicking
     elif ctx.triggered_id == 'loaded_data_FERMO':
         return loading
 
@@ -264,40 +282,41 @@ def app_peaktable_processing(
     if signal is None:
         raise PreventUpdate
     else:
+        
+        print('BEGIN: FERMO processing')
         FERMO_data = utils.peaktable_processing(
             uploaded_files_store,
             dict_params,
             )
+        print('DONE: FERMO processing')
         
+        print('BEGIN: conversion to JSON')
         storage_JSON_dict = utils.make_JSON_serializable(FERMO_data, __version__)
+        print('DONE: conversion to JSON')
+
+        
         
         return '/dashboard', storage_JSON_dict
 
-@callback(
-    Output('store_mzmine', 'data'),
-    # ~ Output('mzmine_data_FERMO', 'data'),
-    Input('mzmine_start_cache', 'children'),
+
+# ~ @callback(
+    # ~ Output('store_peakpicking', 'data'),
+    # ~ Output('peakpicking_data_FERMO', 'data'),
+    # ~ Input('peakpicking_start_cache', 'children'),
     #Add parameter and upload inputs here (possibly as State)
-    background=True,
-    manager=background_callback_manager,
-    running=[(Output("call_dashboard_mzmine", "disabled"), True, False),],
-)
-def app_mzmine_processing(dashboard_mzmine): #add data output here
-    '''Call MZmine and FERMO processing functions, serialize and store data'''
-    if not dashboard_mzmine:
-        raise PreventUpdate
-    else:
-        #Put all functions for processing here
-        #MZmine processing (in try, except ; and if it doesn't work, send 
-        #to custom page where it tells user that MZmine failed dze to unknown reasons
-        #call peaktable_processing() function
-        #call JSON serialization
-        #return data
-        
+    # ~ background=True,
+    # ~ manager=background_callback_manager,
+    # ~ running=[(Output("call_dashboard_peakpicking", "disabled"), True, False),],
+# ~ )
+# ~ def app_peakpicking_processing(dashboard_peakpicking): #add data output here
+    # ~ '''Call peakpicking and FERMO processing functions, serialize and store data'''
+    # ~ if not dashboard_peakpicking:
+        # ~ raise PreventUpdate
+    # ~ else:
+        #Put all functions for processing here        
         #simulate calculation with sleep -> REMOVE
-        time.sleep(3.0)
-        
-        return '/dashboard'
+        # ~ time.sleep(3.0)
+        # ~ return '/dashboard'
 
 @callback(
     Output('store_loading', 'data'),
@@ -736,8 +755,6 @@ def read_threshold_values_function(rel_int, conv, bioact, nov,):
         Output('sample_list', 'data'),
         Input('threshold_values', 'data'),
         Input('data_processing_FERMO', 'data'),
-        background=True,
-        manager=background_callback_manager,
         )
 def calculate_feature_score(
         thresholds,
@@ -748,15 +765,11 @@ def calculate_feature_score(
     samples_JSON = contents['samples_JSON']
     sample_stats = contents['sample_stats']
     
-    print('calculate_feature_score 1')
-    
     #temporarily convert from JSON to pandas DF
     samples = dict()
     for sample in samples_JSON:
         samples[sample] = pd.read_json(
             samples_JSON[sample], orient='split')
-    
-    print('calculate_feature_score 2')
     
     #for each sample, extract rows that corresponds to thresholds
     samples_subsets = dict()
@@ -766,8 +779,6 @@ def calculate_feature_score(
             sample,
             thresholds,
             feature_dicts,)
-    
-    print('calculate_feature_score 3')
     
     #how many cliques in this sample are only found in group
     #extract all features per sample (corrected for blanks)
@@ -785,8 +796,6 @@ def calculate_feature_score(
                     )
         sample_unique_cliques[sample] = list(unique_cliques)
 
-    print('calculate_feature_score 4')
-
     #create dataframe to export to dashboard
     sample_scores = pd.DataFrame({
         'Filename' : [i for i in samples],
@@ -802,8 +811,6 @@ def calculate_feature_score(
         'Non-blank' : [len(samples_subsets[i]['all_nonblank']) for i in samples],
         'Over cutoff' : [len(samples_subsets[i]['all_select_no_blank']) for i in samples],
     })
-
-    print('calculate_feature_score 5')
     
     #Sort df, reset index
     sample_scores.sort_values(
@@ -1009,6 +1016,7 @@ def update_selected_feature(
     '''Return info on active feature'''
     feature_dicts = contents['feature_dicts']
     samples_JSON = contents['samples_JSON']
+    sample_stats = contents['sample_stats']
     
     #temporarily convert from JSON to pandas DF
     samples = dict()
@@ -1023,6 +1031,7 @@ def update_selected_feature(
             active_feature_index,
             feature_dicts,
             samples,
+            sample_stats,
             )
     else:
         return utils.empty_feature_info_df()
@@ -1200,4 +1209,4 @@ def export_all_features(n_clicks, contents):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True) #switch to True for debugging
+    app.run_server(debug=False) #switch to True for debugging

@@ -9,19 +9,13 @@ from variables import (
 def call_loading_intro_text():
     '''Introduction text for loading page'''
     return html.Div([
-        html.Div('''On this page, you can load your previously created FERMO session files, or load session files from others, such as your collaborators. Reloading is very fast, since time-consuming computation steps are omitted. However, the parameters set during initial computation cannot be altered anymore.
+        dcc.Markdown('''On this page, you can load **FERMO session files** in the **.json-format**. Reloading is very fast, since time-consuming computation steps are omitted. However, the parameters set during initial computation cannot be altered anymore.
             '''),
-        html.Div(style={'margin-top' : '10px'}),
-        html.Div('''To upload a FERMO session file, click the button with the name 'Upload FERMO Session File' on the left side of the page. A upload window will appear, in which you can navigate to the session file. Once a file is uploaded, a message will appear that will indicate the outcome of the upload. 
+        dcc.Markdown('''To upload a **FERMO session file**, click the button with the name **'Upload FERMO Session File'** on the left side of the page. A message will appear to inform you about the outcome. 
             '''),
-        html.Div(style={'margin-top' : '10px'}),
-        html.Div('''If successful, session file metadata will be shown in the table on the right side of the window, including the time, date, and version of FERMO during creation, the names of the files used for processing, and the used parameter settings. 
+        dcc.Markdown('''If successful, session file metadata will be shown in the table on the right side of the window, including the time, date, and version of FERMO during creation, the names of the files used for processing, and the used parameter settings. 
             '''),
-        html.Div(style={'margin-top' : '10px'}),
-        html.Div('''If the upload was not successful, a message will indicate possible solutions. 
-            '''),
-        html.Div(style={'margin-top' : '10px'}),
-        html.Div('''After loading your data, click the button 'Start FERMO Dashboard' to go to the dashboard view.
+        dcc.Markdown('''After loading your data, click the button 'Start FERMO Dashboard' to go to the dashboard view.
             '''),
         ],
         style={
@@ -36,8 +30,9 @@ def call_session_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Upload FERMO Session File (*.json)',
+                        'Load FERMO Session File (*.json)',
                         id="upload-session-tooltip",
+                        className="button_small_class",
                         ),
                     id='upload-session'),
                 dbc.Tooltip(
@@ -62,9 +57,13 @@ def call_dashboard_loading_button():
             "Start FERMO Dashboard",
             id='call_dashboard_loading',
             n_clicks=0,
-            className="d-grid gap-2 col-6 mx-auto",
+            className="button_general_class",
+            style={'width' : '100%',}
             ),
-        ])
+        ],
+        style={'margin' : 'auto','width' : '50%',},
+        )
+
 
 
 loading = html.Div([
@@ -80,11 +79,15 @@ loading = html.Div([
                 call_loading_intro_text(),
                 html.Div(style={'margin-top' : '100px'}),
                 html.Hr(),
+                html.Div(style={'margin-top' : '15px'}),
                 call_session_upload(),
                 html.Div(id='upload_session_output',
-                    style={'margin-top' : '10px', 'margin-bottom' : '10px'}
+                    style={
+                        'margin-top' : '10px', 
+                        'color' : 'red',
+                        'font-weight' : 'bold',
+                        }
                     ),
-                html.Hr(),
                 ],
                 style={
                         'margin-left':'30px',
@@ -131,8 +134,13 @@ loading = html.Div([
                 html.Div(
                     id='loading_start_cache',
                     style={
+                        'margin' : 'auto',
+                        'width' : '50%',
                         'text-align' : 'center',
-                    })
+                        'font-weight' : 'bold',
+                        'font-size' : '20px', 
+                        },
+                    )
                 ],
             id="loading_row_2_col_1",
             width=12,

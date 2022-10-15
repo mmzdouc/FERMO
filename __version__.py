@@ -1,1 +1,1 @@
-__version__ = 'FERMO_version_0.5'
+__version__ = '0.5.1'
