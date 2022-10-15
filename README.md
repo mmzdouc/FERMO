@@ -39,9 +39,9 @@ Instructions for the generation of the files, as well as the required format, ca
 
 5. In the command line interface, navigate to the previously downloaded and unpacked FERMO directory, using the `cd` command (i.e. "change directory").  To show the contents of the current directory, the `dir` command can be used.
 
-6. Once in the FERMO directory, create a Conda virtual environment by entering the command `conda create --name FERMO_v_0.5 python=3.8`. This has to be done only at the first start of FERMO.
+6. Once in the FERMO directory, create a Conda virtual environment by entering the command `conda create --name FERMO_0.5.1 python=3.8`. This has to be done only at the first start of FERMO.
 
-7. Activate the newly created virtual environment by entering the command `conda activate FERMO_v_0.5`. The prefix of the command prompt should switch to `(FERMO_v_0.5)`, to indicate the change in environment. This has to be done whenever FERMO is started.
+7. Activate the newly created virtual environment by entering the command `conda activate FERMO_0.5.1`. The prefix of the command prompt should switch to `(FERMO_0.5.1)`, to indicate the change in environment. This has to be done whenever FERMO is started.
 
 8. Install the packages required by FERMO in the newly created virtual environment by entering the command `pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.3.3" dash[diskcache] dash[celery]`. This has to be done only at the first start of FERMO.
 
@@ -61,9 +61,9 @@ Instructions for the generation of the files, as well as the required format, ca
 
 4. In the terminal window, navigate to the previously downloaded and unpacked FERMO directory, using the `cd` ("change directory") command. To show the contents of the current directory, the `ls` command can be used.
 
-5. Once in the FERMO directory, create a Conda virtual environment by entering the command `conda create --name FERMO_v_0.5 python=3.8`. This has to be done only at the first start of FERMO.
+5. Once in the FERMO directory, create a Conda virtual environment by entering the command `conda create --name FERMO_0.5.1 python=3.8`. This has to be done only at the first start of FERMO.
 
-6. Activate the newly created virtual environment by entering the command `conda activate FERMO_v_0.5`. The prefix of the command prompt should switch to `(FERMO_v_0.5)`, to indicate the change in environment .This has to be done whenever FERMO is started.
+6. Activate the newly created virtual environment by entering the command `conda activate FERMO_0.5.1`. The prefix of the command prompt should switch to `(FERMO_0.5.1)`, to indicate the change in environment .This has to be done whenever FERMO is started.
 
 7. Install the packages required by FERMO in the newly created virtual environment by entering the command `pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.3.3" "dash[diskcache]" "dash[celery]"`. This has to be done only at the first start of FERMO.
 
@@ -94,9 +94,9 @@ Afterwards, repeat the command in point 8.
 
 4. Manual install and start of FERMO: Open a new terminal window, navigate to the previously downloaded and unpacked FERMO directory, using the `cd` ("change directory") command. To show the contents of the current directory, the `ls` command can be used.
 
-5. Once in the FERMO directory, create a Conda virtual environment by entering the command `conda create --name FERMO_v_0.5 python=3.8`. This has to be done only at the first start of FERMO.
+5. Once in the FERMO directory, create a Conda virtual environment by entering the command `conda create --name FERMO_0.5.1 python=3.8`. This has to be done only at the first start of FERMO.
 
-6. Activate the newly created virtual environment by entering the command `conda activate FERMO_v_0.5`. The prefix of the command prompt should switch to `(FERMO_v_0.5)`, to indicate the change in environment. This has to be done whenever FERMO is started.
+6. Activate the newly created virtual environment by entering the command `conda activate FERMO_0.5.1`. The prefix of the command prompt should switch to `(FERMO_0.5.1)`, to indicate the change in environment. This has to be done whenever FERMO is started.
 
 7. Install the packages required by FERMO in the newly created virtual environment by entering the command `pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.3.3" dash[diskcache] dash[celery]`. This has to be done only at the first start of FERMO.
 

@@ -1,5 +1,5 @@
 @ECHO OFF
-SET FERMO_VER=FERMO_v_0.5
+SET FERMO_VER=FERMO_0.5.1
 SET MINICONDAPATH=C:\Users\%USERNAME%\miniconda3\condabin\activate.bat
 SET MINIENVPATH=C:\Users\%USERNAME%\miniconda3\envs\%FERMO_VER%\
 SET ANACONDAPATH=C:\Users\%USERNAME%\anaconda3\condabin\activate.bat

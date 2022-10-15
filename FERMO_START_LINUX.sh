@@ -2,7 +2,7 @@
 
 eval "$(command conda 'shell.bash' 'hook' 2> /dev/null)"
 
-FERMO_VER="FERMO_v_0.5"
+FERMO_VER="FERMO_0.5.1"
 
 if ! command -v conda >/dev/null 2>&1
 then
