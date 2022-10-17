@@ -5,7 +5,7 @@ FERMO is a dashboard app for the processing and visualization of LC-MS/MS data, 
 The pages in this Wiki are separated into three parts, which are listed below. Clicking on any of the items leads to the respective page.
 
 - User-guides
-    - [Input data formats](https://github.com/mmzdouc/FERMO/wiki/Input-data-formats)
+    - [Input data formats overview](https://github.com/mmzdouc/FERMO/wiki/Input-data-formats)
     - [Peaktable generation tutorial](https://github.com/mmzdouc/FERMO/wiki/Peaktable-generation-tutorial)
     - [Metadata file preparation tutorial](https://github.com/mmzdouc/FERMO/wiki/Metadata-file-preparation-tutorial)
     - [Bioactivity data file preparation tutorial](https://github.com/mmzdouc/FERMO/wiki/Bioactivity-data-file-preparation-tutorial)

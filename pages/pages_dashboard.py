@@ -101,7 +101,7 @@ def call_legend_central_chrom():
         ],
     style={
         'font-size': '16px',
-        'padding-top' : '50px',},
+        },
     )
 
 def call_legend_clique_chrom():
@@ -128,7 +128,7 @@ def call_legend_clique_chrom():
         ],
     style={
         'font-size': '16px',
-        'padding-top' : '170px',},
+        },
     )
 
 def call_threshold_inp(name):
@@ -154,14 +154,13 @@ def call_rel_int_title():
                     id="call_rel_int_title_tooltip",
                     className="info_dot"
                     ),
-                #DUMMY LINK, SPECIFY CORRECT DOC LINK
-                href='https://github.com/mmzdouc/fermo', 
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
                 target='_blank',
                 ),
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter for feature intensity (height) relative to the most intense (highest) feature per sample. A value of 0 selects all features, a value of 1 only the most intense one. For more information, click this info-button to access the docs.
+                '''Filter peaks for relative intensity. Click button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -181,14 +180,13 @@ def call_convolutedness_title():
                     id="call_convolutedness_title_tooltip",
                     className="info_dot"
                     ),
-                #DUMMY LINK, SPECIFY CORRECT DOC LINK
-                href='https://github.com/mmzdouc/fermo', 
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
                 target='_blank',
                 ),
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter for convolutedness (i.e. peak collisions) of each feature. Score represent proportion of feature not overlapping with other features (also detects various adducts and isotopic peaks and ignores overlaps between related features). For filtering, 0 would select all features, 0.5 would select features with at least 50% of retention time window not overlapping with any peaks, and 1 would only select features that are not overlapping with any other feature.For more information, click this info-button to access the docs.
+                '''Filter for peaks without collisions with other peaks (except adduct and isotope peaks). The higher the value, the less peak collision is allowed. '0' ignores collision, '0.5' allows overlap of 50% of peak with other peaks, '1' only selects peaks with no overlaps. Click button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -208,14 +206,13 @@ def call_bioactivity_title():
                     id="call_bioactivity_title_tooltip",
                     className="info_dot"
                     ),
-                #DUMMY LINK, SPECIFY CORRECT DOC LINK
-                href='https://github.com/mmzdouc/fermo', 
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
                 target='_blank',
                 ),
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter for associatedness to bioactivity of each feature. Only functional if a bioactivity table was provided by user. A feature is considered bioactive if 1) it has been detected only in samples that were designated as active; OR if 2) the minimum intensity across all bioactive samples is n times higher than the maximum intensity across all inactive samples, where n is a user-provided parameter with the name "Bioactivity factor". For filtering, any value greater than 0 selects all bioactivity-associated features. If multiple bioactive samples with different activity levels were designated, values between 0.1 and 1 can be used to differentiate features less or more likely to be bioactivity-associated. Keep in mind that a positive bioactivity score does not guarantee bioactivity of a compound. For more information, click this info-button to access the docs.
+                '''Filter for bioactivity-associated features (if bioactivity table was provided). A value >= 0.1 selects any putatively putatively bioactive feature. Values between 0.1 and 1 can be used to differentiate features coming from samples with lower or higher bioactivity. Click button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -235,14 +232,13 @@ def call_novelty_title():
                     id="call_novelty_title_tooltip",
                     className="info_dot"
                     ),
-                #DUMMY LINK, SPECIFY CORRECT DOC LINK
-                href='https://github.com/mmzdouc/fermo', 
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
                 target='_blank',
                 ),
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter for probability that feature is unknown, compared against external data. Indicates likeliness that the compound represented by the feature has not been described yet. Score calculated from results of MS2Query matching against a  spectral library containing approximately 300.000 compounds, and, if provided, from results of matching against a user-provided spectral library. For filtering, a score of 1 would indicate that the feature is most likely novel, while a score of 0 would indicate that the feature is most likely known. Keep in mind that the estimation of novelty is imperfect and dependent on external data provided. For more information, click this info-button to access the docs.
+                '''Filter for putatively novel (unknown) features (if MS2Query was active and/or a spectral library was provided). A value of '0' would select all features, while a value of '1' would select only features that are most likely unknown. Click button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -290,8 +286,8 @@ dashboard = html.Div([
                         style_data_conditional=style_data_cond_table,
                         style_header=style_header_table,
                         tooltip_header={
-                            'Diversity score' : 'Indicates chemical diversity of sample. Calculated by dividing number of different spectral similarity cliques per sample by the total number of spectral similarity cliques across all samples.',
-                            'Spec score' : 'Specificity score: Indicates proportion of sample/group-specific chemistry per sample. Calculated by dividing number of spectral similarity cliques unique to the sample and its group by the total number of spectral similarity cliques in this sample.'
+                            'Diversity score' : 'Chemical diversity of sample. Nr of discrete spectral similarity cliques per sample, divided by total of cliques across all samples.',
+                            'Spec score' : 'Specificity score: Sample/group-specific chemistry per sample. Nr of spectral similarity cliques unique to the sample and its group, divided by total cliques in sample.'
                             },
                         tooltip_delay=0,
                         tooltip_duration=None,
@@ -300,7 +296,7 @@ dashboard = html.Div([
                 ),
             ],
             id="dashboard_row_1_col_1",
-            width=2,
+            width=3,
             ),
         #top right: chromatogram view
         dbc.Col([
@@ -311,19 +307,41 @@ dashboard = html.Div([
                     'margin-left' : '25px',
                         }
                     ),
-                html.Div(dcc.Graph(id='chromat_out')),
-                html.Div(dcc.Graph(id='chromat_clique_out')),
+                html.Div([
+                    html.Div(
+                        dcc.Graph(id='chromat_out'),
+                        style={
+                        'display': 'inline-block', 
+                        'width': '90%',
+                        'float': 'left'},
+                        ),
+                    html.Div(
+                        call_legend_central_chrom(),
+                        style={
+                        'display': 'inline-block', 
+                        'width': '10%',
+                        'float': 'left'},
+                        ),
+                    ]),
+                html.Div([
+                    html.Div(
+                        dcc.Graph(id='chromat_clique_out'),
+                        style={
+                        'display': 'inline-block', 
+                        'width': '90%',
+                        'float': 'left'},
+                        ),
+                    html.Div(
+                        call_legend_clique_chrom(),
+                        style={
+                        'display': 'inline-block', 
+                        'width': '10%',
+                        'float': 'left'},
+                        ),
+                    ]),
             ],
             id="dashboard_row_1_col_2",
             width=9,
-            ),
-        #top_rightmost
-        dbc.Col([
-            call_legend_central_chrom(),
-            call_legend_clique_chrom(),
-            ],
-            id="dashboard_row_1_col_3",
-            width=1,
             ),
         ],
     id="dashboard_row_1",

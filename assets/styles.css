@@ -132,11 +132,6 @@ COLUMNS - GENERAL
     overflow: scroll;
 }
 
-#dashboard_row_1_col_3 {
-    background-color: white;
-    height: 40vh;
-    overflow: scroll;
-}
 
 #dashboard_row_2_col_1 {
     background-color: white;

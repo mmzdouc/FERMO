@@ -1,10 +1,10 @@
 # FERMO Dashboard
 
-FERMO is a dashboard app for the processing and visualization of liquid chromatography - (tandem) mass spectrometry (LC-MS/MS) data, and its pairing to bioactivity data and other metadata. It is aimed toward the exploration and prioritization of compounds and/or samples for consecutive investigation, isolation and elucidation. While FERMO is targeted towards natural product (drug) discovery screening, it can be also applied in other settings, such as microbiology, environmental sciences, and crop sciences. 
+FERMO is a dashboard app for the processing and visualization of liquid chromatography - (tandem) mass spectrometry (LC-MS/MS) data, and its pairing to bioactivity data and other metadata. It is aimed toward the exploration and prioritization of compounds and/or samples for consecutive investigation, such as isolation and elucidation. FERMO can be used in different areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals. 
 
 FERMO comes with an information-rich dashboard interface, which visualizes all available data at one glance. Users can provide metadata to group their samples, to get insight about sample- or group-specific compounds, or to annotate control/blank-associated features. Users can also provide data from biological activity testing, to identify bioactivity-associated compounds. Samples and compounds can be filtered for putative chemical novelty and diversity, and selected for further investigation based on reproducible and comprehensible criteria. 
 
-FERMO is written in Python and runs fully locally, with no data shared across the network. It does not require any registration, does not track user statistics, and is released under the permissive MIT open sources license, which allows its use in a commercial setting. To run FERMO, simply clone this repository or download the zipped folder, which can be found here (LINK). Installation instructions and a quickstart tutorial can be found below. A more thorough guide and references to specific functions of FERMO can be found in the wiki (LINK). 
+FERMO is written in Python and runs fully locally, with no data shared across the network. It does not require any registration, does not track user statistics, and is released under the permissive MIT open sources license, which allows its use in a commercial setting. To run FERMO, simply clone this repository or download the zipped folder, which can be found here (LINK). Installation instructions and a quickstart tutorial can be found below. A more thorough guide and references to specific functions of FERMO can be found in the [FERMO Wiki](https://github.com/mmzdouc/FERMO/wiki/). 
 
 ## License
 
@@ -22,7 +22,7 @@ FERMO requires following files for analysis
 - (optional) a .csv file containing bioactivity information.
 - (optional) a spectral library in the .mgf format.
 
-Instructions for the generation of the files, as well as the required format, can be found in the tutorial (LINK). Examples of the files can be found in the `example_data` folder. These example files can also be used for a test-run of the software.
+Instructions for the generation of the files, as well as the required format, can be found in the [user guides on input data formats](https://github.com/mmzdouc/FERMO/wiki/Input-data-formats) in the FERMO Wiki. Examples of the files can be found in the `example_data` folder in this repository. These example files can also be used for a test-run of the software.
 
 
 ### Installation
