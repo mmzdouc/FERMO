@@ -51,10 +51,14 @@ background_callback_manager = DiskcacheManager(cache)
 
 app = Dash(
     __name__,
-    external_stylesheets=[dbc.themes.GRID],
     suppress_callback_exceptions=True,
     title='FERMO',
     )
+
+app.css.config.serve_locally = True
+app.scripts.config.serve_locally = True
+
+
 server = app.server
 
 framework_app = dbc.Container(
@@ -1209,4 +1213,4 @@ def export_all_features(n_clicks, contents):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True) #switch to True for debugging
+    app.run_server(debug=False) #switch to True for debugging

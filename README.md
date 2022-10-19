@@ -149,15 +149,12 @@ We use [Semantic Versioning](http://semver.org/) for versioning.
 
 - **Mitja M. Zdouc** - *Lead developer* -
 - **Hannah E. Augustijn** - *Design* -
+- TBA - 
 
 See also the list of [contributors](https://github.com/mmzdouc/FERMO/contributors) who participated in this project.
 
 ## Acknowledgments
 
-- Justin J.J. van der Hooft
-- Marnix H. Medema
-- Niek de Jonge
-- The beta testers (list of names TBA)
-- The [MZmine3 project](https://mzmine.github.io/)
+TBA
 
 
