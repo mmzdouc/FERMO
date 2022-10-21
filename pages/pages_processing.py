@@ -17,7 +17,7 @@ def call_processing_intro_text():
         '''),
         dcc.Markdown('''On the left side of the page, you can **load input files** into FERMO. On the right,you can **adjust processing parameters**.
         '''),
-        dcc.Markdown('''**Attention:** if you want to have your features annotated, switch **MS2Query** to **ON**.
+        dcc.Markdown('''**Attention:** if you want to have your features annotated, switch **MS2Query** to **ON**. This will increase calculation time significantly.
         '''),
         dcc.Markdown('''You can find more information on [input data formats](https://github.com/mmzdouc/FERMO/wiki/Input-data-formats) and [parameter settings](https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page) in the FERMO Wiki.
         '''),

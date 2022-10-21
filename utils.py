@@ -351,10 +351,7 @@ def peaktable_processing(
             for s in ref_library]
         ref_library = [matchms.filtering.require_precursor_mz(s)
             for s in ref_library]
-    
-    
-    
-    
+
     print('BEGIN: parse metadata file')
     groups = read_from_metadata_table(
         metadata,

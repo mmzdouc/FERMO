@@ -288,18 +288,24 @@ def app_peaktable_processing(
     else:
         
         print('BEGIN: FERMO processing')
+        start_process = time.process_time()
+        start_time = time.time()
+
         FERMO_data = utils.peaktable_processing(
             uploaded_files_store,
             dict_params,
             )
-        print('DONE: FERMO processing')
         
+        print('###################')
+        print(f'TIME PROCESS: {time.process_time() - start_process}')
+        print(f'TIME WALL: {time.time() - start_time}')
+        print('###################')
+        print('DONE: FERMO processing')
+
         print('BEGIN: conversion to JSON')
         storage_JSON_dict = utils.make_JSON_serializable(FERMO_data, __version__)
         print('DONE: conversion to JSON')
 
-        
-        
         return '/dashboard', storage_JSON_dict
 
 
@@ -317,9 +323,6 @@ def app_peaktable_processing(
     # ~ if not dashboard_peakpicking:
         # ~ raise PreventUpdate
     # ~ else:
-        #Put all functions for processing here        
-        #simulate calculation with sleep -> REMOVE
-        # ~ time.sleep(3.0)
         # ~ return '/dashboard'
 
 @callback(

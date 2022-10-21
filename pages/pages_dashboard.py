@@ -147,7 +147,7 @@ def call_rel_int_title():
     '''Relative intensity factor title + info button'''
     return html.Div([
         html.Div([ 
-            "Relative intensity score: ",
+            "Relative intensity: ",
             html.A(
                 html.Div(
                     "?",
@@ -286,8 +286,8 @@ dashboard = html.Div([
                         style_data_conditional=style_data_cond_table,
                         style_header=style_header_table,
                         tooltip_header={
-                            'Diversity score' : 'Chemical diversity of sample. Nr of discrete spectral similarity cliques per sample, divided by total of cliques across all samples.',
-                            'Spec score' : 'Specificity score: Sample/group-specific chemistry per sample. Nr of spectral similarity cliques unique to the sample and its group, divided by total cliques in sample.'
+                            'Diversity score' : 'Chemical diversity of sample. Nr of discrete spectral similarity cliques per sample, divided by total of cliques across all samples (excluding cliques from BLANKs).',
+                            'Spec score' : 'Specificity score: Group-specific chemistry per sample. Nr of spectral similarity cliques specific to group the sample is in, divided by total nr of cliques in sample.'
                             },
                         tooltip_delay=0,
                         tooltip_duration=None,
@@ -349,19 +349,19 @@ dashboard = html.Div([
     dbc.Row([
         dbc.Col([
             html.Div([
-                html.Div("Set threshold (0-1) and press enter.",
+                html.Div("Set filters for cutoff and press enter.",
                     style={
                         'margin': '10px 5px 20px',
                         'font-size': '17px'},
                     ),
-                call_rel_int_title(),
-                html.Div(call_threshold_inp('rel_intensity_threshold')),
-                call_convolutedness_title(),
-                html.Div(call_threshold_inp('convolutedness_threshold')),
-                call_bioactivity_title(),
-                html.Div(call_threshold_inp('bioactivity_threshold')),
                 call_novelty_title(),
                 html.Div(call_threshold_inp('novelty_threshold')),
+                call_bioactivity_title(),
+                html.Div(call_threshold_inp('bioactivity_threshold')),
+                call_convolutedness_title(),
+                html.Div(call_threshold_inp('convolutedness_threshold')),
+                call_rel_int_title(),
+                html.Div(call_threshold_inp('rel_intensity_threshold')),
                 ],
                 style={
                     'margin-left': '10px',

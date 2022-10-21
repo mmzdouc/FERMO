@@ -1,10 +1,6 @@
-from ms2query.run_ms2query import default_library_file_base_names
-from ms2query.run_ms2query import download_default_models
+from ms2query.run_ms2query import download_zenodo_files
 from ms2query.ms2library import create_library_object_from_one_dir
-import pandas as pd
-import numpy as np
-import os
-import pickle
+
 
 def ms2query_search(feature_dicts, ms2query_lib_dir):
     '''Compare against embedding using MS2Query
@@ -18,18 +14,8 @@ def ms2query_search(feature_dicts, ms2query_lib_dir):
         
     Notes
     -----
-    Modifies the feature objects, so no return value.
-    Approximately 600,000 compounds to compare against
+    Directly odifies the feature objects, so no return value.
     '''
-    #Download MS2Query library files if not already available
-    download_default_models(
-        ms2query_lib_dir, 
-        default_library_file_base_names(),
-        )
-    
-    #Create subset of features for comparisons:
-    #-must have a MS2 spectrum
-    #-must not be blank associated
     query_spectra = list()
     for i in feature_dicts:
         if (
@@ -38,12 +24,17 @@ def ms2query_search(feature_dicts, ms2query_lib_dir):
             not feature_dicts[i]['blank_associated']
         ):
             query_spectra.append(feature_dicts[i]['ms2spectrum'])
+    
 
-    #Create a MS2Library object
+    zenodo_DOIs = {"positive": 6997924, 
+                   "negative": 7107654}
+    
+    download_zenodo_files(zenodo_DOIs['positive'], 
+        ms2query_lib_dir)
+    
     ms2library = create_library_object_from_one_dir(
-        ms2query_lib_dir, 
-        default_library_file_base_names()
-    )
+        ms2query_lib_dir)
+    
 
     #Run library search and analog search on your files.
     results_ms2query = ms2library.analog_search_return_results_tables(
@@ -68,13 +59,3 @@ def ms2query_search(feature_dicts, ms2query_lib_dir):
         results_info_dict = results_info.to_dict('records')
         feature_dicts[feature_ID]['ms2query_results'] = results_info_dict
         feature_dicts[feature_ID]['ms2query'] = True
-
-
-
-
-
-
-
-
-
-

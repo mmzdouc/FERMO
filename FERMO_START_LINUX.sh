@@ -2,7 +2,7 @@
 
 eval "$(command conda 'shell.bash' 'hook' 2> /dev/null)"
 
-FERMO_VER="FERMO_0.5.1"
+FERMO_VER="MPFERMO"
 
 if ! command -v conda >/dev/null 2>&1
 then
@@ -23,7 +23,7 @@ then
     echo "Starting with package installation - this might take some time"
     pip install numpy pandas matchms pyteomics plotly argparse dash \
         dash-cytoscape dash_bootstrap_components networkx \
-        'ms2query==0.3.3' dash[diskcache] dash[celery] --quiet
+        'ms2query==0.4.3' dash[diskcache] dash[celery] --quiet
     echo "Packages were successfully installed in conda environment $FERMO_VER"
     python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')"
     python ./app.py
