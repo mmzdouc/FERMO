@@ -21,6 +21,9 @@ import sys
 import time
 import webbrowser
 
+###SUPPRESS TENSORFLOW WARNINGS###
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 ###INTERNAL MODULES###
 from __version__ import __version__
 
@@ -721,7 +724,7 @@ def upload_sessionfile(contents, filename):
         elif version != __version__:
             df = utils.session_loading_table(params, files, metadata, version)
             return html.Div(f'''❗ Warning: The loaded session file "{filename}"
-            has been created using "{df.at[18,'Description']}", while the currently running version is 
+            has been created using "{df.at[2,'Description']}", while the currently running version is 
             "{__version__}". This might lead to unforseen behaviour of the application. 
             '''), loaded_session_JSON, df.to_dict('records')
         else:

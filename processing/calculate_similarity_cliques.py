@@ -62,6 +62,42 @@ def calculate_similarity_cliques(
         modified_cosine,
         is_symmetric=True,
         )
+        
+    
+    # ~ from typing import List
+# ~ from matchms import Spectrum
+# ~ from matchms.importing import load_from_mgf
+# ~ from matchms.similarity.vector_similarity_functions import cosine_similarity_matrix
+# ~ from ms2deepscore import MS2DeepScore
+# ~ from ms2deepscore.models import load_model as load_ms2ds_model
+
+
+# ~ def get_all_ms2ds_scores(ms2ds_model_file_name,
+                          # ~ spectrum_list_1: List[Spectrum],
+                          # ~ spectrum_list_2: List[Spectrum]
+                          # ~ ):
+    # ~ """
+    # ~ """
+    # ~ ms2ds_model = load_ms2ds_model(ms2ds_model_file_name)
+    # ~ ms2ds = MS2DeepScore(ms2ds_model, progress_bar=False)
+    # ~ embeddings_1 = ms2ds.calculate_vectors(spectrum_list_1)
+    # ~ embeddings_2 = ms2ds.calculate_vectors(spectrum_list_2)
+    # ~ ms2ds_scores = cosine_similarity_matrix(embeddings_1,
+                                            # ~ embeddings_2)
+    # ~ return ms2ds_scores
+    
+    
+    
+    #use that file 
+    #ms2ds_model_GNPS_15_12_2021.hdf5
+    
+    
+    
+    
+    
+    
+    
+        
 
     #sets settings of spectral similarity network 
     network_spec_sim = matchms.networking.SimilarityNetwork(
