@@ -1219,4 +1219,4 @@ def export_all_features(n_clicks, contents):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False) #switch to True for debugging
+    app.run_server(debug=True) #switch to True for debugging

@@ -1,6 +1,6 @@
 from ms2query.run_ms2query import download_zenodo_files
 from ms2query.ms2library import create_library_object_from_one_dir
-
+import os
 
 def ms2query_search(feature_dicts, ms2query_lib_dir):
     '''Compare against embedding using MS2Query
@@ -14,9 +14,11 @@ def ms2query_search(feature_dicts, ms2query_lib_dir):
         
     Notes
     -----
-    Directly odifies the feature objects, so no return value.
+    Directly modifies the feature objects, so no return value.
     '''
     query_spectra = list()
+    zenodo_DOIs = {"positive": 6997924, "negative": 7107654}
+    
     for i in feature_dicts:
         if (
             feature_dicts[i]['ms2spectrum'] is not None
@@ -25,12 +27,19 @@ def ms2query_search(feature_dicts, ms2query_lib_dir):
         ):
             query_spectra.append(feature_dicts[i]['ms2spectrum'])
     
-
-    zenodo_DOIs = {"positive": 6997924, 
-                   "negative": 7107654}
+    try:
+        download_zenodo_files(zenodo_DOIs['positive'], 
+            ms2query_lib_dir)
+        download_successful = True
+    except:
+        download_successful = False
     
-    download_zenodo_files(zenodo_DOIs['positive'], 
-        ms2query_lib_dir)
+    if not download_successful:
+        if not os.path.isdir(ms2query_lib_dir):
+            print('WARNING: Could not find MS2Query files in folder \
+            "libraries" or download them. Skip MS2Query annotation')
+            return
+    
     
     ms2library = create_library_object_from_one_dir(
         ms2query_lib_dir)

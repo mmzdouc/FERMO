@@ -9,9 +9,9 @@ from variables import (
 def call_loading_intro_text():
     '''Introduction text for loading page'''
     return html.Div([
-        dcc.Markdown('''On this page, you can load **FERMO session files** in the **.json-format**. Reloading is very fast, since time-consuming computation steps are omitted. However, the parameters set during initial computation cannot be altered anymore.
+        dcc.Markdown('''On this page, you can load **FERMO session files** in the **.json-format**. Reloading is very fast, since time-consuming computation steps are omitted. However, the parameters set during the previous computation cannot be changed anymore.
             '''),
-        dcc.Markdown('''To upload a **FERMO session file**, click the button with the name **'Upload FERMO Session File'** on the left side of the page. A message will appear to inform you about the outcome. 
+        dcc.Markdown('''To upload a **FERMO session file**, click the button with the name **'Upload FERMO Session File'** on the left side of the page. A message will appear to inform you about the outcome of data loading. 
             '''),
         dcc.Markdown('''If successful, session file metadata will be shown in the table on the right side of the window, including the time, date, and version of FERMO during creation, the names of the files used for processing, and the used parameter settings. 
             '''),
@@ -75,7 +75,7 @@ loading = html.Div([
                 ###STORAGE###
                 dcc.Store(id='upload_session_storage'),
                 #############
-                html.H2('Restart session (loading mode)'),
+                html.H2('Loading mode (restart session)'),
                 call_loading_intro_text(),
                 html.Div(style={'margin-top' : '100px'}),
                 html.Hr(),

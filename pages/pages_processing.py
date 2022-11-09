@@ -582,7 +582,7 @@ processing = html.Div([
         #first column#
         dbc.Col(
             html.Div([
-                html.H2('Peaktable processing (standard mode)'),
+                html.H2('Processing mode (peaktable processing)'),
                 call_processing_intro_text(),
                 html.Div(style={'margin-top' : '30px'}),
                 html.Hr(),

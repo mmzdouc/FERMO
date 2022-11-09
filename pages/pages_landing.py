@@ -5,7 +5,7 @@ def call_processing_page():
     '''Create button that redirects to peaktable processing page'''
     return html.Div([
         dbc.Button(
-            "Peaktable processing (standard mode)",
+            "Processing mode",
             id='call_processing_button',
             n_clicks=0,
             className="button_general_class",
@@ -31,7 +31,7 @@ def call_loading_page():
     '''Create the button that redirects to loading page'''
     return html.Div([
         dbc.Button(
-            "Session file (loading mode)",
+            "Loading mode",
             id='call_loading_button',
             n_clicks=0,
             className="button_general_class",
@@ -88,7 +88,7 @@ def call_landing_intro_workflow():
 def call_landing_header_peaktable_text():
     '''Div to hold header for peaktable processing start'''
     return html.H2(
-            'Peaktable processing (standard mode)',
+            'Processing mode',
             style={'text-align' : 'center',}
         )
 
@@ -97,7 +97,7 @@ def call_landing_peaktable_text():
     return html.Div([
         html.Div(style={'margin-top':'30px',}),
         dcc.Markdown(
-        '''Standard data processing mode. 
+        '''Standard peaktable processing mode. 
         '''),
         dcc.Markdown(
         '''This mode requires a **feature peaktable** and **MS/MS data** in the **MZmine3** format. Optionally, users can also provide files containing **grouping metadata**, **bioactivity data**, and a **spectral library** for annotation purposes. 
@@ -130,7 +130,7 @@ def call_landing_peaktable_text():
 def call_landing_header_loading_text():
     '''Div to hold header loading start'''
     return html.H2(
-            'Restart session (loading mode)',
+            'Loading mode',
             style={'text-align' : 'center',}
         )
 
@@ -139,7 +139,7 @@ def call_landing_loading_text():
     return html.Div([
         html.Div(style={'margin-top':'30px',}),
         dcc.Markdown(
-        '''Session loading mode.
+        '''Session file loading mode.
         '''),
         dcc.Markdown(
         '''This mode requires a previously created **FERMO session file** in the **json format**. This file can be either created by running data in the peaktable processing (standard) mode, or by obtaining a session file from others.
