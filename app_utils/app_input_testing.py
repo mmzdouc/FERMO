@@ -447,7 +447,7 @@ def empty_loading_table():
                 ['Filename: user-library', None],
                 ['-----', '-----'],
                 ['Mass deviation', None],
-                ['Min fragments per MS² spectrum', None],
+                ['Min nr of fragments per MS² spectrum', None],
                 ['Relative intensity filter', None],
                 ['QuantData factor', None],
                 ['Blank factor', None],
@@ -455,10 +455,12 @@ def empty_loading_table():
                 ['Spectrum similarity score cutoff', None],
                 ['Max spectral links', None],
                 ['Min matched peaks', None],
+                ['-----', '-----'],
+                ['Process log step', 'Description'],
             ]
     return pd.DataFrame(content, columns=['Attribute', 'Description'])
 
-def session_loading_table(params, files, metadata, version):
+def session_loading_table(params, files, metadata, version, logging):
     '''Generate table to return upon session loading on loading page'''
     content = [
                 ['Date of creation', metadata['date']],
@@ -472,7 +474,7 @@ def session_loading_table(params, files, metadata, version):
                 ['Filename: user-library', files['user_library_name']],
                 ['-----', '-----'],
                 ['Mass deviation', params['mass_dev_ppm']],
-                ['Min fragments per MS² spectrum', params['min_nr_ms2']],
+                ['Min nr of fragments per MS² spectrum', params['min_nr_ms2']],
                 ['Relative intensity filter', params['feature_rel_int_fact']],
                 ['QuantData factor', params['bioact_fact']],
                 ['Blank factor', params['column_ret_fact']],
@@ -480,5 +482,12 @@ def session_loading_table(params, files, metadata, version):
                 ['Spectrum similarity score cutoff', params['spec_sim_score_cutoff']],
                 ['Max spectral links', params['max_nr_links_ss']],
                 ['Min matched peaks', params['min_nr_matched_peaks']],
+                ['-----', '-----'],
+                ['Process log step', 'Description'],
             ]
+    
+    for entry in logging:
+        content.append([entry, logging[entry]])
+    
+    
     return pd.DataFrame(content, columns=['Attribute', 'Description'])

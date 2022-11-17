@@ -307,25 +307,13 @@ def app_peaktable_processing(
     if signal is None:
         raise PreventUpdate
     else:
-        
-        print('BEGIN: FERMO processing')
-        start_process = time.process_time()
-        start_time = time.time()
 
         FERMO_data = peaktable_processing(
             uploaded_files_store,
             dict_params,
             )
-        
-        print('###################')
-        print(f'TIME PROCESS: {time.process_time() - start_process}')
-        print(f'TIME WALL: {time.time() - start_time}')
-        print('###################')
-        print('DONE: FERMO processing')
 
-        print('BEGIN: conversion to JSON')
         storage_JSON_dict = make_JSON_serializable(FERMO_data, __version__)
-        print('DONE: conversion to JSON')
 
         return '/dashboard', storage_JSON_dict
 
@@ -630,26 +618,29 @@ def upload_sessionfile(contents, filename):
             files = loaded_session_JSON['input_filenames']
             metadata = loaded_session_JSON['session_metadata']
             version = loaded_session_JSON['FERMO_version']
+            logging = loaded_session_JSON['logging_dict']
         except:
             params = None
             files = None
             metadata = None
             version = None
+            logging = None
         
         if (
             (params == None) or 
             (files == None) or 
             (metadata == None) or
-            (version == None)
+            (version == None) or
+            (logging == None)
         ):
             return div_file_format_error(str(filename), 'FERMO session (json)'
                 ), None, empty_df.to_dict('records')
         elif version != __version__:
-            df = session_loading_table(params, files, metadata, version)
+            df = session_loading_table(params, files, metadata, version, logging)
             return div_session_version_warning(filename, df, __version__
                 ), loaded_session_JSON, df.to_dict('records')
         else:
-            df = session_loading_table(params, files, metadata, version)
+            df = session_loading_table(params, files, metadata, version, logging)
             return div_successful_load_message(str(filename)
                 ), loaded_session_JSON, df.to_dict('records')
 
@@ -1056,6 +1047,7 @@ def displayTapEdgeData(
         return add_edgedata(edgedata, feature_dicts,)
 
 @callback(
+    Output("download_peak_table_logging", "data"),
     Output("download_peak_table", "data"),
     Input("button_peak_table", "n_clicks"),
     State('storage_active_sample', 'data'),
@@ -1067,8 +1059,13 @@ def export_sel_sample(n_clicks, sel_sample, contents):
         raise PreventUpdate
     else:
         samples_JSON = contents['samples_JSON']
-    
-        #temporarily convert from JSON to pandas DF
+        param_logging = [
+            ''.join(['FERMO_Version: ',contents['FERMO_version']]),
+            contents['input_filenames'],
+            contents['params_dict'],
+            contents['logging_dict'],
+            ]
+
         samples = dict()
         for sample in samples_JSON:
             samples[sample] = pd.read_json(
@@ -1076,9 +1073,13 @@ def export_sel_sample(n_clicks, sel_sample, contents):
         
         df = export_sel_peaktable(samples, sel_sample)
         
-        return dcc.send_data_frame(df.to_csv, ''.join([sel_sample, '.csv']))
+        return (
+            dcc.send_string(json.dumps(param_logging, indent=4), 'processing_audit_trail.json'),
+            dcc.send_data_frame(df.to_csv, ''.join([sel_sample, '.csv']))
+            )
 
 @callback(
+    Output("download_all_peak_table_logging", "data"),
     Output("download_all_peak_table", "data"),
     Input("button_all_peak_table", "n_clicks"),
     State('data_processing_FERMO', 'data'),
@@ -1089,8 +1090,13 @@ def export_all_samples(n_clicks, contents):
         raise PreventUpdate
     else:
         samples_JSON = contents['samples_JSON']
-    
-        #temporarily convert from JSON to pandas DF
+        param_logging = [
+            ''.join(['FERMO_Version: ',contents['FERMO_version']]),
+            contents['input_filenames'],
+            contents['params_dict'],
+            contents['logging_dict'],
+            ]
+
         samples = dict()
         for sample in samples_JSON:
             samples[sample] = pd.read_json(
@@ -1103,9 +1109,14 @@ def export_all_samples(n_clicks, contents):
             df['sample'] = sample
             list_dfs.append(df)
         df_all = pd.concat(list_dfs)
-        return dcc.send_data_frame(df_all.to_csv, 'FERMO_all_samples.csv')
+        
+        return (
+            dcc.send_string(json.dumps(param_logging, indent=4), 'processing_audit_trail.json'),
+            dcc.send_data_frame(df_all.to_csv, 'FERMO_all_samples.csv')
+            )
 
 @callback(
+    Output("download_all_features_table_logging", "data"),
     Output("download_all_features_table", "data"),
     Input("button_all_features_table", "n_clicks"),
     State('data_processing_FERMO', 'data'),
@@ -1116,8 +1127,18 @@ def export_all_features(n_clicks, contents):
         raise PreventUpdate
     else:
         feature_dicts = contents['feature_dicts']
+        param_logging = [
+            ''.join(['FERMO_Version: ',contents['FERMO_version']]),
+            contents['input_filenames'],
+            contents['params_dict'],
+            contents['logging_dict'],
+            ]
+        
         df = export_features(feature_dicts)
-        return dcc.send_data_frame(df.to_csv, 'FERMO_all_features.csv')
+        return (
+             dcc.send_string(json.dumps(param_logging, indent=4), 'processing_audit_trail.json'),
+            dcc.send_data_frame(df.to_csv, 'FERMO_all_features.csv')
+            )
 
 @callback(
     Output("export_session_file", "data"),

@@ -386,6 +386,7 @@ dashboard = html.Div([
                 style={'margin' : 'auto','width' : '100%',}
                 ),
                 dcc.Download(id="download_peak_table"),
+                dcc.Download(id="download_peak_table_logging"),
                 ]),
             html.Div(style={'margin-top' : '10px',}),
             html.Div([
@@ -401,6 +402,7 @@ dashboard = html.Div([
                 style={'margin' : 'auto','width' : '100%',}
                 ),
                 dcc.Download(id="download_all_peak_table"),
+                dcc.Download(id="download_all_peak_table_logging"),
                 ]),
             html.Div(style={'margin-top' : '10px',}),
             html.Div([
@@ -416,6 +418,7 @@ dashboard = html.Div([
                 style={'margin' : 'auto','width' : '100%',}
                 ),
                 dcc.Download(id="download_all_features_table"),
+                dcc.Download(id="download_all_features_table_logging"),
                 ]),
             html.Hr(
                 style={
