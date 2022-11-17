@@ -11,7 +11,7 @@ def call_processing_intro_text():
         '''),
         html.Div('''Optionally, you can provide:'''),
         dcc.Markdown('''
-            * **bioactivity data** on samples (as .csv-file)
+            * **quantitative biological data** on samples (as .csv-file)
             * **group metadata** of samples (as .csv-file)
             * a **spectral library** (as .mgf-file)
         '''),
@@ -158,7 +158,7 @@ def call_bioact_fact_inp():
     '''Call the bioactivity factor input field'''
     return html.Div([
         html.Div([ 
-            '''Bioactivity factor:
+            '''QuantData Factor:
             ''',
             html.A(
                 html.Div(
@@ -172,7 +172,7 @@ def call_bioact_fact_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Only used if bioactivity data was provided. If a feature was detected in both bioactive and inactive samples, the fold difference between the lowest feature intensity from the sample with the lowest activity and the highest feature intensity across inactive samples must be higher than the bioactivity factor to still consider the feature bioactivity-associated. For more information, click this info-button.
+                '''Only used if quantitative biological data was provided. If a feature was detected in samples with and without associated biological measurement, the fold difference between the lowest feature intensity from the sample with the lowest measurement and the highest feature intensity across inactive samples must be higher than the QuantData factor to still consider the feature associated to the measurement. For more information, click this info-button.
                 ''',
                 ),
             placement='right',
@@ -421,7 +421,7 @@ def call_bioact_type_dd():
     return html.Div([
         html.Div([ 
             '''
-            Specify the bioactivity table format:
+            Specify format of quantitative biological data:
             ''',
             html.A(
                 html.Div(
@@ -435,7 +435,7 @@ def call_bioact_type_dd():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Accepts two formats: concentration and percentage (positive numbers only). For concentrations, the lowest value will be considered the highest activity. For percentage, the highest value will be considered the highest activity. Samples not listed in the bioactivity table are considered inactive.
+                '''Accepts two formats: concentration and percentage (positive numbers only). For concentrations, the lowest value will be considered the highest activity. For percentage, the highest value will be considered the highest activity.
                 ''',
                 ),
             placement='right',
@@ -508,14 +508,14 @@ def call_bioactiv_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Load bioactivity table (*.csv)',
+                        'Load quantitative biological data (*.csv)',
                         id="upload-bioactiv-tooltip",
                         className="button_small_class",
                         ),
                     id='upload-bioactiv'),
                 dbc.Tooltip(
                     html.Div(
-                        '''Bioactivity annotation file in .csv format. For more information on the format, see the documentation.
+                        '''Quantitative biological data file in .csv format. For more information on the format, see the documentation.
                         ''',
                         ),
                     placement='right',
@@ -531,7 +531,7 @@ def call_metadata_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Load metadata table (*.csv)',
+                        'Load group metadata table (*.csv)',
                         id="upload-metadata-tooltip",
                         className="button_small_class",
                         ),

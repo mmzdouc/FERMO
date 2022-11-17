@@ -14,7 +14,7 @@ import dash_cytoscape as cyto
 ##########
 
 #redo this part - not all dicts needed (maybe not even one!)
-from variables import (
+from app_utils.variables import (
     style_data_table,
     style_data_cond_table,
     style_header_table,

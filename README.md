@@ -1,8 +1,8 @@
 # FERMO Dashboard
 
-FERMO is a dashboard app for the processing and visualization of liquid chromatography - (tandem) mass spectrometry (LC-MS/MS) data, and its pairing to bioactivity data and other metadata. In particular, FERMO is aimed toward the exploration and prioritization of compounds and/or samples for consecutive investigation, such as isolation and elucidation. Developed with natural products research in mind, FERMO can be also used in different areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
+FERMO is a dashboard app for the processing and visualization of liquid chromatography - (tandem) mass spectrometry (LC-MS/MS) data, and its pairing to quantitative biological data and other metadata. In particular, FERMO is aimed toward the exploration and prioritization of compounds and/or samples for consecutive investigation, such as isolation and elucidation. Developed with natural products research in mind, FERMO can be also used in different areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
 
-FERMO comes with an information-rich dashboard interface, which allows for visualization of all available data simultaneously. Users can provide metadata to group their samples, to get insight about sample- or group-specific compounds, or to annotate control/blank-associated features. Users can also provide data from biological activity screening, to identify bioactivity-associated compounds. Samples and compounds can be filtered for putative chemical novelty and diversity, and selected for further investigation based on reproducible and comprehensible criteria.
+FERMO comes with an information-rich dashboard interface, which allows for visualization of all available data simultaneously. Users can provide metadata to group their samples, to get insight about sample- or group-specific compounds, or to annotate control/blank-associated features. Users can also provide data from biological activity screening, to identify compounds associated to quantitative biological data. Samples and compounds can be filtered for putative chemical novelty and diversity, and selected for further investigation based on reproducible and comprehensible criteria.
  
 
 FERMO is written in Python and runs fully locally, with no data shared across the internet. We do note that it is possible to save a FERMO session in a comprehensive file format to share between collaborators or with the publication of a study. The use of FERNO does not require any registration, does not track user statistics, and is released under the permissive MIT open sources license, which allows it to be used in both an academic and commercial setting. To run FERMO, simply clone this repository or download the zipped folder, which can be found here (TBA). Installation instructions and a quickstart tutorial can be found below. A more thorough guide and references to specific functions of FERMO can be found in the [FERMO Wiki](https://github.com/mmzdouc/FERMO/wiki/) (TBA).
@@ -20,7 +20,7 @@ FERMO requires following files for analysis
 - a peaktable in the MZmine3 'quant_full.csv' format. 
 - the accompanying MZmine3 .mgf-file, automatically created during peaktable generation. 
 - (optional) a .csv file containing metadata information.
-- (optional) a .csv file containing bioactivity information.
+- (optional) a .csv file containing quantitative biological data information.
 - (optional) a spectral library in the .mgf format.
 
 Instructions for the generation of the files, as well as the required format, can be found in the [user guides on input data formats](https://github.com/mmzdouc/FERMO/wiki/Input-data-formats) in the FERMO Wiki.

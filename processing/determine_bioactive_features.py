@@ -122,7 +122,7 @@ def determine_bioactive_features(
                     try: list_bioactivities.append(
                             bioactivity_samples.loc[
                                 bioactivity_samples["sample_name"] == sample, 
-                                "bioactivity"].item()
+                                "quant_data"].item()
                         )
                     except ValueError:
                         list_bioactivities.append(0)

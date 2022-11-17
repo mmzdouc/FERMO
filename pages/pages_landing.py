@@ -52,10 +52,10 @@ def call_landing_header_intro_text():
 def call_landing_intro_text():
     '''Div to hold intro text for landing page'''
     return html.Div([
-        dcc.Markdown('''FERMO is an app for the processing, visualization and analysis of **LC-MS/MS** data.'''),
+        dcc.Markdown('''FERMO is an app for the processing, analysis, and prioritization of molecules from complex **LC-MS/MS** data.'''),
         html.Div(style={'margin-top' : '10px'}),
         dcc.Markdown('''
-        FERMO integrates **LC-MS/MS data**, **bioactivity**, and **group metadata** in a combined analysis platform. In each sample, features are assessed for their associatedness with **bioactivity**, their putative **novelty**, and the estimated **ease of isolation**. For these attributes, scores are calculated, and the **chemical diversity** of the samples is estimated. The resulting metrics allow for pragmatic **prioritization** of features and samples for further investigation.
+        FERMO integrates **LC-MS/MS data**, **quantiative biological data**, and **group metadata** in a combined analysis platform. Samples and features are scored for their putative novelty, chemical diversity, and associatedness to quantitative biological data. This allows for pragmatic **prioritization** of features and samples for further investigation.
         '''),
         html.Div(style={'margin-top' : '10px'}),
         html.Div('''
@@ -100,7 +100,7 @@ def call_landing_peaktable_text():
         '''Standard peaktable processing mode. 
         '''),
         dcc.Markdown(
-        '''This mode requires a **feature peaktable** and **MS/MS data** in the **MZmine3** format. Optionally, users can also provide files containing **grouping metadata**, **bioactivity data**, and a **spectral library** for annotation purposes. 
+        '''This mode requires a **feature peaktable** and **MS/MS data** in the **MZmine3** format. Optionally, users can also provide files containing **grouping metadata**, **quantitative biological data**, and a **spectral library** for annotation purposes. 
         '''),
     ],
     style={

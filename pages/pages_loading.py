@@ -1,7 +1,7 @@
 from dash import html, dcc, dash_table
 import dash_bootstrap_components as dbc
 
-from variables import (
+from app_utils.variables import (
     style_data_table,
     style_data_cond_table,
     style_header_table,)
