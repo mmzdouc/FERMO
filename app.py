@@ -57,6 +57,7 @@ from app_utils.dashboard_functions import (
     calc_specificity_score,
     export_features,
     export_sel_peaktable,
+    prepare_log_file,
     add_edgedata,
     add_nodedata,
     generate_cyto_elements,
@@ -307,7 +308,9 @@ def app_peaktable_processing(
     if signal is None:
         raise PreventUpdate
     else:
-
+        
+        print(dict_params)
+        
         FERMO_data = peaktable_processing(
             uploaded_files_store,
             dict_params,
@@ -349,6 +352,7 @@ def app_loading_processing(signal, session_storage):
     Input('spec_sim_max_links_inp', 'value'),
     Input('spec_sim_min_match_inp', 'value'),
     Input('ms2query_toggle_input', 'value'),
+    Input('spec_sim_net_alg_toggle_input', 'value'),
     )
 def bundle_params_into_cache(
     mass_dev, 
@@ -361,8 +365,10 @@ def bundle_params_into_cache(
     spec_sim_max_links,
     spec_sim_min_match,
     ms2query,
+    spec_sim_net_alg,
     ):
     '''Bundle parameter input values, test for None values'''
+    
     return {
         'mass_dev' : test_for_None(mass_dev, 20),
         'min_ms2' : test_for_None(min_ms2, 0),
@@ -374,6 +380,7 @@ def bundle_params_into_cache(
         'spec_sim_max_links' : test_for_None(spec_sim_max_links, 0),
         'spec_sim_min_match' : test_for_None(spec_sim_min_match, 0),
         'ms2query' : ms2query,
+        'spec_sim_net_alg' : spec_sim_net_alg,
         }
 
 @callback(
@@ -1046,6 +1053,8 @@ def displayTapEdgeData(
     elif ctx.triggered_id == 'cytoscape':
         return add_edgedata(edgedata, feature_dicts,)
 
+
+
 @callback(
     Output("download_peak_table_logging", "data"),
     Output("download_peak_table", "data"),
@@ -1059,12 +1068,7 @@ def export_sel_sample(n_clicks, sel_sample, contents):
         raise PreventUpdate
     else:
         samples_JSON = contents['samples_JSON']
-        param_logging = [
-            ''.join(['FERMO_Version: ',contents['FERMO_version']]),
-            contents['input_filenames'],
-            contents['params_dict'],
-            contents['logging_dict'],
-            ]
+        param_logging = prepare_log_file(contents)
 
         samples = dict()
         for sample in samples_JSON:
@@ -1074,28 +1078,87 @@ def export_sel_sample(n_clicks, sel_sample, contents):
         df = export_sel_peaktable(samples, sel_sample)
         
         return (
-            dcc.send_string(json.dumps(param_logging, indent=4), 'processing_audit_trail.json'),
-            dcc.send_data_frame(df.to_csv, ''.join([sel_sample, '.csv']))
+            dcc.send_string(
+                json.dumps(param_logging, indent=4),
+                'processing_audit_trail.json',
+                ),
+            dcc.send_data_frame(
+                df.to_csv,
+                ''.join([
+                    sel_sample.split('.')[0], 
+                    '_peaktable_all.csv']),
+                )
             )
+
+
+@callback(
+    Output("download_peak_table_selected_features_logging", "data"),
+    Output("download_peak_table_selected_features", "data"),
+    Input("button_peak_table_selected", "n_clicks"),
+    State('storage_active_sample', 'data'),
+    State('data_processing_FERMO', 'data'),
+    State('samples_subsets', 'data'),
+)
+def export_sel_sample(n_clicks, sel_sample, contents, samples_subsets):
+    '''Export peaktable of active sample'''
+    if n_clicks == 0:
+        raise PreventUpdate
+    else:
+        samples_JSON = contents['samples_JSON']
+        param_logging = prepare_log_file(contents)
+
+        samples = dict()
+        for sample in samples_JSON:
+            samples[sample] = pd.read_json(
+                samples_JSON[sample], orient='split')
+        
+        active_features_set = set()
+        for sample in samples_subsets:
+            active_features_set.update(
+                samples_subsets[sample]['all_select_no_blank']) 
+
+        df = export_sel_peaktable(samples, sel_sample)
+        df_new = df[df['feature_ID'].isin(active_features_set)]
+        df_new = df_new.reset_index(drop=True)
+        
+        return (
+            dcc.send_string(
+                json.dumps(param_logging, indent=4),
+                'processing_audit_trail.json',
+                ),
+            dcc.send_data_frame(
+                df_new.to_csv,
+                ''.join([
+                    sel_sample.split('.')[0], 
+                    '_peaktable_selected.csv']),
+                )
+            )
+
+
+
+
+
+
+
+
+
+
+
+
 
 @callback(
     Output("download_all_peak_table_logging", "data"),
     Output("download_all_peak_table", "data"),
-    Input("button_all_peak_table", "n_clicks"),
+    Input("button_all_peak_table_all_features", "n_clicks"),
     State('data_processing_FERMO', 'data'),
-)
-def export_all_samples(n_clicks, contents):
+    )
+def export_all_samples_all_features(n_clicks, contents):
     '''Export peaktables of all samples'''
     if n_clicks == 0:
         raise PreventUpdate
     else:
         samples_JSON = contents['samples_JSON']
-        param_logging = [
-            ''.join(['FERMO_Version: ',contents['FERMO_version']]),
-            contents['input_filenames'],
-            contents['params_dict'],
-            contents['logging_dict'],
-            ]
+        param_logging = prepare_log_file(contents)
 
         samples = dict()
         for sample in samples_JSON:
@@ -1104,48 +1167,155 @@ def export_all_samples(n_clicks, contents):
         
         list_dfs = []
         for sample in samples:
-            #call function
             df = export_sel_peaktable(samples, sample)
             df['sample'] = sample
             list_dfs.append(df)
         df_all = pd.concat(list_dfs)
         
         return (
-            dcc.send_string(json.dumps(param_logging, indent=4), 'processing_audit_trail.json'),
-            dcc.send_data_frame(df_all.to_csv, 'FERMO_all_samples.csv')
+            dcc.send_string(
+                json.dumps(param_logging, indent=4),
+                'processing_audit_trail.json',
+                ),
+            dcc.send_data_frame(
+                df_all.to_csv, 
+                'FERMO_all_samples_all_features.csv',
+                )
             )
+
+@callback(
+    Output("download_selected_all_peak_table_logging", "data"),
+    Output("download_selected_all_peak_table", "data"),
+    Input("button_all_peak_table_selected_features", "n_clicks"),
+    State('data_processing_FERMO', 'data'),
+    State('samples_subsets', 'data'),
+    )
+def export_all_samples_selected_features(n_clicks, contents, samples_subsets):
+    '''Export selected features in peaktables of all samples'''
+    if n_clicks == 0:
+        raise PreventUpdate
+    else:
+        samples_JSON = contents['samples_JSON']
+        param_logging = prepare_log_file(contents)
+
+        samples = dict()
+        for sample in samples_JSON:
+            samples[sample] = pd.read_json(
+                samples_JSON[sample], orient='split')
+
+        active_features_set = set()
+        for sample in samples_subsets:
+            active_features_set.update(
+                samples_subsets[sample]['all_select_no_blank']) 
+        
+        mod_dfs = dict()
+        for sample in samples:
+            mod_dfs[sample] = samples[sample][
+                samples[sample]['feature_ID'].isin(active_features_set)]
+            mod_dfs[sample] = mod_dfs[sample].reset_index(drop=True)
+            
+            
+        list_dfs = []
+        for sample in mod_dfs:
+            df = export_sel_peaktable(mod_dfs, sample)
+            df['sample'] = sample
+            list_dfs.append(df)
+        df_all = pd.concat(list_dfs)
+        
+        return (
+            dcc.send_string(
+                json.dumps(param_logging, indent=4),
+                'processing_audit_trail.json',
+                ),
+            dcc.send_data_frame(
+                df_all.to_csv, 
+                'FERMO_all_samples_selected_features.csv',
+                )
+            )
+
+
+
+
+
+
+
 
 @callback(
     Output("download_all_features_table_logging", "data"),
     Output("download_all_features_table", "data"),
     Input("button_all_features_table", "n_clicks"),
     State('data_processing_FERMO', 'data'),
-)
+    )
 def export_all_features(n_clicks, contents):
     '''Convert feature dicts into df and export'''
     if n_clicks == 0:
         raise PreventUpdate
     else:
         feature_dicts = contents['feature_dicts']
-        param_logging = [
-            ''.join(['FERMO_Version: ',contents['FERMO_version']]),
-            contents['input_filenames'],
-            contents['params_dict'],
-            contents['logging_dict'],
-            ]
+        param_logging = prepare_log_file(contents)
         
         df = export_features(feature_dicts)
         return (
-             dcc.send_string(json.dumps(param_logging, indent=4), 'processing_audit_trail.json'),
-            dcc.send_data_frame(df.to_csv, 'FERMO_all_features.csv')
+            dcc.send_string(
+                json.dumps(param_logging, indent=4), 
+                'processing_audit_trail.json',
+                ),
+            dcc.send_data_frame(
+                df.to_csv, 
+                'FERMO_all_features.csv',
+                )
             )
+
+@callback(
+    Output("download_selected_features_table_logging", "data"),
+    Output("download_selected_features_table", "data"),
+    Input("button_selected_features_table", "n_clicks"),
+    State('data_processing_FERMO', 'data'),
+    State('samples_subsets', 'data'),
+    )
+def export_selected_features(n_clicks, contents, samples_subsets):
+    '''Convert feature dicts into df and export'''
+    if n_clicks == 0:
+        raise PreventUpdate
+    else:
+        feature_dicts = contents['feature_dicts']
+        
+        active_features_set = set()
+        for sample in samples_subsets:
+            active_features_set.update(
+                samples_subsets[sample]['all_select_no_blank']) 
+        
+        active_feature_dict = dict()
+        for feature in feature_dicts:
+            if int(feature) in active_features_set:
+                active_feature_dict[feature] = feature_dicts[feature]
+        
+        param_logging = prepare_log_file(contents)
+        df = export_features(active_feature_dict)
+        
+        return (
+            dcc.send_string(
+                json.dumps(param_logging, indent=4),
+                'processing_audit_trail.json',
+                ),
+            dcc.send_data_frame(
+                df.to_csv, 
+                'FERMO_selected_features.csv',
+                )
+            )
+
+
+
+
+
+
 
 @callback(
     Output("export_session_file", "data"),
     Input("button_export_session", "n_clicks"),
     State('data_processing_FERMO', 'data'),
-)
-def export_all_features(n_clicks, contents):
+    )
+def export_session_file_json(n_clicks, contents):
     '''Export FERMO data as JSON'''
     if n_clicks == 0:
         raise PreventUpdate

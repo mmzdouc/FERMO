@@ -245,19 +245,20 @@ def peaktable_processing(
             ])
         )
     
-    calculate_similarity_cliques(
+    spec_sim_net_alg_used = calculate_similarity_cliques(
         feature_dicts,
         sample_stats,
         dict_params['spectral_sim_tol'], 
         dict_params['spec_sim_score_cutoff'], 
         dict_params['max_nr_links_ss'], 
+        dict_params['spec_sim_net_alg'], 
         )
     log_dict, counter =  write_process_log(
         log_dict, 
         counter, 
         ': '.join([
             str(datetime.now()), 
-            f'''Completed calculate_similarity_cliques.py: Fragment similarity tolerance : {dict_params['spectral_sim_tol']}; Spectrum similarity score cutoff : {dict_params['spec_sim_score_cutoff']}; Max spectral links : {dict_params['max_nr_links_ss']};'''
+            f'''Completed calculate_similarity_cliques.py: Fragment similarity tolerance : {dict_params['spectral_sim_tol']}; Spectrum similarity score cutoff : {dict_params['spec_sim_score_cutoff']}; Max spectral links : {dict_params['max_nr_links_ss']}; Spectral similarity algorithm used: {spec_sim_net_alg_used}'''
             ])
         )
 
@@ -277,10 +278,10 @@ def peaktable_processing(
                 f'''Completed library_search.py: Fragment similarity tolerance : {dict_params['spectral_sim_tol']}; Spectrum similarity score cutoff : {dict_params['spec_sim_score_cutoff']}; Min matched peaks : {dict_params['min_nr_matched_peaks']};'''
                 ])
             )
-
+    
     if dict_params['ms2query']:
         input_folder = os.path.join(
-            os.path.dirname(__file__),
+            os.path.dirname(os.path.dirname(__file__)),
             'libraries',)
         if os.path.exists(input_folder):
             ms2query_search(

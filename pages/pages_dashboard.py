@@ -1,11 +1,8 @@
 from dash import Dash, html, dcc, dash_table
-# ~ from dash import Input, Output, callback, ctx
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 import pandas as pd
 import dash_cytoscape as cyto
-
-#LOCAL MODULES
 
 
 
@@ -13,7 +10,7 @@ import dash_cytoscape as cyto
 #VARIABLES
 ##########
 
-#redo this part - not all dicts needed (maybe not even one!)
+
 from app_utils.variables import (
     style_data_table,
     style_data_cond_table,
@@ -349,11 +346,19 @@ dashboard = html.Div([
     dbc.Row([
         dbc.Col([
             html.Div([
-                html.Div("Set filters for cutoff and press enter.",
-                    style={
-                        'margin': '10px 5px 20px',
-                        'font-size': '17px'},
-                    ),
+                    html.Hr(style={'margin-top' : '10px',}),
+                    html.Div('Set filters for cutoff and press enter:',
+                        style={
+                            'display' : 'inline-block',
+                            'font-size': '17px',
+                            'width' : '100%',
+                            'margin-left' : '10px',
+                            }
+                        ),
+                    html.Hr(style={'margin-top' : '10px','margin-bottom' : '10px',}),
+                    ],
+                ),
+            html.Div([
                 call_novelty_title(),
                 html.Div(call_threshold_inp('novelty_threshold')),
                 call_bioactivity_title(),
@@ -363,9 +368,7 @@ dashboard = html.Div([
                 call_rel_int_title(),
                 html.Div(call_threshold_inp('rel_intensity_threshold')),
                 ],
-                style={
-                    'margin-left': '10px',
-                    'font-size': '17px',}
+                style={'margin-left': '10px','font-size': '17px',}
                 ),
             html.Hr(
                 style={
@@ -373,59 +376,7 @@ dashboard = html.Div([
                     'margin-bottom' : '10px',
                     }
                 ),
-            html.Div([
-                html.Div([
-                    dbc.Button(
-                        "Export peak table of selected sample (.csv)",
-                        id='button_peak_table',
-                        n_clicks=0,
-                        className="button_small_class",
-                        style={'width' : '100%',}
-                        ),
-                    ],
-                style={'margin' : 'auto','width' : '100%',}
-                ),
-                dcc.Download(id="download_peak_table"),
-                dcc.Download(id="download_peak_table_logging"),
-                ]),
-            html.Div(style={'margin-top' : '10px',}),
-            html.Div([
-                html.Div([
-                    dbc.Button(
-                        "Export peak tables of all samples (.csv)",
-                        id='button_all_peak_table',
-                        n_clicks=0,
-                        className="button_small_class",
-                        style={'width' : '100%',}
-                        ),
-                    ],
-                style={'margin' : 'auto','width' : '100%',}
-                ),
-                dcc.Download(id="download_all_peak_table"),
-                dcc.Download(id="download_all_peak_table_logging"),
-                ]),
-            html.Div(style={'margin-top' : '10px',}),
-            html.Div([
-                html.Div([
-                    dbc.Button(
-                        "Export all feature as table(.csv)",
-                        id='button_all_features_table',
-                        n_clicks=0,
-                        className="button_small_class",
-                        style={'width' : '100%',}
-                        ),
-                    ],
-                style={'margin' : 'auto','width' : '100%',}
-                ),
-                dcc.Download(id="download_all_features_table"),
-                dcc.Download(id="download_all_features_table_logging"),
-                ]),
-            html.Hr(
-                style={
-                    'margin-top' : '10px',
-                    'margin-bottom' : '10px',
-                    }
-                ),
+                
             html.Div([
                 html.Div([
                     dbc.Button(
@@ -444,12 +395,140 @@ dashboard = html.Div([
                 ),
                 dcc.Download(id="export_session_file"),
                 ]),
+            
+                
+                
+                
+                
+                
+                html.Div([
+                    html.Hr(style={'margin-top' : '10px',}),
+                    html.Div('Export features as tables (.csv):',
+                        style={
+                            'display' : 'inline-block',
+                            'font-size': '17px',
+                            'width' : '100%',
+                            'margin-left' : '10px',
+                            }
+                        ),
+                    html.Hr(style={'margin-top' : '10px','margin-bottom' : '10px',}),
+                    ],
+                ),
+            
+            
+            
+            
+            html.Div([
+                html.Div([
+                    html.Div([
+                        dbc.Button(
+                            "Peak table - selected sample - all features",
+                            id='button_peak_table',
+                            n_clicks=0,
+                            className="button_small_class",
+                            style={'width' : '100%',}
+                            ),
+                        ],
+                    style={'width' : '49%','display' : 'inline-block', 'float' : 'left', },
+                    ),
+                    dcc.Download(id="download_peak_table"),
+                    dcc.Download(id="download_peak_table_logging"),
+                    ]),
+                html.Div([
+                    html.Div([
+                        dbc.Button(
+                            "Peak table - selected sample - selected features",
+                            id='button_peak_table_selected',
+                            n_clicks=0,
+                            className="button_small_class",
+                            style={'width' : '100%',}
+                            ),
+                        ],
+                    style={'width' : '49%','display' : 'inline-block', 'float' : 'right', },
+                    ),
+                    dcc.Download(id="download_peak_table_selected_features"),
+                    dcc.Download(id="download_peak_table_selected_features_logging"),
+                    ]),
+                ],
+                style={'display' : 'inline-block', 'margins' : 'auto', 'width' : '100%'},
+            ),
+            html.Div([
+                html.Div([
+                    html.Div([
+                        dbc.Button(
+                            "Peak tables - all samples - all features",
+                            id='button_all_peak_table_all_features',
+                            n_clicks=0,
+                            className="button_small_class",
+                            style={'width' : '100%',}
+                            ),
+                        ],
+                    style={'width' : '49%','display' : 'inline-block', 'float' : 'left', },
+                    ),
+                    dcc.Download(id="download_all_peak_table"),
+                    dcc.Download(id="download_all_peak_table_logging"),
+                    ]),
+                html.Div([
+                    html.Div([
+                        dbc.Button(
+                            "Peak tables - all samples - selected features",
+                            id='button_all_peak_table_selected_features',
+                            n_clicks=0,
+                            className="button_small_class",
+                            style={'width' : '100%',}
+                            ),
+                        ],
+                    style={'width' : '49%','display' : 'inline-block', 'float' : 'right', },
+                    ),
+                    dcc.Download(id="download_selected_all_peak_table"),
+                    dcc.Download(id="download_selected_all_peak_table_logging"),
+                    ]),
+                    ],
+                style={'display' : 'inline-block', 'margins' : 'auto', 'width' : '100%'},
+            ),
+            html.Div([
+                html.Div([
+                    html.Div([
+                        dbc.Button(
+                            "Feature table - all features",
+                            id='button_all_features_table',
+                            n_clicks=0,
+                            className="button_small_class",
+                            style={'width' : '100%',}
+                            ),
+                        ],
+                    style={'width' : '49%','display' : 'inline-block', 'float' : 'left',},
+                    ),
+                    dcc.Download(id="download_all_features_table"),
+                    dcc.Download(id="download_all_features_table_logging"),
+                    ]),
+                html.Div([
+                    html.Div([
+                        dbc.Button(
+                            "Feature table - selected features",
+                            id='button_selected_features_table',
+                            n_clicks=0,
+                            className="button_small_class",
+                            style={'width' : '100%',}
+                            ),
+                        ],
+                    style={'width' : '49%','display' : 'inline-block', 'float' : 'right',},
+                    ),
+                    dcc.Download(id="download_selected_features_table"),
+                    dcc.Download(id="download_selected_features_table_logging"),
+                    ]),
+                    ],
+                style={'display' : 'inline-block', 'margins' : 'auto', 'width' : '100%'},
+            ),
+            
+            
             ],
             id="dashboard_row_2_col_1",
             width=2,
         ),
         #bottom second: spectrum similarity network
         dbc.Col([
+            html.Div('Cytoscape view'),
             html.Div(
                 cyto.Cytoscape(
                     id='cytoscape',

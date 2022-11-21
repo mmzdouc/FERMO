@@ -251,6 +251,7 @@ def call_ms2query_toggle():
                 className='info_dot_tooltip',
                 target="ms2query_tooltip",
             ),
+        html.Div(style={'margin-top' : '5px'}),
         dcc.RadioItems(
             options=[
                 {
@@ -264,6 +265,54 @@ def call_ms2query_toggle():
             ], 
             value=False,
             id='ms2query_toggle_input',
+            inline=False,
+            )
+        ])
+
+
+def call_spectral_sim_network_toggle():
+    '''Call toggle for spectral similarity switch'''
+    return html.Div([
+        html.Div([
+            '''Spectral similarity networking
+            ''',
+            html.A(
+                html.Div(
+                    "?",
+                    id="spectral_sim_network_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+                html.Div(
+                    '''Toggle to switch between different spectral 
+                    similarity calculation algorithms. Modified cosine
+                    is used most often. MS2DeepScore is a deep learning
+                    based algorithm. For more information, click this
+                    info-button. 
+                    ''',
+                    ),
+                placement='right',
+                className='info_dot_tooltip',
+                target="spectral_sim_network_tooltip",
+            ),
+        html.Div(style={'margin-top' : '5px'}),
+        dcc.RadioItems(
+            options=[
+                {
+                "label": 'Modified cosine',
+                "value": 'modified_cosine',
+                },
+                {
+                "label": 'MS2DeepScore',
+                "value": 'ms2deepscore',
+                },
+            ], 
+            value='modified_cosine',
+            id='spec_sim_net_alg_toggle_input',
             inline=False,
             )
         ])
@@ -668,6 +717,8 @@ processing = html.Div([
                 html.H4('Feature annotation parameters'),
                 html.Div(style={'margin-top' : '10px'}),
                 call_ms2query_toggle(),
+                html.Div(style={'margin-top' : '10px'}),
+                call_spectral_sim_network_toggle(),
                 html.Div(style={'margin-top' : '10px'}),
                 call_spec_sim_tol_inp(),
                 html.Div(style={'margin-top' : '10px'}),

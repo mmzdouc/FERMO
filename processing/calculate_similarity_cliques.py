@@ -2,12 +2,19 @@ import matchms
 import os
 import networkx as nx
 
+from matchms.similarity.vector_similarity_functions import cosine_similarity_matrix
+from ms2deepscore import MS2DeepScore
+from ms2deepscore.models import load_model as load_ms2ds_model
+
+
+
 def calculate_similarity_cliques(
     feature_dicts,
     sample_stats,
     spec_sim_tol,
     spec_sim_score_cutoff,
     spec_sim_max_links,
+    algorithm,
     ):
     """Calculate cliques for features based on spectral similarity
     
@@ -23,6 +30,13 @@ def calculate_similarity_cliques(
         minimal score to keep connection between two spectra (mod.cosine)
     spec_sim_max_links : `int`
         Max number of links that come from one node.
+    algorithm : `str`
+        Either 'modified_cosine' or 'ms2deepscore'
+    
+    Returns
+    -------
+    algorithm_used : `str`
+        Reports algorithm used for logging
     
     Notes
     -----
@@ -35,9 +49,6 @@ def calculate_similarity_cliques(
     https://blog.esciencecenter.nl/build-your-own-mass-spectrometry-
     analysis-pipeline-in-python-using-matchms-part-i-d96c718c68ee
 
-    Spec2Vec did not work (following tutorial on point)
-    (all entries "no similarity to the model)
-    
     #example code - might be of use in future
     for (u, v, wt) in subnetworks[50].edges.data('weight'):
     print(f"({u}, {v}, {wt:.3})")
@@ -52,52 +63,42 @@ def calculate_similarity_cliques(
         if feature_dicts[i]['ms2spectrum'] is not None:
             spectral_similarity.append(feature_dicts[i]['feature_ID'])
     
-    #initializes modified-cosine-based spectral similarity calculation
-    modified_cosine = matchms.similarity.ModifiedCosine(
-        tolerance=spec_sim_tol,
-        )
-    scores = matchms.calculate_scores(
-        [feature_dicts[i]['ms2spectrum'] for i in spectral_similarity],
-        [feature_dicts[i]['ms2spectrum'] for i in spectral_similarity],
-        modified_cosine,
-        is_symmetric=True,
-        )
+    algorithm_used = None
+    scores = None
+    
+    if algorithm == 'ms2deepscore':
+        input_folder = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            'libraries',)
+        input_file = None
+        for i in os.listdir(input_folder):
+            if i.endswith('.hdf5'):
+                input_file = os.path.join(input_folder, i)
+                break
         
-    
-    # ~ from typing import List
-# ~ from matchms import Spectrum
-# ~ from matchms.importing import load_from_mgf
-# ~ from matchms.similarity.vector_similarity_functions import cosine_similarity_matrix
-# ~ from ms2deepscore import MS2DeepScore
-# ~ from ms2deepscore.models import load_model as load_ms2ds_model
+        try:
+            ms2ds_model = load_ms2ds_model(input_file)
+            scores = matchms.calculate_scores(
+                [feature_dicts[i]['ms2spectrum'] for i in spectral_similarity],
+                [feature_dicts[i]['ms2spectrum'] for i in spectral_similarity],
+            MS2DeepScore(ms2ds_model, progress_bar=False),
+            is_symmetric=True,
+            )
+            algorithm_used = 'ms2deepscore'
+        except:
+            print('WARNING: MS2DeepScore model file (*.hdf5) not found in folder "libraries".')
+            print('WARNING: Fallback to "modified cosine" algorithm.')
 
-
-# ~ def get_all_ms2ds_scores(ms2ds_model_file_name,
-                          # ~ spectrum_list_1: List[Spectrum],
-                          # ~ spectrum_list_2: List[Spectrum]
-                          # ~ ):
-    # ~ """
-    # ~ """
-    # ~ ms2ds_model = load_ms2ds_model(ms2ds_model_file_name)
-    # ~ ms2ds = MS2DeepScore(ms2ds_model, progress_bar=False)
-    # ~ embeddings_1 = ms2ds.calculate_vectors(spectrum_list_1)
-    # ~ embeddings_2 = ms2ds.calculate_vectors(spectrum_list_2)
-    # ~ ms2ds_scores = cosine_similarity_matrix(embeddings_1,
-                                            # ~ embeddings_2)
-    # ~ return ms2ds_scores
-    
-    
-    
-    #use that file 
-    #ms2ds_model_GNPS_15_12_2021.hdf5
-    
-    
-    
-    
-    
-    
-    
-        
+    if algorithm == 'modified_cosine' or scores is None:
+        modified_cosine = matchms.similarity.ModifiedCosine(
+            tolerance=spec_sim_tol,)
+        scores = matchms.calculate_scores(
+            [feature_dicts[i]['ms2spectrum'] for i in spectral_similarity],
+            [feature_dicts[i]['ms2spectrum'] for i in spectral_similarity],
+            modified_cosine,
+            is_symmetric=True,
+            )
+        algorithm_used = 'ms2deepscore'
 
     #sets settings of spectral similarity network 
     network_spec_sim = matchms.networking.SimilarityNetwork(
@@ -125,7 +126,7 @@ def calculate_similarity_cliques(
     #cliques (with stringified IDs instead of int -> mixed "set").
     #E.g. clique 1 = [169, 170, '171'], clique 2 = ['169', '170', 171],
     #with identical similarity values. 
-    #Fix: remove redundant cliques before storage
+    #Fixed: remove redundant cliques before storage
     counter_cliques = 0
     clusters = {}
     for i, subnet in enumerate(subnetworks):
@@ -207,4 +208,6 @@ def calculate_similarity_cliques(
             }
         sample_stats["cliques_per_sample"][sample] = list(sample_stats[
             "cliques_per_sample"][sample])
-
+    
+    return algorithm_used
+    

@@ -84,6 +84,7 @@ def assign_params_to_dict(params_cache):
         'max_nr_links_ss' : params_cache['spec_sim_max_links'],
         'min_nr_matched_peaks' : params_cache['spec_sim_min_match'],
         'ms2query' : params_cache['ms2query'],
+        'spec_sim_net_alg' : params_cache['spec_sim_net_alg'],
         }
 
 ###PEAKTABLE
@@ -455,6 +456,8 @@ def empty_loading_table():
                 ['Spectrum similarity score cutoff', None],
                 ['Max spectral links', None],
                 ['Min matched peaks', None],
+                ['MS2Query used', None],
+                ['Spectral similarity networking algorithm', None],
                 ['-----', '-----'],
                 ['Process log step', 'Description'],
             ]
@@ -462,32 +465,38 @@ def empty_loading_table():
 
 def session_loading_table(params, files, metadata, version, logging):
     '''Generate table to return upon session loading on loading page'''
-    content = [
-                ['Date of creation', metadata['date']],
-                ['Time of creation', metadata['time']],
-                ['FERMO version', version],
-                ['-----', '-----'],
-                ['Filename: peaktable', files['peaktable_name']],
-                ['Filename: MS² data', files['mgf_name']],
-                ['Filename: group metadata', files['metadata_name']],
-                ['Filename: quantitative biological data', files['bioactivity_name']],
-                ['Filename: user-library', files['user_library_name']],
-                ['-----', '-----'],
-                ['Mass deviation', params['mass_dev_ppm']],
-                ['Min nr of fragments per MS² spectrum', params['min_nr_ms2']],
-                ['Relative intensity filter', params['feature_rel_int_fact']],
-                ['QuantData factor', params['bioact_fact']],
-                ['Blank factor', params['column_ret_fact']],
-                ['Fragment similarity tolerance', params['spectral_sim_tol']],
-                ['Spectrum similarity score cutoff', params['spec_sim_score_cutoff']],
-                ['Max spectral links', params['max_nr_links_ss']],
-                ['Min matched peaks', params['min_nr_matched_peaks']],
-                ['-----', '-----'],
-                ['Process log step', 'Description'],
-            ]
     
-    for entry in logging:
-        content.append([entry, logging[entry]])
+    try:
+        content = [
+                    ['Date of creation', metadata['date']],
+                    ['Time of creation', metadata['time']],
+                    ['FERMO version', version],
+                    ['-----', '-----'],
+                    ['Filename: peaktable', files['peaktable_name']],
+                    ['Filename: MS² data', files['mgf_name']],
+                    ['Filename: group metadata', files['metadata_name']],
+                    ['Filename: quantitative biological data', files['bioactivity_name']],
+                    ['Filename: user-library', files['user_library_name']],
+                    ['-----', '-----'],
+                    ['Mass deviation', params['mass_dev_ppm']],
+                    ['Min nr of fragments per MS² spectrum', params['min_nr_ms2']],
+                    ['Relative intensity filter', params['feature_rel_int_fact']],
+                    ['QuantData factor', params['bioact_fact']],
+                    ['Blank factor', params['column_ret_fact']],
+                    ['Fragment similarity tolerance', params['spectral_sim_tol']],
+                    ['Spectrum similarity score cutoff', params['spec_sim_score_cutoff']],
+                    ['Max spectral links', params['max_nr_links_ss']],
+                    ['Min matched peaks', params['min_nr_matched_peaks']],
+                    ['MS2Query used', params['ms2query']],
+                    ['Spectral similarity networking algorithm', params['spec_sim_net_alg']],
+                    ['-----', '-----'],
+                    ['Process log step', 'Description'],
+                ]
+
+        for entry in logging:
+            content.append([entry, logging[entry]])
+        return pd.DataFrame(content, columns=['Attribute', 'Description'])
+    except:
+        return empty_loading_table()
     
     
-    return pd.DataFrame(content, columns=['Attribute', 'Description'])

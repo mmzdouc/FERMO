@@ -22,8 +22,8 @@ def ms2query_search(feature_dicts, ms2query_lib_dir):
     for i in feature_dicts:
         if (
             feature_dicts[i]['ms2spectrum'] is not None
-        and 
-            not feature_dicts[i]['blank_associated']
+        # ~ and 
+            # ~ not feature_dicts[i]['blank_associated']
         ):
             query_spectra.append(feature_dicts[i]['ms2spectrum'])
     

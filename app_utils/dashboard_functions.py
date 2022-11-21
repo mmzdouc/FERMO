@@ -967,6 +967,21 @@ def export_sel_peaktable(samples, sel_sample):
             'in_blank',
             'ms1_only',]]
 
+def prepare_log_file(contents):
+    '''Concatenate information for logging file'''
+    return [
+        ''.join(['FERMO_version: ', str(contents['FERMO_version'])]),
+        'Input file names:',
+        contents['input_filenames'],
+        'Processing parameters:',
+        contents['params_dict'],
+        'Processing log:',
+        contents['logging_dict']
+        ]
+    
+    
+
+
 def export_features(feature_dicts):
     '''From feature dicts, create lists, convert to pandas df'''
     t_feature_ID = []
@@ -1017,6 +1032,7 @@ def export_features(feature_dicts):
         'similarity_clique': t_sim_cliq_bool,
         'similarity_clique_number': t_sim_cliq_nr,
         'similarity_clique_groups': t_set_groups_clique,
-        'groups_fold_differences': t_dict_fold_diff,})
+        'groups_fold_differences': t_dict_fold_diff,
+        })
 
 
