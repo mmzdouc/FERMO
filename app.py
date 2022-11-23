@@ -66,6 +66,7 @@ from app_utils.dashboard_functions import (
     plot_mini_chrom,
     plot_clique_chrom,
     plot_central_chrom,
+    prepare_log_file_filters
     )
 
 from app_utils.variables import (
@@ -308,9 +309,6 @@ def app_peaktable_processing(
     if signal is None:
         raise PreventUpdate
     else:
-        
-        print(dict_params)
-        
         FERMO_data = peaktable_processing(
             uploaded_files_store,
             dict_params,
@@ -662,15 +660,25 @@ def upload_sessionfile(contents, filename):
     Input('bioactivity_threshold', 'value'),
     Input('novelty_threshold', 'value'),
 )
-def read_threshold_values_function(rel_int, conv, bioact, nov,):
+def read_threshold_values_function(
+    rel_intensity_threshold, 
+    filter_adduct_isotopes, 
+    quant_biological_value, 
+    novelty_threshold,
+    ):
     '''Bundle input values'''
-
-    if None not in [rel_int, conv, bioact, nov,]:
+    
+    if None not in [
+        rel_intensity_threshold, 
+        filter_adduct_isotopes,
+        quant_biological_value, 
+        novelty_threshold,
+        ]:
         return {
-            'rel_int' : float(rel_int),
-            'conv' : float(conv),
-            'bioact' : float(bioact),
-            'nov' : float(nov),
+            'rel_intensity_threshold' : rel_intensity_threshold,
+            'filter_adduct_isotopes' : str(filter_adduct_isotopes),
+            'quant_biological_value' : quant_biological_value,
+            'novelty_threshold' : novelty_threshold,
             }
     else:
         raise PreventUpdate
@@ -1098,14 +1106,15 @@ def export_sel_sample(n_clicks, sel_sample, contents):
     State('storage_active_sample', 'data'),
     State('data_processing_FERMO', 'data'),
     State('samples_subsets', 'data'),
+    State('threshold_values', 'data'),
 )
-def export_sel_sample(n_clicks, sel_sample, contents, samples_subsets):
-    '''Export peaktable of active sample'''
+def export_sel_sample_sel_features(n_clicks, sel_sample, contents, samples_subsets, thresholds):
+    '''Export peaktable of active sample - selected features'''
     if n_clicks == 0:
         raise PreventUpdate
     else:
         samples_JSON = contents['samples_JSON']
-        param_logging = prepare_log_file(contents)
+        param_logging = prepare_log_file_filters(contents, thresholds)
 
         samples = dict()
         for sample in samples_JSON:
@@ -1189,14 +1198,15 @@ def export_all_samples_all_features(n_clicks, contents):
     Input("button_all_peak_table_selected_features", "n_clicks"),
     State('data_processing_FERMO', 'data'),
     State('samples_subsets', 'data'),
+    State('threshold_values', 'data'),
     )
-def export_all_samples_selected_features(n_clicks, contents, samples_subsets):
+def export_all_samples_selected_features(n_clicks, contents, samples_subsets, thresholds):
     '''Export selected features in peaktables of all samples'''
     if n_clicks == 0:
         raise PreventUpdate
     else:
         samples_JSON = contents['samples_JSON']
-        param_logging = prepare_log_file(contents)
+        param_logging = prepare_log_file_filters(contents, thresholds)
 
         samples = dict()
         for sample in samples_JSON:
@@ -1233,13 +1243,6 @@ def export_all_samples_selected_features(n_clicks, contents, samples_subsets):
                 )
             )
 
-
-
-
-
-
-
-
 @callback(
     Output("download_all_features_table_logging", "data"),
     Output("download_all_features_table", "data"),
@@ -1272,8 +1275,9 @@ def export_all_features(n_clicks, contents):
     Input("button_selected_features_table", "n_clicks"),
     State('data_processing_FERMO', 'data'),
     State('samples_subsets', 'data'),
+    State('threshold_values', 'data'),
     )
-def export_selected_features(n_clicks, contents, samples_subsets):
+def export_selected_features(n_clicks, contents, samples_subsets, thresholds):
     '''Convert feature dicts into df and export'''
     if n_clicks == 0:
         raise PreventUpdate
@@ -1290,7 +1294,7 @@ def export_selected_features(n_clicks, contents, samples_subsets):
             if int(feature) in active_features_set:
                 active_feature_dict[feature] = feature_dicts[feature]
         
-        param_logging = prepare_log_file(contents)
+        param_logging = prepare_log_file_filters(contents, thresholds)
         df = export_features(active_feature_dict)
         
         return (

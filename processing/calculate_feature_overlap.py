@@ -1,6 +1,6 @@
 import pandas as pd
 
-def calculate_feature_overlap(samples, strictness_ppm,):
+def calculate_feature_overlap(samples, strictness_ppm, feature_dicts):
     """Detects feature collision (overlap of peaks) based on retent time.
     
     Parameters
@@ -12,6 +12,8 @@ def calculate_feature_overlap(samples, strictness_ppm,):
         Tolerable mass deviation in ppm. Allows to tweak precision of
         matching. Should be matched to precision of instrument. E.g.
         20 ppm is still tolerable
+    feature_dicts : `dict`
+        Contains feature 'objects
     
     Returns
     -------
@@ -98,108 +100,138 @@ def calculate_feature_overlap(samples, strictness_ppm,):
                         #sodium
                         if "[M+Na]+" in adduct:
                             if A_mz > B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
                         
                         #dimer plus sodium
                         elif "[2M+Na]+" in adduct:
                             if A_mz > B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
                         
                         #double proton (see app_dimer_dbl() for details)
                         elif "[M+2H]2+" in adduct:
                             if A_mz < B_mz:
-                                app_dimer_dbl(samples,sample,adduct,A,B)
+                                app_dimer_dbl(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_dimer_dbl(samples,sample,adduct,B,A)
+                                app_dimer_dbl(samples,sample,adduct,B,A,
+                                feature_dicts)
                                     
                         #triple proton
                         elif "[M+3H]3+" in adduct:
                             if A_mz > B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
 
                         #isotopic +1 peak
                         elif "[M+1+H]+" in adduct:
                             if A_mz > B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
                                 
                         #isotopic +2 peak
                         elif "[M+2+H]+" in adduct:
                             if A_mz > B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
 
                         #isotopic +3 peak
                         elif "[M+3+H]+" in adduct:
                             if A_mz > B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
 
                         #isotopic +4 peak
                         elif "[M+4+H]+" in adduct:
                             if A_mz > B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
                         
                         #isotopic +5 peak
                         elif "[M+5+H]+" in adduct:
                             if A_mz > B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
                                             
                         #double proton isotopic +1 peak
                         elif "[M+1+2H]2+" in adduct:
                             if A_mz < B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
                         
                         #double proton isotopic +2 peak
                         elif "[M+2+2H]2+" in adduct:
                             if A_mz < B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
                         
                         #double proton isotopic +3 peak
                         elif "[M+3+2H]2+" in adduct:
                             if A_mz < B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
                         
                         #double proton isotopic +4 peak
                         elif "[M+4+2H]2+" in adduct:
                             if A_mz < B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
                         
                         #double proton isotopic +5 peak
                         elif "[M+5+2H]2+" in adduct:
                             if A_mz < B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
                                 
                         #+1 isotopic peak of a double charged ion: 
                         #[M+2H] vs [M+1+2H]
                         elif "+1 isotopic peak of [M+2H]2+" in adduct:
                             if A_mz > B_mz:
-                                app_addct_inf(samples,sample,adduct,A,B)
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
                             else:
-                                app_addct_inf(samples,sample,adduct,B,A)
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
                                 
                     else:
                         #Peak collision is registered
@@ -429,7 +461,9 @@ def app_addct_inf(
     sample: str,
     adduct: list, 
     first: int,
-    second: int):
+    second: int,
+    feature_dicts,
+    ):
     """Append info on adducts to table.
     
     Parameters
@@ -446,6 +480,7 @@ def app_addct_inf(
         Index of feature 'first'
     second : `int`
         Index of feature 'second'
+    feature_dicts : `dict`
         
     Notes
     -----
@@ -453,33 +488,38 @@ def app_addct_inf(
     'second' is considered the M+H+ ion, while 'first' is considered a different
     adduct. 
     """
-    
-    samples[sample].at[first,
-        "putative_adduct_detection"].append(
-            "".join([
+    first_str = "".join([
                     "putative ",
                     adduct[1],
                     " of ID ",
                     str(samples[sample]["feature_ID"][second]),
                     ])
-                )
-            
-    samples[sample].at[second,
-        "putative_adduct_detection"].append(
-            "".join([
+    
+    second_str = "".join([
                     "ID ",
                     str(samples[sample]["feature_ID"][first]),
                     ": putative ",
                     adduct[1],
                 ])
-            )
+    
+    samples[sample].at[first,"putative_adduct_detection"].append(first_str)
+    samples[sample].at[second,"putative_adduct_detection"].append(second_str)
+    
+    first_ID = int(samples[sample].at[first,'feature_ID'])
+    second_ID = int(samples[sample].at[second,'feature_ID'])
+    
+    feature_dicts[first_ID]['ann_adduct_isotop'].append(first_str)
+    feature_dicts[second_ID]['ann_adduct_isotop'].append(second_str)
+    
+    
 
 def app_dimer_dbl(
     samples: str, 
     sample: str,
     adduct: list, 
     first: int,
-    second: int):
+    second: int,
+    feature_dicts):
     """Append info on dimer/double charged ion 
     
     Parameters
@@ -496,6 +536,7 @@ def app_dimer_dbl(
         Index of feature 'first'
     second : `int`
         Index of feature 'second'
+    feature_dicts : `dict`
         
     Notes
     -----
@@ -510,22 +551,29 @@ def app_dimer_dbl(
     If B is assumed [M+H]+, A would be [2M+H]+
     Thus, assignment is performed for [M+2H]2+ and [2M+H]+ in parallel
     """
-    #peak 'first' is putatively [M+2H]2+
-    samples[sample].at[first,"putative_adduct_detection"].append(
-            "".join([
+    first_str = "".join([
                     "putative ",
                     adduct[1],
                     " of ID ",
                     str(samples[sample]["feature_ID"][second]),
                     ])
-                )
     
-    #peak 'second' is putatively [2M+H]+
-    samples[sample].at[second,"putative_adduct_detection"].append(
-            "".join([
+    second_str = "".join([
                     "putative ",
                     adduct[2],
                     " of ID ",
                     str(samples[sample]["feature_ID"][first]),
                     ])
-                )
+    
+    #peak 'first' is putatively [M+2H]2+
+    samples[sample].at[first,"putative_adduct_detection"].append(first_str)
+    
+    #peak 'second' is putatively [2M+H]+
+    samples[sample].at[second,"putative_adduct_detection"].append(second_str)
+
+    first_ID = int(samples[sample].at[first,'feature_ID'])
+    second_ID = int(samples[sample].at[second,'feature_ID'])
+    
+    feature_dicts[first_ID]['ann_adduct_isotop'].append(first_str)
+    feature_dicts[second_ID]['ann_adduct_isotop'].append(second_str)
+

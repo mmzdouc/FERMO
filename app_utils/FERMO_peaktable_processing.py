@@ -299,6 +299,7 @@ def peaktable_processing(
     samples = calculate_feature_overlap(
         samples,
         dict_params['mass_dev_ppm'],
+        feature_dicts,
         )
     log_dict, counter =  write_process_log(
         log_dict, 

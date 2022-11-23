@@ -296,6 +296,7 @@ def feature_dicts_creation(
                 'set_groups_clique' : set(),
                 'dict_fold_diff' : dict_fold_diff,
                 'sorted_fold_diff' : sorted_fold_diff,
+                'ann_adduct_isotop': [],
                 }
     
     return feature_dicts

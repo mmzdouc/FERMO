@@ -74,6 +74,20 @@ GENERAL
     border-radius: 4px;
 }
 
+.rc-slider-track {
+    background-color: #116789;
+}
+
+.rc-slider-handle {
+    background-color: #116789;
+    border: #000000;
+}
+
+.rc-slider-rail {
+    background-color: #AEAEAE;
+}
+
+
 
 /*
 ROWS - GENERAL

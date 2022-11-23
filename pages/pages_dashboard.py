@@ -128,17 +128,6 @@ def call_legend_clique_chrom():
         },
     )
 
-def call_threshold_inp(name):
-    '''Set parameters of dash dcc.Input field'''
-    return dcc.Input(
-        id=name, 
-        value=0.0, 
-        debounce=True,
-        type='number',
-        inputMode='numeric',
-        min=0.0,
-        max=1.0,
-        step=0.01,)
 
 def call_rel_int_title():
     '''Relative intensity factor title + info button'''
@@ -170,7 +159,7 @@ def call_convolutedness_title():
     '''Convolutedness factor title + info button'''
     return html.Div([
         html.Div([ 
-            "Convolutedness score: ",
+            "Adduct/isotope search: ",
             html.A(
                 html.Div(
                     "?",
@@ -183,7 +172,11 @@ def call_convolutedness_title():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter for peaks without collisions with other peaks (except adduct and isotope peaks). The higher the value, the less peak collision is allowed. '0' ignores collision, '0.5' allows overlap of 50% of peak with other peaks, '1' only selects peaks with no overlaps. Click button to access the docs.
+                '''Filter for features with annotations as 
+                adducts/isotopes. Filter uses regular expressions (POSIX ERE), and
+                certain characters have special meaning. 
+                For example, to select all annotations, use expression '.+'. For more information,
+                click the info-button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -196,7 +189,7 @@ def call_bioactivity_title():
     '''Bioactivity factor title + info button'''
     return html.Div([
         html.Div([ 
-            "Bioactivity score: ",
+            "QuantData-associated: ",
             html.A(
                 html.Div(
                     "?",
@@ -209,7 +202,7 @@ def call_bioactivity_title():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter for bioactivity-associated features (if bioactivity table was provided). A value >= 0.1 selects any putatively putatively bioactive feature. Values between 0.1 and 1 can be used to differentiate features coming from samples with lower or higher bioactivity. Click button to access the docs.
+                '''Select features associated with quantitative biological data (if such data was provided). 'ON' selects any feature putatively associated with quantitative biological data. Click button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -243,6 +236,69 @@ def call_novelty_title():
             target="call_novelty_title_tooltip",
             ),
         ])
+
+
+def call_threshold_inp(name):
+    '''Set parameters of dash dcc.Input field'''
+    return dcc.Input(
+        id=name, 
+        value=0.0, 
+        debounce=True,
+        type='number',
+        inputMode='numeric',
+        min=0.0,
+        max=1.0,
+        step=0.01,)
+
+
+def call_rangeslider_inp(name):
+    '''Set parameters of dash dcc.rangeslider field'''
+    return dcc.RangeSlider(
+        id=name,
+        min=0,
+        max=1,
+        marks=None,
+        value=[0,1],
+        tooltip={
+            "placement": "bottom",
+            "always_visible": True
+            },
+        allowCross=False,
+        pushable=0,
+        updatemode='mouseup',
+        )
+
+def call_bioactivity_toggle(name):
+    '''Call toggle for bioactivity'''
+    return dcc.RadioItems(
+            options=[
+                {
+                "label": 'ON',
+                "value": 0.1,
+                },
+                {
+                "label": 'OFF',
+                "value": 0,
+                },
+            ], 
+            value=0,
+            id=name,
+            inline=False,
+            )
+
+def call_adductfinder_inp(name):
+    '''Set text field for regex search'''
+    return dcc.Input(
+        id=name, 
+        value='', 
+        debounce=True,
+        placeholder='Regular expression search',
+        type='text',
+        )
+
+
+
+
 
 
 
@@ -360,13 +416,16 @@ dashboard = html.Div([
                 ),
             html.Div([
                 call_novelty_title(),
-                html.Div(call_threshold_inp('novelty_threshold')),
-                call_bioactivity_title(),
-                html.Div(call_threshold_inp('bioactivity_threshold')),
-                call_convolutedness_title(),
-                html.Div(call_threshold_inp('convolutedness_threshold')),
+                html.Div(call_rangeslider_inp('novelty_threshold')),
+                html.Div(style={'margin-top' : '5px'}),
                 call_rel_int_title(),
-                html.Div(call_threshold_inp('rel_intensity_threshold')),
+                html.Div(call_rangeslider_inp('rel_intensity_threshold')),
+                html.Div(style={'margin-top' : '5px'}),
+                call_bioactivity_title(),
+                html.Div(call_bioactivity_toggle('bioactivity_threshold')),
+                html.Div(style={'margin-top' : '5px'}),
+                call_convolutedness_title(),
+                html.Div(call_adductfinder_inp('convolutedness_threshold')),
                 ],
                 style={'margin-left': '10px','font-size': '17px',}
                 ),

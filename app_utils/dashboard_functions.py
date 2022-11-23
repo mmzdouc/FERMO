@@ -3,8 +3,26 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import re
 
 from app_utils.variables import color_dict
+
+
+def filter_str_regex(
+    query,
+    annot_str,
+    ):
+    '''Return bool if query matches annot_str'''
+    try:
+        if bool(re.search(query, annot_str, re.IGNORECASE,)):
+            return True
+        else:
+            return False
+    except:
+        return False
+    
+
+
 
 def generate_subsets(
     samples, 
@@ -29,11 +47,11 @@ def generate_subsets(
     ------
     Additional filters can be added with relative ease:
     Add the filter to the FERMO dashboard
-    Connect filter to the callback calculate_feature_score
-    Simply add a conditional that adds feature ID to all_select_no_blank
+    Connect filter to the callback id calculate_feature_score
+    Simply add a conditional that adds feature ID to "all_select_no_blank"
     set. the later operations take care of the right group for plotting
-    
-    #Extract a row as series using squeeze()
+    ####
+    Example code: extract a row as series using squeeze()
     samples[selected_sample].loc[
         samples[selected_sample]['feature_ID'] == ID].squeeze(),
     """
@@ -57,24 +75,56 @@ def generate_subsets(
     #combine ms1 and blank features
     blank_ms1_set = features_blanks_set.union(ms1_only_set)
     
-    #from all features, filter blank and ms1 features
+    #from all features, filter blank and features with ms1 only
     all_nonblank_set = all_feature_set.difference(blank_ms1_set)
     
     ###FILTERS###
     
     #filter for numeric thresholds
-    filtered_thrsh_df = samples[sample].loc[
-        (samples[sample]['rel_intensity_score'] >= thresholds['rel_int']) &
-        (samples[sample]['convolutedness_score'] >= thresholds['conv']) &
-        (samples[sample]['bioactivity_score'] >= thresholds['bioact']) &
-        (samples[sample]['novelty_score'] >= thresholds['nov']) 
+    filt_df = samples[sample].loc[
+        (
+            (samples[sample]['rel_intensity_score'] >= thresholds['rel_intensity_threshold'][0]) 
+            & 
+            (samples[sample]['rel_intensity_score'] <= thresholds['rel_intensity_threshold'][1])
+        ) 
+        &
+        (
+            (samples[sample]['novelty_score'] >= thresholds['novelty_threshold'][0]) 
+            & 
+            (samples[sample]['novelty_score'] <= thresholds['novelty_threshold'][1])
+        ) 
+        &
+        (
+            samples[sample]['bioactivity_score'] >= thresholds['quant_biological_value']
+        ) 
         ]
-    filtered_thrsh_set = set(filtered_thrsh_df['feature_ID'])
+    filtered_thrsh_set = set(filt_df['feature_ID'])
+    
+    if thresholds['filter_adduct_isotopes'] != '':
+        temp_set = set()
+        for feature in filtered_thrsh_set:
+            if filter_str_regex(
+                thresholds['filter_adduct_isotopes'],
+                ', '.join([i for i in feature_dicts[str(feature)]['ann_adduct_isotop']]),
+                ):
+                temp_set.add(feature)
+        filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+    
+    
+    
+    
+    #Filter to add:
+    ##MS2Query and Library matching (stack) -> make extra try except to catch 
+    ###key error if ms2query not switched on or library matching not performed
+    ##Feature ID
+    ##precursor mz(match from start - modify query with a ^ to search from start
+    ##similarity clique number
+    ##fold difference larger than n (separately programmed)
+
+
 
     #subtract ms1 and blanks from features over threshold
     all_select_no_blank = filtered_thrsh_set.difference(blank_ms1_set)
-    
-    #ADDITIONAL FILTERS: ADD HERE (add feature IDs to all_select_no_blank)
     
     
     #subset of selected sample specific features
@@ -975,6 +1025,20 @@ def prepare_log_file(contents):
         contents['input_filenames'],
         'Processing parameters:',
         contents['params_dict'],
+        'Processing log:',
+        contents['logging_dict']
+        ]
+
+def prepare_log_file_filters(contents, thresholds):
+    '''Concatenate information for logging file - include set filters'''
+    return [
+        ''.join(['FERMO_version: ', str(contents['FERMO_version'])]),
+        'Input file names:',
+        contents['input_filenames'],
+        'Processing parameters:',
+        contents['params_dict'],
+        'Filters applied',
+        thresholds,
         'Processing log:',
         contents['logging_dict']
         ]
