@@ -20,9 +20,6 @@ def filter_str_regex(
             return False
     except:
         return False
-    
-
-
 
 def generate_subsets(
     samples, 
@@ -111,11 +108,38 @@ def generate_subsets(
         filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
     
     
-    
-    
+    if thresholds['filter_annotation'] != '':
+        temp_set = set()
+        for feature in filtered_thrsh_set:
+            #construct string to query against
+            search_list = ['',]
+            if feature_dicts[str(feature)]['ms2query']:
+                search_list.append(
+                    feature_dicts[str(feature)][
+                        'ms2query_results'][0]['analog_compound_name']
+                    )
+            if feature_dicts[str(feature)]['cosine_annotation']:
+                search_list.append(
+                    feature_dicts[str(feature)][
+                        'cosine_annotation_list'][0]['name']
+                    )
+            if filter_str_regex(
+                thresholds['filter_annotation'],
+                ', '.join([i for i in search_list])
+                ):
+                temp_set.add(feature)
+        filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+
+
+    if thresholds['filter_feature_id'] != '':
+        if thresholds['filter_feature_id'] in filtered_thrsh_set:
+            filtered_thrsh_set = set([thresholds['filter_feature_id']])
+        else:
+            filtered_thrsh_set = set()
+
+
+
     #Filter to add:
-    ##MS2Query and Library matching (stack) -> make extra try except to catch 
-    ###key error if ms2query not switched on or library matching not performed
     ##Feature ID
     ##precursor mz(match from start - modify query with a ^ to search from start
     ##similarity clique number
@@ -666,10 +690,10 @@ def modify_feature_info_df(
         combined_list_bio = [None]
         
     combined_list_adducts = []
-    if samples[smpl].at[index, 'putative_adduct_detection']:
-        for i in range(len(samples[smpl].at[index, 'putative_adduct_detection'])):
+    if feat_dicts[ID]['ann_adduct_isotop']:
+        for i in range(len(feat_dicts[ID]['ann_adduct_isotop'])):
             combined_list_adducts.append(''.join([
-                str(samples[smpl].at[index, 'putative_adduct_detection'][i]),
+                str(feat_dicts[ID]['ann_adduct_isotop'][i]),
                 ',<br>', ]))
     else:
         combined_list_adducts = [None]
@@ -692,19 +716,16 @@ def modify_feature_info_df(
             sample_stats['cliques'][
                 str(feat_dicts[ID]['similarity_clique_number'])][0]))
 
-
-
     placeholder = '-----'
     data = [
-        ['Feature ID', samples[smpl].at[index, 'feature_ID']],
-        ['Precursor <i>m/z</i>', samples[smpl].at[index, 'precursor_mz']],
+        ['Feature ID', ID],
+        ['Precursor <i>m/z</i>', feat_dicts[ID]['precursor_mz']],
         ['Retention time (min)', samples[smpl].at[index, 'retention_time']],
         ['Feature intensity (absolute)', int_sample],
         [placeholder, placeholder],
-        ['Medium/blank associated', samples[smpl].at[index, 'in_blank']],
-        ['Intensity score', round(samples[smpl].at[index, 'rel_intensity_score'],2)], 
-        ['Convolutedness score', round(samples[smpl].at[index, 'convolutedness_score'],2)],
-        ['Bioactivity score', round(samples[smpl].at[index, 'bioactivity_score'],2)],
+        ['Medium/blank associated', feat_dicts[ID]['blank_associated']],
+        ['Relative intensity', round(samples[smpl].at[index, 'rel_intensity_score'],2)], 
+        ['QuantData score', round(samples[smpl].at[index, 'bioactivity_score'],2)],
         ['Novelty score', round(samples[smpl].at[index, 'novelty_score'],2)],
         [placeholder, placeholder],
         ['User-library: matches', cosine_annotation],
@@ -739,9 +760,8 @@ def empty_feature_info_df():
         ['Feature intensity (absolute)', None],
         [placeholder, placeholder],
         ['Medium/blank associated', None],
-        ['Intensity score', None], 
-        ['Convolutedness score', None],
-        ['Bioactivity score', None],
+        ['Relative intensity', None], 
+        ['QuantData score', None],
         ['Novelty score', None],
         [placeholder, placeholder],
         ['User-library: matches', None],

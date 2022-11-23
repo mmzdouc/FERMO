@@ -714,7 +714,7 @@ processing = html.Div([
                 html.Div(style={'margin-top' : '10px'}),
                 call_column_ret_fact_inp(),
                 html.Div(style={'margin-top' : '20px'}),
-                html.H4('Feature annotation parameters'),
+                html.H4('Networking and annotation parameters'),
                 html.Div(style={'margin-top' : '10px'}),
                 call_ms2query_toggle(),
                 html.Div(style={'margin-top' : '10px'}),

@@ -155,15 +155,15 @@ def call_rel_int_title():
             ),
         ])
 
-def call_convolutedness_title():
-    '''Convolutedness factor title + info button'''
+def call_adduct_title():
+    '''Adduct/isotope title + info button'''
     return html.Div([
         html.Div([ 
             "Adduct/isotope search: ",
             html.A(
                 html.Div(
                     "?",
-                    id="call_convolutedness_title_tooltip",
+                    id="call_adduct_title_tooltip",
                     className="info_dot"
                     ),
                 href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
@@ -181,7 +181,7 @@ def call_convolutedness_title():
                 ),
             placement='right',
             className='info_dot_tooltip',
-            target="call_convolutedness_title_tooltip",
+            target="call_adduct_title_tooltip",
             ),
         ])
 
@@ -237,6 +237,66 @@ def call_novelty_title():
             ),
         ])
 
+def call_annotation_search_title():
+    '''Title for adduct search via regexp'''
+    return html.Div([
+        html.Div([ 
+            "Annotation search: ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_annotation_search_title_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for features with annotation from library/MS2Query matching. Filter uses regular expressions (POSIX ERE), and
+                certain characters have special meaning. 
+                For example, to select all annotations, use expression '.+'. For more information,
+                click the info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_annotation_search_title_tooltip",
+            ),
+        ])
+
+def call_feature_id_filter_name():
+    '''Title for feature id search via regexp'''
+    return html.Div([
+        html.Div([ 
+            "Feature ID search: ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_feature_id_filter_name_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for feature ID. Filter uses regular expressions (POSIX ERE), and
+                certain characters have special meaning. 
+                For example, to select a specific feature, use expression '^n$', where 'n' is the feature ID number. For more information,
+                click the info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_feature_id_filter_name_tooltip",
+            ),
+        ])
+
+
+
 
 def call_threshold_inp(name):
     '''Set parameters of dash dcc.Input field'''
@@ -286,7 +346,7 @@ def call_bioactivity_toggle(name):
             inline=False,
             )
 
-def call_adductfinder_inp(name):
+def call_regexp_filter_str(name):
     '''Set text field for regex search'''
     return dcc.Input(
         id=name, 
@@ -294,9 +354,21 @@ def call_adductfinder_inp(name):
         debounce=True,
         placeholder='Regular expression search',
         type='text',
+        style={'font-size' : '15px'}
         )
 
-
+def call_regexp_filter_int(name):
+    '''Set int field for regex search'''
+    return dcc.Input(
+        id=name, 
+        value='', 
+        debounce=True,
+        placeholder='Feature ID',
+        min=0,
+        step=1,
+        type='number',
+        style={'font-size' : '15px'}
+        )
 
 
 
@@ -424,11 +496,22 @@ dashboard = html.Div([
                 call_bioactivity_title(),
                 html.Div(call_bioactivity_toggle('bioactivity_threshold')),
                 html.Div(style={'margin-top' : '5px'}),
-                call_convolutedness_title(),
-                html.Div(call_adductfinder_inp('convolutedness_threshold')),
+                call_adduct_title(),
+                html.Div(call_regexp_filter_str('convolutedness_threshold')),
+                html.Div(style={'margin-top' : '5px'}),
+                call_annotation_search_title(),
+                html.Div(call_regexp_filter_str('filter_annotation')),
+                html.Div(style={'margin-top' : '5px'}),
+                call_feature_id_filter_name(),
+                html.Div(call_regexp_filter_int('filter_feature_id')),
+                
                 ],
                 style={'margin-left': '10px','font-size': '17px',}
                 ),
+                
+                
+                
+                
             html.Hr(
                 style={
                     'margin-top' : '10px',
@@ -454,12 +537,6 @@ dashboard = html.Div([
                 ),
                 dcc.Download(id="export_session_file"),
                 ]),
-            
-                
-                
-                
-                
-                
                 html.Div([
                     html.Hr(style={'margin-top' : '10px',}),
                     html.Div('Export features as tables (.csv):',
@@ -473,10 +550,6 @@ dashboard = html.Div([
                     html.Hr(style={'margin-top' : '10px','margin-bottom' : '10px',}),
                     ],
                 ),
-            
-            
-            
-            
             html.Div([
                 html.Div([
                     html.Div([
@@ -587,7 +660,7 @@ dashboard = html.Div([
         ),
         #bottom second: spectrum similarity network
         dbc.Col([
-            html.Div('Cytoscape view'),
+            html.H3('Cytoscape view - spectral similarity networking'),
             html.Div(
                 cyto.Cytoscape(
                     id='cytoscape',

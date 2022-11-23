@@ -659,12 +659,16 @@ def upload_sessionfile(contents, filename):
     Input('convolutedness_threshold', 'value'),
     Input('bioactivity_threshold', 'value'),
     Input('novelty_threshold', 'value'),
+    Input('filter_annotation', 'value'),
+    Input('filter_feature_id', 'value'),
 )
 def read_threshold_values_function(
     rel_intensity_threshold, 
     filter_adduct_isotopes, 
     quant_biological_value, 
     novelty_threshold,
+    filter_annotation,
+    filter_feature_id,
     ):
     '''Bundle input values'''
     
@@ -673,12 +677,16 @@ def read_threshold_values_function(
         filter_adduct_isotopes,
         quant_biological_value, 
         novelty_threshold,
+        filter_annotation,
+        filter_feature_id,
         ]:
         return {
             'rel_intensity_threshold' : rel_intensity_threshold,
             'filter_adduct_isotopes' : str(filter_adduct_isotopes),
             'quant_biological_value' : quant_biological_value,
             'novelty_threshold' : novelty_threshold,
+            'filter_annotation' : filter_annotation,
+            'filter_feature_id' : filter_feature_id,
             }
     else:
         raise PreventUpdate
