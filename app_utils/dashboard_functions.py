@@ -123,6 +123,7 @@ def generate_subsets(
                     feature_dicts[str(feature)][
                         'cosine_annotation_list'][0]['name']
                     )
+            #match query against string
             if filter_str_regex(
                 thresholds['filter_annotation'],
                 ', '.join([i for i in search_list])
@@ -136,16 +137,91 @@ def generate_subsets(
             filtered_thrsh_set = set([thresholds['filter_feature_id']])
         else:
             filtered_thrsh_set = set()
+    
+    if (
+        thresholds['filter_precursor_min'] != '' 
+    or 
+        thresholds['filter_precursor_max'] != '' 
+    ):
+        mz_min = None
+        mz_max = None
+        if thresholds['filter_precursor_min'] != '':
+            mz_min = float(thresholds['filter_precursor_min'])
+        if thresholds['filter_precursor_max'] != '':
+            mz_max = float(thresholds['filter_precursor_max'])
+            
+        if (mz_min is not None) and (mz_max is not None):
+            temp_set = set()
+            if mz_min > mz_max:
+                temp_min = copy.deepcopy(mz_max)
+                temp_max = copy.deepcopy(mz_min)
+                mz_min = temp_min
+                mz_max = temp_max
+            
+            for feature in filtered_thrsh_set:
+                if ( 
+                    (
+                    mz_min 
+                    <= 
+                    feature_dicts[str(feature)]['precursor_mz']
+                    <=
+                    mz_max
+                    )
+                ):
+                    temp_set.add(feature)
+            filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+        
+        elif (mz_min is not None) and (mz_max is None):
+            temp_set = set()
+            for feature in filtered_thrsh_set:
+                if mz_min <= feature_dicts[str(feature)]['precursor_mz']:
+                    temp_set.add(feature)
+            filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+        
+        elif (mz_min is None) and (mz_max is not None):
+            temp_set = set()
+            for feature in filtered_thrsh_set:
+                if feature_dicts[str(feature)]['precursor_mz'] <= mz_max:
+                    temp_set.add(feature)
+            filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
 
+    if thresholds['filter_spectral_sim_netw'] != '':
+        temp_set = set()
+        for feature in filtered_thrsh_set:
+            if feature_dicts[str(feature)]['similarity_clique']:
+                if (
+                    thresholds['filter_spectral_sim_netw'] ==
+                    feature_dicts[str(feature)]['similarity_clique_number']
+                ):
+                    temp_set.add(feature)
+        filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
 
-
-    #Filter to add:
-    ##Feature ID
-    ##precursor mz(match from start - modify query with a ^ to search from start
-    ##similarity clique number
-    ##fold difference larger than n (separately programmed)
-
-
+    
+    if thresholds['filter_fold_change'] != '':
+        temp_set = set()
+        for feature in filtered_thrsh_set:
+            if feature_dicts[str(feature)]['dict_fold_diff']:
+                for i in feature_dicts[str(feature)]['dict_fold_diff']:
+                    if (
+                        feature_dicts[str(feature)]['dict_fold_diff'][i]
+                        >=
+                        float(thresholds['filter_fold_change'])
+                    ):
+                        temp_set.add(feature)
+        filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+    
+    
+    if thresholds['filter_group'] != '':
+        temp_set = set()
+        for feature in filtered_thrsh_set:
+            if filter_str_regex(
+                thresholds['filter_group'],
+                ','.join([i for i in feature_dicts[str(feature)][
+                   'set_groups']]),
+                ):
+                temp_set.add(feature)
+        filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+    
 
     #subtract ms1 and blanks from features over threshold
     all_select_no_blank = filtered_thrsh_set.difference(blank_ms1_set)
@@ -309,11 +385,6 @@ def append_scatter_text(
             'bordercolor' : bordercolor}
         )
 
-
-
-
-
-
 def plot_central_chrom(
     sel_sample,
     active_feature_index,
@@ -321,6 +392,7 @@ def plot_central_chrom(
     samples,
     subsets,
     feature_dicts,
+    sel_all_vis,
     ):
     '''Plot central chromatogram'''
     fig = go.Figure()
@@ -345,7 +417,11 @@ def plot_central_chrom(
         )
     
     for id, row in samples[sel_sample].iterrows():
-        if int(row['feature_ID']) in subsets[sel_sample]['blank_ms1']:
+        if (
+            int(row['feature_ID']) in subsets[sel_sample]['blank_ms1']
+        and 
+            sel_all_vis == 'ALL'
+        ):
             fig.add_trace(
                 append_scatter_text(
                     row,
@@ -389,7 +465,11 @@ def plot_central_chrom(
                     feature_dicts,
                     )
                 )
-        elif int(row['feature_ID']) in subsets[sel_sample]['nonselect_sample_spec']:
+        elif (
+            int(row['feature_ID']) in subsets[sel_sample]['nonselect_sample_spec']
+        and 
+            sel_all_vis == 'ALL'
+        ):
             fig.add_trace(
                 append_scatter_text(
                     row,
@@ -400,7 +480,11 @@ def plot_central_chrom(
                     feature_dicts,
                     )
                 )
-        elif int(row['feature_ID']) in subsets[sel_sample]['nonselect_group_spec']:
+        elif (
+            int(row['feature_ID']) in subsets[sel_sample]['nonselect_group_spec']
+        and 
+            sel_all_vis == 'ALL'
+        ):
             fig.add_trace(
                 append_scatter_text(
                     row,
@@ -411,7 +495,11 @@ def plot_central_chrom(
                     feature_dicts,
                     )
                 )
-        elif int(row['feature_ID']) in subsets[sel_sample]['nonselect_remainder']:
+        elif (
+            int(row['feature_ID']) in subsets[sel_sample]['nonselect_remainder']
+        and 
+            sel_all_vis == 'ALL'
+        ):
             fig.add_trace(
                 append_scatter_text(
                     row,
@@ -426,13 +514,14 @@ def plot_central_chrom(
             fig.add_trace(
                 append_scatter_text(
                     row,
-                    color_dict['black'],
-                    color_dict['black'],
+                    color_dict['very_light_grey'],
+                    color_dict['very_light_grey'],
                     4,
                     color_dict['black'],
                     feature_dicts,
                     )
                 )
+                
 
     if isinstance(active_feature_index, int):
         fig.add_shape(
@@ -534,6 +623,8 @@ def plot_mini_chrom(
     '''Plot mini-chromatogram overview'''
     
     fig = make_subplots(rows=1, cols=1)
+    rt_min = 0
+    rt_max = 1
 
     if isinstance(active_feature_id, int):
 
@@ -542,7 +633,23 @@ def plot_mini_chrom(
                 feature_dicts[str(active_feature_id)]['presence_samples'])
         except KeyError:
             nr_subplots = 0
-    
+        
+        #Restrict display range +- 10% of RT window
+        rt_min = round((feature_dicts[str(active_feature_id)][
+            'average_retention_time']
+            -
+            (sample_stats['rt_range'] * 0.15)),2)
+        rt_max = round((feature_dicts[str(active_feature_id)][
+            'average_retention_time']
+            +
+            (sample_stats['rt_range'] * 0.15)),2)
+        
+        if rt_min < sample_stats['rt_min']:
+            rt_min = sample_stats['rt_min']
+            
+        if rt_max > sample_stats['rt_max']:
+            rt_max = sample_stats['rt_max']
+        
         fig = make_subplots(
             rows=nr_subplots, 
             cols=1,
@@ -566,7 +673,11 @@ def plot_mini_chrom(
             for id, row in samples[sample].iterrows():
                 if row['feature_ID'] == active_feature_id:
                     active_feature_row = copy.deepcopy(row)
-                elif row['norm_intensity'] > 0.05:
+                elif (
+                        (row['pseudo_chrom_trace'][0][0] >= rt_min)
+                    and
+                        (row['pseudo_chrom_trace'][0][-1] <= rt_max)
+                ):
                     fig.append_trace(append_scatter_text(
                             row,
                             color_dict['light_grey'],
@@ -598,14 +709,14 @@ def plot_mini_chrom(
     fig.update_xaxes(
         autorange=False,
         range=[
-            (sample_stats["rt_min"]-(sample_stats["rt_range"]*0.05)),
-            (sample_stats["rt_max"]+(sample_stats["rt_range"]*0.05)),
+            rt_min,
+            rt_max
             ],
         )
     
     fig.update_yaxes(
     autorange=False,
-    range=[0, 1],
+    range=[0, 1.1],
     visible=False,
     )
     

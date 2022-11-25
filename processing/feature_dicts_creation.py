@@ -292,6 +292,7 @@ def feature_dicts_creation(
                 'cosine_annotation_list' : [],
                 'ms2query' : False,
                 'ms2query_results' : '',
+                'novelty_score' : '',
                 'set_groups' : set_groups,
                 'set_groups_clique' : set(),
                 'dict_fold_diff' : dict_fold_diff,

@@ -489,21 +489,22 @@ def app_addct_inf(
     adduct. 
     """
     first_str = "".join([
-                    "putative ",
                     adduct[1],
-                    " of ID ",
+                    "(ID ",
                     str(samples[sample]["feature_ID"][second]),
-                    ' in sample ',
+                    ', ',
                     str(sample),
+                    ')',
                     ])
     
     second_str = "".join([
                     "ID ",
                     str(samples[sample]["feature_ID"][first]),
-                    ": putative ",
+                    ": ",
                     adduct[1],
-                    ' in sample ',
+                    ' (',
                     str(sample),
+                    ')',
                 ])
     
     samples[sample].at[first,"putative_adduct_detection"].append(first_str)
@@ -556,21 +557,21 @@ def app_dimer_dbl(
     Thus, assignment is performed for [M+2H]2+ and [2M+H]+ in parallel
     """
     first_str = "".join([
-                    "putative ",
                     adduct[1],
-                    " of ID ",
+                    "(ID ",
                     str(samples[sample]["feature_ID"][second]),
-                    ' in sample ',
+                    ', ',
                     str(sample),
+                    ')',
                     ])
     
     second_str = "".join([
-                    "putative ",
                     adduct[2],
-                    " of ID ",
+                    "(ID ",
                     str(samples[sample]["feature_ID"][first]),
-                    ' in sample ',
+                    ', ',
                     str(sample),
+                    ')',
                     ])
     
     #peak 'first' is putatively [M+2H]2+

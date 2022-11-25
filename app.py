@@ -654,6 +654,17 @@ def upload_sessionfile(contents, filename):
 ###############################
 
 @callback(
+    Output('selected_viz_toggle_value', 'data'),
+    Input('selected_viz_toggle', 'value'),
+    )
+def store_selected_viz_toggle(
+    sel_all_vis,
+    ):
+    '''Store value toggle of visualization of all or selected features'''
+    return {'sel_all_vis' : sel_all_vis}
+    
+
+@callback(
     Output('threshold_values', 'data'),
     Input('rel_intensity_threshold', 'value'),
     Input('convolutedness_threshold', 'value'),
@@ -661,7 +672,12 @@ def upload_sessionfile(contents, filename):
     Input('novelty_threshold', 'value'),
     Input('filter_annotation', 'value'),
     Input('filter_feature_id', 'value'),
-)
+    Input('filter_precursor_min', 'value'),
+    Input('filter_precursor_max', 'value'),
+    Input('filter_spectral_sim_netw', 'value'),
+    Input('filter_fold_change', 'value'),
+    Input('filter_group', 'value'),
+    )
 def read_threshold_values_function(
     rel_intensity_threshold, 
     filter_adduct_isotopes, 
@@ -669,8 +685,24 @@ def read_threshold_values_function(
     novelty_threshold,
     filter_annotation,
     filter_feature_id,
+    filter_precursor_min,
+    filter_precursor_max,
+    filter_spectral_sim_netw,
+    filter_fold_change,
+    filter_group,
     ):
     '''Bundle input values'''
+    
+    if filter_feature_id is None:
+        filter_feature_id = ''
+    if filter_spectral_sim_netw is None:
+        filter_spectral_sim_netw = ''
+    if filter_precursor_min is None:
+        filter_precursor_min = ''
+    if filter_precursor_max is None:
+        filter_precursor_max = ''
+    if filter_fold_change is None:
+        filter_fold_change = ''
     
     if None not in [
         rel_intensity_threshold, 
@@ -679,6 +711,11 @@ def read_threshold_values_function(
         novelty_threshold,
         filter_annotation,
         filter_feature_id,
+        filter_precursor_min,
+        filter_precursor_max,
+        filter_spectral_sim_netw,
+        filter_fold_change,
+        filter_group,
         ]:
         return {
             'rel_intensity_threshold' : rel_intensity_threshold,
@@ -687,6 +724,11 @@ def read_threshold_values_function(
             'novelty_threshold' : novelty_threshold,
             'filter_annotation' : filter_annotation,
             'filter_feature_id' : filter_feature_id,
+            'filter_precursor_min' : filter_precursor_min,
+            'filter_precursor_max' : filter_precursor_max,
+            'filter_spectral_sim_netw' : filter_spectral_sim_netw,
+            'filter_fold_change' : filter_fold_change,
+            'filter_group' : filter_group,
             }
     else:
         raise PreventUpdate
@@ -795,12 +837,14 @@ def title_central_chrom(selected_sample,):
     Input('storage_active_sample', 'data'),
     Input('storage_active_feature_index', 'data'),
     Input('samples_subsets', 'data'),
+    Input('selected_viz_toggle_value', 'data'),
     State('data_processing_FERMO', 'data'),
 )
 def plot_chromatogram(
     selected_sample, 
     active_feature_index,
     samples_subsets,
+    selected_viz_toggle_value,
     contents,
     ):
     '''Plot central chromatogram'''
@@ -821,6 +865,7 @@ def plot_chromatogram(
         samples,
         samples_subsets,
         feature_dicts,
+        selected_viz_toggle_value['sel_all_vis']
         )
 
 @callback(

@@ -43,6 +43,7 @@ color_dict = {
     'light_purple' : 'rgba(170,51,119,0.6)',
     'grey' : 'rgba(187,187,187,1)',
     'light_grey' : 'rgba(187,187,187,0.6)',
+    'very_light_grey' : 'rgba(187,187,187,0.3)',
     'black' : 'rgba(0,0,0,1)',
     'light_black' : 'rgba(0,0,0,0.5)',
     }

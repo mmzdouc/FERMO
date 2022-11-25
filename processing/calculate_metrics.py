@@ -5,7 +5,9 @@ def calculate_feature_score(
     row, 
     feature_dicts,
     samples,
-    sample,):
+    sample,
+    sample_stats,
+    ):
     """Calculate points for each feature.
     
     Parameters
@@ -15,172 +17,184 @@ def calculate_feature_score(
         Feature_ID(keys):feature_dict(values)
     samples : `dict`
     sample : `str`
-
-    Returns
-    -------
-    `dict`
-    
-    Notes
-    -----
-    Features are scored based on how interesting they are from a natural
-    product discovery point of view. 
-    The more points a feature gets, the better.
-    For each category, points are given.
-    Details:
-    A)RELATIVE INTENSITY:
-    Features with higher intensity can be considered more interesting 
-    for isolation
-    ...
-    B) CONVOLUTEDNESS (crowdedness):
-    A high number of non-overlapping, high-intensity features is 
-    desirable.
-    ...
-    C) BIOACTIVITY:
-    Bioactivity-association of feature generally considered good. 
-    Not every experiment provides bioactivity, therefore optional.
-    ...
-    D) NOVELTY:
-    Scores novelty of a feature (comparison against external data)
-    Based on comparison against spectral library and MS2Query.
-    ...
-    F) BLANK-ASSOCIATEDNESS:
-    Medium- or blank- associatedness means that feature is not 
-    interesting for drug discovery. Discard.
-    If medium-associated, set to True; else to False
+    sample_stats : `dict`
     """
-    
-    #RELATIVE INTENSITY
-    rel_intensity_point = rel_intensity(row)
-    #CONVOLUTEDNESS
-    convolutedness_point = convolutedness(row, samples, sample)
-    
-    #BIOACTIVITY
-    bioactivity_point = bioactivity(row, feature_dicts)
-
-    #NOVELTY
-    novelty_point = novelty(row, feature_dicts, samples, sample)
-    
-    #BLANK-ASSOCIATEDNESS
-    blank_associatedness = in_blank(row, feature_dicts)
-    
-    #CALCULATION
     return {
-        'rel_intensity_p' : rel_intensity_point,
-        'convolutedness_p' : convolutedness_point,
-        'bioactivity_p' : bioactivity_point,
-        'novelty_p' : novelty_point,
-        'blank_ass' : blank_associatedness,
+        'rel_intensity_p' : float(row["norm_intensity"]),
+        'convolutedness_p' : convolutedness(row, samples, sample),
+        'bioactivity_p' : bioactivity(row, feature_dicts),
+        'novelty_p' : novelty_new(row, feature_dicts, sample_stats),
+        'blank_ass' : in_blank(row, feature_dicts),
         }
 
-
-def novelty(
+def novelty_new(
     row, 
-    feature_dicts, 
-    samples, 
-    sample):
+    feat_dicts, 
+    sample_stats,
+    ):
     '''Calculate novelty score
     
     Parameters
     ----------
     row : `pandas.core.frame.Series`
-    feature_dicts : `dict`
-        Feature_ID(keys):feature_dict(values)
-    samples : `dict`
-    sample : `str`
-
+    feat_dicts : `dict`
+    sample_stats : `dict`
+    
     Returns
     -------
-    feature_points = `list`
+    `int` or `float`
     
     Notes
     -----
-    Calculate potential novelty of feature (comparison to external data).
-    
-    Based on library search and/or MS2Query.
-    
-    If a feature is a common compound, it should be present in public
-    reference data.
-    Two kind of reference data are accessed: 
-    -a spectral library in the .mgf-format (user-provided)
-    -the libraries used by MS2Query (automated)
-
-    
-    If a compound is not found in the GNPS spectral library nor receives
-    a high score in the comparison against the MS2Query embedding,
-    it is probably something fairly uncommon.
-    
-    Comment regarding MS2Query scores: Personal communication
-    with Niek de Jonge (MS2Query developer): 
-    score > 0.95: very good
-    0.4 < score <= 0.95: twilight zone;
-    score < 0.4: unreliable
+    Calculates 'consensus' novelty score from modified cosine 
+    library search and ms2query results. 
+    Attention: all scores are inverted (good annotation == low novelty
+    score and vice versa
+    Decision tree:
+    if cosine and ms2query score is very high (>0.9), take the better score
+    elif one of cosine or ms2query scores are very high (>0.9), take it
+    elif 
+        get cosine score if any
+        get ms2query score if any
+        get number of predicted classes for next neighbours of feature in
+            similarity clique
+        calculate average
+    else return 1
     '''
     
-    feature_ID = int(row["feature_ID"])
+    feat_ID = int(row["feature_ID"])
+    cos_bool = feat_dicts[feat_ID]['cosine_annotation']
+    ms2query_bool = feat_dicts[feat_ID]['ms2query']
+    score_thrshld = 0.95
     
-    
-    if (feature_dicts[feature_ID]['ms2spectrum'] is not None
-        and not feature_dicts[feature_ID]['blank_associated']):
+    if (cos_bool or ms2query_bool):
         
+        #If cosine and ms2query scores very high, return higher score
         if (
-        ((feature_dicts[feature_ID]['cosine_annotation'])
-        and
-        (feature_dicts[feature_ID]['cosine_annotation_list'][0]['score'] >= 0.95))
-        or
-        ((feature_dicts[feature_ID]['ms2query'])
-        and
-        (feature_dicts[feature_ID][
-            'ms2query_results'][0]['ms2query_model_prediction'] >= 0.95))
+            (
+                cos_bool
+                and
+                feat_dicts[feat_ID]['cosine_annotation_list'][0
+                    ]['score'] > score_thrshld
+            )
+            and
+            (
+                ms2query_bool
+                and
+                feat_dicts[feat_ID]['ms2query_results'][0
+                    ]['ms2query_model_prediction'] > score_thrshld
+            )
         ):
-        #If modified cosine or MS2Query matching yielded a reliable 
-        #match, set to 0
-            return 0
-        
-
+            if (
+                feat_dicts[feat_ID]['cosine_annotation_list'][0]['score']
+                >
+                feat_dicts[feat_ID]['ms2query_results'][0
+                    ]['ms2query_model_prediction']
+            ):
+                return (1 - feat_dicts[feat_ID]['cosine_annotation_list'][0
+                    ]['score'])
+            else:
+                return (1 - feat_dicts[feat_ID]['ms2query_results'][0
+                    ]['ms2query_model_prediction'])
+                    
+        #Elif high cosine score, return
         elif (
-        (feature_dicts[feature_ID]['cosine_annotation'])
-        and
-        (0.80 <= feature_dicts[feature_ID]['cosine_annotation_list'][0]['score'] < 0.95)
+            cos_bool 
+            and
+            feat_dicts[feat_ID]['cosine_annotation_list'][0
+                ]['score'] > score_thrshld
         ):
-        #If modified cosine 
-        #yielded a non-reliable match (0.8 <= x < 0.95), 
-        #set to value between 0.1 and 0.9
-            x = feature_dicts[feature_ID]['cosine_annotation_list'][0]['score']
-            x = round((
-                ((x - 0.8) / 0.15) *
-                (1 - 0.1) + 
-                0.1
-            ), 3)
-            return (1 - x)
+            return ( 1 - feat_dicts[feat_ID][
+                'cosine_annotation_list'][0]['score'])
         
+        #Elif high ms2query score, return
         elif (
-        (feature_dicts[feature_ID]['ms2query'])
-        and
-        0.4 <= feature_dicts[feature_ID][
-            'ms2query_results'][0]['ms2query_model_prediction'] < 0.95
+            ms2query_bool
+            and
+            feat_dicts[feat_ID]['ms2query_results'][0
+                ]['ms2query_model_prediction'] > score_thrshld
         ):
-        #If MS2Query matching  
-        #yielded a non-reliable match (0.85 <= x < 0.95), 
-        #set to value between 0.1 and 0.9
-            x = float(feature_dicts[feature_ID][
-                'ms2query_results'][0]['ms2query_model_prediction'])
-            x = round((
-                ((x - 0.4) / 0.55) *
-                (1 - 0.1) + 
-                0.1
-            ), 3)
-            return (1 - x)
-            
+            return (1 - feat_dicts[feat_ID]['ms2query_results'][0
+                ]['ms2query_model_prediction'])
+        
+        #Else calculate compound score
         else:
-        #Probably novel
-            return 1
+            cos_score = None
+            if cos_bool:
+                cos_score = feat_dicts[feat_ID]['cosine_annotation_list'][0
+                    ]['score']
+            
+            ms2query_score = None
+            if ms2query_bool:
+                ms2query_score = feat_dicts[feat_ID]['ms2query_results'][0
+                    ]['ms2query_model_prediction']
+            
+            #Calculate diversity of ms2query class annotation for 
+            #nearest neighbours in spectral similarity network (should
+            #be identical if related compounds). If many different, bad
+            next_neigh_score = None
+            if ms2query_bool:
+                if feat_dicts[feat_ID]['similarity_clique']:
+                    set_neighbours = set()
+                    #get set of nearest neighbours (direct partners in mn)
+                    for clique in sample_stats['cliques']:
+                        if feat_ID in sample_stats['cliques'][clique][0]:
+                            if len(sample_stats['cliques'][clique][0]) > 1:
+                                for pair in sample_stats['cliques'][clique][1]:
+                                    if feat_ID in pair:
+                                        if feat_ID == pair[0]:
+                                            set_neighbours.add(pair[1])
+                                        else: 
+                                            set_neighbours.add(pair[0])
+                    set_neighbours.add(feat_ID)
+                    
+                    if len(set_neighbours) > 1:
+                        set_npc_superclass_results = set()
+                        set_cf_superclass = set()
+                        for feature in set_neighbours:
+                            set_npc_superclass_results.add(
+                                feat_dicts[feat_ID]['ms2query_results'][0
+                                    ]['npc_superclass_results']
+                                )
+                            set_cf_superclass.add(
+                                feat_dicts[feat_ID]['ms2query_results'][0
+                                    ]['cf_superclass']
+                                )
+                        
+                        min_len = ""
+                        if (
+                            len(set_npc_superclass_results) 
+                            <= 
+                            len(set_cf_superclass)
+                        ):
+                            min_len = len(set_npc_superclass_results)
+                        else:
+                            min_len = len(set_cf_superclass)
+                        
+                        try:                    
+                            next_neigh_score = (1 / min_len)
+                        except:
+                            next_neigh_score = None
+            
+            list_scores = [
+                cos_score,
+                ms2query_score,
+                next_neigh_score
+                ]
+            
+            counter = 0
+            score = 0
+            for i in range(len(list_scores)):
+                if list_scores[i] is not None:
+                    score = score + list_scores[i]
+                    counter = counter + 1
+            
+            #Prevents division by zero
+            if counter == 0:
+                counter = 1 
+            return (1 - (score / counter))
     else:
-    #not eligible
-        return 0
-
-def rel_intensity(row): 
-    """Extracts relative intensity information."""
-    return float(row["norm_intensity"])
+        return 1
 
 def bioactivity(
     row, 
@@ -211,7 +225,7 @@ def convolutedness(
     samples, 
     sample,
     ):
-    """Calculates convolutedness: how much % of peak remains."""
+    """Calculates convolutedness: how much % of peak remains. Legacy"""
     
     A_s = float(row["rt_start"])
     A_e = float(row["rt_stop"])
@@ -298,7 +312,8 @@ def convolutedness(
     except ZeroDivisionError:
         return 0
 
-def calculate_metrics(samples, feature_dicts,):
+
+def calculate_metrics(samples, feature_dicts, sample_stats):
     """Calculate metrics for samples and score them:
     
     Parameters
@@ -307,6 +322,7 @@ def calculate_metrics(samples, feature_dicts,):
         sample_names(keys):pandas.core.frame.DataFrame(values)
     feature_dicts : `dict`
         Feature_ID(keys):feature_dict(values)
+    sample_stats : `dict`
 
     Returns
     -------
@@ -348,8 +364,13 @@ def calculate_metrics(samples, feature_dicts,):
                 row, 
                 feature_dicts, 
                 samples, 
-                sample)
-                
+                sample,
+                sample_stats,
+                )
+
+            feature_dicts[int(row["feature_ID"])]['novelty_score'
+                ] = range(feature_scores['novelty_p'],3)
+            
             #appending to lists
             rel_intensity.append(feature_scores['rel_intensity_p'])
             convolutedness.append(feature_scores['convolutedness_p'])

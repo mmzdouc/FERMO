@@ -267,7 +267,7 @@ def call_annotation_search_title():
         ])
 
 def call_feature_id_filter_name():
-    '''Title for feature id search via regexp'''
+    '''Title for feature id search'''
     return html.Div([
         html.Div([ 
             "Feature ID search: ",
@@ -283,9 +283,8 @@ def call_feature_id_filter_name():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter for feature ID. Filter uses regular expressions (POSIX ERE), and
-                certain characters have special meaning. 
-                For example, to select a specific feature, use expression '^n$', where 'n' is the feature ID number. For more information,
+                '''Filter for feature ID. Filters features
+                for a single feature ID number. For more information,
                 click the info-button to access the docs.
                 ''',
                 ),
@@ -295,20 +294,160 @@ def call_feature_id_filter_name():
             ),
         ])
 
+def call_clique_filter_name():
+    '''Title for clique id search'''
+    return html.Div([
+        html.Div([ 
+            "Spectral similarity network ID search: ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_clique_filter_name_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for spectral similarity network ID.
+                Filters for features in a specific spectral network (does
+                not include blank features since they are deselected by
+                default. For more information,
+                click the info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_clique_filter_name_tooltip",
+            ),
+        ])
+
+
+def call_precursor_mz_filter_name():
+    '''Title for precursor mz search'''
+    return html.Div([
+        html.Div([ 
+            "Precursor m/z search: ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_precursor_mz_filter_name_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for feature precursor m/z. Filters features
+                for a range of values. For more information,
+                click the info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_precursor_mz_filter_name_tooltip",
+            ),
+        ])
+
+def call_visualization_selected_name():
+    '''Title for visualization of selected features only'''
+    return html.Div([
+        html.Div([ 
+            "Visualization of features: ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_visualization_selected_name_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Toggles visualization of features in chromatogram. 
+                'ALL' shows all features, 'SELECTED', shows only the 
+                currently selected features and discables non-selected 
+                or blank features.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_visualization_selected_name_tooltip",
+            ),
+        ])
+
+
+def call_foldchange_search_name():
+    '''Title for foldchange search'''
+    return html.Div([
+        html.Div([ 
+            "Fold-changes filter: ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_foldchange_search_name_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for fold-changes of features between groups.
+                Fold-changes between groups are calculated by pairwise
+                division of average intensity between groups. 
+                Only applicable if group metadata was provided.
+                For more information,
+                click the info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_foldchange_search_name",
+            ),
+        ])
+
+def call_group_search_name():
+    '''Title for group search'''
+    return html.Div([
+        html.Div([ 
+            "Group filter: ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_group_search_name_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for group metadata information.
+                Filter uses regular expressions (POSIX ERE), and
+                certain characters have special meaning. 
+                For example, to select multiple group annotations, 
+                use expression 'group1|group2'. 
+                For more information,
+                click the info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_group_search_name_tooltip",
+            ),
+        ])
 
 
 
-def call_threshold_inp(name):
-    '''Set parameters of dash dcc.Input field'''
-    return dcc.Input(
-        id=name, 
-        value=0.0, 
-        debounce=True,
-        type='number',
-        inputMode='numeric',
-        min=0.0,
-        max=1.0,
-        step=0.01,)
 
 
 def call_rangeslider_inp(name):
@@ -357,20 +496,49 @@ def call_regexp_filter_str(name):
         style={'font-size' : '15px'}
         )
 
-def call_regexp_filter_int(name):
-    '''Set int field for regex search'''
+def call_int_filter_input(name, placeholder):
+    '''Set int field filter'''
     return dcc.Input(
         id=name, 
         value='', 
         debounce=True,
-        placeholder='Feature ID',
+        placeholder=placeholder,
         min=0,
         step=1,
         type='number',
-        style={'font-size' : '15px'}
+        style={'font-size' : '15px'},
         )
 
+def call_float_precursor_inp(name, placeholder, value):
+    '''Set float input field for m/z search'''
+    return dcc.Input(
+        id=name, 
+        value=value, 
+        debounce=True,
+        type='number',
+        placeholder=placeholder,
+        min=0.0,
+        step=0.0001,
+        style={'font-size' : '15px', 'width' : '100%'},
+        )
 
+def call_selected_viz_toggle(name):
+    '''Call toggle for visualization of selected features only'''
+    return dcc.RadioItems(
+            options=[
+                {
+                "label": 'ALL',
+                "value": 'ALL',
+                },
+                {
+                "label": 'SELECTED',
+                "value": 'SELECTED',
+                },
+            ], 
+            value='ALL',
+            id=name,
+            inline=False,
+            )
 
 
 
@@ -390,6 +558,7 @@ dashboard = html.Div([
                 dcc.Store(id='storage_active_sample'),
                 dcc.Store(id='storage_active_feature_index'), 
                 dcc.Store(id='storage_active_feature_id'), 
+                dcc.Store(id='selected_viz_toggle_value'), 
                 ]),
             ###############
                 html.Div(
@@ -487,6 +656,9 @@ dashboard = html.Div([
                     ],
                 ),
             html.Div([
+                call_visualization_selected_name(),
+                call_selected_viz_toggle('selected_viz_toggle'),
+                html.Div(style={'margin-top' : '5px'}),
                 call_novelty_title(),
                 html.Div(call_rangeslider_inp('novelty_threshold')),
                 html.Div(style={'margin-top' : '5px'}),
@@ -503,8 +675,35 @@ dashboard = html.Div([
                 html.Div(call_regexp_filter_str('filter_annotation')),
                 html.Div(style={'margin-top' : '5px'}),
                 call_feature_id_filter_name(),
-                html.Div(call_regexp_filter_int('filter_feature_id')),
+                html.Div(call_int_filter_input('filter_feature_id', 'Feature ID number')),
+                html.Div(style={'margin-top' : '5px'}),
+                call_clique_filter_name(),
+                html.Div(call_int_filter_input('filter_spectral_sim_netw', 'Network ID number')),
+                html.Div(style={'margin-top' : '5px'}),
+                call_foldchange_search_name(),
+                html.Div(call_int_filter_input('filter_fold_change', 'Search fold-change')),
+                html.Div(style={'margin-top' : '5px'}),
+                call_group_search_name(),
+                html.Div(call_regexp_filter_str('filter_group')),
+                html.Div(style={'margin-top' : '5px'}),
                 
+                
+                call_precursor_mz_filter_name(),
+                html.Div([
+                    html.Div(
+                        call_float_precursor_inp('filter_precursor_min', 'min m/z', 0),
+                        style={'width' : '49%','display' : 'inline-block', 'float' : 'left', },
+                        ),
+                    html.Div(
+                        call_float_precursor_inp('filter_precursor_max', 'max m/z', ''),
+                        style={'width' : '49%','display' : 'inline-block', 'float' : 'right', },
+                        ),
+                    ],
+                    style={'display' : 'inline-block', 'margins' : 'auto', 'width' : '100%'},
+                    ),
+                    
+                    
+                    
                 ],
                 style={'margin-left': '10px','font-size': '17px',}
                 ),
@@ -656,7 +855,7 @@ dashboard = html.Div([
             
             ],
             id="dashboard_row_2_col_1",
-            width=2,
+            width=3,
         ),
         #bottom second: spectrum similarity network
         dbc.Col([
@@ -666,7 +865,13 @@ dashboard = html.Div([
                     id='cytoscape',
                     layout={'name': 'cose'},
                     stylesheet=stylesheet_cytoscape,
-                    style={'width': '100%', 'height': '30vh'},
+                    style={
+                        'width': '100%', 
+                        'height': '30vh',
+                        'border-style' : 'solid',
+                        'border-width' : '2px',
+                        'border-color' : color_dict['grey'],
+                        },
                     ),
                 ),
             html.Div([
@@ -687,6 +892,7 @@ dashboard = html.Div([
                     ),
                 ],
                 style={
+                    'margin-top': '10px', 
                     'margin-bottom': '5px', 
                     },
             ),
@@ -760,7 +966,7 @@ dashboard = html.Div([
                 ),
             ],
             id="dashboard_row_2_col_3",
-            width=3,
+            width=2,
             ),
         #bottom fourth: feature info table
         dbc.Col([

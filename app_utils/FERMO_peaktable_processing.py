@@ -313,6 +313,7 @@ def peaktable_processing(
     samples = calculate_metrics(
         samples, 
         feature_dicts,
+        sample_stats,
         )
     log_dict, counter =  write_process_log(
         log_dict, 
