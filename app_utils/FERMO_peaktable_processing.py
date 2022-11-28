@@ -176,14 +176,14 @@ def peaktable_processing(
     samples = get_samplespecific_features(
         peaktable, 
         sample_stats,
-        dict_params['feature_rel_int_fact'],
+        dict_params['relative_intensity_filter_range'],
         )
     log_dict, counter =  write_process_log(
         log_dict, 
         counter, 
         ': '.join([
             str(datetime.now()), 
-            f'''Completed get_samplespecific_features.py: Relative intensity filter : {dict_params['feature_rel_int_fact']};'''
+            f'''Completed get_samplespecific_features.py: Relative intensity range filter : {dict_params['relative_intensity_filter_range']};'''
             ])
         )
 
@@ -286,13 +286,15 @@ def peaktable_processing(
         if os.path.exists(input_folder):
             ms2query_search(
                 feature_dicts, 
-                input_folder)
+                input_folder,
+                dict_params['ms2query_blank_annotation'],
+                )
             log_dict, counter =  write_process_log(
                 log_dict, 
                 counter, 
                 ': '.join([
                     str(datetime.now()),
-                    'Completed ms2query_search.py'
+                    f'''Completed ms2query_search.py: MS2Query blank annotation : {dict_params['ms2query_blank_annotation']};'''
                     ])
                 )
 

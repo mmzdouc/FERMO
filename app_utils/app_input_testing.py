@@ -66,26 +66,6 @@ def test_for_None(value, repl):
     else:
         return value
 
-def assign_params_to_dict(params_cache):
-    '''Assigns parameters to dict
-    
-    Parameters
-    ----------
-    params_cache : `dict`
-    '''
-    return {
-        'mass_dev_ppm' : params_cache['mass_dev'],
-        'min_nr_ms2' : params_cache['min_ms2'],
-        'feature_rel_int_fact' : params_cache['feat_int_filt'],
-        'bioact_fact' : params_cache['bioact_fact'],
-        'column_ret_fact' : params_cache['column_ret_fact'],
-        'spectral_sim_tol' : params_cache['spec_sim_tol'],
-        'spec_sim_score_cutoff' : params_cache['spec_sim_score_cutoff'],
-        'max_nr_links_ss' : params_cache['spec_sim_max_links'],
-        'min_nr_matched_peaks' : params_cache['spec_sim_min_match'],
-        'ms2query' : params_cache['ms2query'],
-        'spec_sim_net_alg' : params_cache['spec_sim_net_alg'],
-        }
 
 ###PEAKTABLE
 
@@ -418,8 +398,28 @@ def prepare_spec_lib_for_json_storage(decoded):
 
 ###SESSION FILE LOADING
 
-def div_session_version_warning(filename, df, __version__):
-    '''Return div for file format error
+def div_session_version_error(filename, version_file, __version__):
+    '''Return div for session file incompatibility error
+    
+    Parameters
+    ----------
+    filename : `str`
+    version_file : `str`
+    __version__ : `str`
+    '''
+    return html.Div([
+        f'''❌ Error: The loaded session file "{filename}"
+        has been created using FERMO version {version_file}. 
+        This is incompatible with the currently running version of
+        FERMO ({__version__}). Please re-process your data or use an 
+        older version of FERMO.
+        '''],
+        style={'color' : 'red'}
+        )
+
+
+def div_session_version_warning(filename, version_file, __version__):
+    '''Return div session file warning
     
     Parameters
     ----------
@@ -427,76 +427,89 @@ def div_session_version_warning(filename, df, __version__):
     df : `pandas.core.frame.DataFrame`
     __version__ : `str`
     '''
-    return html.Div(
+    return html.Div([
         f'''❗ Warning: The loaded session file "{filename}"
-        has been created using "{df.at[2,'Description']}",
-        while the currently running version is "{__version__}". 
-        This might lead to unforseen behaviour of the application.
-        ''')
+        has been created using FERMO version {version_file}. The
+        currently running version of FERMO is {__version__}.
+        While these versions should be compatible, there might be 
+        some unforseen behavior of the application.
+        '''],
+        style={'color' : 'orange'}
+        )
 
 def empty_loading_table():
-    '''Generate empty table for loading page'''
+    '''Generate placeholder table for loading page
+    
+    Returns
+    -------
+    return : ` pd.DataFrame`
+    '''
     content = [
-                ['Date of creation', None],
-                ['Time of creation', None],
-                ['FERMO version', None],
-                ['-----', '-----'],
-                ['Filename: peaktable', None],
-                ['Filename: MS² data', None],
-                ['Filename: group metadata', None],
-                ['Filename: quantitative biological data', None],
-                ['Filename: user-library', None],
-                ['-----', '-----'],
-                ['Mass deviation', None],
-                ['Min nr of fragments per MS² spectrum', None],
-                ['Relative intensity filter', None],
-                ['QuantData factor', None],
-                ['Blank factor', None],
-                ['Fragment similarity tolerance', None],
-                ['Spectrum similarity score cutoff', None],
-                ['Max spectral links', None],
-                ['Min matched peaks', None],
-                ['MS2Query used', None],
-                ['Spectral similarity networking algorithm', None],
-                ['-----', '-----'],
-                ['Process log step', 'Description'],
-            ]
+        ['Date of creation', None],
+        ['Time of creation', None],
+        ['FERMO version', None],
+        ['-----', '-----'],
+        ['Filename: peaktable', None],
+        ['Filename: MS² data', None],
+        ['Filename: group metadata', None],
+        ['Filename: quantitative biological data', None],
+        ['Filename: user-library', None],
+        ['-----', '-----'],
+        ['Mass deviation', None],
+        ['Minimum number of fragments per MS² spectrum', None],
+        ['QuantData factor', None],
+        ['Blank factor', None],
+        ['Relative intensity filter', None],
+        ['Fragment similarity tolerance', None],
+        ['Spectrum similarity score cutoff', None],
+        ['Maximum number of links to each feature in spectral network', None],
+        ['Minimum number of matched peaks in spectral similarity matching', None],
+        ['MS2Query used', None],
+        ['MS2Query blank annotation', None],
+        ['Spectral similarity networking algorithm', None],
+        ['-----', '-----'],
+        ['Process log step', 'Description'],
+        ]
     return pd.DataFrame(content, columns=['Attribute', 'Description'])
 
 def session_loading_table(params, files, metadata, version, logging):
-    '''Generate table to return upon session loading on loading page'''
+    '''Generate info table upon session file loading
     
-    try:
-        content = [
-                    ['Date of creation', metadata['date']],
-                    ['Time of creation', metadata['time']],
-                    ['FERMO version', version],
-                    ['-----', '-----'],
-                    ['Filename: peaktable', files['peaktable_name']],
-                    ['Filename: MS² data', files['mgf_name']],
-                    ['Filename: group metadata', files['metadata_name']],
-                    ['Filename: quantitative biological data', files['bioactivity_name']],
-                    ['Filename: user-library', files['user_library_name']],
-                    ['-----', '-----'],
-                    ['Mass deviation', params['mass_dev_ppm']],
-                    ['Min nr of fragments per MS² spectrum', params['min_nr_ms2']],
-                    ['Relative intensity filter', params['feature_rel_int_fact']],
-                    ['QuantData factor', params['bioact_fact']],
-                    ['Blank factor', params['column_ret_fact']],
-                    ['Fragment similarity tolerance', params['spectral_sim_tol']],
-                    ['Spectrum similarity score cutoff', params['spec_sim_score_cutoff']],
-                    ['Max spectral links', params['max_nr_links_ss']],
-                    ['Min matched peaks', params['min_nr_matched_peaks']],
-                    ['MS2Query used', params['ms2query']],
-                    ['Spectral similarity networking algorithm', params['spec_sim_net_alg']],
-                    ['-----', '-----'],
-                    ['Process log step', 'Description'],
-                ]
+    Returns
+    -------
+    return : ` pd.DataFrame`
+    '''
+    content = [
+        ['Date of creation', metadata['date']],
+        ['Time of creation', metadata['time']],
+        ['FERMO version', version],
+        ['-----', '-----'],
+        ['Filename: peaktable', files['peaktable_name']],
+        ['Filename: MS² data', files['mgf_name']],
+        ['Filename: group metadata', files['metadata_name']],
+        ['Filename: quantitative biological data', files['bioactivity_name']],
+        ['Filename: user-library', files['user_library_name']],
+        ['-----', '-----'],
+        ['Mass deviation', params['mass_dev_ppm']],
+        ['Minimum number of fragments per MS² spectrum', params['min_nr_ms2']],
+        ['QuantData factor', params['bioact_fact']],
+        ['Blank factor', params['column_ret_fact']],
+        ['Relative intensity filter', '-'.join([str(i) for i in params['relative_intensity_filter_range']])],
+        ['Fragment similarity tolerance', params['spectral_sim_tol']],
+        ['Spectrum similarity score cutoff', params['spec_sim_score_cutoff']],
+        ['Maximum number of links to each feature in spectral network', params['max_nr_links_ss']],
+        ['Minimum number of matched peaks in spectral similarity matching', params['min_nr_matched_peaks']],
+        ['MS2Query used', params['ms2query']],
+        ['MS2Query blank annotation', params['ms2query_blank_annotation']],
+        ['Spectral similarity networking algorithm', params['spec_sim_net_alg']],
+        ['-----', '-----'],
+        ['Process log step', 'Description'],
+        ]
+    
+    for entry in logging:
+        content.append([entry, logging[entry]])
+        
+    return pd.DataFrame(content, columns=['Attribute', 'Description'])
 
-        for entry in logging:
-            content.append([entry, logging[entry]])
-        return pd.DataFrame(content, columns=['Attribute', 'Description'])
-    except:
-        return empty_loading_table()
     
     

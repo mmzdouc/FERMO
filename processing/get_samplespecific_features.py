@@ -1,16 +1,15 @@
 import pandas as pd
 
-def get_samplespecific_features(peaktable, sample_stats, topn):
+def get_samplespecific_features(peaktable, sample_stats, filter_range):
     """For each sample, extract features + info from peaktable
     
     Parameters
     ----------
     peaktable : `pandas.core.frame.DataFrame`
     sample_stats : `dict`
-    topn : `float`
-        Float between 0 and 1. Is the threshold (percentage) to filter
-        out low intensity noise peaks. 0.05 means that peaks equal to
-        or lower than 5% relative intensity are filtered from peak table
+    filter_range : `list`
+        List with min and max; features must be inside the range 
+        to be processed further
     
     Returns
     -------
@@ -74,9 +73,12 @@ def get_samplespecific_features(peaktable, sample_stats, topn):
             (sample_df["intensity"].max() - sample_df["intensity"].min()))
             )
         
-        #remove features with a norm_intensity below user-spec topn value
+        #remove features with a norm_intensity outside of user-provided range
         sample_df = sample_df.loc[
-            sample_df.loc[:,"norm_intensity"] >= topn]
+            (sample_df['norm_intensity'] >= filter_range[0])
+            &
+            (sample_df['norm_intensity'] <= filter_range[1])
+            ]
         
         #reset index
         sample_df.reset_index(drop=True, inplace=True)

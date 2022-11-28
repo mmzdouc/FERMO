@@ -2,7 +2,7 @@ from ms2query.run_ms2query import download_zenodo_files
 from ms2query.ms2library import create_library_object_from_one_dir
 import os
 
-def ms2query_search(feature_dicts, ms2query_lib_dir):
+def ms2query_search(feature_dicts, ms2query_lib_dir, blanks):
     '''Compare against embedding using MS2Query
     
     Parameters
@@ -11,6 +11,8 @@ def ms2query_search(feature_dicts, ms2query_lib_dir):
         Feature_ID(keys):feature_dict(values)
     ms2query_lib_dir : `str`
         path to dir containing ms2query libraries
+    blanks : `bool`
+        Indicates if medium components should also be annotated
         
     Notes
     -----
@@ -19,13 +21,18 @@ def ms2query_search(feature_dicts, ms2query_lib_dir):
     query_spectra = list()
     zenodo_DOIs = {"positive": 6997924, "negative": 7107654}
     
-    for i in feature_dicts:
-        if (
-            feature_dicts[i]['ms2spectrum'] is not None
-        # ~ and 
-            # ~ not feature_dicts[i]['blank_associated']
-        ):
-            query_spectra.append(feature_dicts[i]['ms2spectrum'])
+    if blanks:
+        for i in feature_dicts:
+            if feature_dicts[i]['ms2spectrum'] is not None:
+                query_spectra.append(feature_dicts[i]['ms2spectrum'])
+    else:
+        for i in feature_dicts:
+            if (
+                feature_dicts[i]['ms2spectrum'] is not None
+            and 
+                not feature_dicts[i]['blank_associated']
+            ):
+                query_spectra.append(feature_dicts[i]['ms2spectrum'])
     
     try:
         download_zenodo_files(zenodo_DOIs['positive'], 

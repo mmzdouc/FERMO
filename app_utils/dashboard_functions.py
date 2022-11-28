@@ -4,6 +4,8 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import re
+import json
+from dash import dcc, html
 
 from app_utils.variables import color_dict
 
@@ -288,7 +290,18 @@ def generate_subsets(
         }
 
 def calc_diversity_score(sample_stats, samples):
-    '''Calculate diversity scores for each sample, return list'''
+    '''Calculate diversity scores for each sample
+    
+    Parameters
+    ----------
+    sample_stats : `dict`
+    samples : `dict`
+    
+    Returns
+    -------
+    list_div_scores : `list`
+    
+    '''
     list_div_scores = list()
     for sample in samples:
         try:
@@ -311,7 +324,18 @@ def calc_diversity_score(sample_stats, samples):
     return list_div_scores
 
 def calc_specificity_score(sample_stats, samples, sample_unique_cliques):
-    '''Calculate specificity scores for each sample, return list'''
+    '''Calculate specificity scores for each sample
+    
+    Parameters
+    ----------
+    sample_stats : `dict`
+    samples : `dict`
+    sample_unique_cliques : `dict`
+    
+    Returns
+    -------
+    list_spec_scores : `list`
+    '''
     list_spec_scores = list()
     for sample in samples:
         try:
@@ -337,7 +361,21 @@ def append_scatter_text(
     bordercolor,
     feat_dicts
     ):
-    '''Create scatter trace with hoverlabel'''
+    '''Create scatter trace with hoverlabel
+    
+    Parameters
+    ----------
+    row : `Pandas.Series`
+    fill : `str`
+    line : `str`
+    width : `int`
+    bordercolor : `str`
+    feat_dicts : `dict`
+    
+    Returns
+    -------
+    `Plotly graph object scatter trace`
+    '''
     ID=str(row["feature_ID"])
     
     cosine_ann = "None"
@@ -394,13 +432,27 @@ def plot_central_chrom(
     feature_dicts,
     sel_all_vis,
     ):
-    '''Plot central chromatogram'''
+    '''Plot central chromatogram
+    
+    Parameters
+    ----------
+    sel_sample : `str`
+    active_feature_index : `int`
+    sample_stats : `dict`
+    samples : `dict`
+    subsets : `dict`
+    feature_dicts : `dict`
+    sel_all_vis : `str`
+    
+    Returns
+    -------
+    `go.Figure()`
+    '''
     fig = go.Figure()
     fig.update_layout(
         margin = dict(t=0,b=0, r=0),
         height = 300,
         )
-
     fig.update_xaxes(
         autorange=False,
         visible=True,
@@ -409,7 +461,6 @@ def plot_central_chrom(
             (sample_stats["rt_max"]+(sample_stats["rt_range"]*0.05)),
             ],
         )
-    
     fig.update_yaxes(
         autorange=False,
         title_text="Relative Intensity",
@@ -521,7 +572,6 @@ def plot_central_chrom(
                     feature_dicts,
                     )
                 )
-                
 
     if isinstance(active_feature_index, int):
         fig.add_shape(
@@ -554,7 +604,21 @@ def plot_clique_chrom(
     samples,
     feature_dicts,
     ):
-    '''Plot clique chromatogram - overview'''
+    '''Plot clique chromatogram - overview
+    
+    Parameters
+    ----------
+    selected_sample : `str`
+    active_feature_index : `int`
+    active_feature_id : `int`
+    sample_stats : `dict`
+    samples : `dict`
+    feature_dicts : `dict`
+    
+    Returns
+    -------
+    `go.Figure()`
+    '''
     fig = go.Figure()
     
     fig.update_layout(
@@ -620,8 +684,20 @@ def plot_mini_chrom(
     samples,
     feature_dicts,
     ):
-    '''Plot mini-chromatogram overview'''
+    '''Plot mini-chromatogram overview
     
+    Parameters
+    ----------
+    selected_sample : `str`
+    active_feature_id : `int`
+    sample_stats : `dict`
+    samples : `dict`
+    feature_dicts : `dict`
+    
+    Returns
+    -------
+    `go.Figure()`
+    '''
     fig = make_subplots(rows=1, cols=1)
     rt_min = 0
     rt_max = 1
@@ -713,7 +789,6 @@ def plot_mini_chrom(
             rt_max
             ],
         )
-    
     fig.update_yaxes(
     autorange=False,
     range=[0, 1.1],
@@ -735,7 +810,21 @@ def modify_feature_info_df(
     samples,
     sample_stats,
     ):
-    '''Modify feature_info_dataframe for feature info display'''
+    '''Modify feature_info_dataframe for feature info display
+    
+    Parameters
+    ----------
+    smpl : `str`
+    ID : `int`
+    index : `int`
+    feature_dicts : `dict`
+    samples : `dict`
+    sample_stats : `dict`
+    
+    Returns
+    -------
+    `dict`
+    '''
     #change to str for feature dict querying
     ID = str(ID)
     
@@ -759,6 +848,7 @@ def modify_feature_info_df(
     ann_ms2query = None
     mass_diff_ms2query = None
     class_ms2query = None
+    superclass_ms2query = None
     if feat_dicts[ID]['ms2query']:
         ann_ms2query = ''.join([
             'Name: ', feat_dicts[ID]['ms2query_results'][0]['Link'], ';',
@@ -774,6 +864,11 @@ def modify_feature_info_df(
             str(feat_dicts[ID]['ms2query_results'][0]['npc_class_results']),
             ' (NP Classifier);', '<br>',
             str(feat_dicts[ID]['ms2query_results'][0]['cf_subclass']),
+            ' (ClassyFire)' ])
+        superclass_ms2query = ''.join([ 
+            str(feat_dicts[ID]['ms2query_results'][0]['npc_superclass_results']),
+            ' (NP Classifier);', '<br>',
+            str(feat_dicts[ID]['ms2query_results'][0]['cf_superclass']),
             ' (ClassyFire)' ])
     
     fold_diff_list = []
@@ -843,6 +938,7 @@ def modify_feature_info_df(
         ['MS2Query: best analog/match', ann_ms2query],
         ['MS2Query: <i>m/z</i> diff. to best analog/match', mass_diff_ms2query],
         ['MS2Query: pred. class of best analog/match', class_ms2query],
+        ['MS2Query: pred. superclass of best analog/match', superclass_ms2query],
         [placeholder, placeholder],
         ['Found in groups', ("".join(f"{i}<br>" for i in feat_dicts[ID]['set_groups']))],
         ['Fold-differences groups', ("".join(str(i) for i in fold_diff_list))],
@@ -862,7 +958,7 @@ def modify_feature_info_df(
 
 
 def empty_feature_info_df():
-    '''Return empty dataframe'''
+    '''Return empty pandas dataframe as dict'''
     placeholder = '-----'
     data = [
         ['Feature ID', None],
@@ -879,6 +975,7 @@ def empty_feature_info_df():
         ['MS2Query: best analog/match', None],
         ['MS2Query: <i>m/z</i> diff. to best analog/match', None],
         ['MS2Query: pred. class of best analog/match', None],
+        ['MS2Query: pred. superclass of best analog/match', None],
         [placeholder, placeholder],
         ['Found in groups', None],
         ['Fold-differences groups', None],
@@ -905,6 +1002,18 @@ def generate_cyto_elements(
     ):
     '''Generate cytoscape elements.
     
+    Parameters
+    ----------
+    sel_sample : `str`
+    active_feature_id : `int`
+    feature_dicts : `dict`
+    sample_stats : `dict`
+    
+    Returns
+    -------
+    `list`
+    `Dash html.Div()`
+     
     Notes
     -----
     Creates nested list of cytoscape elements (nodes and edges).
@@ -1075,18 +1184,43 @@ def generate_cyto_elements(
             
             #Concatenate nodes and edges into single list
             elements = nodes + edges
-            return elements
+            return elements, html.Div()
         else:
-            return []
+            return [], html.Div(
+                '''Spectral similarity network has too many elements for
+                visualization (>250 features).''',
+                style={
+                    'color' : color_dict['red'],
+                    'font-weight' : 'bold',
+                    'font-size' : '18px',
+                    }
+                )
     else:
-        return []
+        return [], html.Div(
+                '''Selected feature has no associated spectral similarity 
+                network - MS1 only.''',
+                style={
+                    'color' : color_dict['red'],
+                    'font-weight' : 'bold',
+                    'font-size' : '18px',
+                    }
+                )
 
 def add_nodedata(
     data,
     feat_dicts,
     ):
-    '''Append node data to df'''
+    '''Append node data to df
     
+    Parameters
+    ----------
+    data : `dict`
+    feature_dicts : `dict`
+    
+    Returns
+    -------
+    `dict`
+    '''
     annotation = ''.join([
         (feat_dicts[str(data['id'])]['cosine_annotation_list'][0]['name']
             if feat_dicts[str(data['id'])]['cosine_annotation']
@@ -1117,8 +1251,17 @@ def add_nodedata(
 
 
 def add_edgedata(data, feat_dicts,):
-    '''Append edge data to df'''
+    '''Append edge data to df
     
+    Parameters
+    ----------
+    data : `dict`
+    feature_dicts : `dict`
+    
+    Returns
+    -------
+    `dict`
+    '''
     content = [
         ['Connected nodes (IDs)', ''.join([data['source'],'--', data['target']])],
         ['Weight of edge', data['weight']],
@@ -1174,11 +1317,8 @@ def prepare_log_file_filters(contents, thresholds):
         contents['logging_dict']
         ]
     
-    
-
-
 def export_features(feature_dicts):
-    '''From feature dicts, create lists, convert to pandas df'''
+    '''From feature dicts, create lists, return pandas df'''
     t_feature_ID = []
     t_prec_mz = []
     t_avg_ret_time = []
@@ -1229,5 +1369,250 @@ def export_features(feature_dicts):
         'similarity_clique_groups': t_set_groups_clique,
         'groups_fold_differences': t_dict_fold_diff,
         })
+
+def download_sel_sample_all_features(sel_sample, contents):
+    '''Export peaktable of all sample - selected features
+    
+    Parameters
+    ----------
+    sel_sample : `str`
+    contents : `dict`
+    
+    Returns
+    -------
+    `tuple`
+    '''
+    samples_JSON = contents['samples_JSON']
+    param_logging = prepare_log_file(contents)
+    
+    samples = dict()
+    for sample in samples_JSON:
+        samples[sample] = pd.read_json(
+            samples_JSON[sample], 
+            orient='split'
+            )
+    df = export_sel_peaktable(samples, sel_sample)
+    
+    return (
+            dcc.send_string(
+                json.dumps(param_logging, indent=4),
+                'processing_audit_trail.json',
+                ),
+            dcc.send_data_frame(
+                df.to_csv,
+                ''.join([
+                    sel_sample.split('.')[0], 
+                    '_peaktable_all.csv']),
+                )
+            )
+
+def download_sel_sample_sel_features( 
+    sel_sample, 
+    contents, 
+    samples_subsets, 
+    thresholds
+    ):
+    '''Export peaktable of selected sample - selected features
+    
+    Parameters
+    ----------
+    sel_sample : `str`
+    contents : `dict`
+    samples_subsets : `dict`
+    thresholds : `dict`
+    
+    Returns
+    -------
+    `tuple`
+    '''
+    samples_JSON = contents['samples_JSON']
+    param_logging = prepare_log_file_filters(contents, thresholds)
+
+    samples = dict()
+    for sample in samples_JSON:
+        samples[sample] = pd.read_json(
+            samples_JSON[sample], orient='split')
+    
+    active_features_set = set()
+    for sample in samples_subsets:
+        active_features_set.update(
+            samples_subsets[sample]['all_select_no_blank']) 
+
+    df = export_sel_peaktable(samples, sel_sample)
+    df_new = df[df['feature_ID'].isin(active_features_set)]
+    df_new = df_new.reset_index(drop=True)
+    
+    return (
+        dcc.send_string(
+            json.dumps(param_logging, indent=4),
+            'processing_audit_trail.json',
+            ),
+        dcc.send_data_frame(
+            df_new.to_csv,
+            ''.join([
+                sel_sample.split('.')[0], 
+                '_peaktable_selected.csv']),
+            )
+        )
+
+def download_all_samples_all_features(contents):
+    '''Export peaktable of all samples - all features
+    
+    Parameters
+    ----------
+    contents : `dict`
+    
+    Returns
+    -------
+    `tuple`
+    
+    '''
+    samples_JSON = contents['samples_JSON']
+    param_logging = prepare_log_file(contents)
+
+    samples = dict()
+    for sample in samples_JSON:
+        samples[sample] = pd.read_json(
+            samples_JSON[sample], orient='split')
+    
+    list_dfs = []
+    for sample in samples:
+        df = export_sel_peaktable(samples, sample)
+        df['sample'] = sample
+        list_dfs.append(df)
+    df_all = pd.concat(list_dfs)
+    
+    return (
+        dcc.send_string(
+            json.dumps(param_logging, indent=4),
+            'processing_audit_trail.json',
+            ),
+        dcc.send_data_frame(
+            df_all.to_csv, 
+            'FERMO_all_samples_all_features.csv',
+            )
+        )
+
+def download_all_samples_selected_features(
+    contents, 
+    samples_subsets, 
+    thresholds):
+    '''Export peaktable of all samples - selected features
+    
+    Parameters
+    ----------
+    contents : `dict`
+    samples_subsets : `dict`
+    thresholds : `dict`
+    
+    Returns
+    -------
+    `tuple`
+    '''
+    samples_JSON = contents['samples_JSON']
+    param_logging = prepare_log_file_filters(contents, thresholds)
+
+    samples = dict()
+    for sample in samples_JSON:
+        samples[sample] = pd.read_json(
+            samples_JSON[sample], orient='split')
+
+    active_features_set = set()
+    for sample in samples_subsets:
+        active_features_set.update(
+            samples_subsets[sample]['all_select_no_blank']) 
+    
+    mod_dfs = dict()
+    for sample in samples:
+        mod_dfs[sample] = samples[sample][
+            samples[sample]['feature_ID'].isin(active_features_set)]
+        mod_dfs[sample] = mod_dfs[sample].reset_index(drop=True)
+        
+        
+    list_dfs = []
+    for sample in mod_dfs:
+        df = export_sel_peaktable(mod_dfs, sample)
+        df['sample'] = sample
+        list_dfs.append(df)
+    df_all = pd.concat(list_dfs)
+    
+    return (
+        dcc.send_string(
+            json.dumps(param_logging, indent=4),
+            'processing_audit_trail.json',
+            ),
+        dcc.send_data_frame(
+            df_all.to_csv, 
+            'FERMO_all_samples_selected_features.csv',
+            )
+        )
+
+def download_all_features(contents):
+    '''Convert feature dicts into df and export
+    
+    Parameters
+    ----------
+    contents : `dict`
+    
+    Returns
+    -------
+    `tuple`
+    '''
+    feature_dicts = contents['feature_dicts']
+    param_logging = prepare_log_file(contents)
+    df = export_features(feature_dicts)
+    return (
+        dcc.send_string(
+            json.dumps(param_logging, indent=4), 
+            'processing_audit_trail.json',
+            ),
+        dcc.send_data_frame(
+            df.to_csv, 
+            'FERMO_all_features.csv',
+            )
+        )
+
+def download_selected_features(
+    contents,
+    samples_subsets,
+    thresholds):
+    '''Convert feature dicts into df and export
+    
+    Parameters
+    ----------
+    contents : `dict`
+    samples_subsets : `dict`
+    thresholds : `dict`
+    
+    Returns
+    -------
+    `tuple`
+    
+    '''
+    feature_dicts = contents['feature_dicts']
+    
+    active_features_set = set()
+    for sample in samples_subsets:
+        active_features_set.update(
+            samples_subsets[sample]['all_select_no_blank']) 
+    
+    active_feature_dict = dict()
+    for feature in feature_dicts:
+        if int(feature) in active_features_set:
+            active_feature_dict[feature] = feature_dicts[feature]
+    
+    param_logging = prepare_log_file_filters(contents, thresholds)
+    df = export_features(active_feature_dict)
+    
+    return (
+        dcc.send_string(
+            json.dumps(param_logging, indent=4),
+            'processing_audit_trail.json',
+            ),
+        dcc.send_data_frame(
+            df.to_csv, 
+            'FERMO_selected_features.csv',
+            )
+        )
 
 

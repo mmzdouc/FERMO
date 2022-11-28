@@ -77,6 +77,7 @@ def call_mass_dev_inp():
             value=20, 
             min=0,
             step=1,
+            style={'width' : '30%'},
             ),
         ])
 
@@ -113,44 +114,7 @@ def call_min_ms2_inpt():
             value=8, 
             min=0,
             step=1,
-            ),
-        ])
-
-def call_feat_int_filt():
-    '''Call feature intensity filter input field'''
-    return html.Div([
-        html.Div([ 
-            '''Relative intensity filter:
-            ''',
-            html.A(
-                html.Div(
-                    "?",
-                    id="feat_int_filt_tooltip",
-                    className="info_dot"
-                    ),
-                href='https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page', 
-                target='_blank',
-                ),
-            ]),
-        dbc.Tooltip(
-            html.Div(
-                '''For each sample, remove features with relative intensity lower than the set value.
-                A value of 0 includes all features, a value of 0.05 excludes all features with a relative intensity below 0.05 (e.g. bottom 5%). For more information, click this info-button.
-                ''',
-                ),
-            placement='right',
-            className='info_dot_tooltip',
-            target="feat_int_filt_tooltip",
-            ),
-        dbc.Input(
-            id='feat_int_filt_inp',
-            type='number',
-            inputmode='numeric',
-            debounce=False,
-            value=0, 
-            min=0,
-            max=0.99,
-            step=0.01,
+            style={'width' : '30%'},
             ),
         ])
 
@@ -187,6 +151,7 @@ def call_bioact_fact_inp():
             value=10, 
             min=0,
             step=1,
+            style={'width' : '30%'},
             ),
         ])
 
@@ -223,6 +188,7 @@ def call_column_ret_fact_inp():
             value=10, 
             min=0,
             step=1,
+            style={'width' : '30%'},
             ),
         ])
 
@@ -230,7 +196,7 @@ def call_ms2query_toggle():
     '''Call toggle for ms2query switch'''
     return html.Div([
         html.Div([
-            '''MS2Query
+            '''MS2Query:
             ''',
             html.A(
                 html.Div(
@@ -274,7 +240,7 @@ def call_spectral_sim_network_toggle():
     '''Call toggle for spectral similarity switch'''
     return html.Div([
         html.Div([
-            '''Spectral similarity networking
+            '''Spectral similarity networking algorithm:
             ''',
             html.A(
                 html.Div(
@@ -350,6 +316,7 @@ def call_spec_sim_tol_inp():
             value=0.1, 
             min=0,
             step=0.01,
+            style={'width' : '30%'},
             ),
         ])
 
@@ -388,6 +355,7 @@ def call_spec_sim_score_cutoff_inp():
             min=0,
             max=1,
             step=0.01,
+            style={'width' : '30%'},
             ),
         ])
 
@@ -426,6 +394,7 @@ def call_spec_sim_max_links_inp():
             min=0,
             max=10,
             step=1,
+            style={'width' : '30%'},
             ),
         ])
 
@@ -462,7 +431,105 @@ def call_spec_sim_min_match_inp():
             value=8, 
             min=0,
             step=1,
+            style={'width' : '30%'},
             ),
+        ])
+
+
+def call_rel_intens_filter_range_inp():
+    '''Call the relative intensity filter range input field '''
+    return html.Div([
+        html.Div([ 
+            '''Relative intensity filter:
+            ''',
+            html.A(
+                html.Div(
+                    "?",
+                    id="rel_intens_filter_range_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter to remove features with relative intensity 
+                outside of the selected range from the analysis. This can
+                be used to reduce low-intensity features to speed up 
+                MS2Query annotation, or to remove all-dominating features, such as solvent peaks. For more information, click this info-button.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="rel_intens_filter_range_tooltip",
+            ),
+        html.Div([
+            dcc.RangeSlider(
+                id='relative_intensity_filter_range',
+                min=0,
+                max=1,
+                marks=None,
+                value=[0,1],
+                tooltip={
+                    "placement": "bottom",
+                    "always_visible": True
+                    },
+                allowCross=False,
+                pushable=0,
+                updatemode='mouseup',
+                ),
+            ],
+            style={'width' : '30%'},
+            ),
+        ])
+
+
+def call_ms2query_blank_annot_toggle():
+    '''Call toggle for ms2query blank features switch'''
+    return html.Div([
+        html.Div([
+            '''MS2Query - annotate features from blanks?
+            ''',
+            html.A(
+                html.Div(
+                    "?",
+                    id="ms2query_blank_annot_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+                html.Div(
+                    '''Toggle to switch on annotation of blank-associated
+                    features by MS2Query. This can give additional 
+                    information, but also leads to an increase in 
+                    computation time, since there are more features to 
+                    process.
+                    ''',
+                    ),
+                placement='right',
+                className='info_dot_tooltip',
+                target="ms2query_blank_annot_tooltip",
+            ),
+        html.Div(style={'margin-top' : '5px'}),
+        dcc.RadioItems(
+            options=[
+                {
+                "label": 'ON',
+                "value": True,
+                },
+                {
+                "label": 'OFF',
+                "value": False,
+                },
+            ], 
+            value=False,
+            id='ms2query_blank_annotation',
+            inline=False,
+            )
         ])
 
 def call_bioact_type_dd():
@@ -621,10 +688,6 @@ def call_userlib_upload():
         ])
 
 
-
-
-
-
 processing = html.Div([
     ###first row###
     dbc.Row([
@@ -708,15 +771,17 @@ processing = html.Div([
                 html.Div(style={'margin-top' : '10px'}),
                 call_min_ms2_inpt(),
                 html.Div(style={'margin-top' : '10px'}),
-                call_feat_int_filt(),
-                html.Div(style={'margin-top' : '10px'}),
                 call_bioact_fact_inp(),
                 html.Div(style={'margin-top' : '10px'}),
                 call_column_ret_fact_inp(),
+                html.Div(style={'margin-top' : '10px'}),
+                call_rel_intens_filter_range_inp(),
                 html.Div(style={'margin-top' : '20px'}),
                 html.H4('Networking and annotation parameters'),
                 html.Div(style={'margin-top' : '10px'}),
                 call_ms2query_toggle(),
+                html.Div(style={'margin-top' : '10px'}),
+                call_ms2query_blank_annot_toggle(),
                 html.Div(style={'margin-top' : '10px'}),
                 call_spectral_sim_network_toggle(),
                 html.Div(style={'margin-top' : '10px'}),
@@ -747,9 +812,8 @@ processing = html.Div([
                 call_dashboard_processing_button(),
                 ###STORAGE###
                 #Helper function
-                html.Div(id='store_bioact_type', hidden=True),
+                html.Div(id='store_bioact_type'),
                 #Parameter storage
-                html.Div(id='params_cache', hidden=True),
                 dcc.Store(id='out_params_assignment'),
                 #File storage
                 dcc.Store(id='upload_peaktable_store'),

@@ -153,7 +153,9 @@ def call_rel_int_title():
             className='info_dot_tooltip',
             target="call_rel_int_title_tooltip",
             ),
-        ])
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
 
 def call_adduct_title():
     '''Adduct/isotope title + info button'''
@@ -183,7 +185,9 @@ def call_adduct_title():
             className='info_dot_tooltip',
             target="call_adduct_title_tooltip",
             ),
-        ])
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
 
 def call_bioactivity_title():
     '''Bioactivity factor title + info button'''
@@ -209,7 +213,9 @@ def call_bioactivity_title():
             className='info_dot_tooltip',
             target="call_bioactivity_title_tooltip",
             ),
-        ])
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
 
 def call_novelty_title():
     '''Novelty factor title + info button'''
@@ -235,7 +241,9 @@ def call_novelty_title():
             className='info_dot_tooltip',
             target="call_novelty_title_tooltip",
             ),
-        ])
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
 
 def call_annotation_search_title():
     '''Title for adduct search via regexp'''
@@ -264,7 +272,9 @@ def call_annotation_search_title():
             className='info_dot_tooltip',
             target="call_annotation_search_title_tooltip",
             ),
-        ])
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
 
 def call_feature_id_filter_name():
     '''Title for feature id search'''
@@ -292,13 +302,15 @@ def call_feature_id_filter_name():
             className='info_dot_tooltip',
             target="call_feature_id_filter_name_tooltip",
             ),
-        ])
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
 
 def call_clique_filter_name():
     '''Title for clique id search'''
     return html.Div([
         html.Div([ 
-            "Spectral similarity network ID search: ",
+            "Spectral network ID search: ",
             html.A(
                 html.Div(
                     "?",
@@ -322,7 +334,9 @@ def call_clique_filter_name():
             className='info_dot_tooltip',
             target="call_clique_filter_name_tooltip",
             ),
-        ])
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
 
 
 def call_precursor_mz_filter_name():
@@ -351,7 +365,9 @@ def call_precursor_mz_filter_name():
             className='info_dot_tooltip',
             target="call_precursor_mz_filter_name_tooltip",
             ),
-        ])
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
 
 def call_visualization_selected_name():
     '''Title for visualization of selected features only'''
@@ -380,7 +396,9 @@ def call_visualization_selected_name():
             className='info_dot_tooltip',
             target="call_visualization_selected_name_tooltip",
             ),
-        ])
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
 
 
 def call_foldchange_search_name():
@@ -412,7 +430,9 @@ def call_foldchange_search_name():
             className='info_dot_tooltip',
             target="call_foldchange_search_name",
             ),
-        ])
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
 
 def call_group_search_name():
     '''Title for group search'''
@@ -444,61 +464,65 @@ def call_group_search_name():
             className='info_dot_tooltip',
             target="call_group_search_name_tooltip",
             ),
-        ])
-
-
-
-
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
 
 def call_rangeslider_inp(name):
     '''Set parameters of dash dcc.rangeslider field'''
-    return dcc.RangeSlider(
-        id=name,
-        min=0,
-        max=1,
-        marks=None,
-        value=[0,1],
-        tooltip={
-            "placement": "bottom",
-            "always_visible": True
-            },
-        allowCross=False,
-        pushable=0,
-        updatemode='mouseup',
+    return html.Div([
+        dcc.RangeSlider(
+            id=name,
+            min=0,
+            max=1,
+            marks=None,
+            value=[0,1],
+            tooltip={
+                "placement": "bottom",
+                "always_visible": True
+                },
+            allowCross=False,
+            pushable=0,
+            updatemode='mouseup',
+            )],
+            style={'display': 'inline-block', 'width': '60%',},
         )
 
 def call_bioactivity_toggle(name):
     '''Call toggle for bioactivity'''
-    return dcc.RadioItems(
-            options=[
-                {
-                "label": 'ON',
-                "value": 0.1,
-                },
-                {
-                "label": 'OFF',
-                "value": 0,
-                },
-            ], 
-            value=0,
-            id=name,
-            inline=False,
-            )
+    return html.Div(dcc.RadioItems(
+        options=[
+            {
+            "label": 'ON',
+            "value": 0.1,
+            },
+            {
+            "label": 'OFF',
+            "value": 0,
+            },
+        ], 
+        value=0,
+        id=name,
+        inline=False,
+        )
+        )
 
 def call_regexp_filter_str(name):
     '''Set text field for regex search'''
-    return dcc.Input(
+    return html.Div(dcc.Input(
         id=name, 
         value='', 
         debounce=True,
         placeholder='Regular expression search',
         type='text',
-        style={'font-size' : '15px'}
+        style={'font-size' : '15px','width': '100%',},
+        ),
+        style={'width': '60%',},
         )
 
 def call_int_filter_input(name, placeholder):
     '''Set int field filter'''
-    return dcc.Input(
+    return html.Div(dcc.Input(
         id=name, 
         value='', 
         debounce=True,
@@ -506,12 +530,14 @@ def call_int_filter_input(name, placeholder):
         min=0,
         step=1,
         type='number',
-        style={'font-size' : '15px'},
+        style={'font-size' : '15px','width': '100%',},
+        ),
+        style={'width': '60%',},
         )
 
 def call_float_precursor_inp(name, placeholder, value):
     '''Set float input field for m/z search'''
-    return dcc.Input(
+    return html.Div(dcc.Input(
         id=name, 
         value=value, 
         debounce=True,
@@ -520,27 +546,173 @@ def call_float_precursor_inp(name, placeholder, value):
         min=0.0,
         step=0.0001,
         style={'font-size' : '15px', 'width' : '100%'},
-        )
+        ))
 
 def call_selected_viz_toggle(name):
     '''Call toggle for visualization of selected features only'''
-    return dcc.RadioItems(
+    return html.Div(dcc.RadioItems(
+        options=[
+            {
+            "label": 'ALL',
+            "value": 'ALL',
+            },
+            {
+            "label": 'SELECTED',
+            "value": 'SELECTED',
+            },
+        ], 
+        value='ALL',
+        id=name,
+        inline=False,
+        ))
+
+def call_header_filter_column():
+    '''Call div of header filter column'''
+    return html.Div([
+        html.Hr(style={
+            'margin-top' : '10px',
+            }),
+        html.Div('Set filters for cutoff and press enter:',
+            style={
+                'font-size': '17px',
+                'margin-left' : '10px',
+                }
+            ),
+        html.Hr(style={
+            'margin-top' : '10px',
+            'margin-bottom' : '10px',
+            }),
+        ],
+        style={
+            'display' : 'inline-block',
+            'width' : '75%',
+            }
+        )
+
+def call_header_export():
+    '''Call div of header export'''
+    return html.Div([
+        html.Hr(style={
+            'margin-top' : '10px',
+            }),
+        html.Div('Export features as tables (.csv):',
+            style={
+                'font-size': '17px',
+                'margin-left' : '10px',
+                }
+            ),
+        html.Hr(style={
+            'margin-top' : '10px',
+            'margin-bottom' : '10px',
+            }),
+        ],
+        style={
+            'display' : 'inline-block',
+            'width' : '75%',
+            }
+        )
+
+def call_precursor_mz_filter_wrapper():
+    '''Call div of precursor_mz_filter_wrapper '''
+    return html.Div([
+        html.Div(
+            call_float_precursor_inp(
+                'filter_precursor_min', 
+                'min m/z', 
+                0
+                ),
+            style={
+                'width' : '49%',
+                'display' : 'inline-block', 
+                'float' : 'left', 
+                },
+            ),
+        html.Div(
+            call_float_precursor_inp(
+                'filter_precursor_max', 
+                'max m/z', 
+                ''),
+            style={
+                'width' : '49%',
+                'display' : 'inline-block', 
+                'float' : 'right', },
+            ),
+        ],
+        style={
+            'display' : 'inline-block', 
+            'margins' : 'auto',
+            'width' : '60%'},
+        )
+
+def call_export_session_file_button():
+    '''Call session file export button'''
+    return html.Div([
+        dbc.Button(
+            "Save FERMO session file (JSON)",
+            id='button_export_session',
+            n_clicks=0,
+            className="button_small_class",
+            style={
+                'width' : '100%',
+                'padding' : '15px',
+                'font-size' : '16px',
+                }
+            ),
+        dcc.Download(id="export_session_file"),
+        ],
+        style={
+            'margin' : 'auto',
+            'margin-left' : '10px',
+            'width' : '60%',
+            'display' : 'inline-block',
+            }
+        )
+
+
+
+
+def call_dd_menu_export():
+    '''Call dropdown menu for feature info export'''
+    return html.Div(
+        dcc.Dropdown(
             options=[
-                {
-                "label": 'ALL',
-                "value": 'ALL',
-                },
-                {
-                "label": 'SELECTED',
-                "value": 'SELECTED',
-                },
-            ], 
-            value='ALL',
-            id=name,
-            inline=False,
-            )
+               {'label': 'Peak table | selected sample, selected features', 'value': 'peak_sel_sam_sel_feat'},
+               {'label': 'Peak table | selected sample, all features', 'value': 'peak_sel_sam_all_feat'},
+               {'label': 'Peak table | all samples, selected features', 'value': 'peak_all_sam_sel_feat'},
+               {'label': 'Peak table | all samples, all features', 'value': 'peak_all_sam_all_feat'},
+               {'label': 'Feature table | selected features', 'value': 'feature_sel'},
+               {'label': 'Feature table | all features', 'value': 'feature_all'},
+               ],
+            value=None,
+            id='dd_export_type',
+            style={'width' : '100%'}
+            ),
+            style={'width' : '60%', 'margin-left' : '10px',}
+        )
 
-
+def call_feature_export_button():
+    '''Call peaktable/feature table export button'''
+    return html.Div(
+        html.Div([
+            html.Div([
+                dbc.Button(
+                    "Export table",
+                    id='feature_export_button',
+                    n_clicks=0,
+                    className="button_small_class",
+                    style={'width' : '100%',}
+                    ),
+                ],
+            ),
+            dcc.Download(id="download_feature_export_button"),
+            dcc.Download(id="download_feature_export_logging"),
+            ]),
+        style={
+            'display' : 'inline-block',
+            'margins' : 'auto',
+            'margin-left' : '10px',
+            'width' : '60%'},
+        )
 
 ##########
 #PAGE
@@ -561,6 +733,26 @@ dashboard = html.Div([
                 dcc.Store(id='selected_viz_toggle_value'), 
                 ]),
             ###############
+                html.Div(style={'margin-top' : '10px'}),
+                html.Div(
+                    dash_table.DataTable(
+                        id='table_general_stats',
+                        columns=[
+                            {"name": i, "id": i} 
+                            for i in [
+                                'Nr of samples',
+                                'Nr of features',
+                                'Selected',
+                                'Blank',
+                                'Non-blank',
+                                ]
+                            ],
+                        style_as_list_view=True,
+                        style_data=style_data_table,
+                        style_header=style_header_table,
+                        ),
+                ),
+                html.Div(style={'margin-top' : '10px'}),
                 html.Div(
                     dash_table.DataTable(
                         id='table_sample_names',
@@ -571,9 +763,11 @@ dashboard = html.Div([
                                 'Group',
                                 'Diversity score',
                                 'Spec score',
+                                'Mean novelty score',
+                                'Selected',
                                 'Total',
                                 'Non-blank',
-                                'Over cutoff',]
+                                ]
                             ],
                         style_as_list_view=True,
                         style_data=style_data_table,
@@ -586,7 +780,6 @@ dashboard = html.Div([
                         tooltip_delay=0,
                         tooltip_duration=None,
                         ),
-                    style={'display': 'inline-block'},
                 ),
             ],
             id="dashboard_row_1_col_1",
@@ -642,224 +835,78 @@ dashboard = html.Div([
     ),
     dbc.Row([
         dbc.Col([
-            html.Div([
-                    html.Hr(style={'margin-top' : '10px',}),
-                    html.Div('Set filters for cutoff and press enter:',
-                        style={
-                            'display' : 'inline-block',
-                            'font-size': '17px',
-                            'width' : '100%',
-                            'margin-left' : '10px',
-                            }
-                        ),
-                    html.Hr(style={'margin-top' : '10px','margin-bottom' : '10px',}),
-                    ],
+            html.Hr(
+                style={
+                    'margin-top' : '10px',
+                    # ~ 'margin-bottom' : '10px',
+                    'width' : '75%',
+                    'display' : 'inline-block',
+                    }
                 ),
+            call_export_session_file_button(),
+            call_header_filter_column(),
             html.Div([
                 call_visualization_selected_name(),
                 call_selected_viz_toggle('selected_viz_toggle'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_novelty_title(),
-                html.Div(call_rangeslider_inp('novelty_threshold')),
+                call_rangeslider_inp('novelty_threshold'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_rel_int_title(),
-                html.Div(call_rangeslider_inp('rel_intensity_threshold')),
+                call_rangeslider_inp('rel_intensity_threshold'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_bioactivity_title(),
-                html.Div(call_bioactivity_toggle('bioactivity_threshold')),
+                call_bioactivity_toggle('bioactivity_threshold'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_adduct_title(),
-                html.Div(call_regexp_filter_str('convolutedness_threshold')),
+                call_regexp_filter_str('convolutedness_threshold'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_annotation_search_title(),
-                html.Div(call_regexp_filter_str('filter_annotation')),
+                call_regexp_filter_str('filter_annotation'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_feature_id_filter_name(),
-                html.Div(call_int_filter_input('filter_feature_id', 'Feature ID number')),
+                call_int_filter_input('filter_feature_id', 'Feature ID number'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_clique_filter_name(),
-                html.Div(call_int_filter_input('filter_spectral_sim_netw', 'Network ID number')),
+                call_int_filter_input('filter_spectral_sim_netw', 'Network ID number'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_foldchange_search_name(),
-                html.Div(call_int_filter_input('filter_fold_change', 'Search fold-change')),
+                call_int_filter_input('filter_fold_change', 'Search fold-change'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_group_search_name(),
-                html.Div(call_regexp_filter_str('filter_group')),
+                call_regexp_filter_str('filter_group'),
                 html.Div(style={'margin-top' : '5px'}),
-                
-                
                 call_precursor_mz_filter_name(),
-                html.Div([
-                    html.Div(
-                        call_float_precursor_inp('filter_precursor_min', 'min m/z', 0),
-                        style={'width' : '49%','display' : 'inline-block', 'float' : 'left', },
-                        ),
-                    html.Div(
-                        call_float_precursor_inp('filter_precursor_max', 'max m/z', ''),
-                        style={'width' : '49%','display' : 'inline-block', 'float' : 'right', },
-                        ),
-                    ],
-                    style={'display' : 'inline-block', 'margins' : 'auto', 'width' : '100%'},
-                    ),
-                    
-                    
-                    
+                call_precursor_mz_filter_wrapper(),
                 ],
                 style={'margin-left': '10px','font-size': '17px',}
                 ),
-                
-                
-                
-                
-            html.Hr(
-                style={
-                    'margin-top' : '10px',
-                    'margin-bottom' : '10px',
-                    }
-                ),
-                
-            html.Div([
-                html.Div([
-                    dbc.Button(
-                        "Save FERMO session file (JSON)",
-                        id='button_export_session',
-                        n_clicks=0,
-                        className="button_small_class",
-                        style={
-                            'width' : '100%',
-                            'padding' : '15px',
-                            'font-size' : '16px',
-                            }
-                        ),
-                    ],
-                style={'margin' : 'auto','width' : '100%',}
-                ),
-                dcc.Download(id="export_session_file"),
-                ]),
-                html.Div([
-                    html.Hr(style={'margin-top' : '10px',}),
-                    html.Div('Export features as tables (.csv):',
-                        style={
-                            'display' : 'inline-block',
-                            'font-size': '17px',
-                            'width' : '100%',
-                            'margin-left' : '10px',
-                            }
-                        ),
-                    html.Hr(style={'margin-top' : '10px','margin-bottom' : '10px',}),
-                    ],
-                ),
-            html.Div([
-                html.Div([
-                    html.Div([
-                        dbc.Button(
-                            "Peak table - selected sample - all features",
-                            id='button_peak_table',
-                            n_clicks=0,
-                            className="button_small_class",
-                            style={'width' : '100%',}
-                            ),
-                        ],
-                    style={'width' : '49%','display' : 'inline-block', 'float' : 'left', },
-                    ),
-                    dcc.Download(id="download_peak_table"),
-                    dcc.Download(id="download_peak_table_logging"),
-                    ]),
-                html.Div([
-                    html.Div([
-                        dbc.Button(
-                            "Peak table - selected sample - selected features",
-                            id='button_peak_table_selected',
-                            n_clicks=0,
-                            className="button_small_class",
-                            style={'width' : '100%',}
-                            ),
-                        ],
-                    style={'width' : '49%','display' : 'inline-block', 'float' : 'right', },
-                    ),
-                    dcc.Download(id="download_peak_table_selected_features"),
-                    dcc.Download(id="download_peak_table_selected_features_logging"),
-                    ]),
-                ],
-                style={'display' : 'inline-block', 'margins' : 'auto', 'width' : '100%'},
-            ),
-            html.Div([
-                html.Div([
-                    html.Div([
-                        dbc.Button(
-                            "Peak tables - all samples - all features",
-                            id='button_all_peak_table_all_features',
-                            n_clicks=0,
-                            className="button_small_class",
-                            style={'width' : '100%',}
-                            ),
-                        ],
-                    style={'width' : '49%','display' : 'inline-block', 'float' : 'left', },
-                    ),
-                    dcc.Download(id="download_all_peak_table"),
-                    dcc.Download(id="download_all_peak_table_logging"),
-                    ]),
-                html.Div([
-                    html.Div([
-                        dbc.Button(
-                            "Peak tables - all samples - selected features",
-                            id='button_all_peak_table_selected_features',
-                            n_clicks=0,
-                            className="button_small_class",
-                            style={'width' : '100%',}
-                            ),
-                        ],
-                    style={'width' : '49%','display' : 'inline-block', 'float' : 'right', },
-                    ),
-                    dcc.Download(id="download_selected_all_peak_table"),
-                    dcc.Download(id="download_selected_all_peak_table_logging"),
-                    ]),
-                    ],
-                style={'display' : 'inline-block', 'margins' : 'auto', 'width' : '100%'},
-            ),
-            html.Div([
-                html.Div([
-                    html.Div([
-                        dbc.Button(
-                            "Feature table - all features",
-                            id='button_all_features_table',
-                            n_clicks=0,
-                            className="button_small_class",
-                            style={'width' : '100%',}
-                            ),
-                        ],
-                    style={'width' : '49%','display' : 'inline-block', 'float' : 'left',},
-                    ),
-                    dcc.Download(id="download_all_features_table"),
-                    dcc.Download(id="download_all_features_table_logging"),
-                    ]),
-                html.Div([
-                    html.Div([
-                        dbc.Button(
-                            "Feature table - selected features",
-                            id='button_selected_features_table',
-                            n_clicks=0,
-                            className="button_small_class",
-                            style={'width' : '100%',}
-                            ),
-                        ],
-                    style={'width' : '49%','display' : 'inline-block', 'float' : 'right',},
-                    ),
-                    dcc.Download(id="download_selected_features_table"),
-                    dcc.Download(id="download_selected_features_table_logging"),
-                    ]),
-                    ],
-                style={'display' : 'inline-block', 'margins' : 'auto', 'width' : '100%'},
-            ),
-            
-            
+            call_header_export(),
+            call_dd_menu_export(),
+            html.Div(style={'margin-top' : '5px'}),
+            call_feature_export_button(),
+            html.Div(style={'margin-top' : '5px'}),
             ],
             id="dashboard_row_2_col_1",
             width=3,
         ),
         #bottom second: spectrum similarity network
         dbc.Col([
-            html.H3('Cytoscape view - spectral similarity networking'),
+            html.Div(
+                'Cytoscape view - spectral similarity networking',
+                style={
+                    'margin-bottom' : '10px', 
+                    'font-size' : '18px',
+                    'font-weight' : 'bold',
+                    },
+                ),
+            html.Div(
+                id='cytoscape_error_message', 
+                style={
+                    'margin-bottom' : '10px', 
+                    'font-size' : '16px'
+                    },
+                ),
             html.Div(
                 cyto.Cytoscape(
                     id='cytoscape',

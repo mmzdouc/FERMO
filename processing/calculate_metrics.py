@@ -21,9 +21,9 @@ def calculate_feature_score(
     """
     return {
         'rel_intensity_p' : float(row["norm_intensity"]),
-        'convolutedness_p' : convolutedness(row, samples, sample),
-        'bioactivity_p' : bioactivity(row, feature_dicts),
-        'novelty_p' : novelty_new(row, feature_dicts, sample_stats),
+        'convolutedness_p' : float(convolutedness(row, samples, sample)),
+        'bioactivity_p' : float(bioactivity(row, feature_dicts)),
+        'novelty_p' : float(novelty_new(row, feature_dicts, sample_stats)),
         'blank_ass' : in_blank(row, feature_dicts),
         }
 
@@ -369,7 +369,7 @@ def calculate_metrics(samples, feature_dicts, sample_stats):
                 )
 
             feature_dicts[int(row["feature_ID"])]['novelty_score'
-                ] = range(feature_scores['novelty_p'],3)
+                ] = round(feature_scores['novelty_p'],3)
             
             #appending to lists
             rel_intensity.append(feature_scores['rel_intensity_p'])

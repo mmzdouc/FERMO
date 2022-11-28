@@ -4,6 +4,7 @@ from dash import Dash, html, dcc, Input, Output, State, callback
 from dash import dash_table, ctx, DiskcacheManager, CeleryManager
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
+from statistics import mean
 
 ###OTHER EXTERNAL MODULES###
 
@@ -33,7 +34,6 @@ from app_utils.app_input_testing import (
     div_successful_load_message,
     div_no_file_loaded,
     test_for_None,
-    assign_params_to_dict,
     extract_mgf_for_json_storage,
     div_no_quantbio_format,
     assert_bioactivity_format,
@@ -44,6 +44,7 @@ from app_utils.app_input_testing import (
     div_session_version_warning,
     empty_loading_table,
     session_loading_table,
+    div_session_version_error,
     )
 
 from app_utils.FERMO_peaktable_processing import (
@@ -66,7 +67,13 @@ from app_utils.dashboard_functions import (
     plot_mini_chrom,
     plot_clique_chrom,
     plot_central_chrom,
-    prepare_log_file_filters
+    prepare_log_file_filters,
+    download_sel_sample_all_features,
+    download_sel_sample_sel_features,
+    download_all_samples_all_features,
+    download_all_samples_selected_features,
+    download_all_features,
+    download_selected_features,
     )
 
 from app_utils.variables import (
@@ -108,13 +115,11 @@ framework_app = dbc.Container([
             ##ROUTING
             dcc.Store(id='store_landing'),
             dcc.Store(id='store_processing'),
-            # ~ dcc.Store(id='store_peakpicking'),
             dcc.Store(id='store_loading'),
             
             ##PROCESSING
             dcc.Store(id='data_processing_FERMO'),
             dcc.Store(id='processed_data_FERMO'),
-            # ~ dcc.Store(id='peakpicking_data_FERMO'),
             dcc.Store(id='loaded_data_FERMO'),
             
             ##LOCATION - 'BROWSER BAR'
@@ -149,8 +154,6 @@ def app_display_page(pathname):
         return dashboard
     elif pathname == '/processing':
         return processing
-    # ~ elif pathname == '/peakpicking':
-        # ~ return peakpicking
     elif pathname == '/loading':
         return loading
     else:
@@ -160,13 +163,11 @@ def app_display_page(pathname):
     Output('url', 'pathname'),
     Input('store_landing', 'data'),
     Input('store_processing', 'data'),
-    # ~ Input('store_peakpicking', 'data'),
     Input('store_loading', 'data'),
     )
 def app_return_pathname(
     landing, 
     processing, 
-    # ~ peakpicking,
     loading,
     ):
     '''Combine callback input for routing, decision via ctx.triggered_id'''
@@ -174,34 +175,27 @@ def app_return_pathname(
         return landing
     elif ctx.triggered_id == 'store_processing':
         return processing
-    # ~ elif ctx.triggered_id == 'store_peakpicking':
-        # ~ return peakpicking
     elif ctx.triggered_id == 'store_loading':
         return loading
 
 @callback(
     Output('store_landing', 'data'),
     Input('call_processing_button', 'n_clicks'),
-    # ~ Input('call_peakpicking_button', 'n_clicks'),
     Input('call_loading_button', 'n_clicks'),
     )
 def landing_call_pages(
     processing_page, 
-    # ~ peakpicking_page,
     loading_page,
     ):
     '''On button click, redirect to respective page'''
     if not any((
         processing_page, 
-        # ~ peakpicking_page, 
         loading_page,
         )):
         raise PreventUpdate
     else:
         if processing_page:
             return '/processing'
-        # ~ elif peakpicking_page:
-            # ~ return '/peakpicking'
         elif loading_page:
             return '/loading'
 
@@ -270,19 +264,15 @@ def loading_start_click(start_loading, session_storage):
 @callback(
     Output('data_processing_FERMO', 'data'),
     Input('processed_data_FERMO', 'data'),
-    # ~ Input('peakpicking_data_FERMO', 'data'),
     Input('loaded_data_FERMO', 'data'),
     )
 def app_bundle_inputs_dashboard(
     storage,
-    # ~ peakpicking,
     loading,
     ):
     '''Bundle inputs, return active option for dashboard visualization'''
     if ctx.triggered_id == 'processed_data_FERMO':
         return storage
-    # ~ elif ctx.triggered_id == 'peakpicking_data_FERMO':
-        # ~ return peakpicking
     elif ctx.triggered_id == 'loaded_data_FERMO':
         return loading
 
@@ -339,10 +329,9 @@ def app_loading_processing(signal, session_storage):
 ################################
 
 @callback(
-    Output('params_cache', 'component'),
+    Output('out_params_assignment', 'data'),
     Input('mass_dev_inp', 'value'),
     Input('min_ms2_inpt', 'value'),
-    Input('feat_int_filt_inp', 'value'),
     Input('bioact_fact_inp', 'value'),
     Input('column_ret_fact_inp', 'value'),
     Input('spec_sim_tol_inp', 'value'),
@@ -351,44 +340,55 @@ def app_loading_processing(signal, session_storage):
     Input('spec_sim_min_match_inp', 'value'),
     Input('ms2query_toggle_input', 'value'),
     Input('spec_sim_net_alg_toggle_input', 'value'),
+    Input('ms2query_blank_annotation', 'value'),
+    Input('relative_intensity_filter_range', 'value'),
     )
 def bundle_params_into_cache(
-    mass_dev, 
-    min_ms2, 
-    feat_int_filt,
+    mass_dev_ppm, 
+    min_nr_ms2, 
     bioact_fact,
     column_ret_fact,
-    spec_sim_tol,
+    spectral_sim_tol,
     spec_sim_score_cutoff,
-    spec_sim_max_links,
-    spec_sim_min_match,
+    max_nr_links_ss,
+    min_nr_matched_peaks,
     ms2query,
     spec_sim_net_alg,
+    ms2query_blank_annotation,
+    relative_intensity_filter_range,
     ):
     '''Bundle parameter input values, test for None values'''
     
-    return {
-        'mass_dev' : test_for_None(mass_dev, 20),
-        'min_ms2' : test_for_None(min_ms2, 0),
-        'feat_int_filt' : test_for_None(feat_int_filt, 0),
-        'bioact_fact' : test_for_None(bioact_fact, 0),
-        'column_ret_fact' : test_for_None(column_ret_fact, 0),
-        'spec_sim_tol' : test_for_None(spec_sim_tol, 0),
-        'spec_sim_score_cutoff' : test_for_None(spec_sim_score_cutoff, 0),
-        'spec_sim_max_links' : test_for_None(spec_sim_max_links, 0),
-        'spec_sim_min_match' : test_for_None(spec_sim_min_match, 0),
-        'ms2query' : ms2query,
-        'spec_sim_net_alg' : spec_sim_net_alg,
-        }
-
-@callback(
-    Output('out_params_assignment', 'data'),
-    Input('params_cache', 'component')
-    )
-def update_params_dict(params_cache):
-    '''Assign set params to dict'''
-    if params_cache is not None:
-        return assign_params_to_dict(params_cache)
+    if None not in [
+        mass_dev_ppm, 
+        min_nr_ms2, 
+        bioact_fact,
+        column_ret_fact,
+        spectral_sim_tol,
+        spec_sim_score_cutoff,
+        max_nr_links_ss,
+        min_nr_matched_peaks,
+        ms2query,
+        spec_sim_net_alg,
+        ms2query_blank_annotation,
+        relative_intensity_filter_range,
+        ]:
+        return {
+            'mass_dev_ppm' : mass_dev_ppm, 
+            'min_nr_ms2' : min_nr_ms2, 
+            'bioact_fact' : bioact_fact,
+            'column_ret_fact' : column_ret_fact,
+            'spectral_sim_tol' : spectral_sim_tol,
+            'spec_sim_score_cutoff' : spec_sim_score_cutoff,
+            'max_nr_links_ss' : max_nr_links_ss,
+            'min_nr_matched_peaks' : min_nr_matched_peaks,
+            'ms2query' : ms2query,
+            'spec_sim_net_alg' : spec_sim_net_alg,
+            'ms2query_blank_annotation' : ms2query_blank_annotation,
+            'relative_intensity_filter_range' : relative_intensity_filter_range,
+            }
+    else:
+        raise PreventUpdate
 
 @callback(
     Output('upload-peaktable-output', 'children'),
@@ -615,39 +615,73 @@ def upload_sessionfile(contents, filename):
         try:
             loaded_session_JSON = json.load(
                 io.StringIO(decoded.decode('utf-8')))
-        except:
-            return div_file_format_error(str(filename), 'FERMO session (json)'
-                ), None, empty_df.to_dict('records')
-        try: 
-            params = loaded_session_JSON['params_dict']
-            files = loaded_session_JSON['input_filenames']
-            metadata = loaded_session_JSON['session_metadata']
             version = loaded_session_JSON['FERMO_version']
-            logging = loaded_session_JSON['logging_dict']
+            version_split = version.split('.')
+            major, minor, fix = (
+                version_split[0], 
+                version_split[1], 
+                version_split[2],
+                )
         except:
-            params = None
-            files = None
-            metadata = None
-            version = None
-            logging = None
+            return (
+                div_file_format_error(
+                    str(filename),
+                    'FERMO session (json)'
+                    ), 
+                None, 
+                empty_df.to_dict('records'),
+                )
         
-        if (
-            (params == None) or 
-            (files == None) or 
-            (metadata == None) or
-            (version == None) or
-            (logging == None)
-        ):
-            return div_file_format_error(str(filename), 'FERMO session (json)'
-                ), None, empty_df.to_dict('records')
-        elif version != __version__:
-            df = session_loading_table(params, files, metadata, version, logging)
-            return div_session_version_warning(filename, df, __version__
-                ), loaded_session_JSON, df.to_dict('records')
+        if major != __version__.split('.')[0]:
+            return (
+                div_session_version_error(
+                    str(filename),
+                    version,
+                    __version__,
+                    ),
+                None, 
+                empty_df.to_dict('records')
+                )
+        elif minor != __version__.split('.')[1]:
+            return (
+                div_session_version_error(
+                    str(filename),
+                    version,
+                    __version__,
+                    ),
+                None, 
+                empty_df.to_dict('records')
+                )
+        elif fix != __version__.split('.')[2]:
+            df = session_loading_table(
+                loaded_session_JSON['params_dict'],
+                loaded_session_JSON['input_filenames'],
+                loaded_session_JSON['session_metadata'],
+                loaded_session_JSON['FERMO_version'],
+                loaded_session_JSON['logging_dict'],
+                )
+            return (
+                div_session_version_warning(
+                    str(filename),
+                    version,
+                    __version__,
+                    ),
+                loaded_session_JSON, 
+                df.to_dict('records'),
+                )
         else:
-            df = session_loading_table(params, files, metadata, version, logging)
-            return div_successful_load_message(str(filename)
-                ), loaded_session_JSON, df.to_dict('records')
+            df = session_loading_table(
+                loaded_session_JSON['params_dict'],
+                loaded_session_JSON['input_filenames'],
+                loaded_session_JSON['session_metadata'],
+                loaded_session_JSON['FERMO_version'],
+                loaded_session_JSON['logging_dict'],
+                )
+            return (
+                div_successful_load_message(str(filename)),
+                loaded_session_JSON, 
+                df.to_dict('records'),
+                )
 
 ###############################
 ###CALLBACKS PAGES DASHBOARD###
@@ -749,13 +783,11 @@ def calculate_feature_score(
     samples_JSON = contents['samples_JSON']
     sample_stats = contents['sample_stats']
     
-    #temporarily convert from JSON to pandas DF
     samples = dict()
     for sample in samples_JSON:
         samples[sample] = pd.read_json(
             samples_JSON[sample], orient='split')
     
-    #for each sample, extract rows that corresponds to thresholds
     samples_subsets = dict()
     for sample in samples:
         samples_subsets[sample] = generate_subsets(
@@ -779,8 +811,14 @@ def calculate_feature_score(
                     feature_dicts[str(ID)]['similarity_clique_number']
                     )
         sample_unique_cliques[sample] = list(unique_cliques)
+    
+    sample_mean_novelty = dict()
+    for sample in samples:
+        list_novelty_scores = list()
+        for ID in samples_subsets[sample]['all_nonblank']:
+            list_novelty_scores.append(feature_dicts[str(ID)]['novelty_score'])
+        sample_mean_novelty[sample] = mean(list_novelty_scores)
 
-    #create dataframe to export to dashboard
     sample_scores = pd.DataFrame({
         'Filename' : [i for i in samples],
         'Group' : [sample_stats['samples_dict'][i] for i in samples],
@@ -791,12 +829,12 @@ def calculate_feature_score(
             sample_stats, 
             samples, 
             sample_unique_cliques),
+        'Mean novelty score' : [sample_mean_novelty[i] for i in sample_mean_novelty],
+        'Selected' : [len(samples_subsets[i]['all_select_no_blank']) for i in samples],
         'Total' : [len(samples_subsets[i]['all_features']) for i in samples],
         'Non-blank' : [len(samples_subsets[i]['all_nonblank']) for i in samples],
-        'Over cutoff' : [len(samples_subsets[i]['all_select_no_blank']) for i in samples],
     })
-    
-    #Sort df, reset index
+
     sample_scores.sort_values(
         by=[
             'Diversity score',
@@ -811,6 +849,48 @@ def calculate_feature_score(
     sample_list = sample_scores['Filename'].tolist()
     
     return sample_scores.to_dict('records'), samples_subsets, sample_list
+
+
+
+@callback(
+        Output('table_general_stats', 'data'),
+        Input('samples_subsets', 'data'),
+        State('data_processing_FERMO', 'data'),
+        )
+def plot_general_stats_table(subsets, contents):
+    '''Calculate basic statistics, return table'''
+    
+    sample_stats = contents['sample_stats']
+    samples = sample_stats['samples_list']
+    
+    set_all_features = set()
+    for i in samples:
+        set_all_features.update(set(subsets[i]['all_features']))
+    
+    set_selected_features = set()
+    for i in samples:
+        set_selected_features.update(set(subsets[i]['all_select_no_blank']))
+    
+    set_blank_features = set()
+    for i in samples:
+        set_blank_features.update(set(subsets[i]['blank_ms1']))
+    
+    set_nonblank_features = set()
+    for i in samples:
+        set_nonblank_features.update(set(subsets[i]['all_nonblank']))
+    
+    df = pd.DataFrame({
+        'Nr of samples' : [len(samples)],
+        'Nr of features' : [len(set_all_features)],
+        'Selected' : [len(set_selected_features)],
+        'Blank' : [len(set_blank_features)],
+        'Non-blank' : [len(set_nonblank_features)],
+    })
+    
+    return df.to_dict('records')
+
+
+
 
 @callback(
     Output('storage_active_sample', 'data'),
@@ -852,7 +932,6 @@ def plot_chromatogram(
     sample_stats = contents['sample_stats']
     feature_dicts = contents['feature_dicts']
     
-    #temporarily convert from JSON to pandas DF
     samples = dict()
     for sample in samples_JSON:
         samples[sample] = pd.read_json(
@@ -884,7 +963,6 @@ def storage_active_feature(data, selected_sample, contents):
         return None, None
     
     samples_JSON = contents['samples_JSON']
-    #temporarily convert from JSON to pandas DF
     samples = dict()
     for sample in samples_JSON:
         samples[sample] = pd.read_json(
@@ -917,7 +995,6 @@ def plot_chromatogram_clique(
     samples_JSON = contents['samples_JSON']
     sample_stats = contents['sample_stats']
     
-    #temporarily convert from JSON to pandas DF
     samples = dict()
     for sample in samples_JSON:
         samples[sample] = pd.read_json(
@@ -964,17 +1041,10 @@ def plot_chrom_overview(
     contents
     ):
     '''Plot mini-chromatograms'''
-    
-    '''Solution to sample name (subplot titles) problem of 
-    stacking on top of the chromatograms is simply to 
-    plot separate small chromatograms instead of subplots!
-    Questionable how scalable but best solution 
-    since more adjustable than subplots'''
     feature_dicts = contents['feature_dicts']
     samples_JSON = contents['samples_JSON']
     sample_stats = contents['sample_stats']
     
-    #temporarily convert from JSON to pandas DF
     samples = dict()
     for sample in samples_JSON:
         samples[sample] = pd.read_json(
@@ -1005,7 +1075,6 @@ def update_selected_feature(
     samples_JSON = contents['samples_JSON']
     sample_stats = contents['sample_stats']
     
-    #temporarily convert from JSON to pandas DF
     samples = dict()
     for sample in samples_JSON:
         samples[sample] = pd.read_json(
@@ -1025,6 +1094,7 @@ def update_selected_feature(
 
 @callback(
     Output('cytoscape', 'elements'),
+    Output('cytoscape_error_message', 'children'),
     Input('storage_active_sample', 'data'),
     Input('storage_active_feature_id', 'data'),
     State('data_processing_FERMO', 'data'),
@@ -1039,14 +1109,21 @@ def update_cytoscape(
     sample_stats = contents['sample_stats']
     
     if active_feature_id is None:
-        return []
+        return (
+            [], 
+            html.Div(
+                '''No network selected - click any feature in the
+                chromatogram overview.''',
+                )
+            )
     else:
-        return generate_cyto_elements(
+        network, message = generate_cyto_elements(
             selected_sample,
             active_feature_id,
             feature_dicts,
             sample_stats,
             )
+        return (network, message)
 
 @callback(
     Output('click-nodedata-output', 'data'),
@@ -1117,255 +1194,63 @@ def displayTapEdgeData(
 
 
 @callback(
-    Output("download_peak_table_logging", "data"),
-    Output("download_peak_table", "data"),
-    Input("button_peak_table", "n_clicks"),
+    Output("download_feature_export_logging", "data"),
+    Output("download_feature_export_button", "data"),
+    Input("feature_export_button", "n_clicks"),
     State('storage_active_sample', 'data'),
     State('data_processing_FERMO', 'data'),
-)
-def export_sel_sample(n_clicks, sel_sample, contents):
-    '''Export peaktable of active sample'''
-    if n_clicks == 0:
-        raise PreventUpdate
-    else:
-        samples_JSON = contents['samples_JSON']
-        param_logging = prepare_log_file(contents)
-
-        samples = dict()
-        for sample in samples_JSON:
-            samples[sample] = pd.read_json(
-                samples_JSON[sample], orient='split')
-        
-        df = export_sel_peaktable(samples, sel_sample)
-        
-        return (
-            dcc.send_string(
-                json.dumps(param_logging, indent=4),
-                'processing_audit_trail.json',
-                ),
-            dcc.send_data_frame(
-                df.to_csv,
-                ''.join([
-                    sel_sample.split('.')[0], 
-                    '_peaktable_all.csv']),
-                )
-            )
-
-
-@callback(
-    Output("download_peak_table_selected_features_logging", "data"),
-    Output("download_peak_table_selected_features", "data"),
-    Input("button_peak_table_selected", "n_clicks"),
-    State('storage_active_sample', 'data'),
-    State('data_processing_FERMO', 'data'),
-    State('samples_subsets', 'data'),
-    State('threshold_values', 'data'),
-)
-def export_sel_sample_sel_features(n_clicks, sel_sample, contents, samples_subsets, thresholds):
-    '''Export peaktable of active sample - selected features'''
-    if n_clicks == 0:
-        raise PreventUpdate
-    else:
-        samples_JSON = contents['samples_JSON']
-        param_logging = prepare_log_file_filters(contents, thresholds)
-
-        samples = dict()
-        for sample in samples_JSON:
-            samples[sample] = pd.read_json(
-                samples_JSON[sample], orient='split')
-        
-        active_features_set = set()
-        for sample in samples_subsets:
-            active_features_set.update(
-                samples_subsets[sample]['all_select_no_blank']) 
-
-        df = export_sel_peaktable(samples, sel_sample)
-        df_new = df[df['feature_ID'].isin(active_features_set)]
-        df_new = df_new.reset_index(drop=True)
-        
-        return (
-            dcc.send_string(
-                json.dumps(param_logging, indent=4),
-                'processing_audit_trail.json',
-                ),
-            dcc.send_data_frame(
-                df_new.to_csv,
-                ''.join([
-                    sel_sample.split('.')[0], 
-                    '_peaktable_selected.csv']),
-                )
-            )
-
-
-
-
-
-
-
-
-
-
-
-
-
-@callback(
-    Output("download_all_peak_table_logging", "data"),
-    Output("download_all_peak_table", "data"),
-    Input("button_all_peak_table_all_features", "n_clicks"),
-    State('data_processing_FERMO', 'data'),
-    )
-def export_all_samples_all_features(n_clicks, contents):
-    '''Export peaktables of all samples'''
-    if n_clicks == 0:
-        raise PreventUpdate
-    else:
-        samples_JSON = contents['samples_JSON']
-        param_logging = prepare_log_file(contents)
-
-        samples = dict()
-        for sample in samples_JSON:
-            samples[sample] = pd.read_json(
-                samples_JSON[sample], orient='split')
-        
-        list_dfs = []
-        for sample in samples:
-            df = export_sel_peaktable(samples, sample)
-            df['sample'] = sample
-            list_dfs.append(df)
-        df_all = pd.concat(list_dfs)
-        
-        return (
-            dcc.send_string(
-                json.dumps(param_logging, indent=4),
-                'processing_audit_trail.json',
-                ),
-            dcc.send_data_frame(
-                df_all.to_csv, 
-                'FERMO_all_samples_all_features.csv',
-                )
-            )
-
-@callback(
-    Output("download_selected_all_peak_table_logging", "data"),
-    Output("download_selected_all_peak_table", "data"),
-    Input("button_all_peak_table_selected_features", "n_clicks"),
-    State('data_processing_FERMO', 'data'),
+    State('dd_export_type', 'value'),
     State('samples_subsets', 'data'),
     State('threshold_values', 'data'),
     )
-def export_all_samples_selected_features(n_clicks, contents, samples_subsets, thresholds):
-    '''Export selected features in peaktables of all samples'''
+def export_dd_menu_table(
+    n_clicks,
+    sel_sample,
+    contents,
+    option,
+    samples_subsets,
+    thresholds,
+    ):
+    '''Export table selected in drop down menu'''
     if n_clicks == 0:
         raise PreventUpdate
-    else:
-        samples_JSON = contents['samples_JSON']
-        param_logging = prepare_log_file_filters(contents, thresholds)
-
-        samples = dict()
-        for sample in samples_JSON:
-            samples[sample] = pd.read_json(
-                samples_JSON[sample], orient='split')
-
-        active_features_set = set()
-        for sample in samples_subsets:
-            active_features_set.update(
-                samples_subsets[sample]['all_select_no_blank']) 
-        
-        mod_dfs = dict()
-        for sample in samples:
-            mod_dfs[sample] = samples[sample][
-                samples[sample]['feature_ID'].isin(active_features_set)]
-            mod_dfs[sample] = mod_dfs[sample].reset_index(drop=True)
-            
-            
-        list_dfs = []
-        for sample in mod_dfs:
-            df = export_sel_peaktable(mod_dfs, sample)
-            df['sample'] = sample
-            list_dfs.append(df)
-        df_all = pd.concat(list_dfs)
-        
-        return (
-            dcc.send_string(
-                json.dumps(param_logging, indent=4),
-                'processing_audit_trail.json',
-                ),
-            dcc.send_data_frame(
-                df_all.to_csv, 
-                'FERMO_all_samples_selected_features.csv',
-                )
-            )
-
-@callback(
-    Output("download_all_features_table_logging", "data"),
-    Output("download_all_features_table", "data"),
-    Input("button_all_features_table", "n_clicks"),
-    State('data_processing_FERMO', 'data'),
-    )
-def export_all_features(n_clicks, contents):
-    '''Convert feature dicts into df and export'''
-    if n_clicks == 0:
+    elif option == None:
         raise PreventUpdate
     else:
-        feature_dicts = contents['feature_dicts']
-        param_logging = prepare_log_file(contents)
-        
-        df = export_features(feature_dicts)
-        return (
-            dcc.send_string(
-                json.dumps(param_logging, indent=4), 
-                'processing_audit_trail.json',
-                ),
-            dcc.send_data_frame(
-                df.to_csv, 
-                'FERMO_all_features.csv',
+        if option == 'peak_sel_sam_all_feat':
+            return download_sel_sample_all_features(
+                sel_sample, 
+                contents,
                 )
-            )
-
-@callback(
-    Output("download_selected_features_table_logging", "data"),
-    Output("download_selected_features_table", "data"),
-    Input("button_selected_features_table", "n_clicks"),
-    State('data_processing_FERMO', 'data'),
-    State('samples_subsets', 'data'),
-    State('threshold_values', 'data'),
-    )
-def export_selected_features(n_clicks, contents, samples_subsets, thresholds):
-    '''Convert feature dicts into df and export'''
-    if n_clicks == 0:
-        raise PreventUpdate
-    else:
-        feature_dicts = contents['feature_dicts']
-        
-        active_features_set = set()
-        for sample in samples_subsets:
-            active_features_set.update(
-                samples_subsets[sample]['all_select_no_blank']) 
-        
-        active_feature_dict = dict()
-        for feature in feature_dicts:
-            if int(feature) in active_features_set:
-                active_feature_dict[feature] = feature_dicts[feature]
-        
-        param_logging = prepare_log_file_filters(contents, thresholds)
-        df = export_features(active_feature_dict)
-        
-        return (
-            dcc.send_string(
-                json.dumps(param_logging, indent=4),
-                'processing_audit_trail.json',
-                ),
-            dcc.send_data_frame(
-                df.to_csv, 
-                'FERMO_selected_features.csv',
+        elif option == 'peak_sel_sam_sel_feat':
+            return download_sel_sample_sel_features( 
+                sel_sample, 
+                contents, 
+                samples_subsets, 
+                thresholds,
                 )
-            )
-
-
-
-
-
-
+        elif option == 'peak_all_sam_all_feat':
+            return download_all_samples_all_features(
+                contents
+                )
+        elif option == 'peak_all_sam_sel_feat':
+            return download_all_samples_selected_features(
+                contents, 
+                samples_subsets, 
+                thresholds,
+                )
+        elif option == 'feature_all':
+            return download_all_features(
+                contents,
+                )
+        elif option == 'feature_sel':
+            return download_selected_features(
+                contents,
+                samples_subsets,
+                thresholds,
+                )
+        else:
+            raise PreventUpdate
 
 @callback(
     Output("export_session_file", "data"),
@@ -1386,35 +1271,3 @@ def export_session_file_json(n_clicks, contents):
 
 if __name__ == '__main__':
     app.run_server(debug=True) #switch to True for debugging
-
-
-# If peakpicking is put back, put this into callbacks processing
-# ~ @callback(
-    # ~ Output('peakpicking_start_cache', 'children'),
-    # ~ Input('call_dashboard_peakpicking', 'n_clicks'),
-# ~ )
-# ~ def peakpicking_start_click(start_peakpicking):
-    # ~ '''On button click, should check for starting conditions for peakpicking
-    # ~ STILL NEEDS TO BE IMPLEMENTED '''
-    # ~ if not start_peakpicking:
-        # ~ raise PreventUpdate
-    # ~ #elif clause that tests if input params and data were given -> see call_pages_loading
-    # ~ else:
-        # ~ return html.Div('Started processing, please wait ...')
-
-
-# ~ @callback(
-    # ~ Output('store_peakpicking', 'data'),
-    # ~ Output('peakpicking_data_FERMO', 'data'),
-    # ~ Input('peakpicking_start_cache', 'children'),
-    #Add parameter and upload inputs here (possibly as State)
-    # ~ background=True,
-    # ~ manager=background_callback_manager,
-    # ~ running=[(Output("call_dashboard_peakpicking", "disabled"), True, False),],
-# ~ )
-# ~ def app_peakpicking_processing(dashboard_peakpicking): #add data output here
-    # ~ '''Call peakpicking and FERMO processing functions, serialize and store data'''
-    # ~ if not dashboard_peakpicking:
-        # ~ raise PreventUpdate
-    # ~ else:
-        # ~ return '/dashboard'

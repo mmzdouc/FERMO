@@ -19,14 +19,21 @@ header_row = html.Div(
                         href='https://github.com/mmzdouc/fermo',
                         target="_blank",
                     ),
-                    # ~ html.Div(__version__),
                     html.Div(__version__, 
                         style={
                             'display': 'inline-block',
                             'color' : 'white',
                             'font-style':'italic'
                             },
-                    ),
+                        ),
+                    html.Div('Developed by Mitja M. Zdouc, PhD. et al.', 
+                        style={
+                            'display': 'inline-block',
+                            'color' : 'white',
+                            'font-style':'italic',
+                            'float' : 'right',
+                            },
+                        ),
                 ]),
             ],
         id="header_col",
