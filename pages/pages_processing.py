@@ -812,7 +812,7 @@ processing = html.Div([
                 call_dashboard_processing_button(),
                 ###STORAGE###
                 #Helper function
-                html.Div(id='store_bioact_type'),
+                html.Div(id='store_bioact_type', hidden=True),
                 #Parameter storage
                 dcc.Store(id='out_params_assignment'),
                 #File storage

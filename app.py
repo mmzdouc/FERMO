@@ -816,9 +816,15 @@ def calculate_feature_score(
     for sample in samples:
         list_novelty_scores = list()
         for ID in samples_subsets[sample]['all_nonblank']:
-            list_novelty_scores.append(feature_dicts[str(ID)]['novelty_score'])
-        sample_mean_novelty[sample] = mean(list_novelty_scores)
-
+            nov_score = feature_dicts[str(ID)]['novelty_score']
+            if isinstance(nov_score, int) or isinstance(nov_score, float):
+                list_novelty_scores.append(nov_score)
+        try:
+            sample_mean_novelty[sample] = round(mean(list_novelty_scores),3)
+        except:
+            sample_mean_novelty[sample] = None
+        
+        
     sample_scores = pd.DataFrame({
         'Filename' : [i for i in samples],
         'Group' : [sample_stats['samples_dict'][i] for i in samples],
@@ -1270,4 +1276,4 @@ def export_session_file_json(n_clicks, contents):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True) #switch to True for debugging
+    app.run_server(debug=False) #switch to True for debugging
