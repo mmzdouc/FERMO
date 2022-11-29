@@ -57,7 +57,7 @@ def call_legend_central_chrom():
                     'background-color': color_dict['light_green'],
                     'border-color' : color_dict['green'],},
                 ),
-            'Over cutoff',
+            'Selected',
             ]),
         html.Div([
             html.Div(
@@ -66,7 +66,7 @@ def call_legend_central_chrom():
                     'background-color': color_dict['light_cyan'],
                     'border-color' : color_dict['cyan'],},
                 ),
-            'Below cutoff',
+            'Not selected',
             ]),
         html.Div([
             html.Div(
@@ -111,7 +111,7 @@ def call_legend_clique_chrom():
                     'background-color': color_dict['light_blue'],
                     'border-color' : color_dict['blue'],},
                 ),
-            'Selected feature',
+            'Focused feature',
             ]),
         html.Div([
             html.Div(
@@ -120,7 +120,7 @@ def call_legend_clique_chrom():
                     'background-color': color_dict['light_red'],
                     'border-color' : color_dict['red'],},
                 ),
-            'Members of same molecular network',
+            'Related (same molecular network)',
             ]),
         ],
     style={
@@ -742,9 +742,9 @@ dashboard = html.Div([
                             for i in [
                                 'Nr of samples',
                                 'Nr of features',
-                                'Selected',
-                                'Blank',
+                                'Selected features',
                                 'Non-blank',
+                                'Blank & MS1',
                                 ]
                             ],
                         style_as_list_view=True,
@@ -764,9 +764,10 @@ dashboard = html.Div([
                                 'Diversity score',
                                 'Spec score',
                                 'Mean novelty score',
-                                'Selected',
+                                'Selected features',
                                 'Total',
                                 'Non-blank',
+                                'Blank & MS1',
                                 ]
                             ],
                         style_as_list_view=True,

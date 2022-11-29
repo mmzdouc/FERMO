@@ -133,29 +133,19 @@ For more information on the input data format, see the [Input data formats overv
 
 4. Since all calculations are performed locally, the length of the calculation depends on the processing power of the computer that is used for the analysis. Once all calculations are finished, FERMO will automatically reload and redirect to the dashboard view.
 
-5. The dashboard is separated into six elements, as indicated in the figure below (starting from the top left and continuing in a clockwise fashion): 
-- **sample table** **(1)**; 
-- the **sample chromatogram view** **(2)**;
-- the **feature information table** **(3)**;
-- the **chromatogram overview** **(4)**; 
-- the **spectral similarity/molecular networking view** **(5)**; 
-- the **filter and download panel** **(6)**.  
+5. To view a specific sample, click on one of the rows in the **sample table (1)**. 
 
-![dashboard-overview.png](/assets/dashboard-overview.png)
+6. A click on a row in the **sample table (1)** triggers the sample **chromatogram view (2)**, which displays the features detected in the sample, color-coded after their properties. Hovering over a feature presents general information, and clicking triggers the **feature information table (3)**, the **chromatogram overview (4)**, and the **spectral similarity/molecular networking view (5)**. 
 
-6. To view a specific sample, click on one of the rows in the **sample table (1)**. 
+7. In the **feature information table (3)**, all information about a feature is displayed. This includes its general attributes, its calculated scores, its annotations, and its spectrum similarity clique (a summary of feature relatedness based on MS2 spectrum similarity). If metadata on groups was provided, this data is displayed too. 
 
-7. A click on a row in the **sample table (1)** triggers the sample **chromatogram view (2)**, which displays the features detected in the sample, color-coded after their properties. Hovering over a feature presents general information, and clicking triggers the **feature information table (3)**, the **chromatogram overview (4)**, and the **spectral similarity/molecular networking view (5)**. 
+8. In the **chromatogram overview (4)**, the distribution of the feature across samples is displayed, which can be used to determine the sample most suitable for further exploration. 
 
-8. In the **feature information table (3)**, all information about a feature is displayed. This includes its general attributes, its calculated scores, its annotations, and its spectrum similarity clique (a summary of feature relatedness based on MS2 spectrum similarity). If metadata on groups was provided, this data is displayed too. 
+9. The **spectral similarity/molecular networking view (5)** shows the relatedness of the feature with other features, based on similarity of their spectra. Clicking nodes or edges triggers the **node information table** or **edge information table**, respectively. These tables can be found below the network view. The nodes in the **Spectral similarity/molecular networking view** are color-coded if they are detected in the selected sample, and if they are specific to the group the selected sample belongs to (only if metadata on groups was provided). The same color-code is used in the smaller chromatogram beneath the **sample chromatogram overview (2)**, which indicates the spatial distribution of related features in the chromatogram. 
 
-9. In the **chromatogram overview (4)**, the distribution of the feature across samples is displayed, which can be used to determine the sample most suitable for further exploration. 
+10. In the **filter and download panel (6)**, different filters can be set that filter the peaks in the **sample chromatogram view (2)** and display them in a different color, to indicate that they are below the selected threshold. Details on the different scores, the calculations, and suggested analysis strategies can be found in the wiki.
 
-10. The **spectral similarity/molecular networking view (5)** shows the relatedness of the feature with other features, based on similarity of their spectra. Clicking nodes or edges triggers the **node information table** or **edge information table**, respectively. These tables can be found below the network view. The nodes in the **Spectral similarity/molecular networking view** are color-coded if they are detected in the selected sample, and if they are specific to the group the selected sample belongs to (only if metadata on groups was provided). The same color-code is used in the smaller chromatogram beneath the **sample chromatogram overview (2)**, which indicates the spatial distribution of related features in the chromatogram. 
-
-11. In the **filter and download panel (6)**, different filters can be set that filter the peaks in the **sample chromatogram view (2)** and display them in a different color, to indicate that they are below the selected threshold. Details on the different scores, the calculations, and suggested analysis strategies can be found in the wiki.
-
-12. The analysis can be stored by clicking on **'Save FERMO session file (JSON)'**, which can be found in the **filter and download panel (6)**. This generates a text-based session file in the JSON format that can be used to load the dashboard view in the **Restart session page (loading mode)** mentioned in step **1.** of this quickstart guide. The session file can also be shared to other users, which allows to work collaboratively.
+11. The analysis can be stored by clicking on **'Save FERMO session file (JSON)'**, which can be found in the **filter and download panel (6)**. This generates a text-based session file in the JSON format that can be used to load the dashboard view in the **Restart session page (loading mode)** mentioned in step **1.** of this quickstart guide. The session file can also be shared to other users, which allows to work collaboratively.
 
 A more thorough guide, including information on scores and data processing, can be found in the Wiki (TBA).
 

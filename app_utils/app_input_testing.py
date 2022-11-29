@@ -113,6 +113,8 @@ def assert_peaktable_format(peaktable, filename):
         return div_column_header_error(filename, '... :rt_range:min')
     elif peaktable.filter(regex=":rt_range:max$").columns.empty:
         return div_column_header_error(filename, '... :rt_range:min')
+    elif peaktable.duplicated(subset=['id']).any():
+        return html.Div('❌ Error: duplicate entries in column "id".')
     else:
         return None
 

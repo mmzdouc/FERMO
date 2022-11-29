@@ -561,8 +561,8 @@ def call_bioact_type_dd():
         html.Div(
         dcc.Dropdown(
             options=[
-               {'label': 'Concentration (i.e. lowest value = highest activity)', 'value': 'conc'},
-               {'label': 'Percentage (i.e. highest value = highest activity)', 'value': 'perc'},
+               {'label': 'Concentration-like (i.e. lowest value = highest activity)', 'value': 'conc'},
+               {'label': 'Percentage-like (i.e. highest value = highest activity)', 'value': 'perc'},
                ],
             value=None,
             id='bioact_type',

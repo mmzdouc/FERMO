@@ -820,7 +820,7 @@ def calculate_feature_score(
             if isinstance(nov_score, int) or isinstance(nov_score, float):
                 list_novelty_scores.append(nov_score)
         try:
-            sample_mean_novelty[sample] = round(mean(list_novelty_scores),3)
+            sample_mean_novelty[sample] = round(mean(list_novelty_scores),2)
         except:
             sample_mean_novelty[sample] = None
         
@@ -836,9 +836,11 @@ def calculate_feature_score(
             samples, 
             sample_unique_cliques),
         'Mean novelty score' : [sample_mean_novelty[i] for i in sample_mean_novelty],
-        'Selected' : [len(samples_subsets[i]['all_select_no_blank']) for i in samples],
+        'Selected features' : [len(samples_subsets[i][
+            'all_select_no_blank']) for i in samples],
         'Total' : [len(samples_subsets[i]['all_features']) for i in samples],
         'Non-blank' : [len(samples_subsets[i]['all_nonblank']) for i in samples],
+        'Blank & MS1' : [len(samples_subsets[i]['blank_ms1']) for i in samples], 
     })
 
     sample_scores.sort_values(
@@ -888,9 +890,9 @@ def plot_general_stats_table(subsets, contents):
     df = pd.DataFrame({
         'Nr of samples' : [len(samples)],
         'Nr of features' : [len(set_all_features)],
-        'Selected' : [len(set_selected_features)],
-        'Blank' : [len(set_blank_features)],
+        'Selected features' : [len(set_selected_features)],
         'Non-blank' : [len(set_nonblank_features)],
+        'Blank & MS1' : [len(set_blank_features)],
     })
     
     return df.to_dict('records')
@@ -1276,4 +1278,4 @@ def export_session_file_json(n_clicks, contents):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False) #switch to True for debugging
+    app.run_server(debug=True) #switch to True for debugging
