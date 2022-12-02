@@ -13,7 +13,7 @@ else
 fi
 
 
-if ! conda env list | grep $FERMO_VER >/dev/null 2>&1
+if ! { conda info --envs | cut -d " " -f 1 | grep ^"$FERMO_VER"; } >/dev/null 2>&1;
 then 
     echo "conda environment $FERMO_VER was not found and will be created"
     conda create --name $FERMO_VER python=3.8 -y >/dev/null 2>&1
@@ -23,7 +23,7 @@ then
     echo "Starting with package installation - this might take some time"
     pip install numpy pandas matchms pyteomics plotly argparse dash \
         dash-cytoscape dash_bootstrap_components networkx \
-        'ms2query==0.4.3' dash[diskcache] dash[celery] --quiet
+        'ms2query==0.4.3' dash[diskcache] --quiet
     echo "Packages were successfully installed in conda environment $FERMO_VER"
     python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')"
     python ./app.py

@@ -714,11 +714,11 @@ def plot_mini_chrom(
         rt_min = round((feature_dicts[str(active_feature_id)][
             'average_retention_time']
             -
-            (sample_stats['rt_range'] * 0.15)),2)
+            (sample_stats['rt_range'] * 0.1)),2)
         rt_max = round((feature_dicts[str(active_feature_id)][
             'average_retention_time']
             +
-            (sample_stats['rt_range'] * 0.15)),2)
+            (sample_stats['rt_range'] * 0.10)),2)
         
         if rt_min < sample_stats['rt_min']:
             rt_min = sample_stats['rt_min']
@@ -1227,10 +1227,19 @@ def add_nodedata(
             else 'None '),
         '<b>(user-library)</b>, <br>',
         (feat_dicts[str(data['id'])]['ms2query_results'][0]['analog_compound_name']
-            if feat_dicts[str(data['id'])]['ms2query'] else "None"),
+            if feat_dicts[str(data['id'])]['ms2query'] else "None "),
         '<b>(MS2Query)</b>',
         ])
-        
+    
+    superclass_ms2query = ''.join([
+        (str(feat_dicts[str(data['id'])]['ms2query_results'][0]['npc_superclass_results']
+            if feat_dicts[str(data['id'])]['ms2query'] else "None ")),
+        '<b>(NPC superclass)</b>, <br>',
+        (str(feat_dicts[str(data['id'])]['ms2query_results'][0]['cf_superclass']
+            if feat_dicts[str(data['id'])]['ms2query'] else "None ")),
+        '<b>(CF superclass)</b>',
+        ])
+    
     combined_list_int = []
     for i in range(len(feat_dicts[str(data['id'])]['presence_samples'])):
         combined_list_int.append(''.join([
@@ -1242,6 +1251,7 @@ def add_nodedata(
         ['Precursor <i>m/z</i>', feat_dicts[str(data['id'])]['precursor_mz']],
         ['Retention time (avg)', feat_dicts[str(data['id'])]['average_retention_time']],
         ['Annotation', annotation],
+        ['MS2Query class pred', superclass_ms2query],
         ['Detected in samples', ("".join(str(i) for i in combined_list_int))],
     ]
     

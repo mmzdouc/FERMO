@@ -835,7 +835,7 @@ def calculate_feature_score(
             sample_stats, 
             samples, 
             sample_unique_cliques),
-        'Mean novelty score' : [sample_mean_novelty[i] for i in sample_mean_novelty],
+        'Mean Novelty score' : [sample_mean_novelty[i] for i in sample_mean_novelty],
         'Selected features' : [len(samples_subsets[i][
             'all_select_no_blank']) for i in samples],
         'Total' : [len(samples_subsets[i]['all_features']) for i in samples],
@@ -1159,6 +1159,7 @@ def displayTapNodeData(
         ['Precursor <i>m/z</i>', None],
         ['Retention time (avg)', None],
         ['Annotation', None],
+        ['MS2Query class pred', None],
         ['Detected in samples', None],
         ]
         df = pd.DataFrame(data, columns=['Node info', 'Description'])

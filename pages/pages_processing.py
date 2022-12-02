@@ -6,8 +6,8 @@ def call_processing_intro_text():
     return html.Div([
         html.Div('''On this page, you can process your data with FERMO. The minimum requirements are:'''),
         dcc.Markdown('''
-            * a **peaktable** containing general data on features (in the **'_quant_full.csv'** format created by **MZmine3**)
-            * a **.mgf-file** containing **MS²** data (created together with peaktable by **MZmine3**)
+            * a **peak table** containing general data on features (in the **'_quant_full.csv'** format created by **MZmine3**)
+            * a **.mgf-file** containing **MS²** data (created together with peak table by **MZmine3**)
         '''),
         html.Div('''Optionally, you can provide:'''),
         dcc.Markdown('''
@@ -573,19 +573,19 @@ def call_bioact_type_dd():
         ])
 
 def call_peaktable_upload():
-    '''Call the peaktable upload field'''
+    '''Call the peak table upload field'''
     return html.Div([
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Load peaktable (*_quant_full.csv)',
+                        '''Load peak table (*_quant_full.csv)''',
                         id="upload-peaktable-tooltip",
                         className="button_small_class",
                         ),
                     id='processing-upload-peaktable'),
                 dbc.Tooltip(
                     html.Div(
-                        ''' Reads a MZmine3 style peaktable with the  '_quant_full.csv' suffix (exported in the FULL/ALL mode). For more information on the format, see the documentation.
+                        ''' Reads a MZmine3 style peak table with the  '_quant_full.csv' suffix (exported in the FULL/ALL mode). For more information on the format, see the documentation.
                         ''',
                         ),
                     placement='right',
@@ -608,7 +608,7 @@ def call_mgf_upload():
                     id='processing-upload-mgf'),
                 dbc.Tooltip(
                     html.Div(
-                        ''' Reads a MZmine3 style .mgf-file containing tandem mass (MS/MS) spectra, accompanying the peaktable. Generated through MZmine3 export. For more information on the format, see the documentation.
+                        ''' Reads a MZmine3 style .mgf-file containing tandem mass (MS/MS) spectra, accompanying the peak table. Generated through MZmine3 export. For more information on the format, see the documentation.
                         ''',
                         ),
                     placement='right',

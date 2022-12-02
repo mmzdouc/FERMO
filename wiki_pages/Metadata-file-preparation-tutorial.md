@@ -4,31 +4,31 @@ Metadata is an essential part of LC-MS/MS data, since it provides (biological) c
 
 ### Metadata file preparation instructions
 
-FERMO accepts grouping metadata (from here: metadata for short) in form of a .csv (comma-separated values) file, which can be prepared using a spreadsheet program (e.g. Microsoft Excel, OpenOffice Calc). It requires the following format :
+FERMO accepts group metadata (from here: metadata for short) in form of a .csv (comma-separated values) file, which can be prepared using a spreadsheet program (e.g. Microsoft Excel, OpenOffice Calc). It requires the following format :
 
 - A column with the title `sample_name` and the full names of the samples (including their endings)
 - A column with the title `attribute`, containing the group lable the sample belongs to
 
 ```
 sample_name,attribute
-MEDIUM-BLANK.mzXML,BLANK
-P-algeriensis-107089.mzXML,algeriensis
-P-corallina-96662.mzXML,corallina
-P-sphaerica-91781.mzXML,sphaerica
-P-algeriensis-114239.mzXML,algeriensis
-P-sphaerica-135062.mzXML,sphaerica
-P-max-91428.mzXML,max
-P-corallina-135044.mzXML,corallina
-P-corallina-97500.mzXML,corallina
-P-sphaerica-107188.mzXML,sphaerica
-P-sphaerica-91431.mzXML,sphaerica
+sample1.mzXML,BLANK
+sample2.mzXML,A2
+sample3.mzXML,C
+sample4.mzXML,S
+sample5.mzXML,A2
+sample6.mzXML,S
+sample7.mzXML,V2
+sample8.mzXML,C
+sample9.mzXML,C
+sample10.mzXML,S
+sample11.mzXML,S
 ```
 
 [[https://github.com/mmzdouc/FERMO/blob/main/wiki_assets/metadata_table.png|alt=metadata_table.png]]
 
-The group names can be chosen arbitrarily, with two exceptions: first, the label `BLANK` (in capital letters) must only be used to denominate sample/instrument/medium/solvent blanks, since features detected in blanks will be treated differently from other features. Second, the label `GENERAL` (in capital letters) is reserved to group samples without any grouping information, and must not be used by the user. 
+The group names can be chosen arbitrarily, with two exceptions: first, the label `BLANK` (in capital letters) must only be used to denominate sample/instrument/medium/solvent blanks, since molecular features detected in blanks will be treated differently from other molecular features. Second, the label `GENERAL` (in capital letters) is reserved to group samples without any grouping information, and must not be used by the user. 
 
-Additionally, the following conditions must be met; else, there will be an error during loading, indicating the wrong formatting:
+Additionally, the following conditions must be met:
 
 - There must be only two columns, with the titles `sample_name` and `attribute`
 - Each sample must be associated to a single group

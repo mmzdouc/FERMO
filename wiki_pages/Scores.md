@@ -1,6 +1,6 @@
 ### Overview
 
-This Wiki page gives an overview of the different scores that are calculated and used in FERMO to support feature inspection and prioritization. In total, there are five scores, of which two (Diversity and Specificity scores) are used in the **sample table** element, and three (Convolutedness, Novelty, and Bioactivity scores) are used as filters in the **filter and download panel** and **sample chromatogram view** elements.
+This Wiki page gives an overview of the different scores that are calculated and used in FERMO to support molecular feature inspection and prioritization. Diversity, Specificity, and Mean Novelty scores are used in the **sample table** element. Novelty and the QuantData scores are used as filters in the **filter and download panel** and **sample chromatogram view** elements.
 
 For the **sample table** element:
 
@@ -8,16 +8,15 @@ For the **sample table** element:
 Measure of the overall chemical diversity of a sample, compared to the other samples
 - Specificity score: 
 Measure of how much of the chemical diversity of a sample is actually specific to the sample and the group it belongs to.
+- Mean Novelty score: 
+The mean novelty scores of all molecular features in a sample (excluding blank-associated molecular features, if group information was provided).
 
 For the **sample chromatogram view**
 
-- Convolutedness score: 
-Measure for the overlap of the peak with other peaks, adjusted for ion adducts resulting from the same compound
 - Novelty score:
-Measure for the putative novelty of a feature, compared to external databases
-- Bioactivity score: 
-Measure for putative bioactivity-associatedness of feature
-
+Measure for the putative novelty of a molecular feature, compared to external databases
+- QuantData score: 
+Indicator if molecular feature is putatively associated with the quantitative biological data.
 
 The different scores are described in greater detail below:
 
@@ -47,40 +46,25 @@ A sample with a large number of specific similarity cliqies will have a higher s
 
 For example, a sample can have a specificity score of 0.5 (half of the detected cliques are specific to the sample), but if the total number of cliques in this sample is low (e.g. a diversity score of 0.05), it is still overall poor. A much more interesting sample would be one with a high diversity score (e.g. 0.4, meaning 40% of the chemical diversity across all samples) and a high specificity score (e.g. 0.5, meaning that 50% of the cliques in this sample are specific for it, which amounts to 20% of the total cliques across all samples).
 
-#### Convolutedness score
-
-Used in the **filter and download panel** and **sample chromatogram view** elements. Feature-specific score.
-
-Measure for the overlap of the feature peak with other peaks, adjusted for ion adducts resulting from the same compound.
-
-Represents the proportion of the peak range not overlapping with other peaks, based on retention time. Peak overlaps represent co-elution of peaks in the chromatogram, which are considered unfavorable since they complicate consecutive isolation. In the convolutedness score, a value of 1 would indicate no overlap with other peaks, while a value of 0 would indicate complete overlap.
-
-This calculation is corrected for different ion species that originate from the same compound, such as isotopic peaks (e.g. the +1 peak of a \[M+H]<sup>+</sup> adduct) and adducts (e.g., \[M+H]<sup>+</sup> and \[M+Na]<sup>+</sup> ), which are excluded from the convolutedness calculation.
-
-Knowing which features/peaks result from which compounds is important to consider during any prioritization procedure.
-
 #### Novelty score
 
 Used in the **filter and download panel** and **sample chromatogram view** elements. Feature-specific score.
 
-Measure for putative novelty of the feature, compared against external databases. 
+Measure for putative novelty of the molecular feature, compared against external databases. 
 
 The annotation of compounds is an essential step in metabolomics analysis, since it provides the means for the (biological) interpretation of results. 
 
-In the search for novel natural products, it is essential to ensure that metabolites have not already been isolated before. This process, called dereplication, takes place during prioritization, and is usually performed by comparing the attributes of features against databases. A common automated way of doing dereplication is library matching: comparison of the MS/MS spectrum of the metabolite against a library of MS/MS spectra of standards. Even though library matching is a fast and convenient way of dereplication, if comes with  some limitations: For one, the number of MS/MS spectra in spectral libraries is orders of magnitude lower than the number of known metabolites, thus creating a "blind spot" of "known unknowns". Furthermore, in commonly used library matching algorithms, spectrum matches must match across the whole spectrum, limiting the identification of analogues that may have a good partial match due to a common substructure.
+In the search for novel natural products, it is essential to ensure that metabolites have not already been isolated before. This process, called dereplication, takes place during prioritization, and is usually performed by comparing the attributes of molecular features against databases. A common automated way of doing dereplication is library matching: comparison of the MS/MS spectrum of the metabolite against a library of MS/MS spectra of standards. Even though library matching is a fast and convenient way of dereplication, if comes with  some limitations: For one, the number of MS/MS spectra in spectral libraries is orders of magnitude lower than the number of known metabolites, thus creating a "blind spot" of "known unknowns". Furthermore, in commonly used library matching algorithms, spectrum matches must match across the whole spectrum, limiting the identification of analogues that may have a good partial match due to a common substructure.
 
 Recently, the issue of inadequate library size has been partially addressed by the MASST algorithm by Wang et al, which swaps the spectral library of identified standards with community-provided experimental data. In theory, this should hugely increase coverage of the reference library, allowing to form hypotheses about commonly occurring compounds even though the exact identity of the compounds is unknown. Also, the problem of analogue search has been recently addressed by introduction of the MS2Query tool (De Jonge et al), which uses vectorization (more specifically, spectral embeddings) for MS/MS spectra representation, allowing for partial matches between compounds. Furthermore, comparison of spectral embeddings is computationally efficient, which allows for faster search times in larger spectral libraries. 
 
-For the novelty score in FERMO, we combine both concepts. In addition to standard library matching against a user-provided spectral library (employing a modified cosine score), we use MS2Query to compare against a library of spectra (currently, over 600,000 diversified spectra, with growing tendency). The large size of the library allows for the hypothesis that compounds that are not found in it are reasonably rare, and therefore, unlikely to have been isolated before. Using MS2Query also allows to search for analogues, increasing the coverage even further. 
+For the novelty score in FERMO, we combine both concepts. In addition to standard library matching against a user-provided spectral library (employing a modified cosine score), we use MS2Query to compare against a library of spectra (currently, over 300,000 diversified spectra, with growing tendency). The large size of the library allows for the hypothesis that compounds that are not found in it are reasonably rare, and therefore, unlikely to have been isolated before. Using MS2Query also allows to search for analogues, increasing the coverage even further. 
 
-The novelty score is a value between or equal to 0 and 1: a value of 0 indicates that the compound is most likely known and/or commonly occurring, while 1 indicates that the compound is most likely unknown and/or rarely occurring. This value is calculated from the results of library and/or embedding matching. If library matching yields a reliable match (highest modified cosine hit higher or equal to 0.95, highest ms2query hit higher or equal to 0.95), it is assumed to be dereplicated, and its novelty score is set to 0. If the library matching yields a less reliable match (0.95-0.8 for modified cosine, 0.95-0.4 for ms2query), the compound is assumed to be in the "twilight zone" which requires further evaluation, and it gets a score between 0 and 1, with a score closer to 1 indicating higher chances of novelty. If a compound is below the threshold (0.8 for modified cosine, 0.4 for ms2query), it is assumed to be novel, and its novelty score is set to 1. Using the threshold filters allows to search for the score.    
+The novelty score is a value between or equal to 0 and 1: a value of 0 indicates that the compound is most likely known and/or commonly occurring, while 1 indicates that the compound is most likely unknown and/or rarely occurring. This value is calculated from the results of library and/or embedding matching. If library matching yields a reliable match (highest modified cosine hit higher or equal to 0.95, highest ms2query hit higher or equal to 0.95), it is assumed to be dereplicated, and its novelty score is set to 0. 
+If the molecular feature is annotated less reliably, another factor is taken into account: in the spectral similarity network, the nearest neighbors of the molecular feature are inspected for the NPClassifier and the ClassyFire superclass annotation of the MS2Query annotation. Nearest neighbors should in the spectral similarity network are hypothesized to be chemically related and therefore, their chemical class should be similar. This is checked separately for the NPClassifier and the ClassyFire superclass annotations, since the two algorithms use different vocabularies. If these molecular features share the same chemical class annotation, this is taken as additional clue to confirm the quality of the annotation. If there are multiple chemical classes, this is taken as evidence that the annotation was less certain. 
 
-#### Bioactivity score: 
+#### QuantData score: 
 
 Used in the **filter and download panel** and **sample chromatogram view** elements. Feature-specific score.
 
-Represents putative association to bioactivity, if a bioactivity table was provided. A feature is considered bioactivity-associated if it was only detected in samples designated as active, or if the minimal intensity across all bioactive samples is n times (by default 10 times, can be user-specified) higher than the maximal intensity across all inactive samples. This takes into account sub-inhibitory concentrations, which cause a sample to be considered inactive, even though the feature can be detected. 
-
-For example, a bioactivity score of 0 would indicate that the feature is not bioactivity-associated, while a value greater than 0 or equal to 1 would indicate bioactivity-associatedness.
-
-Keep in mind that a positive bioactivity score does not guarantee bioactivity of a compound. The bioactivity score is not resulting from any statistical calculation or prediction. Instead, it tells which features are possibly bioactivity-associated, and leaves it to the user to decide if this is plausible or not. Eventually, any bioactivity prediction must be confirmed by consecutive fractionation and retesting, until it is confirmed by isolation and testing of the pure compound. However, the bioactivity score can help to save time and resources by narrowing down possibilities. 
+Represents putative association to the quantitative biological data, if such data was provided. A molecular feature is considered quantitative data-associated if it was only detected in samples designated as active, or if the minimal intensity across all the 'active' samples is n times (by default 10 times, can be user-specified) higher than the maximal intensity across all 'inactive' samples.

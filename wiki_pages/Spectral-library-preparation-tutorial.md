@@ -1,6 +1,6 @@
 ### Overview
 
-FERMO provides annotation of features by using the tool [**MS2Query**](https://github.com/iomega/ms2query), which matches against a large library of public mass spectrometry data. However, users may desire to search against their in-house libraries, which are often more targeted and better suited for the research question in mind. Data is matched against the spectral library using the **'modified cosine'** algorithm implemented in the Python package [**MatchMS**](https://github.com/matchms/matchms). The settings used for spectral library matching are explained in detail on the page [Processing](https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page) in this Wiki.
+FERMO provides annotation of molecular features by using the tool [**MS2Query**](https://github.com/iomega/ms2query), which matches against a large library of public mass spectrometry data. However, users may desire to search against their in-house libraries, which are often more targeted and better suited for the research question in mind. Data is matched against the spectral library using the **'modified cosine'** algorithm implemented in the Python package [**MatchMS**](https://github.com/matchms/matchms). The settings used for spectral library matching are explained in detail on the page [Processing](https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page) in this Wiki.
 
 ### Spectral library preparation
 

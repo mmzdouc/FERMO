@@ -428,7 +428,7 @@ def call_foldchange_search_name():
                 ),
             placement='right',
             className='info_dot_tooltip',
-            target="call_foldchange_search_name",
+            target="call_foldchange_search_name_tooltip",
             ),
         ],
         style={'display': 'inline-block', 'width': '60%',},
@@ -763,7 +763,7 @@ dashboard = html.Div([
                                 'Group',
                                 'Diversity score',
                                 'Spec score',
-                                'Mean novelty score',
+                                'Mean Novelty score',
                                 'Selected features',
                                 'Total',
                                 'Non-blank',
@@ -924,17 +924,17 @@ dashboard = html.Div([
                 ),
             html.Div([
                 call_legend_element(
-                    'Selected Feature',
+                    'Focused feature',
                     color_dict['blue'],
                     color_dict['blue'],
                     ),
                 call_legend_element(
-                    'Present in Sample',
+                    'Present in sample',
                     color_dict['red'],
                     color_dict['red'],
                     ),
                 call_legend_element(
-                    'Other Samples',
+                    'Other samples',
                     color_dict['grey'],
                     color_dict['grey'],
                     ),
