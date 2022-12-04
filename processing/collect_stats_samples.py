@@ -82,5 +82,6 @@ def collect_stats_samples(peaktable, groups, bioactivity_samples,):
         "set_blank_cliques" : set(),
         "active_samples_set" : active_samples_set,
         "inactive_samples_set" : inactive_samples_set,
+        'relative_intensity_removed_features' : [],
         }
     return sample_stats
