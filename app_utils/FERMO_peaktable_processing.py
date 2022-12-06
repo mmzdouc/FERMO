@@ -288,13 +288,18 @@ def peaktable_processing(
                 feature_dicts, 
                 input_folder,
                 dict_params['ms2query_blank_annotation'],
+                dict_params['ms2query_filter_range'],
+                samples,
+                sample_stats,
                 )
             log_dict, counter =  write_process_log(
                 log_dict, 
                 counter, 
                 ': '.join([
                     str(datetime.now()),
-                    f'''Completed ms2query_search.py: MS2Query blank annotation : {dict_params['ms2query_blank_annotation']};'''
+                    f'''Completed ms2query_search.py: MS2Query blank annotation : {dict_params['ms2query_blank_annotation']};
+                    relative intensity filter: {dict_params['ms2query_filter_range']}
+                    '''
                     ])
                 )
 

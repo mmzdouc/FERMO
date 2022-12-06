@@ -456,8 +456,7 @@ def call_rel_intens_filter_range_inp():
             html.Div(
                 '''Filter to remove features with relative intensity 
                 outside of the selected range from the analysis. This can
-                be used to reduce low-intensity features to speed up 
-                MS2Query annotation, or to remove all-dominating features, such as solvent peaks. For more information, click this info-button.
+                be used to reduce low-intensity features, or to remove all-dominating features, such as solvent peaks. For more information, click this info-button.
                 ''',
                 ),
             placement='right',
@@ -467,6 +466,51 @@ def call_rel_intens_filter_range_inp():
         html.Div([
             dcc.RangeSlider(
                 id='relative_intensity_filter_range',
+                min=0,
+                max=1,
+                marks=None,
+                value=[0,1],
+                tooltip={
+                    "placement": "bottom",
+                    "always_visible": True
+                    },
+                allowCross=False,
+                pushable=0,
+                updatemode='mouseup',
+                ),
+            ],
+            style={'width' : '30%'},
+            ),
+        ])
+
+def call_ms2query_intens_filter_range_inp():
+    '''Call the ms2query relative intensity filter range input field '''
+    return html.Div([
+        html.Div([ 
+            '''MS2Query relative intensity filter:
+            ''',
+            html.A(
+                html.Div(
+                    "?",
+                    id="ms2query_intens_filter_range_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter to restrict MS2Query annotation to a certain relative intensity range. This can be used to reduce calculation time by omitting low relative intensity features. For more information, click this info-button.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="ms2query_intens_filter_range_tooltip",
+            ),
+        html.Div([
+            dcc.RangeSlider(
+                id='ms2query_filter_range',
                 min=0,
                 max=1,
                 marks=None,
@@ -780,6 +824,8 @@ processing = html.Div([
                 html.H4('Networking and annotation parameters'),
                 html.Div(style={'margin-top' : '10px'}),
                 call_ms2query_toggle(),
+                html.Div(style={'margin-top' : '10px'}),
+                call_ms2query_intens_filter_range_inp(),
                 html.Div(style={'margin-top' : '10px'}),
                 call_ms2query_blank_annot_toggle(),
                 html.Div(style={'margin-top' : '10px'}),

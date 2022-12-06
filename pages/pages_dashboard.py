@@ -435,10 +435,10 @@ def call_foldchange_search_name():
         )
 
 def call_group_search_name():
-    '''Title for group search'''
+    '''Title for group search in features'''
     return html.Div([
         html.Div([ 
-            "Group filter: ",
+            "Group filter (features): ",
             html.A(
                 html.Div(
                     "?",
@@ -451,11 +451,13 @@ def call_group_search_name():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter for group metadata information.
+                '''Filter for group metadata for individual
+                features.
                 Filter uses regular expressions (POSIX ERE), and
                 certain characters have special meaning. 
                 For example, to select multiple group annotations, 
-                use expression 'group1|group2'. 
+                use expression 'group1|group2'. To exclude a specific
+                group, use expression "^((?!groupname).)*$".
                 For more information,
                 click the info-button to access the docs.
                 ''',
@@ -463,6 +465,41 @@ def call_group_search_name():
             placement='right',
             className='info_dot_tooltip',
             target="call_group_search_name_tooltip",
+            ),
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
+
+def call_group_search_clique_name():
+    '''Title for group search in cliques'''
+    return html.Div([
+        html.Div([ 
+            "Group filter (networks): ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_group_search_clique_name_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for group metadata for similarity networks.
+                Filter uses regular expressions (POSIX ERE), and
+                certain characters have special meaning. 
+                For example, to select multiple group annotations, 
+                use expression 'group1|group2'. To exclude a specific
+                group, use expression "^((?!groupname).)*$".
+                For more information,
+                click the info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_group_search_clique_name_tooltip",
             ),
         ],
         style={'display': 'inline-block', 'width': '60%',},
@@ -559,6 +596,10 @@ def call_selected_viz_toggle(name):
             {
             "label": 'SELECTED',
             "value": 'SELECTED',
+            },
+            {
+            "label": 'HIDDEN',
+            "value": 'HIDDEN',
             },
         ], 
         value='ALL',
@@ -743,6 +784,7 @@ dashboard = html.Div([
                                 'Nr of samples',
                                 'Nr of features',
                                 'Selected features',
+                                'Selected networks',
                                 'Non-blank',
                                 'Blank & MS1',
                                 ]
@@ -761,10 +803,11 @@ dashboard = html.Div([
                             for i in [
                                 'Filename',
                                 'Group',
+                                'Selected features',
+                                'Selected networks',
                                 'Diversity score',
                                 'Spec score',
                                 'Mean Novelty score',
-                                'Selected features',
                                 'Total',
                                 'Non-blank',
                                 'Blank & MS1',
@@ -801,7 +844,15 @@ dashboard = html.Div([
                         style={
                         'display': 'inline-block', 
                         'width': '90%',
-                        'float': 'left'},
+                        'float': 'left',
+                        'background-image' : f'''repeating-linear-gradient(
+                            180deg, 
+                            {color_dict['light_blue_0.15']}, 
+                            {color_dict['light_blue_0.15']} 30px, 
+                            {color_dict['light_blue_0.10']} 30px, 
+                            {color_dict['light_blue_0.10']} 60px 
+                            )''',
+                        },
                         ),
                     html.Div(
                         call_legend_central_chrom(),
@@ -811,13 +862,27 @@ dashboard = html.Div([
                         'float': 'left'},
                         ),
                     ]),
+                html.Div(style={
+                    'margin-top' : '5px',
+                    'display': 'inline-block',
+                    'width': '100%',
+                    'float': 'left',
+                    }),
                 html.Div([
                     html.Div(
                         dcc.Graph(id='chromat_clique_out'),
                         style={
                         'display': 'inline-block', 
                         'width': '90%',
-                        'float': 'left'},
+                        'float': 'left',
+                        'background-image' : f'''repeating-linear-gradient(
+                            180deg, 
+                            {color_dict['light_blue_0.15']}, 
+                            {color_dict['light_blue_0.15']} 30px, 
+                            {color_dict['light_blue_0.10']} 30px, 
+                            {color_dict['light_blue_0.10']} 60px 
+                            )''',
+                        },
                         ),
                     html.Div(
                         call_legend_clique_chrom(),
@@ -876,6 +941,9 @@ dashboard = html.Div([
                 html.Div(style={'margin-top' : '5px'}),
                 call_group_search_name(),
                 call_regexp_filter_str('filter_group'),
+                html.Div(style={'margin-top' : '5px'}),
+                call_group_search_clique_name(),
+                call_regexp_filter_str('filter_group_cliques'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_precursor_mz_filter_name(),
                 call_precursor_mz_filter_wrapper(),

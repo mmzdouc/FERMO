@@ -342,6 +342,7 @@ def app_loading_processing(signal, session_storage):
     Input('spec_sim_net_alg_toggle_input', 'value'),
     Input('ms2query_blank_annotation', 'value'),
     Input('relative_intensity_filter_range', 'value'),
+    Input('ms2query_filter_range', 'value'),
     )
 def bundle_params_into_cache(
     mass_dev_ppm, 
@@ -356,6 +357,7 @@ def bundle_params_into_cache(
     spec_sim_net_alg,
     ms2query_blank_annotation,
     relative_intensity_filter_range,
+    ms2query_filter_range,
     ):
     '''Bundle parameter input values, test for None values'''
     
@@ -372,6 +374,7 @@ def bundle_params_into_cache(
         spec_sim_net_alg,
         ms2query_blank_annotation,
         relative_intensity_filter_range,
+        ms2query_filter_range,
         ]:
         return {
             'mass_dev_ppm' : mass_dev_ppm, 
@@ -386,6 +389,7 @@ def bundle_params_into_cache(
             'spec_sim_net_alg' : spec_sim_net_alg,
             'ms2query_blank_annotation' : ms2query_blank_annotation,
             'relative_intensity_filter_range' : relative_intensity_filter_range,
+            'ms2query_filter_range' : ms2query_filter_range,
             }
     else:
         raise PreventUpdate
@@ -711,6 +715,7 @@ def store_selected_viz_toggle(
     Input('filter_spectral_sim_netw', 'value'),
     Input('filter_fold_change', 'value'),
     Input('filter_group', 'value'),
+    Input('filter_group_cliques', 'value'),
     )
 def read_threshold_values_function(
     rel_intensity_threshold, 
@@ -724,6 +729,7 @@ def read_threshold_values_function(
     filter_spectral_sim_netw,
     filter_fold_change,
     filter_group,
+    filter_group_cliques,
     ):
     '''Bundle input values'''
     
@@ -750,6 +756,7 @@ def read_threshold_values_function(
         filter_spectral_sim_netw,
         filter_fold_change,
         filter_group,
+        filter_group_cliques,
         ]:
         return {
             'rel_intensity_threshold' : rel_intensity_threshold,
@@ -763,6 +770,7 @@ def read_threshold_values_function(
             'filter_spectral_sim_netw' : filter_spectral_sim_netw,
             'filter_fold_change' : filter_fold_change,
             'filter_group' : filter_group,
+            'filter_group_cliques' : filter_group_cliques,
             }
     else:
         raise PreventUpdate
@@ -823,11 +831,24 @@ def calculate_feature_score(
             sample_mean_novelty[sample] = round(mean(list_novelty_scores),2)
         except:
             sample_mean_novelty[sample] = None
+    
+    sample_sel_cliques = dict()
+    for sample in samples:
+        clique_set = set()
+        for ID in samples_subsets[sample]['all_select_no_blank']:
+            if feature_dicts[str(ID)]['similarity_clique']:
+                clique_set.add(feature_dicts[str(ID)]['similarity_clique_number'])
+        sample_sel_cliques[sample] = len(clique_set)
         
         
+    
     sample_scores = pd.DataFrame({
         'Filename' : [i for i in samples],
         'Group' : [sample_stats['samples_dict'][i] for i in samples],
+        'Selected features' : [len(samples_subsets[i][
+            'all_select_no_blank']) for i in samples],
+        'Selected networks' : [sample_sel_cliques[i] for i in
+            sample_sel_cliques],
         'Diversity score' : calc_diversity_score(
             sample_stats, 
             samples),
@@ -836,8 +857,6 @@ def calculate_feature_score(
             samples, 
             sample_unique_cliques),
         'Mean Novelty score' : [sample_mean_novelty[i] for i in sample_mean_novelty],
-        'Selected features' : [len(samples_subsets[i][
-            'all_select_no_blank']) for i in samples],
         'Total' : [len(samples_subsets[i]['all_features']) for i in samples],
         'Non-blank' : [len(samples_subsets[i]['all_nonblank']) for i in samples],
         'Blank & MS1' : [len(samples_subsets[i]['blank_ms1']) for i in samples], 
@@ -869,6 +888,7 @@ def plot_general_stats_table(subsets, contents):
     '''Calculate basic statistics, return table'''
     
     sample_stats = contents['sample_stats']
+    feature_dicts = contents['feature_dicts']
     samples = sample_stats['samples_list']
     
     set_all_features = set()
@@ -887,10 +907,19 @@ def plot_general_stats_table(subsets, contents):
     for i in samples:
         set_nonblank_features.update(set(subsets[i]['all_nonblank']))
     
+    set_selected_cliques = set()
+    for i in samples:
+        for ID in set_selected_features:
+            if feature_dicts[str(ID)]['similarity_clique']:
+                set_selected_cliques.add(
+                    feature_dicts[str(ID)]['similarity_clique_number']
+                    )
+        
     df = pd.DataFrame({
         'Nr of samples' : [len(samples)],
         'Nr of features' : [len(set_all_features)],
         'Selected features' : [len(set_selected_features)],
+        'Selected networks' : [len(set_selected_cliques)],
         'Non-blank' : [len(set_nonblank_features)],
         'Blank & MS1' : [len(set_blank_features)],
     })

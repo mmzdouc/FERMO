@@ -31,6 +31,8 @@ style_header_table={
 color_dict = {
     'blue' : 'rgba(68,119,170,1)',
     'light_blue' : 'rgba(68,119,170,0.6)',
+    'light_blue_0.15' : 'rgba(68,119,170,0.15)',
+    'light_blue_0.10' : 'rgba(68,119,170,0.1)',
     'cyan' : 'rgba(102,204,238,1)',
     'light_cyan' : 'rgba(102,204,238,0.6)',
     'green' : 'rgba(34,136,51,1)',

@@ -83,5 +83,6 @@ def collect_stats_samples(peaktable, groups, bioactivity_samples,):
         "active_samples_set" : active_samples_set,
         "inactive_samples_set" : inactive_samples_set,
         'relative_intensity_removed_features' : [],
+        'ms2query_annotation_excluded_based_on_range_filter' : [],
         }
     return sample_stats

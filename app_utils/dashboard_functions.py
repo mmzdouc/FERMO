@@ -104,7 +104,7 @@ def generate_subsets(
         for feature in filtered_thrsh_set:
             if filter_str_regex(
                 thresholds['filter_adduct_isotopes'],
-                ', '.join([i for i in feature_dicts[str(feature)]['ann_adduct_isotop']]),
+                ','.join([i for i in feature_dicts[str(feature)]['ann_adduct_isotop']]),
                 ):
                 temp_set.add(feature)
         filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
@@ -128,7 +128,7 @@ def generate_subsets(
             #match query against string
             if filter_str_regex(
                 thresholds['filter_annotation'],
-                ', '.join([i for i in search_list])
+                ','.join([i for i in search_list])
                 ):
                 temp_set.add(feature)
         filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
@@ -223,6 +223,21 @@ def generate_subsets(
                 ):
                 temp_set.add(feature)
         filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+    
+    if thresholds['filter_group_cliques'] != '':
+        temp_set = set()
+        for feature in filtered_thrsh_set:
+            try:
+                if filter_str_regex(
+                    thresholds['filter_group_cliques'],
+                    ','.join([i for i in feature_dicts[str(feature)][
+                    'set_groups_clique']]),
+                    ):
+                    temp_set.add(feature)
+            except:
+                pass
+        filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+    
     
 
     #subtract ms1 and blanks from features over threshold
@@ -423,6 +438,37 @@ def append_scatter_text(
             'bordercolor' : bordercolor}
         )
 
+def append_invis_trace(row):
+    '''Create incisible scatter trace to keep track of peaks
+    
+    Parameters
+    ----------
+    row : `Pandas.Series`
+    
+    Returns
+    -------
+    `Plotly graph object scatter trace`
+    '''
+    return go.Scatter(
+        x=np.array([
+            row['pseudo_chrom_trace'][0][0],
+            row['pseudo_chrom_trace'][0][6],
+            ]),
+        y=np.array([0,0]),
+        fill='toself',
+        fillcolor='rgba(0,0,0,0)',
+        showlegend=False,
+        mode="lines",
+        line={
+            'color' : 'rgba(0,0,0,0)',
+            'shape' : 'spline',
+            'smoothing' : 0.8,
+            'width' : 0,
+            },
+        )
+    
+
+
 def plot_central_chrom(
     sel_sample,
     active_feature_index,
@@ -452,9 +498,12 @@ def plot_central_chrom(
     fig.update_layout(
         margin = dict(t=0,b=0, r=0),
         height = 300,
+        plot_bgcolor = 'rgba(0,0,0,0)',
+        paper_bgcolor = 'rgba(0,0,0,0)'
         )
     fig.update_xaxes(
         autorange=False,
+        showgrid=False,
         visible=True,
         range=[
             (sample_stats["rt_min"]-(sample_stats["rt_range"]*0.05)),
@@ -463,6 +512,7 @@ def plot_central_chrom(
         )
     fig.update_yaxes(
         autorange=False,
+        showgrid=False,
         title_text="Relative Intensity",
         range=[0, 1.05],
         )
@@ -483,6 +533,13 @@ def plot_central_chrom(
                     feature_dicts,
                     )
                 )
+        elif (
+            int(row['feature_ID']) in subsets[sel_sample]['blank_ms1']
+        and 
+            sel_all_vis == 'HIDDEN'
+        ):
+            fig.add_trace(append_invis_trace(row))
+        
         elif int(row['feature_ID']) in subsets[sel_sample]['select_sample_spec']:
             fig.add_trace(
                 append_scatter_text(
@@ -532,6 +589,13 @@ def plot_central_chrom(
                     )
                 )
         elif (
+            int(row['feature_ID']) in subsets[sel_sample]['nonselect_sample_spec']
+        and 
+            sel_all_vis == 'HIDDEN'
+        ):
+            fig.add_trace(append_invis_trace(row))
+        
+        elif (
             int(row['feature_ID']) in subsets[sel_sample]['nonselect_group_spec']
         and 
             sel_all_vis == 'ALL'
@@ -547,6 +611,12 @@ def plot_central_chrom(
                     )
                 )
         elif (
+            int(row['feature_ID']) in subsets[sel_sample]['nonselect_group_spec']
+        and 
+            sel_all_vis == 'HIDDEN'
+        ):
+            fig.add_trace(append_invis_trace(row))
+        elif (
             int(row['feature_ID']) in subsets[sel_sample]['nonselect_remainder']
         and 
             sel_all_vis == 'ALL'
@@ -561,6 +631,12 @@ def plot_central_chrom(
                     feature_dicts,
                     )
                 )
+        elif (
+            int(row['feature_ID']) in subsets[sel_sample]['nonselect_remainder']
+        and 
+            sel_all_vis == 'HIDDEN'
+        ):
+            fig.add_trace(append_invis_trace(row))
         else:
             fig.add_trace(
                 append_scatter_text(
@@ -624,14 +700,19 @@ def plot_clique_chrom(
     fig.update_layout(
         margin = dict(t=0,b=0,r=0),
         height = 100,
+        plot_bgcolor = 'rgba(0,0,0,0)',
+        paper_bgcolor = 'rgba(0,0,0,0)'
         )
     
     fig.update_yaxes(
         visible=False,
+        showgrid=False,
         )
     
     fig.update_xaxes(
         autorange=False,
+        showgrid=False,
+        visible=True,
         title_text="Retention Time (min)",
             range=[
                 (sample_stats["rt_min"]-(sample_stats["rt_range"]*0.05)),
