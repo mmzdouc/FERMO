@@ -94,10 +94,29 @@ def generate_subsets(
         ) 
         &
         (
-            samples[sample]['bioactivity_score'] >= thresholds['quant_biological_value']
+            (samples[sample]['convolutedness_score'] >= thresholds['peak_overlap_threshold'][0]) 
+            & 
+            (samples[sample]['convolutedness_score'] <= thresholds['peak_overlap_threshold'][1])
         ) 
         ]
     filtered_thrsh_set = set(filt_df['feature_ID'])
+
+    if thresholds['quant_biological_value'] != 'OFF':
+        temp_set = set()
+        if thresholds['quant_biological_value'] == 'SPECIFICITY':
+            for feature in filtered_thrsh_set:
+                if feature_dicts[str(feature)]['bioactivity_associated']:
+                    temp_set.add(feature)
+            filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+        elif thresholds['quant_biological_value'] == 'SPEC.+TREND':
+            for feature in filtered_thrsh_set:
+                if (
+                    feature_dicts[str(feature)]['bioactivity_associated']
+                    &
+                    feature_dicts[str(feature)]['bioactivity_trend']
+                    ):
+                    temp_set.add(feature)
+            filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
     
     if thresholds['filter_adduct_isotopes'] != '':
         temp_set = set()

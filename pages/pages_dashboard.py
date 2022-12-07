@@ -146,7 +146,7 @@ def call_rel_int_title():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter peaks for relative intensity. Click button to access the docs.
+                '''Filter features for relative intensity. Click button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -156,6 +156,39 @@ def call_rel_int_title():
         ],
         style={'display': 'inline-block', 'width': '60%',},
         )
+
+
+def call_peak_collision_title():
+    '''Peak collision title + info button'''
+    return html.Div([
+        html.Div([ 
+            "Peak overlap (%):",
+            html.A(
+                html.Div(
+                    "?",
+                    id="peak_collision_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter features for peak collisions. The higher the value, 
+                the more of the peak is overlapping (colliding) with 
+                another peak. Click button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="peak_collision_tooltip",
+            ),
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
+
+
 
 def call_adduct_title():
     '''Adduct/isotope title + info button'''
@@ -530,15 +563,19 @@ def call_bioactivity_toggle(name):
     return html.Div(dcc.RadioItems(
         options=[
             {
-            "label": 'ON',
-            "value": 0.1,
+            "label": 'OFF',
+            "value": 'OFF',
             },
             {
-            "label": 'OFF',
-            "value": 0,
+            "label": 'SPECIFICITY',
+            "value": 'SPECIFICITY',
+            },
+            {
+            "label": 'SPEC.+TREND',
+            "value": 'SPEC.+TREND',
             },
         ], 
-        value=0,
+        value='OFF',
         id=name,
         inline=False,
         )
@@ -921,11 +958,14 @@ dashboard = html.Div([
                 call_rel_int_title(),
                 call_rangeslider_inp('rel_intensity_threshold'),
                 html.Div(style={'margin-top' : '5px'}),
+                call_peak_collision_title(),
+                call_rangeslider_inp('peak_overlap_threshold'),
+                html.Div(style={'margin-top' : '5px'}),
                 call_bioactivity_title(),
                 call_bioactivity_toggle('bioactivity_threshold'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_adduct_title(),
-                call_regexp_filter_str('convolutedness_threshold'),
+                call_regexp_filter_str('filter_adduct_isotopes'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_annotation_search_title(),
                 call_regexp_filter_str('filter_annotation'),

@@ -705,7 +705,7 @@ def store_selected_viz_toggle(
 @callback(
     Output('threshold_values', 'data'),
     Input('rel_intensity_threshold', 'value'),
-    Input('convolutedness_threshold', 'value'),
+    Input('filter_adduct_isotopes', 'value'),
     Input('bioactivity_threshold', 'value'),
     Input('novelty_threshold', 'value'),
     Input('filter_annotation', 'value'),
@@ -716,6 +716,7 @@ def store_selected_viz_toggle(
     Input('filter_fold_change', 'value'),
     Input('filter_group', 'value'),
     Input('filter_group_cliques', 'value'),
+    Input('peak_overlap_threshold', 'value'),
     )
 def read_threshold_values_function(
     rel_intensity_threshold, 
@@ -730,6 +731,7 @@ def read_threshold_values_function(
     filter_fold_change,
     filter_group,
     filter_group_cliques,
+    peak_overlap_threshold,
     ):
     '''Bundle input values'''
     
@@ -757,6 +759,7 @@ def read_threshold_values_function(
         filter_fold_change,
         filter_group,
         filter_group_cliques,
+        peak_overlap_threshold,
         ]:
         return {
             'rel_intensity_threshold' : rel_intensity_threshold,
@@ -771,6 +774,7 @@ def read_threshold_values_function(
             'filter_fold_change' : filter_fold_change,
             'filter_group' : filter_group,
             'filter_group_cliques' : filter_group_cliques,
+            'peak_overlap_threshold' : peak_overlap_threshold,
             }
     else:
         raise PreventUpdate

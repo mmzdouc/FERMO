@@ -18,6 +18,7 @@ from processing.ms2query_search import ms2query_search
 from processing.calculate_feature_overlap import calculate_feature_overlap
 from processing.calculate_metrics import calculate_metrics
 from processing.calculate_pseudochrom_traces import calculate_pseudochrom_traces
+from processing.determine_trend_bioactivity import determine_trend_bioactivity
 
 from app_utils.variables import color_dict
 
@@ -155,7 +156,7 @@ def peaktable_processing(
         counter, 
         ': '.join([
             str(datetime.now()), 
-            'Completed read_from_metadata_table.py'
+            'Completed: "read_from_metadata_table.py"'
             ])
         )
 
@@ -169,7 +170,7 @@ def peaktable_processing(
         counter, 
         ': '.join([
             str(datetime.now()), 
-            'Completed collect_stats_samples.py'
+            'Completed: "collect_stats_samples.py"'
             ])
         )
     
@@ -183,7 +184,7 @@ def peaktable_processing(
         counter, 
         ': '.join([
             str(datetime.now()), 
-            f'''Completed get_samplespecific_features.py: Relative intensity range filter : {dict_params['relative_intensity_filter_range']};'''
+            f'''Completed: "get_samplespecific_features.py": Relative intensity range filter : {dict_params['relative_intensity_filter_range']};'''
             ])
         )
 
@@ -193,7 +194,7 @@ def peaktable_processing(
         counter, 
         ': '.join([
             str(datetime.now()), 
-            'Completed set_from_sample_tables.py'
+            'Completed: "set_from_sample_tables.py"'
             ])
         )
 
@@ -209,7 +210,7 @@ def peaktable_processing(
         counter, 
         ': '.join([
             str(datetime.now()), 
-            f'''Completed feature_dicts_creation.py: Min nr of fragments per MS² spectrum : {dict_params['min_nr_ms2']};'''
+            f'''Completed: "feature_dicts_creation.py": Min nr of fragments per MS² spectrum : {dict_params['min_nr_ms2']};'''
             ])
         )
     
@@ -224,7 +225,7 @@ def peaktable_processing(
         counter, 
         ': '.join([
             str(datetime.now()), 
-            f'''Completed determine_blank_features.py: Blank factor : {dict_params['column_ret_fact']};'''
+            f'''Completed: "determine_blank_features.py": Blank factor : {dict_params['column_ret_fact']};'''
             ])
         )
 
@@ -241,7 +242,7 @@ def peaktable_processing(
         counter, 
         ': '.join([
             str(datetime.now()), 
-            f'''Completed determine_bioactive_features.py: QuantData factor : {dict_params['bioact_fact']};'''
+            f'''Completed: "determine_bioactive_features.py": QuantData factor : {dict_params['bioact_fact']};'''
             ])
         )
     
@@ -258,7 +259,7 @@ def peaktable_processing(
         counter, 
         ': '.join([
             str(datetime.now()), 
-            f'''Completed calculate_similarity_cliques.py: Fragment similarity tolerance : {dict_params['spectral_sim_tol']}; Spectrum similarity score cutoff : {dict_params['spec_sim_score_cutoff']}; Max spectral links : {dict_params['max_nr_links_ss']}; Spectral similarity algorithm used: {spec_sim_net_alg_used}'''
+            f'''Completed: "calculate_similarity_cliques.py": Fragment similarity tolerance : {dict_params['spectral_sim_tol']}; Spectrum similarity score cutoff : {dict_params['spec_sim_score_cutoff']}; Max spectral links : {dict_params['max_nr_links_ss']}; Spectral similarity algorithm used: {spec_sim_net_alg_used}'''
             ])
         )
 
@@ -275,7 +276,7 @@ def peaktable_processing(
             counter, 
             ': '.join([
                 str(datetime.now()), 
-                f'''Completed library_search.py: Fragment similarity tolerance : {dict_params['spectral_sim_tol']}; Spectrum similarity score cutoff : {dict_params['spec_sim_score_cutoff']}; Min matched peaks : {dict_params['min_nr_matched_peaks']};'''
+                f'''Completed: "library_search.py": Fragment similarity tolerance : {dict_params['spectral_sim_tol']}; Spectrum similarity score cutoff : {dict_params['spec_sim_score_cutoff']}; Min matched peaks : {dict_params['min_nr_matched_peaks']};'''
                 ])
             )
     
@@ -297,7 +298,7 @@ def peaktable_processing(
                 counter, 
                 ': '.join([
                     str(datetime.now()),
-                    f'''Completed ms2query_search.py: MS2Query blank annotation : {dict_params['ms2query_blank_annotation']};
+                    f'''Completed: "ms2query_search.py": MS2Query blank annotation : {dict_params['ms2query_blank_annotation']};
                     relative intensity filter: {dict_params['ms2query_filter_range']}
                     '''
                     ])
@@ -313,7 +314,7 @@ def peaktable_processing(
         counter, 
         ': '.join([
             str(datetime.now()),
-            f'''Completed calculate_feature_overlap.py: Fragment similarity tolerance : {dict_params['mass_dev_ppm']};'''
+            f'''Completed: "calculate_feature_overlap.py": Fragment similarity tolerance : {dict_params['mass_dev_ppm']};'''
             ])
         )
     
@@ -327,7 +328,17 @@ def peaktable_processing(
         counter, 
         ': '.join([
             str(datetime.now()),
-            'Completed calculate_metrics.py'
+            'Completed: "calculate_metrics.py"'
+            ])
+        )
+    
+    feature_dicts = determine_trend_bioactivity(feature_dicts, sample_stats)
+    log_dict, counter =  write_process_log(
+        log_dict, 
+        counter, 
+        ': '.join([
+            str(datetime.now()),
+            'Completed: "determine_trend_bioactivity.py"'
             ])
         )
     
@@ -339,7 +350,7 @@ def peaktable_processing(
         counter, 
         ': '.join([
             str(datetime.now()),
-            'Completed calculate_pseudochrom_traces.py'
+            'Completed: "calculate_pseudochrom_traces.py"'
             ])
         )
     

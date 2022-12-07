@@ -203,11 +203,15 @@ def bioactivity(
     """Extracts bioactivity information."""
     
     if feature_dicts[int(row["feature_ID"])]['bioactivity_associated'] == True:
-        bioactivity_samples = feature_dicts[
+        bioactiv = feature_dicts[
             int(row["feature_ID"])]['bioactivity_samples']
-        return max(bioactivity_samples)
+        return max(bioactiv)
     else: 
         return 0
+
+
+
+
 
 def in_blank(
     row,
@@ -308,7 +312,7 @@ def convolutedness(
     
     #makes the remainder of the rt a fraction of orignial rt of peak
     try:
-        return (A_rt_remainder / A_rt_full)
+        return (1 - (A_rt_remainder / A_rt_full))
     except ZeroDivisionError:
         return 0
 

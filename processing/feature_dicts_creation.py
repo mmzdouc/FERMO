@@ -283,6 +283,7 @@ def feature_dicts_creation(
                 'ms1_bool' : ms1_bool,
                 #Dummy values - assigned downstream
                 'bioactivity_associated' : False,
+                'bioactivity_trend' : False,
                 'bioactivity_samples' : [],
                 'blank_associated' : False,
                 'similarity_clique' : False,
