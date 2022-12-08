@@ -64,7 +64,6 @@ from app_utils.dashboard_functions import (
     generate_cyto_elements,
     empty_feature_info_df,
     modify_feature_info_df,
-    plot_mini_chrom,
     plot_clique_chrom,
     plot_central_chrom,
     prepare_log_file_filters,
@@ -74,6 +73,7 @@ from app_utils.dashboard_functions import (
     download_all_samples_selected_features,
     download_all_features,
     download_selected_features,
+    plot_sample_chrom,
     )
 
 from app_utils.variables import (
@@ -516,7 +516,6 @@ def upload_bioactiv(contents, filename, value):
             file_store['bioactivity'] = converted_df.to_json(orient='split')
             file_store['bioactivity_orig'] = df_no_zeroes.to_json(orient='split')
             file_store['bioactivity_name'] = filename
-            
             return div_successful_load_message(str(filename)), file_store
 
 @callback(
@@ -1064,14 +1063,15 @@ def title_mini_chrom(
     
     
     if active_feature_id is None:
-        raise PreventUpdate
+        return '''No feature selected - click any feature in the
+                chromatogram overview.'''
     
     return f"""Feature {active_feature_id}: Detected Across 
         {len(feature_dicts[str(active_feature_id)]['presence_samples'])} 
         of {len(sample_stats["samples_list"])} Samples"""
 
 @callback(
-    Output('mini_chromatograms', 'figure'),
+    Output('mini_chromatograms', 'children'),
     Input('storage_active_sample', 'data'),
     Input('storage_active_feature_id', 'data'),
     State('data_processing_FERMO', 'data'),
@@ -1082,6 +1082,10 @@ def plot_chrom_overview(
     contents
     ):
     '''Plot mini-chromatograms'''
+    
+    if active_feature_id is None:
+        return html.Div()
+    
     feature_dicts = contents['feature_dicts']
     samples_JSON = contents['samples_JSON']
     sample_stats = contents['sample_stats']
@@ -1090,13 +1094,18 @@ def plot_chrom_overview(
     for sample in samples_JSON:
         samples[sample] = pd.read_json(
             samples_JSON[sample], orient='split')
-    
-    return plot_mini_chrom(
+
+    return plot_sample_chrom(
         selected_sample,
         active_feature_id,
         sample_stats,
         samples,
         feature_dicts,)
+    
+    
+    
+    
+    
 
 @callback(
     Output('featureinfo_out', 'data'), 

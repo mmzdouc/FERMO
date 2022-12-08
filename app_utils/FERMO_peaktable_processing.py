@@ -133,11 +133,12 @@ def peaktable_processing(
         metadata = pd.read_json(uploaded_files_store['metadata'], orient='split')
     
     bioactivity = None
+    orig_bioactiv = None
     bioactivity_name = uploaded_files_store['bioactivity_name']
     if bioactivity_name is not None:
         bioactivity = pd.read_json(uploaded_files_store['bioactivity'], orient='split')
-        #add bioactivity_original to add also this data to feature objects for later
-        #extraction
+        orig_bioactiv = pd.read_json(uploaded_files_store['bioactivity_original'], orient='split')
+
     
     ref_library = None
     user_library_name = uploaded_files_store['user_library_name']
@@ -164,6 +165,7 @@ def peaktable_processing(
         peaktable,
         groups,
         bioactivity,
+        orig_bioactiv,
         )
     log_dict, counter =  write_process_log(
         log_dict, 
@@ -259,7 +261,7 @@ def peaktable_processing(
         counter, 
         ': '.join([
             str(datetime.now()), 
-            f'''Completed: "calculate_similarity_cliques.py": Fragment similarity tolerance : {dict_params['spectral_sim_tol']}; Spectrum similarity score cutoff : {dict_params['spec_sim_score_cutoff']}; Max spectral links : {dict_params['max_nr_links_ss']}; Spectral similarity algorithm used: {spec_sim_net_alg_used}'''
+            f'''Completed: "calculate_similarity_cliques.py": Fragment similarity tolerance : {dict_params['spectral_sim_tol']}; Spectrum similarity score cutoff : {dict_params['spec_sim_score_cutoff']}; Max spectral links : {dict_params['max_nr_links_ss']}; Spectral similarity algorithm used: {dict_params['spec_sim_net_alg']}'''
             ])
         )
 

@@ -689,8 +689,6 @@ def plot_central_chrom(
     return fig
 
 
-
-
 def plot_clique_chrom(
     selected_sample,
     active_feature_index,
@@ -777,9 +775,13 @@ def plot_clique_chrom(
                 )
     return fig
 
-def plot_mini_chrom(
+
+
+
+
+def plot_sample_chrom(
     selected_sample,
-    active_feature_id,
+    ID,
     sample_stats,
     samples,
     feature_dicts,
@@ -789,33 +791,28 @@ def plot_mini_chrom(
     Parameters
     ----------
     selected_sample : `str`
-    active_feature_id : `int`
+    ID : `int`
     sample_stats : `dict`
     samples : `dict`
     feature_dicts : `dict`
     
     Returns
     -------
-    `go.Figure()`
+    `html.Div(go.Figure())`
     '''
-    fig = make_subplots(rows=1, cols=1)
+    list_plots = []
     rt_min = 0
     rt_max = 1
 
-    if isinstance(active_feature_id, int):
+    for i in range(len(feature_dicts[str(ID)]['presence_samples'])):
+        sample = feature_dicts[str(ID)]['presence_samples'][i] 
 
-        try: 
-            nr_subplots = len(
-                feature_dicts[str(active_feature_id)]['presence_samples'])
-        except KeyError:
-            nr_subplots = 0
-        
         #Restrict display range +- 10% of RT window
-        rt_min = round((feature_dicts[str(active_feature_id)][
+        rt_min = round((feature_dicts[str(ID)][
             'average_retention_time']
             -
             (sample_stats['rt_range'] * 0.1)),2)
-        rt_max = round((feature_dicts[str(active_feature_id)][
+        rt_max = round((feature_dicts[str(ID)][
             'average_retention_time']
             +
             (sample_stats['rt_range'] * 0.10)),2)
@@ -826,80 +823,67 @@ def plot_mini_chrom(
         if rt_max > sample_stats['rt_max']:
             rt_max = sample_stats['rt_max']
         
-        fig = make_subplots(
-            rows=nr_subplots, 
-            cols=1,
-            shared_xaxes=True,
-            x_title="Retention Time (min)",
-            subplot_titles=[
-                x for x in 
-                feature_dicts[str(active_feature_id)]['presence_samples']
-                ]
+        fig = go.Figure()
+        
+        fig.update_layout(
+            margin = dict(t=40,b=10,r=30,l=30),
+            height = 100,
+            title={
+                'text' : sample,
+                'xanchor' : 'center',
+                'x':0.5,
+                },
+            font={
+                'size' : 10,
+                },
             )
         
-        fig.update_annotations(
-            font_size=12
+        fig.update_xaxes(
+            autorange=False,
+            showgrid=False,
+            visible=True,
+            range=[rt_min,rt_max,],
             )
-
-        fig.update_yaxes(visible=False)
+        fig.update_yaxes(
+            autorange=False,
+            showgrid=True,
+            range=[0, 1.05],
+            )
         
-        row_counter = 1
-        for sample in feature_dicts[str(active_feature_id)]['presence_samples']:
-            feature_row = ""
-            for id, row in samples[sample].iterrows():
-                if row['feature_ID'] == active_feature_id:
-                    active_feature_row = copy.deepcopy(row)
-                elif (
-                        (row['pseudo_chrom_trace'][0][0] >= rt_min)
-                    and
-                        (row['pseudo_chrom_trace'][0][-1] <= rt_max)
-                ):
-                    fig.append_trace(append_scatter_text(
-                            row,
-                            color_dict['light_grey'],
-                            color_dict['grey'],
-                            2,
-                            color_dict['grey'],
-                            feature_dicts,
-                            ),
-                        row=row_counter, 
-                        col=1
+        active_feature_row = ""
+        for id, row in samples[sample].iterrows():
+            if row['feature_ID'] == ID:
+                active_feature_row = copy.deepcopy(row)
+            elif (
+                    (row['pseudo_chrom_trace'][0][0] >= rt_min)
+                and
+                    (row['pseudo_chrom_trace'][0][-1] <= rt_max)
+            ):
+                fig.add_trace(append_scatter_text(
+                        row,
+                        color_dict['light_grey'],
+                        color_dict['grey'],
+                        2,
+                        color_dict['grey'],
+                        feature_dicts,
                         )
+                    )
             try:
-                fig.append_trace(append_scatter_text(
+                fig.add_trace(append_scatter_text(
                     active_feature_row,
                     color_dict['blue'],
                     color_dict['black'],
                     2,
                     color_dict['black'],
                     feature_dicts,
-                ),
-                row=row_counter, 
-                col=1
+                    )
                 )
             except TypeError:
                 pass
 
-            row_counter = row_counter + 1
+        list_plots.append(fig)
 
-    fig.update_xaxes(
-        autorange=False,
-        range=[
-            rt_min,
-            rt_max
-            ],
-        )
-    fig.update_yaxes(
-    autorange=False,
-    range=[0, 1.1],
-    visible=False,
-    )
-    
-    fig.update_layout(
-    margin = dict(r=0,l=0,b=0,t=50),
-    )
-    
-    return fig
+    return html.Div([dcc.Graph(figure=i) for i in list_plots])
 
 
 def modify_feature_info_df(
@@ -978,6 +962,8 @@ def modify_feature_info_df(
                 fold_diff_list.append(''.join([
                     str(feat_dicts[ID]['dict_fold_diff'][comp]),
                     ' (', comp, '),', '<br>',])) 
+    else:
+        fold_diff_list = [None]
 
     combined_list_int = []
     for i in range(len(feat_dicts[ID]['presence_samples'])):
@@ -994,7 +980,19 @@ def modify_feature_info_df(
                 ]))
     else:
         combined_list_bio = [None]
-        
+    
+    combined_list_orig_bio = []
+    if feat_dicts[ID]['bioactivity_associated']:
+        for i in range(len(feat_dicts[ID]['presence_samples'])):
+            sample = feat_dicts[ID]['presence_samples'][i]
+            combined_list_orig_bio.append(''.join([
+                str(sample_stats['original_bioactivity'][sample]), ' (',
+                str(sample), '),', '<br>',
+            ]))
+    else:
+        combined_list_orig_bio = [None]
+    
+    
     combined_list_adducts = []
     if feat_dicts[ID]['ann_adduct_isotop']:
         for i in range(len(feat_dicts[ID]['ann_adduct_isotop'])):
@@ -1021,39 +1019,47 @@ def modify_feature_info_df(
         sim_clique_list = (', '.join(str(i) for i in 
             sample_stats['cliques'][
                 str(feat_dicts[ID]['similarity_clique_number'])][0]))
-
+    
+    quant_data_ass = False
+    quant_data_trend = False
+    if feat_dicts[ID]['bioactivity_associated']:
+        quant_data_ass = True
+        if feat_dicts[ID]['bioactivity_trend']:
+            quant_data_trend = True
+    
     placeholder = '-----'
     data = [
         ['Feature ID', ID],
         ['Precursor <i>m/z</i>', feat_dicts[ID]['precursor_mz']],
         ['Retention time (min)', samples[smpl].at[index, 'retention_time']],
         ['Feature intensity (absolute)', int_sample],
+        ['Feature intensity (relative)', round(samples[smpl].at[index, 'rel_intensity_score'],2)],
         [placeholder, placeholder],
-        ['Medium/blank associated', feat_dicts[ID]['blank_associated']],
-        ['Relative intensity', round(samples[smpl].at[index, 'rel_intensity_score'],2)], 
-        ['QuantData score', round(samples[smpl].at[index, 'bioactivity_score'],2)],
+        ['Blank-associated', feat_dicts[ID]['blank_associated']],
         ['Novelty score', round(samples[smpl].at[index, 'novelty_score'],2)],
+        ['QuantData-associated', quant_data_ass],
+        ['QuantData-trend', quant_data_trend],
+        ['Peak overlap (%)', round((samples[smpl].at[index, 'convolutedness_score']*100),0)],
         [placeholder, placeholder],
-        ['User-library: matches', cosine_annotation],
-        ['MS2Query: best analog/match', ann_ms2query],
-        ['MS2Query: <i>m/z</i> diff. to best analog/match', mass_diff_ms2query],
-        ['MS2Query: pred. class of best analog/match', class_ms2query],
-        ['MS2Query: pred. superclass of best analog/match', superclass_ms2query],
+        ['Spectral library: best match', cosine_annotation],
+        ['MS2Query: best match/analog', ann_ms2query],
+        ['MS2Query: <i>m/z</i> difference to best match/analog', mass_diff_ms2query],
+        ['MS2Query: predicted class of best match/analog', class_ms2query],
+        ['MS2Query: predicted superclass of best match/analog', superclass_ms2query],
         [placeholder, placeholder],
-        ['Found in groups', ("".join(f"{i}<br>" for i in feat_dicts[ID]['set_groups']))],
-        ['Fold-differences groups', ("".join(str(i) for i in fold_diff_list))],
-        ['Intensity per sample', ("".join(str(i) for i in combined_list_int))],
-        ['Bioactivity per sample', ("".join(str(i) for i in combined_list_bio))],
+        ['Feature found in groups', ("".join(f"{i}<br>" for i in feat_dicts[ID]['set_groups']))],
+        ['Fold-differences across groups', ("".join(str(i) for i in fold_diff_list))],
+        ['Intensity per sample (highest to lowest)', ("".join(str(i) for i in combined_list_int))],
+        ['QuantData per sample (highest to lowest)', ("".join(str(i) for i in combined_list_bio))],
+        ['Original QuantData (highest to lowest)', ("".join(str(i) for i in combined_list_orig_bio))],
         ['Putative adducts', ("".join(str(i) for i in combined_list_adducts))],
         [placeholder, placeholder],
-        ['Molecular network ID', feat_dicts[ID]['similarity_clique_number']],
-        ['Groups in molecular network', ("".join(str(i) for i in groups_cliques))],
-        ['Number of features in MN', sim_clique_len],
-        ['IDs of features in MN', sim_clique_list],
+        ['Spectral similarity network ID', feat_dicts[ID]['similarity_clique_number']],
+        ['Groups in network', ("".join(str(i) for i in groups_cliques))],
+        ['Number of features in network', sim_clique_len],
+        ['IDs of features in network', sim_clique_list],
     ]
-    
     df = pd.DataFrame(data, columns=['Attribute', 'Description'])
-    
     return df.to_dict('records')
 
 
@@ -1065,32 +1071,33 @@ def empty_feature_info_df():
         ['Precursor <i>m/z</i>', None],
         ['Retention time (min)', None],
         ['Feature intensity (absolute)', None],
+        ['Feature intensity (relative)', None],
         [placeholder, placeholder],
-        ['Medium/blank associated', None],
-        ['Relative intensity', None], 
-        ['QuantData score', None],
+        ['Blank-associated', None],
         ['Novelty score', None],
+        ['QuantData-associated', None],
+        ['QuantData-trend', None],
+        ['Peak overlap (%)', None],
         [placeholder, placeholder],
-        ['User-library: matches', None],
-        ['MS2Query: best analog/match', None],
-        ['MS2Query: <i>m/z</i> diff. to best analog/match', None],
-        ['MS2Query: pred. class of best analog/match', None],
-        ['MS2Query: pred. superclass of best analog/match', None],
+        ['Spectral library: best match', None],
+        ['MS2Query: best match/analog', None],
+        ['MS2Query: <i>m/z</i> difference to best match/analog', None],
+        ['MS2Query: predicted class of best match/analog', None],
+        ['MS2Query: predicted superclass of best match/analog', None],
         [placeholder, placeholder],
-        ['Found in groups', None],
-        ['Fold-differences groups', None],
-        ['Intensity per sample', None],
-        ['Bioactivity per sample', None],
+        ['Feature found in groups', None],
+        ['Fold-differences across groups', None],
+        ['Intensity per sample (highest to lowest)', None],
+        ['QuantData per sample (highest to lowest)', None],
+        ['Original QuantData (highest to lowest)', None],
         ['Putative adducts', None],
         [placeholder, placeholder],
-        ['Molecular network ID', None],
-        ['Groups in molecular network', None],
-        ['Number of features in MN', None],
-        ['IDs of features in MN', None],
+        ['Spectral similarity network ID', None],
+        ['Groups in network', None],
+        ['Number of features in network', None],
+        ['IDs of features in network', None],
     ]
-    
     df = pd.DataFrame(data, columns=['Attribute', 'Description'])
-    
     return df.to_dict('records')
 
 
@@ -1382,24 +1389,124 @@ def add_edgedata(data, feat_dicts,):
     return df.to_dict('records')
 
 
-def export_sel_peaktable(samples, sel_sample):
+
+def feat2table(feat_dicts, row, key):
+    '''Return value to insert in pandas df column
+    
+    Parameters
+    ---------
+    feat_dicts : `dict`
+    row : `Pandas row`
+    key : `str`
+    
+    Returns
+    -------
+    `str`
+    '''
+    return feat_dicts[str(row['feature_ID'])][key]
+
+def feat2table_clique(feat_dicts, row,): 
+    '''Return clique information if any
+    
+    Parameters
+    ---------
+    feat_dicts : `dict`
+    row : `Pandas row`
+    
+    Returns
+    -------
+    `str`
+    '''
+    if feat_dicts[str(row['feature_ID'])]['similarity_clique']:
+        return feat_dicts[str(row['feature_ID'])]['similarity_clique_number']
+    else:
+        return ""
+
+def feat2table_library(feat_dicts, row,): 
+    '''Return library annotation information if any
+    
+    Parameters
+    ---------
+    feat_dicts : `dict`
+    row : `Pandas row`
+    
+    Returns
+    -------
+    `str`
+    '''
+    if feat_dicts[str(row['feature_ID'])]['cosine_annotation']:
+        return ''.join([
+            str(feat_dicts[str(row['feature_ID'])]['cosine_annotation_list'][0]['name']),
+            '(score: ',
+            str(round(feat_dicts[str(row['feature_ID'])]['cosine_annotation_list'][0]['score'],2)),
+            ')',
+            ])
+    else:
+        return ""
+
+def feat2table_ms2query(feat_dicts, row,): 
+    '''Return ms2query annotation information if any
+    
+    Parameters
+    ---------
+    feat_dicts : `dict`
+    row : `Pandas row`
+    
+    Returns
+    -------
+    `str`
+    '''
+    if feat_dicts[str(row['feature_ID'])]['ms2query']:
+        return ''.join([
+            str(feat_dicts[str(row['feature_ID'])]['ms2query_results'][0]['analog_compound_name']),
+            '(score: ',
+            str(round(feat_dicts[str(row['feature_ID'])]['ms2query_results'][0]['ms2query_model_prediction'],2)),
+            ')',
+            ])
+    else:
+        return ""
+
+
+
+def export_sel_peaktable(samples, sel_sample, feat_dicts):
     '''Return columns from pandas df'''
-    return samples[sel_sample].loc[:,[
+    
+    df = samples[sel_sample].loc[:,[
             'feature_ID',
             'precursor_mz',
             'retention_time',
-            'fwhm',
             'intensity',
             'norm_intensity',
             'rt_start',
             'rt_stop',
             'putative_adduct_detection',
-            'rel_intensity_score',
-            'convolutedness_score',
-            'bioactivity_score',
-            'novelty_score',
-            'in_blank',
-            'ms1_only',]]
+            ]]
+    
+    df['Novelty_score'] = df.apply(
+        lambda row: feat2table(feat_dicts, row, 'novelty_score'), axis=1,)
+    
+    df['MS1_only'] = df.apply(
+        lambda row: feat2table(feat_dicts, row, 'ms1_bool'), axis=1,)
+    
+    df['blank_associated'] = df.apply(
+        lambda row: feat2table(feat_dicts, row, 'blank_associated'), axis=1,)
+    
+    df['QuantData_associated'] = df.apply(
+        lambda row: feat2table(feat_dicts, row, 'bioactivity_associated'), axis=1,)
+    
+    df['QuantData_trend'] = df.apply(
+        lambda row: feat2table(feat_dicts, row, 'bioactivity_trend'), axis=1,)
+    
+    df['Similarity_network_ID'] = df.apply(
+        lambda row: feat2table_clique(feat_dicts, row,), axis=1,)
+    
+    df['Best_library_annotation'] = df.apply(
+        lambda row: feat2table_library(feat_dicts, row,), axis=1,)
+    
+    df['Best_MS2Query_annotation'] = df.apply(
+        lambda row: feat2table_ms2query(feat_dicts, row,), axis=1,)
+
+    return df
 
 def prepare_log_file(contents):
     '''Concatenate information for logging file'''
@@ -1493,6 +1600,7 @@ def download_sel_sample_all_features(sel_sample, contents):
     `tuple`
     '''
     samples_JSON = contents['samples_JSON']
+    feature_dicts = contents['feature_dicts']
     param_logging = prepare_log_file(contents)
     
     samples = dict()
@@ -1501,7 +1609,7 @@ def download_sel_sample_all_features(sel_sample, contents):
             samples_JSON[sample], 
             orient='split'
             )
-    df = export_sel_peaktable(samples, sel_sample)
+    df = export_sel_peaktable(samples, sel_sample, feature_dicts)
     
     return (
             dcc.send_string(
@@ -1536,6 +1644,7 @@ def download_sel_sample_sel_features(
     `tuple`
     '''
     samples_JSON = contents['samples_JSON']
+    feature_dicts = contents['feature_dicts']
     param_logging = prepare_log_file_filters(contents, thresholds)
 
     samples = dict()
@@ -1548,7 +1657,7 @@ def download_sel_sample_sel_features(
         active_features_set.update(
             samples_subsets[sample]['all_select_no_blank']) 
 
-    df = export_sel_peaktable(samples, sel_sample)
+    df = export_sel_peaktable(samples, sel_sample, feature_dicts)
     df_new = df[df['feature_ID'].isin(active_features_set)]
     df_new = df_new.reset_index(drop=True)
     
@@ -1578,6 +1687,7 @@ def download_all_samples_all_features(contents):
     
     '''
     samples_JSON = contents['samples_JSON']
+    feature_dicts = contents['feature_dicts']
     param_logging = prepare_log_file(contents)
 
     samples = dict()
@@ -1587,7 +1697,7 @@ def download_all_samples_all_features(contents):
     
     list_dfs = []
     for sample in samples:
-        df = export_sel_peaktable(samples, sample)
+        df = export_sel_peaktable(samples, sample, feature_dicts)
         df['sample'] = sample
         list_dfs.append(df)
     df_all = pd.concat(list_dfs)
@@ -1620,6 +1730,7 @@ def download_all_samples_selected_features(
     `tuple`
     '''
     samples_JSON = contents['samples_JSON']
+    feature_dicts = contents['feature_dicts']
     param_logging = prepare_log_file_filters(contents, thresholds)
 
     samples = dict()
@@ -1641,7 +1752,7 @@ def download_all_samples_selected_features(
         
     list_dfs = []
     for sample in mod_dfs:
-        df = export_sel_peaktable(mod_dfs, sample)
+        df = export_sel_peaktable(mod_dfs, sample, feature_dicts)
         df['sample'] = sample
         list_dfs.append(df)
     df_all = pd.concat(list_dfs)

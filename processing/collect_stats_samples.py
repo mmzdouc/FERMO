@@ -1,7 +1,12 @@
 import pandas as pd
 import copy
 
-def collect_stats_samples(peaktable, groups, bioactivity_samples,):
+def collect_stats_samples(
+    peaktable, 
+    groups, 
+    bioactivity_samples,
+    orig_bioactiv_df,
+    ):
     """Extracts and concatenate sample stats
     
     Parameters
@@ -9,6 +14,7 @@ def collect_stats_samples(peaktable, groups, bioactivity_samples,):
     peaktable : `pandas.core.frame.DataFrame`
     groups : `dict`
     bioactivity_samples : `pandas.core.frame.DataFrame`
+    orig_bioactiv_df : `pandas.core.frame.DataFrame`
 
     Returns
     -------
@@ -42,9 +48,15 @@ def collect_stats_samples(peaktable, groups, bioactivity_samples,):
         
         for active_sample in active_samples_set:
             inactive_samples_set.remove(active_sample)
+        
+        orig_bioactiv = dict()
+        for id, row in orig_bioactiv_df.iterrows():
+            orig_bioactiv[row['sample_name']] = row['quant_data']
+        
     except:
         active_samples_set = set()
         inactive_samples_set = copy.deepcopy(samples_set)
+        orig_bioactiv = dict()
     
     #AD GROUPS (METADATA)
     #Test if all samples have been assigned their groups;
@@ -82,6 +94,7 @@ def collect_stats_samples(peaktable, groups, bioactivity_samples,):
         "set_blank_cliques" : set(),
         "active_samples_set" : active_samples_set,
         "inactive_samples_set" : inactive_samples_set,
+        'original_bioactivity' : orig_bioactiv,
         'relative_intensity_removed_features' : [],
         'ms2query_annotation_excluded_based_on_range_filter' : [],
         }

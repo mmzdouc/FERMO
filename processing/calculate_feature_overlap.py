@@ -233,6 +233,15 @@ def calculate_feature_overlap(samples, strictness_ppm, feature_dicts):
                                 app_addct_inf(samples,sample,adduct,B,A,
                                 feature_dicts)
                                 
+                        #Iron-adduct: [M+56Fe-2H]
+                        elif "[M+56Fe-2H]+" in adduct:
+                            if A_mz > B_mz:
+                                app_addct_inf(samples,sample,adduct,A,B,
+                                feature_dicts)
+                            else:
+                                app_addct_inf(samples,sample,adduct,B,A,
+                                feature_dicts)
+
                     else:
                         #Peak collision is registered
                         #Adds peak collision status to feature
@@ -284,13 +293,16 @@ strictness_ppm) -> list:
     Sources:
     [1] doi.org/10.1021/acs.jcim.1c00579 
     
-    monoisotopic masses:    https://fiehnlab.ucdavis.edu/staff
-                            /kind/Metabolomics/MS-Adduct-Calculator/
+    monoisotopic masses:    
+    - https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    - http://www.chemspider.com/Chemical-Structure.22368.html
     """
     #Definitions of variables
     Na = 21.981942 #[M-H+Na]: proton already subtracted
     H = 1.007276 #mass of proton
     C13_12 = 1.0033548 #difference between 13C and 12C isotopes 
+    Fe56 = 55.934940
+    
     
     #M+Na (sodium)
     if (calc_mass_deviation(
@@ -431,6 +443,15 @@ strictness_ppm) -> list:
     ):
         return [True, "+1 isotopic peak of [M+2H]2+"]
     
+    #56^Fe adduct
+    elif (
+    calc_mass_deviation(
+        (A_mz - (3 * H) + Fe56), B_mz) < strictness_ppm
+    ) or (
+    calc_mass_deviation(
+        (B_mz - (3 * H) + Fe56), A_mz) < strictness_ppm
+    ):
+        return [True, "[M+56Fe-2H]+"]
     else:
         return [False]
 

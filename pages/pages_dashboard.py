@@ -133,7 +133,7 @@ def call_rel_int_title():
     '''Relative intensity factor title + info button'''
     return html.Div([
         html.Div([ 
-            "Relative intensity: ",
+            "Relative intensity ",
             html.A(
                 html.Div(
                     "?",
@@ -162,7 +162,7 @@ def call_peak_collision_title():
     '''Peak collision title + info button'''
     return html.Div([
         html.Div([ 
-            "Peak overlap (%):",
+            "Peak overlap (%) ",
             html.A(
                 html.Div(
                     "?",
@@ -194,7 +194,7 @@ def call_adduct_title():
     '''Adduct/isotope title + info button'''
     return html.Div([
         html.Div([ 
-            "Adduct/isotope search: ",
+            "Adduct/isotope search ",
             html.A(
                 html.Div(
                     "?",
@@ -226,7 +226,7 @@ def call_bioactivity_title():
     '''Bioactivity factor title + info button'''
     return html.Div([
         html.Div([ 
-            "QuantData-associated: ",
+            "QuantData-associated ",
             html.A(
                 html.Div(
                     "?",
@@ -254,7 +254,7 @@ def call_novelty_title():
     '''Novelty factor title + info button'''
     return html.Div([
         html.Div([ 
-            "Novelty score: ",
+            "Novelty score ",
             html.A(
                 html.Div(
                     "?",
@@ -282,7 +282,7 @@ def call_annotation_search_title():
     '''Title for adduct search via regexp'''
     return html.Div([
         html.Div([ 
-            "Annotation search: ",
+            "Annotation search ",
             html.A(
                 html.Div(
                     "?",
@@ -313,7 +313,7 @@ def call_feature_id_filter_name():
     '''Title for feature id search'''
     return html.Div([
         html.Div([ 
-            "Feature ID search: ",
+            "Feature ID search ",
             html.A(
                 html.Div(
                     "?",
@@ -343,7 +343,7 @@ def call_clique_filter_name():
     '''Title for clique id search'''
     return html.Div([
         html.Div([ 
-            "Spectral network ID search: ",
+            "Spectral network ID search ",
             html.A(
                 html.Div(
                     "?",
@@ -376,7 +376,7 @@ def call_precursor_mz_filter_name():
     '''Title for precursor mz search'''
     return html.Div([
         html.Div([ 
-            "Precursor m/z search: ",
+            "Precursor m/z search ",
             html.A(
                 html.Div(
                     "?",
@@ -406,7 +406,7 @@ def call_visualization_selected_name():
     '''Title for visualization of selected features only'''
     return html.Div([
         html.Div([ 
-            "Visualization of features: ",
+            "Visualization of features ",
             html.A(
                 html.Div(
                     "?",
@@ -438,7 +438,7 @@ def call_foldchange_search_name():
     '''Title for foldchange search'''
     return html.Div([
         html.Div([ 
-            "Fold-changes filter: ",
+            "Fold-changes filter ",
             html.A(
                 html.Div(
                     "?",
@@ -471,7 +471,7 @@ def call_group_search_name():
     '''Title for group search in features'''
     return html.Div([
         html.Div([ 
-            "Group filter (features): ",
+            "Group filter (features) ",
             html.A(
                 html.Div(
                     "?",
@@ -507,7 +507,7 @@ def call_group_search_clique_name():
     '''Title for group search in cliques'''
     return html.Div([
         html.Div([ 
-            "Group filter (networks): ",
+            "Group filter (networks) ",
             html.A(
                 html.Div(
                     "?",
@@ -1110,12 +1110,27 @@ dashboard = html.Div([
             ),
         #bottom third: mini-chromatograms, sample overview
         dbc.Col([
-            html.H3(id='title_mini_chrom',),
             html.Div(
-                dcc.Graph(id='mini_chromatograms',),
+                'Sample chromatograms',
+                style={
+                    'margin-bottom' : '10px', 
+                    'font-size' : '18px',
+                    'font-weight' : 'bold',
+                    },
+                ),
+            html.Div(
+                id='title_mini_chrom', 
+                style={
+                    'margin-bottom' : '10px', 
+                    'font-size' : '16px'
+                    },
+                ),
+            
+            
+            html.Div(
+                id='mini_chromatograms',
                 style={
                     'width': '100%', 
-                    # ~ # 'height': '70vh', #leave switched off
                     'display': 'inline-block',
                     'overflow': 'scroll',
                     },
