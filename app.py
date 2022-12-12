@@ -950,7 +950,7 @@ def storage_active_sample(data, update_table, sample_list):
     Input('storage_active_sample', 'data'),
 )
 def title_central_chrom(selected_sample,):
-    return f"""Chromatogram of Sample {selected_sample}"""
+    return html.Div(f'Sample chromatogram overview: {selected_sample}')
 
 @callback(
     Output('chromat_out', 'figure'),

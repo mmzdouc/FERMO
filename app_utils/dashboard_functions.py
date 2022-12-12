@@ -65,7 +65,7 @@ def generate_subsets(
         if 'BLANK' in feature_dicts[str(feature_ID)]['set_groups']:
             features_blanks_set.add(feature_ID)
     
-    #extract features w ms1 only from samples table
+    #extract features w ms1 only from samples ^S$
     ms1_only_df = samples[sample].loc[
         samples[sample]['ms1_only'] == True
         ]
@@ -1533,7 +1533,34 @@ def prepare_log_file_filters(contents, thresholds):
         'Processing log:',
         contents['logging_dict']
         ]
+
+def prepare_ms2qery_info(feature_dicts, ID):
+    '''Prepare MS2Query info for feature table'''
     
+    if feature_dicts[ID]['ms2query']:
+        return "".join([
+            str(feature_dicts[ID]['ms2query_results'][0]['analog_compound_name']),
+            ' (score: ',
+            str(round(feature_dicts[ID]['ms2query_results'][0]['ms2query_model_prediction'],2)),
+            ')',
+        ])
+    else:
+        return ""
+
+def prepare_cosine_info(feature_dicts, ID):
+    '''Prepare library match info for feature table'''
+    
+    if feature_dicts[ID]['cosine_annotation']:
+        return "".join([
+            str(feature_dicts[ID]['cosine_annotation_list'][0]['name']),
+            ' (score: ',
+            str(round(feature_dicts[ID]['cosine_annotation_list'][0]['score'],2)),
+            ')',
+        ])
+    else:
+        return ""
+
+
 def export_features(feature_dicts):
     '''From feature dicts, create lists, return pandas df'''
     t_feature_ID = []
@@ -1563,8 +1590,8 @@ def export_features(feature_dicts):
         t_blank.append(feature_dicts[ID]['blank_associated'])
         t_sim_cliq_bool.append(feature_dicts[ID]['similarity_clique'])
         t_sim_cliq_nr.append(feature_dicts[ID]['similarity_clique_number'])
-        t_cos_ann_list.append(feature_dicts[ID]['cosine_annotation_list'])
-        t_ms2query_list.append(feature_dicts[ID]['ms2query_results'])
+        t_cos_ann_list.append(prepare_cosine_info(feature_dicts, ID))
+        t_ms2query_list.append(prepare_ms2qery_info(feature_dicts, ID))
         t_set_groups.append(feature_dicts[ID]['set_groups'])
         t_set_groups_clique.append(feature_dicts[ID]['set_groups_clique'])
         t_dict_fold_diff.append(feature_dicts[ID]['dict_fold_diff'])

@@ -622,7 +622,7 @@ def call_peaktable_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        '''Load peak table (*_quant_full.csv)''',
+                        '''Load peak table (*_quant_full.csv) - mandatory''',
                         id="upload-peaktable-tooltip",
                         className="button_small_class",
                         ),
@@ -645,7 +645,7 @@ def call_mgf_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Load the MS/MS file (*.mgf)',
+                        '''Load the MS/MS file (*.mgf) - mandatory''',
                         id="upload-mgf-tooltip",
                         className="button_small_class",
                         ),
@@ -668,7 +668,7 @@ def call_bioactiv_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Load quantitative biological data (*.csv)',
+                        'Load quantitative biological data (*.csv) - optional',
                         id="upload-bioactiv-tooltip",
                         className="button_small_class",
                         ),
@@ -691,7 +691,7 @@ def call_metadata_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Load group metadata table (*.csv)',
+                        'Load group metadata table (*.csv) - optional',
                         id="upload-metadata-tooltip",
                         className="button_small_class",
                         ),
@@ -714,7 +714,7 @@ def call_userlib_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Load spectral library (*.mgf)',
+                        'Load spectral library (*.mgf) - optional',
                         id="upload-userlib-tooltip",
                         className="button_small_class",
                         ),

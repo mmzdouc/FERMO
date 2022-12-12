@@ -868,67 +868,80 @@ dashboard = html.Div([
             ),
         #top right: chromatogram view
         dbc.Col([
-                html.H3(
-                    id='title_central_chrom',
-                    style={
+            html.Div([
+                html.Div(id='title_central_chrom'),
+                ],
+                style={
                     'margin-top' : '10px',
                     'margin-left' : '25px',
-                        }
-                    ),
-                html.Div([
-                    html.Div(
-                        dcc.Graph(id='chromat_out'),
-                        style={
-                        'display': 'inline-block', 
-                        'width': '90%',
-                        'float': 'left',
-                        'background-image' : f'''repeating-linear-gradient(
-                            180deg, 
-                            {color_dict['light_blue_0.15']}, 
-                            {color_dict['light_blue_0.15']} 30px, 
-                            {color_dict['light_blue_0.10']} 30px, 
-                            {color_dict['light_blue_0.10']} 60px 
-                            )''',
-                        },
-                        ),
-                    html.Div(
-                        call_legend_central_chrom(),
-                        style={
-                        'display': 'inline-block', 
-                        'width': '10%',
-                        'float': 'left'},
-                        ),
-                    ]),
-                html.Div(style={
+                    'font-size' : '18px',
+                    'font-weight' : 'bold',
+                    'width' : '100%',
+                    }
+                ),
+            html.Div('Click any row in the left-hand table to visualize the sample',
+                style={
+                    # ~ 'display': 'inline-block', 
+                    # ~ 'float': 'left',
                     'margin-top' : '5px',
-                    'display': 'inline-block',
-                    'width': '100%',
+                    'margin-left' : '25px',
+                    'width' : '100%',
+                    }
+                ),
+            html.Div([
+                html.Div(
+                    dcc.Graph(id='chromat_out'),
+                    style={
+                    'display': 'inline-block', 
+                    'width': '90%',
                     'float': 'left',
-                    }),
-                html.Div([
-                    html.Div(
-                        dcc.Graph(id='chromat_clique_out'),
-                        style={
-                        'display': 'inline-block', 
-                        'width': '90%',
-                        'float': 'left',
-                        'background-image' : f'''repeating-linear-gradient(
-                            180deg, 
-                            {color_dict['light_blue_0.15']}, 
-                            {color_dict['light_blue_0.15']} 30px, 
-                            {color_dict['light_blue_0.10']} 30px, 
-                            {color_dict['light_blue_0.10']} 60px 
-                            )''',
-                        },
-                        ),
-                    html.Div(
-                        call_legend_clique_chrom(),
-                        style={
-                        'display': 'inline-block', 
-                        'width': '10%',
-                        'float': 'left'},
-                        ),
-                    ]),
+                    'background-image' : f'''repeating-linear-gradient(
+                        180deg, 
+                        {color_dict['light_blue_0.15']}, 
+                        {color_dict['light_blue_0.15']} 30px, 
+                        {color_dict['light_blue_0.10']} 30px, 
+                        {color_dict['light_blue_0.10']} 60px 
+                        )''',
+                    },
+                    ),
+                html.Div(
+                    call_legend_central_chrom(),
+                    style={
+                    'display': 'inline-block', 
+                    'width': '10%',
+                    'float': 'left'},
+                    ),
+                ]),
+            html.Div(style={
+                'margin-top' : '5px',
+                'display': 'inline-block',
+                'width': '100%',
+                'float': 'left',
+                }),
+            html.Div([
+                html.Div(
+                    dcc.Graph(id='chromat_clique_out'),
+                    style={
+                    'display': 'inline-block', 
+                    'width': '90%',
+                    'float': 'left',
+                    'background-image' : f'''repeating-linear-gradient(
+                        180deg, 
+                        {color_dict['light_blue_0.15']}, 
+                        {color_dict['light_blue_0.15']} 30px, 
+                        {color_dict['light_blue_0.10']} 30px, 
+                        {color_dict['light_blue_0.10']} 60px 
+                        )''',
+                    },
+                    ),
+                html.Div(
+                    call_legend_clique_chrom(),
+                    style={
+                    'display': 'inline-block', 
+                    'width': '10%',
+                    'float': 'left'},
+                    ),
+                ]),
             ],
             id="dashboard_row_1_col_2",
             width=9,
