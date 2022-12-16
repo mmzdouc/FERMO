@@ -1,5 +1,8 @@
 
-def determine_trend_bioactivity(feature_dicts, sample_stats):
+def determine_trend_bioactivity(
+    feature_dicts,
+    sample_stats,
+    ):
     '''Determine correlation of feature intensity vs bioactivity
     
     Parameters

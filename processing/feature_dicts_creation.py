@@ -2,11 +2,9 @@ import pandas as pd
 import numpy as np
 import matchms
 
-##########
-#HELPER-FUNCTIONS
-##########
-
-def extract_from_peaktable(row):
+def extract_from_peaktable(
+    row,
+    ):
     """Creates sorted pandas df with sample info for each feature
     
     Parameters
@@ -144,7 +142,7 @@ def create_ms2_object(
     ms2_int, 
     precursor_mz,
     feature_ID,
-    min_ms2_peaks
+    min_ms2_peaks,
     ):
     '''Helper function to create matchms.Spectrum objects
     
@@ -186,16 +184,12 @@ def create_ms2_object(
             )
         return spectrum
 
-##########
-#MAIN FUNCTION
-##########
-
 def feature_dicts_creation(
     peaktable, 
     ms2spectra,
     min_ms2_peaks,
     sample_stats,
-    detected_features
+    detected_features,
     ):
     """Scrape data, create feature dicts, store in dict.
     
@@ -302,12 +296,3 @@ def feature_dicts_creation(
                 }
     
     return feature_dicts
-        
-        
-        
-        
-        
-        
-        
-        
-        

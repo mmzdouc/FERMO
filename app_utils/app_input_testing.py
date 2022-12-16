@@ -2,22 +2,38 @@ from dash import html
 import io
 from pyteomics import mgf
 import pandas as pd
+import os
 
-
-###GENERAL
-
-def div_no_file_loaded(filetype):
-    '''Return placeholder div if no file loaded
+def div_no_file_loaded_optional(
+    filetype,
+    ):
+    '''Return placeholder div if no file loaded - optional
     
     Parameters
     ----------
     filetype : `str`
     '''
     return html.Div(
-        f'No {filetype} loaded.'
+        f'No {filetype} loaded (optional)'
         )
 
-def div_file_format_error(filename, formatname):
+def div_no_file_loaded_mandatory(
+    filetype,
+    ):
+    '''Return placeholder div if no file loaded- mandatory
+    
+    Parameters
+    ----------
+    filetype : `str`
+    '''
+    return html.Div(
+        f'No {filetype} loaded (MANDATORY)'
+        )
+
+def div_file_format_error(
+    filename,
+    formatname,
+    ):
     '''Return div for file format error
     
     Parameters
@@ -31,7 +47,9 @@ def div_file_format_error(filename, formatname):
          for this input field?'''
         )
 
-def div_successful_load_message(filename):
+def div_successful_load_message(
+    filename,
+    ):
     '''Return div for successful file upload
     
     Parameters
@@ -51,9 +69,10 @@ def div_successful_load_message(filename):
             }
         )
 
-###PARAMETER VALUES
-
-def test_for_None(value, repl):
+def test_for_None(
+    value,
+    repl,
+    ):
     '''Replace value with repl if value is None
     
     Parameters
@@ -66,10 +85,56 @@ def test_for_None(value, repl):
     else:
         return value
 
+def ms2query_download_text(
+    ms2query,
+    ):
+    '''Test
+    
+    Parameters
+    ----------
+    ms2query : `bool`
+    
+    Returns
+    -------
+    `html.Div()`
+    
+    Notes
+    -----
+    Check for presence of .hdf5 file (holds ms2deepscore model)
+    '''
+    if ms2query:
+        
+        input_folder = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            'libraries',)
+        input_file = None
+        for i in os.listdir(input_folder):
+            if i.endswith('.hdf5'):
+                input_file = os.path.join(input_folder, i)
+                break
+        
+        if input_file is None:
+            return html.Div('''
+                No MS2Query auxilliary files in folder 'libraries' found.
+                These files will be automatically downloaded (ca 1 GB,
+                only once). Depending on the internet connection, 
+                this may take a while.
+                ''',
+                style={
+                    'color' : 'red',
+                    'font-weight' : 'bold',
+                    'margin-top' : '5px', 
+                    },
+                )
+        else:
+            return html.Div()
+    else:
+        return html.Div()
 
-###PEAKTABLE
-
-def div_column_header_error(filename, header):
+def div_column_header_error(
+    filename,
+    header,
+    ):
     '''Return div for column header error
     
     Parameters
@@ -84,7 +149,10 @@ def div_column_header_error(filename, header):
         If yes, contact the FERMO developers.
         ''')
 
-def assert_peaktable_format(peaktable, filename):
+def assert_peaktable_format(
+    peaktable,
+    filename,
+    ):
     """Test peaktable columns for correct headers (i.e. format)
     
     Parameters
@@ -92,7 +160,6 @@ def assert_peaktable_format(peaktable, filename):
     peaktable : `pandas.core.frame.DataFrame`
     filename : `str`
     """
-    
     if peaktable.filter(regex="^id$").columns.empty:
         return div_column_header_error(filename, 'id')
     elif peaktable.filter(regex="^mz$").columns.empty:
@@ -118,9 +185,9 @@ def assert_peaktable_format(peaktable, filename):
     else:
         return None
 
-###MGF FILE - MS2 DATA
-
-def extract_mgf_for_json_storage(decoded):
+def extract_mgf_for_json_storage(
+    decoded,
+    ):
     """Convert bytestream from mgf input into dict entries
     
     Parameters
@@ -132,7 +199,6 @@ def extract_mgf_for_json_storage(decoded):
     ms2dict_store : `dict`
     """
     ms2dict_store = dict()
-    
     for spectrum in mgf.read(io.StringIO(
             decoded.decode('utf-8')
         ),
@@ -146,12 +212,11 @@ def extract_mgf_for_json_storage(decoded):
             fragments.tolist(), 
             intensities.tolist(),
             ]
-    
     return ms2dict_store
 
-###QUANTITATIVE BIOLOGICAL DATA
-
-def div_no_quantbio_format(value):
+def div_no_quantbio_format(
+    value,
+    ):
     '''Return div if no quantitative biological data format was specified
     
     Parameters
@@ -168,7 +233,10 @@ def div_no_quantbio_format(value):
             }
         )
 
-def assert_bioactivity_format(bioactiv_table, filename):
+def assert_bioactivity_format(
+    bioactiv_table,
+    filename,
+    ):
     """Test bioact table for col headers, empty values and trailing spaces
         
     Parameters
@@ -229,7 +297,9 @@ def assert_bioactivity_format(bioactiv_table, filename):
         return None
 
 
-def remove_zero_values_df(df):
+def remove_zero_values_df(
+    df,
+    ):
     '''Remove rows with zero values from pandas DF
     
     Parameter
@@ -239,7 +309,10 @@ def remove_zero_values_df(df):
     return df[df.quant_data != 0]
 
 
-def parse_bioactiv_conc(bioactiv_table, value):
+def parse_bioactiv_conc(
+    bioactiv_table,
+    value,
+    ):
     """Parses quantitative biological data table and converts values
     
     Parameters
@@ -308,9 +381,11 @@ def parse_bioactiv_conc(bioactiv_table, value):
             [bioactiv_table.loc[:,'sample_name'], normalized], axis=1)
         return converted_df
 
-###METADATA
 
-def assert_metadata_format(metadata, filename):
+def assert_metadata_format(
+    metadata,
+    filename,
+    ):
     """Test metadata table for col headers, false values and trailing spaces
     
     Parameters
@@ -365,9 +440,9 @@ def assert_metadata_format(metadata, filename):
     else:
         return None
 
-###SPECTRAL LIBRARY
-
-def prepare_spec_lib_for_json_storage(decoded):
+def prepare_spec_lib_for_json_storage(
+    decoded,
+    ):
     """Convert bytestream from mgf input into dict entries
     
     Parameters
@@ -398,9 +473,12 @@ def prepare_spec_lib_for_json_storage(decoded):
     
     return reflib_dict
 
-###SESSION FILE LOADING
 
-def div_session_version_error(filename, version_file, __version__):
+def div_session_version_error(
+    filename,
+    version_file,
+     __version__,
+     ):
     '''Return div for session file incompatibility error
     
     Parameters
@@ -420,7 +498,11 @@ def div_session_version_error(filename, version_file, __version__):
         )
 
 
-def div_session_version_warning(filename, version_file, __version__):
+def div_session_version_warning(
+    filename,
+    version_file,
+     __version__,
+    ):
     '''Return div session file warning
     
     Parameters
@@ -461,21 +543,36 @@ def empty_loading_table():
         ['Minimum number of fragments per MS² spectrum', None],
         ['QuantData factor', None],
         ['Blank factor', None],
-        ['Relative intensity filter', None],
+        ['Relative intensity filter range', None],
+        ['Spectral similarity networking algorithm', None],
         ['Fragment similarity tolerance', None],
         ['Spectrum similarity score cutoff', None],
         ['Maximum number of links to each feature in spectral network', None],
         ['Minimum number of matched peaks in spectral similarity matching', None],
         ['MS2Query used', None],
         ['MS2Query blank annotation', None],
-        ['Spectral similarity networking algorithm', None],
+        ['MS2Query relative intensity range', None],
         ['-----', '-----'],
         ['Process log step', 'Description'],
         ]
     return pd.DataFrame(content, columns=['Attribute', 'Description'])
 
-def session_loading_table(params, files, metadata, version, logging):
+def session_loading_table(
+    params,
+    files,
+    metadata,
+    version, 
+    logging
+    ):
     '''Generate info table upon session file loading
+    
+    Parameters
+    ----------
+    params : `dict`
+    files : `dict`
+    metadata : `dict`
+    version : `dict`
+    logging : `dict`
     
     Returns
     -------
@@ -489,25 +586,34 @@ def session_loading_table(params, files, metadata, version, logging):
         ['Filename: peaktable', files['peaktable_name']],
         ['Filename: MS² data', files['mgf_name']],
         ['Filename: group metadata', files['metadata_name']],
-        ['Filename: quantitative biological data', files['bioactivity_name']],
+        ['Filename: quantitative biological data', 
+            files['bioactivity_name']],
         ['Filename: user-library', files['user_library_name']],
         ['-----', '-----'],
         ['Mass deviation', params['mass_dev_ppm']],
-        ['Minimum number of fragments per MS² spectrum', params['min_nr_ms2']],
+        ['Minimum number of fragments per MS² spectrum', 
+            params['min_nr_ms2']],
         ['QuantData factor', params['bioact_fact']],
         ['Blank factor', params['column_ret_fact']],
-        ['Relative intensity filter', '-'.join([str(i) for i in params['relative_intensity_filter_range']])],
+        ['Relative intensity filter range',
+            '-'.join([str(i) for i in params['relative_intensity_filter_range']])],
+        ['Spectral similarity networking algorithm',
+            params['spec_sim_net_alg']],
         ['Fragment similarity tolerance', params['spectral_sim_tol']],
-        ['Spectrum similarity score cutoff', params['spec_sim_score_cutoff']],
-        ['Maximum number of links to each feature in spectral network', params['max_nr_links_ss']],
-        ['Minimum number of matched peaks in spectral similarity matching', params['min_nr_matched_peaks']],
+        ['Spectrum similarity score cutoff', 
+            params['spec_sim_score_cutoff']],
+        ['Maximum number of links to each feature in spectral network', 
+            params['max_nr_links_ss']],
+        ['Minimum number of matched peaks in spectral similarity matching',
+            params['min_nr_matched_peaks']],
         ['MS2Query used', params['ms2query']],
         ['MS2Query blank annotation', params['ms2query_blank_annotation']],
-        ['Spectral similarity networking algorithm', params['spec_sim_net_alg']],
+        ['MS2Query relative intensity range', 
+            '-'.join([str(i) for i in params['ms2query_filter_range']])],
         ['-----', '-----'],
         ['Process log step', 'Description'],
         ]
-    
+
     for entry in logging:
         content.append([entry, logging[entry]])
         

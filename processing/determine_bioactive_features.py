@@ -6,7 +6,8 @@ def determine_bioactive_features(
     feature_dicts,
     bioact_factor,
     sample_stats,
-    filename):
+    filename,
+    ):
     """Determine bioactivity-associated features, append to feature dicts.
     
     Parameters

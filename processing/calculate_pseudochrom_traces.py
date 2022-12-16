@@ -3,7 +3,8 @@ import numpy as np
 
 
 def calculate_pseudochrom_traces(
-    samples,):
+    samples,
+    ):
     """Calculate pseuco-chromatogram traces for each peak in each sample
     
     Parameters

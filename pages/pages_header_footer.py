@@ -1,10 +1,6 @@
 from dash import html
 import dash_bootstrap_components as dbc
-
 from __version__ import __version__
-
-
-#span the divs together
 
 header_row = html.Div(
     dbc.Row([

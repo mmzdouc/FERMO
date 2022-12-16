@@ -23,7 +23,9 @@ from processing.determine_trend_bioactivity import determine_trend_bioactivity
 from app_utils.variables import color_dict
 
 
-def prepare_spectral_library(userlib_dict):
+def prepare_spectral_library(
+    userlib_dict,
+    ):
     '''Prepare spectral library using matchMS
     
     Parameters
@@ -57,8 +59,8 @@ def prepare_spectral_library(userlib_dict):
             for s in ref_library]
     ref_library = [matchms.filtering.normalize_intensities(s) 
         for s in ref_library]
-    ref_library = [matchms.filtering.select_by_intensity(s, intensity_from=0.01)
-        for s in ref_library]
+    ref_library = [matchms.filtering.select_by_intensity(
+        s, intensity_from=0.01) for s in ref_library]
     ref_library = [matchms.filtering.add_precursor_mz(s)
         for s in ref_library]
     ref_library = [matchms.filtering.require_precursor_mz(s)
@@ -67,7 +69,11 @@ def prepare_spectral_library(userlib_dict):
     return ref_library
 
 
-def write_process_log(log_dict, counter, message):
+def write_process_log(
+    log_dict,
+    counter,
+    message,
+    ):
     '''Writes process log into dict
     
     Parameters
@@ -130,16 +136,18 @@ def peaktable_processing(
     metadata = None
     metadata_name = uploaded_files_store['metadata_name']
     if metadata_name is not None:
-        metadata = pd.read_json(uploaded_files_store['metadata'], orient='split')
+        metadata = pd.read_json(
+            uploaded_files_store['metadata'], orient='split')
     
     bioactivity = None
     orig_bioactiv = None
     bioactivity_name = uploaded_files_store['bioactivity_name']
     if bioactivity_name is not None:
-        bioactivity = pd.read_json(uploaded_files_store['bioactivity'], orient='split')
-        orig_bioactiv = pd.read_json(uploaded_files_store['bioactivity_original'], orient='split')
+        bioactivity = pd.read_json(
+            uploaded_files_store['bioactivity'], orient='split')
+        orig_bioactiv = pd.read_json(
+            uploaded_files_store['bioactivity_original'], orient='split')
 
-    
     ref_library = None
     user_library_name = uploaded_files_store['user_library_name']
     userlib_dict = uploaded_files_store['user_library_dict']
@@ -385,7 +393,10 @@ def peaktable_processing(
 
 
 
-def make_JSON_serializable(FERMO_data, FERMO_version):
+def make_JSON_serializable(
+    FERMO_data,
+    FERMO_version,
+    ):
     """Make JSON compatible by removing non-base python data structures
     
     Parameters
@@ -397,8 +408,6 @@ def make_JSON_serializable(FERMO_data, FERMO_version):
     --------
     storage_JSON_dict : `dict`
     """
-    
-    #convert pandas dfs to JSON
     samples_JSON = dict()
     for sample in FERMO_data['samples']:
         samples_JSON[sample] = FERMO_data['samples'][sample].to_json(

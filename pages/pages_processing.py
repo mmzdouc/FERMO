@@ -4,25 +4,49 @@ import dash_bootstrap_components as dbc
 def call_processing_intro_text():
     '''Introduction text for processing page'''
     return html.Div([
-        html.Div('''On this page, you can process your data with FERMO. The minimum requirements are:'''),
+        html.Div('''
+            On this page, you can process your data with FERMO.
+            The minimum requirements are:
+            '''
+            ),
         dcc.Markdown('''
-            * a **peak table** containing general data on features (in the **'_quant_full.csv'** format created by **MZmine3**)
-            * a **.mgf-file** containing **MS²** data (created together with peak table by **MZmine3**)
-        '''),
+            * a **peak table** containing general data 
+                on features (in the **'_quant_full.csv'** 
+                format created by **MZmine3**)
+            * a **.mgf-file** containing **MS²** data
+                (created together with peak table by **MZmine3**)
+            '''
+            ),
         html.Div('''Optionally, you can provide:'''),
         dcc.Markdown('''
             * **quantitative biological data** on samples (as .csv-file)
             * **group metadata** of samples (as .csv-file)
             * a **spectral library** (as .mgf-file)
-        '''),
-        dcc.Markdown('''On the left side of the page, you can **load input files** into FERMO. On the right,you can **adjust processing parameters**.
-        '''),
-        dcc.Markdown('''**Attention:** if you want to have your features annotated, switch **MS2Query** to **ON**. This will increase calculation time significantly.
-        '''),
-        dcc.Markdown('''You can find more information on [input data formats](https://github.com/mmzdouc/FERMO/wiki/Input-data-formats) and [parameter settings](https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page) in the FERMO Wiki.
-        '''),
-        dcc.Markdown('''You can start the analysis by clicking the **'Start FERMO'** button at the bottom of the page.
-            '''),
+            '''
+            ),
+        dcc.Markdown('''
+            On the left side of the page, you can **load input files**
+            into FERMO. On the right,you can 
+            **adjust processing parameters**.
+            '''
+            ),
+        dcc.Markdown('''**Attention:** if you want to have your
+            features annotated, switch **MS2Query** to **ON**. 
+            This will increase calculation time.
+            '''
+            ),
+        dcc.Markdown('''
+            You can find more information on
+            [input data formats](https://github.com/mmzdouc/FERMO/wiki/Input-data-formats)
+            and [parameter settings](https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page)
+            in the FERMO Wiki.
+            '''
+            ),
+        dcc.Markdown('''
+            You can start the analysis by clicking the **'Start FERMO'**
+            button at the bottom of the page.
+            '''
+            ),
         ],
     style={
     'line-height' : '1.5',
@@ -62,7 +86,10 @@ def call_mass_dev_inp():
             ]),
         dbc.Tooltip(
                 html.Div(
-                    '''Estimated mass deviation of your data in ppm. Used as precision threshold during different calculation steps (e.g. ion adduct calculation). For more information, click this info-button.
+                    '''Estimated mass deviation of your data in ppm.
+                    Used as precision threshold during different 
+                    calculation steps (e.g. ion species calculation).
+                    For more information, click this info-button.
                     ''',
                     ),
                 placement='right',
@@ -99,7 +126,11 @@ def call_min_ms2_inpt():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Quality control parameter. MS² spectra that do not exceed the minimum number of fragments are discarded and the feature is considered MS¹ only. Set this parameter to '0' if all spectra should be retained. For more information, click this info-button.
+                '''Quality control parameter. MS² spectra that do
+                not exceed the minimum number of fragments are discarded
+                and the feature is considered MS¹ only. 
+                Set this parameter to '0' if all spectra should be 
+                retained. For more information, click this info-button.
                 ''',
                 ),
             placement='right',
@@ -136,7 +167,15 @@ def call_bioact_fact_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Only used if quantitative biological data was provided. If a feature was detected in samples with and without associated biological measurement, the fold difference between the lowest feature intensity from the sample with the lowest measurement and the highest feature intensity across inactive samples must be higher than the QuantData factor to still consider the feature associated to the measurement. For more information, click this info-button.
+                '''Only used if quantitative biological data was 
+                provided. If a feature was detected in samples with
+                and without associated biological measurement, the 
+                fold difference between the lowest feature intensity 
+                from the sample with the lowest measurement and the 
+                highest feature intensity across inactive samples 
+                must be higher than the QuantData factor to still 
+                consider the feature associated to the measurement. 
+                For more information, click this info-button.
                 ''',
                 ),
             placement='right',
@@ -173,7 +212,13 @@ def call_column_ret_fact_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Only used if group metadata was provided. If a feature was detected in both samples and blanks, the fold difference between the average intensity across samples and the average intensity across blanks must be higher than the blank factor to not consider the feature as blank-associated. For more information, click this info-button.
+                '''Only used if group metadata was provided. 
+                If a feature was detected in both samples and blanks, 
+                the fold difference between the average intensity 
+                across samples and the average intensity across blanks 
+                must be higher than the blank factor to not consider 
+                the feature as blank-associated. For more information, 
+                click this info-button.
                 ''',
                 ),
             placement='right',
@@ -210,7 +255,10 @@ def call_ms2query_toggle():
             ]),
         dbc.Tooltip(
                 html.Div(
-                    '''Toggle to switch MS2Query annotation on or off. MS2Query is computationally costly and should be ideally run after parameter finding. For more information, click this info-button.
+                    '''Toggle to switch MS2Query annotation on or off. 
+                    MS2Query is computationally costly and should be 
+                    ideally run after parameter finding. For more 
+                    information, click this info-button.
                     ''',
                     ),
                 placement='right',
@@ -301,7 +349,10 @@ def call_spec_sim_tol_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Tolerance in m/z used in MS² spectra fragment comparison. Two fragments will be considered a match if their difference is less then or equal to the m/z tolerance. For more information, click this info-button.
+                '''Tolerance in m/z used in MS² spectra fragment 
+                comparison. Two fragments will be considered a match 
+                if their difference is less then or equal to the m/z
+                tolerance. For more information, click this info-button.
                 ''',
                 ),
             placement='right',
@@ -339,7 +390,11 @@ def call_spec_sim_score_cutoff_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Score cutoff used in the evaluation of modified cosine scores between MS2 spectra. Two spectra will be considered related only if their score exceeds the cutoff threshold. For more information, click this info-button.
+                '''Score cutoff used in the evaluation of modified 
+                cosine scores between MS2 spectra. Two spectra will 
+                be considered related only if their score exceeds 
+                the cutoff threshold. For more information, click 
+                this info-button.
                 ''',
                 ),
             placement='right',
@@ -378,7 +433,11 @@ def call_spec_sim_max_links_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Maximal number of links to other nodes, per node. Makes spectral similarity network less convoluted since it restricts the number of links between nodes to the highest n ones. For more information, click this info-button.
+                '''Maximal number of links to other nodes, 
+                per node. Makes spectral similarity network 
+                less convoluted since it restricts the number of 
+                links between nodes to the highest n ones. For more 
+                information, click this info-button.
                 ''',
                 ),
             placement='right',
@@ -416,7 +475,10 @@ def call_spec_sim_min_match_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''In spectrum similarity matching, the minimum number of peaks that have to be matched between two spectra to be considered a match. For more information, click this info-button.
+                '''In spectrum similarity matching, the minimum 
+                number of peaks that have to be matched between 
+                two spectra to be considered a match. For more 
+                information, click this info-button.
                 ''',
                 ),
             placement='right',
@@ -456,7 +518,9 @@ def call_rel_intens_filter_range_inp():
             html.Div(
                 '''Filter to remove features with relative intensity 
                 outside of the selected range from the analysis. This can
-                be used to reduce low-intensity features, or to remove all-dominating features, such as solvent peaks. For more information, click this info-button.
+                be used to reduce low-intensity features, or to 
+                remove all-dominating features, such as solvent 
+                peaks. For more information, click this info-button.
                 ''',
                 ),
             placement='right',
@@ -501,7 +565,11 @@ def call_ms2query_intens_filter_range_inp():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter to restrict MS2Query annotation to a certain relative intensity range. This can be used to reduce calculation time by omitting low relative intensity features. For more information, click this info-button.
+                '''Filter to restrict MS2Query annotation to a 
+                certain relative intensity range. This can be used 
+                to reduce calculation time by omitting low relative 
+                intensity features. For more information, click this 
+                info-button.
                 ''',
                 ),
             placement='right',
@@ -595,7 +663,11 @@ def call_bioact_type_dd():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Accepts two formats: concentration and percentage (positive numbers only). For concentrations, the lowest value will be considered the highest activity. For percentage, the highest value will be considered the highest activity.
+                '''Accepts two formats: concentration and percentage 
+                (positive numbers only). For concentrations, the lowest 
+                value will be considered the highest activity. For 
+                percentage, the highest value will be considered 
+                the highest activity.
                 ''',
                 ),
             placement='right',
@@ -622,14 +694,18 @@ def call_peaktable_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        '''Load peak table (*_quant_full.csv) - mandatory''',
+                        '''Load peak table (*_quant_full.csv)''',
                         id="upload-peaktable-tooltip",
                         className="button_small_class",
                         ),
                     id='processing-upload-peaktable'),
                 dbc.Tooltip(
                     html.Div(
-                        ''' Reads a MZmine3 style peak table with the  '_quant_full.csv' suffix (exported in the FULL/ALL mode). For more information on the format, see the documentation.
+                        ''' Reads a MZmine3 style peak table with the 
+                        '_quant_full.csv' suffix 
+                        (exported in the FULL/ALL mode). 
+                        For more information on the format, 
+                        see the documentation.
                         ''',
                         ),
                     placement='right',
@@ -645,14 +721,18 @@ def call_mgf_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        '''Load the MS/MS file (*.mgf) - mandatory''',
+                        '''Load the MS/MS file (*.mgf)''',
                         id="upload-mgf-tooltip",
                         className="button_small_class",
                         ),
                     id='processing-upload-mgf'),
                 dbc.Tooltip(
                     html.Div(
-                        ''' Reads a MZmine3 style .mgf-file containing tandem mass (MS/MS) spectra, accompanying the peak table. Generated through MZmine3 export. For more information on the format, see the documentation.
+                        ''' Reads a MZmine3 style .mgf-file containing 
+                        tandem mass (MS/MS) spectra, accompanying the 
+                        peak table. Generated through MZmine3 export. 
+                        For more information on the format, see the 
+                        documentation.
                         ''',
                         ),
                     placement='right',
@@ -668,14 +748,16 @@ def call_bioactiv_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Load quantitative biological data (*.csv) - optional',
+                        'Load quantitative biological data (*.csv)',
                         id="upload-bioactiv-tooltip",
                         className="button_small_class",
                         ),
                     id='upload-bioactiv'),
                 dbc.Tooltip(
                     html.Div(
-                        '''Quantitative biological data file in .csv format. For more information on the format, see the documentation.
+                        '''Quantitative biological data file 
+                        in the .csv format. For more information on 
+                        the format, see the documentation.
                         ''',
                         ),
                     placement='right',
@@ -691,14 +773,16 @@ def call_metadata_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Load group metadata table (*.csv) - optional',
+                        'Load group metadata table (*.csv)',
                         id="upload-metadata-tooltip",
                         className="button_small_class",
                         ),
                     id='upload-metadata'),
                 dbc.Tooltip(
                     html.Div(
-                        '''Metadata annotation file in .csv format. For more information on the format, see the documentation. 
+                        '''Metadata annotation file in .csv format. 
+                        For more information on the format, see 
+                        the documentation. 
                         ''',
                         ),
                     placement='right',
@@ -714,14 +798,16 @@ def call_userlib_upload():
             html.Span([
                 dcc.Upload(
                     html.Button(
-                        'Load spectral library (*.mgf) - optional',
+                        'Load spectral library (*.mgf)',
                         id="upload-userlib-tooltip",
                         className="button_small_class",
                         ),
                     id='upload-userlib'),
                 dbc.Tooltip(
                     html.Div(
-                        '''Reads a user-provided spectral library in the .mgf-format. For more information on the format, see the documentation.
+                        '''Reads a user-provided spectral 
+                        library in the .mgf-format. For more 
+                        information on the format, see the documentation.
                         ''',
                         ),
                     placement='right',
@@ -730,6 +816,12 @@ def call_userlib_upload():
                     ),
                 ]),
         ])
+
+
+def ms2query_download_info():
+    '''Call the MS2Query warning field'''
+    return html.Div(id='ms2query_download_info',)
+    
 
 
 processing = html.Div([
@@ -742,7 +834,6 @@ processing = html.Div([
                 call_processing_intro_text(),
                 html.Div(style={'margin-top' : '30px'}),
                 html.Hr(),
-                #PEAKTABLE UPLOAD FIELD
                 html.Div(style={'margin-top' : '15px'}),
                 call_peaktable_upload(),
                 html.Div(
@@ -754,7 +845,6 @@ processing = html.Div([
                         },
                     ),
                 html.Div(style={'margin-top' : '15px'}),
-                #MGF UPLOAD FIELD
                 call_mgf_upload(),
                 html.Div(
                     id='upload-mgf-output',
@@ -765,7 +855,6 @@ processing = html.Div([
                         },
                     ),
                 html.Div(style={'margin-top' : '15px'}),
-                #BIOACTIVITY UPLOAD FIELD
                 call_bioact_type_dd(),
                 html.Div(style={'margin-top' : '5px'}),
                 call_bioactiv_upload(),
@@ -777,7 +866,6 @@ processing = html.Div([
                         },
                     ),
                 html.Div(style={'margin-top' : '15px'}),
-                #METADATA UPLOAD FIELD
                 call_metadata_upload(),
                 html.Div(
                     id='upload-metadata-output',
@@ -787,7 +875,6 @@ processing = html.Div([
                         },
                     ),
                 html.Div(style={'margin-top' : '15px'}),
-                #USER LIBRARY UPLOAD FIELD
                 call_userlib_upload(),
                 html.Div(
                     id='upload-userlib-output',
@@ -824,6 +911,7 @@ processing = html.Div([
                 html.H4('Networking and annotation parameters'),
                 html.Div(style={'margin-top' : '10px'}),
                 call_ms2query_toggle(),
+                ms2query_download_info(),
                 html.Div(style={'margin-top' : '10px'}),
                 call_ms2query_intens_filter_range_inp(),
                 html.Div(style={'margin-top' : '10px'}),
@@ -856,12 +944,8 @@ processing = html.Div([
         dbc.Col([
                 html.Div(style={'margin-top' : '10px'}),
                 call_dashboard_processing_button(),
-                ###STORAGE###
-                #Helper function
-                html.Div(id='store_bioact_type', hidden=True),
-                #Parameter storage
+                dcc.Store(id='store_bioact_type'),
                 dcc.Store(id='out_params_assignment'),
-                #File storage
                 dcc.Store(id='upload_peaktable_store'),
                 dcc.Store(id='upload_mgf_store'),
                 dcc.Store(id='upload_bioactiv_store'),
@@ -885,13 +969,5 @@ processing = html.Div([
         ],
     id="processing_row_2",
     ),
-    ])
-
-
-
-
-
-
-
-
-
+    ]
+)

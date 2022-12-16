@@ -1,14 +1,17 @@
 import pandas as pd
 import re
 
-def read_from_metadata_table(metadata_table, metadata_name):
+def read_from_metadata_table(
+    metadata_table,
+    metadata_name,
+    ):
     """Read a metadata table and create groupings
     
     Parameters
     ----------
     metadata_table : `pandas.core.frame.DataFrame`
         df containing metadata information
-    'metadata_name' : `str` or `None`
+    metadata_name : `str` or `None`
     
     Returns
     -------
@@ -20,7 +23,6 @@ def read_from_metadata_table(metadata_table, metadata_name):
     Creates a dict of groups, with group names as keys and sets of 
     samples as values.
     """
-    
     #tests if (optional) metadata table was provided
     if metadata_name is None:
         groups_samples = dict()

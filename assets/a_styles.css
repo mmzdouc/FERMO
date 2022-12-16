@@ -250,60 +250,6 @@ COLUMNS - PROCESSING
     overflow: scroll;
 }
 
-/*
-ROWS - peakpicking
-*/
-
-#peakpicking_row_1 {
-    height: 5vh;
-}
-
-#peakpicking_row_2 {
-    height: 20vh;
-}
-
-#peakpicking_row_3 {
-    height: 50vh;
-}
-
-#peakpicking_row_4 {
-    height: 5vh;
-}
-
-
-/*
-COLUMNS - peakpicking
-*/
-
-#peakpicking_row_1_col_1  {
-    background-color: white;
-    height: 5vh;
-    overflow: scroll;
-}
-
-#peakpicking_row_2_col_1  {
-    background-color: white;
-    height: 20vh;
-    overflow: scroll;
-}
-
-#peakpicking_row_3_col_1  {
-    background-color: white;
-    height: 50vh;
-    overflow: scroll;
-}
-
-#peakpicking_row_3_col_2  {
-    background-color: white;
-    height: 50vh;
-    overflow: scroll;
-}
-
-#peakpicking_row_4_col_1  {
-    background-color: white;
-    height: 5vh;
-    overflow: scroll;
-}
 
 /*
 ROWS - LOADING

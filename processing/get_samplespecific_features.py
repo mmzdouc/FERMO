@@ -2,7 +2,10 @@ import pandas as pd
 import numpy as np
 
 
-def construct_sample_dict(peaktable, sample_stats,):
+def construct_sample_dict(
+    peaktable,
+    sample_stats,
+    ):
     '''Return separate dataframe for each sample
     
     Parameters
@@ -73,7 +76,10 @@ def construct_sample_dict(peaktable, sample_stats,):
         
     return samples
 
-def get_feature_int_range(samples, filter_range):
+def get_feature_int_range(
+    samples,
+    filter_range,
+    ):
     '''Return dictionary with feature rel intensities across all samples
     
     Parameters
@@ -101,7 +107,10 @@ def get_feature_int_range(samples, filter_range):
     return rel_int
 
 
-def get_features_inside_filter_range(rel_int, filter_range):
+def get_features_inside_filter_range(
+    rel_int,
+    filter_range,
+    ):
     '''Return set of features inside the filter range
     
     Parameters
@@ -131,7 +140,11 @@ def get_features_inside_filter_range(rel_int, filter_range):
     
 
 
-def get_samplespecific_features(peaktable, sample_stats, filter_range):
+def get_samplespecific_features(
+    peaktable,
+    sample_stats,
+    filter_range,
+    ):
     """For each sample, extract features + info from peaktable
     
     Parameters

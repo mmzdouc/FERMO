@@ -4,19 +4,24 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import dash_cytoscape as cyto
 
-
-
-##########
-#VARIABLES
-##########
-
-
 from app_utils.variables import (
     style_data_table,
     style_data_cond_table,
     style_header_table,
     color_dict,
     stylesheet_cytoscape,)
+
+diversity_score_text = '''
+    Chemical diversity of sample. Nr of discrete spectral similarity
+    cliques per sample, divided by total of cliques across all samples
+    (excluding cliques from BLANKs).
+    '''
+
+specificity_score_text = '''
+    Specificity score: Group-specific chemistry per sample. 
+    Nr of spectral similarity cliques specific to group the sample 
+    is in, divided by total nr of cliques in sample.
+    '''
 
 ##########
 #FUNCTIONS
@@ -146,7 +151,8 @@ def call_rel_int_title():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter features for relative intensity. Click button to access the docs.
+                '''Filter features for relative intensity.
+                Click button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -175,7 +181,8 @@ def call_peak_collision_title():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter features for peak collisions. The higher the value, 
+                '''Filter features for peak collisions. 
+                The higher the value, 
                 the more of the peak is overlapping (colliding) with 
                 another peak. Click button to access the docs.
                 ''',
@@ -239,7 +246,15 @@ def call_bioactivity_title():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Select features associated with quantitative biological data (if such data was provided). 'ON' selects any feature putatively associated with quantitative biological data. Click button to access the docs.
+                '''Select features associated with quantitative 
+                biological data (if such data was provided). 
+                'SPECIFICITY' selects any feature putatively 
+                associated with
+                 quantitative biological data, 'SPEC.+TREND
+                 also considers correlation between feature intensity
+                 and quantitative biological data (if it follows the 
+                 trend).
+                 '. Click button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -267,7 +282,11 @@ def call_novelty_title():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter for putatively novel (unknown) features (if MS2Query was active and/or a spectral library was provided). A value of '0' would select all features, while a value of '1' would select only features that are most likely unknown. Click button to access the docs.
+                '''Filter for putatively novel (unknown) features 
+                (if MS2Query was active and/or a spectral library was 
+                provided). A value of '0' would select all features, 
+                while a value of '1' would select only features that 
+                are most likely unknown. Click button to access the docs.
                 ''',
                 ),
             placement='right',
@@ -295,9 +314,12 @@ def call_annotation_search_title():
             ]),
         dbc.Tooltip(
             html.Div(
-                '''Filter for features with annotation from library/MS2Query matching. Filter uses regular expressions (POSIX ERE), and
+                '''Filter for features with annotation from 
+                library/MS2Query matching. Filter uses regular 
+                expressions (POSIX ERE), and
                 certain characters have special meaning. 
-                For example, to select all annotations, use expression '.+'. For more information,
+                For example, to select all annotations,
+                use expression '.+'. For more information,
                 click the info-button to access the docs.
                 ''',
                 ),
@@ -421,13 +443,47 @@ def call_visualization_selected_name():
             html.Div(
                 '''Toggles visualization of features in chromatogram. 
                 'ALL' shows all features, 'SELECTED', shows only the 
-                currently selected features and discables non-selected 
-                or blank features.
+                currently selected features and grays out the remainder.
+                'HIDDEN' completely masks out the non-selected features.
+                For more information,
+                click the info-button to access the docs.
                 ''',
                 ),
             placement='right',
             className='info_dot_tooltip',
             target="call_visualization_selected_name_tooltip",
+            ),
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
+
+def call_designate_blanks_name():
+    '''Title for specific designation of blank features'''
+    return html.Div([
+        html.Div([ 
+            "BLANK-associated features ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_designate_blanks_name_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Toggle to allows special designation of blank-associated 
+                features. When 'DESIGNATE', 
+                such features are specifically color-coded and automatically
+                excluded from selection. For more information, click the
+                info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_designate_blanks_name_tooltip",
             ),
         ],
         style={'display': 'inline-block', 'width': '60%',},
@@ -525,7 +581,7 @@ def call_group_search_clique_name():
                 certain characters have special meaning. 
                 For example, to select multiple group annotations, 
                 use expression 'group1|group2'. To exclude a specific
-                group, use expression "^((?!groupname).)*$".
+                group (e.g. BLANK), use expression "^((?!BLANK).)*$".
                 For more information,
                 click the info-button to access the docs.
                 ''',
@@ -537,6 +593,75 @@ def call_group_search_clique_name():
         ],
         style={'display': 'inline-block', 'width': '60%',},
         )
+
+def call_samplename_name():
+    '''Title for sample name filter'''
+    return html.Div([
+        html.Div([ 
+            "Sample name filter ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_samplename_name_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for sample names.
+                Filter uses regular expressions (POSIX ERE), and
+                certain characters have special meaning. 
+                For example, to select multiple samples, 
+                use expression 'sample1|sample2'. To exclude a specific
+                sample, use expression "^((?!sample).)*$", where "sample"
+                is the name of the name of the sample.
+                For more information,
+                click the info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_samplename_name_tooltip",
+            ),
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
+
+def call_number_samples_filter_name():
+    '''Title for number of samples per feature filter'''
+    return html.Div([
+        html.Div([ 
+            "Number samples filter ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_number_samples_filter_name_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter for the number of samples that contribute 
+                to a feature. Can be used to only select features that 
+                have been observed in (all) replicate samples.
+                For more information,
+                click the info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_samplename_name_tooltip",
+            ),
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
+
 
 def call_rangeslider_inp(name):
     '''Set parameters of dash dcc.rangeslider field'''
@@ -594,7 +719,7 @@ def call_regexp_filter_str(name):
         style={'width': '60%',},
         )
 
-def call_int_filter_input(name, placeholder):
+def call_int_filter_input(name, placeholder, width):
     '''Set int field filter'''
     return html.Div(dcc.Input(
         id=name, 
@@ -606,7 +731,7 @@ def call_int_filter_input(name, placeholder):
         type='number',
         style={'font-size' : '15px','width': '100%',},
         ),
-        style={'width': '60%',},
+        style={'width': width,},
         )
 
 def call_float_precursor_inp(name, placeholder, value):
@@ -640,6 +765,24 @@ def call_selected_viz_toggle(name):
             },
         ], 
         value='ALL',
+        id=name,
+        inline=False,
+        ))
+
+def call_blank_des_toggle(name):
+    '''Call toggle for special designation of blank/ms1 features'''
+    return html.Div(dcc.RadioItems(
+        options=[
+            {
+            "label": 'DESIGNATE',
+            "value": 'DESIGNATE',
+            },
+            {
+            "label": 'DO NOT DESIGNATE',
+            "value": 'DO NOT DESIGNATE',
+            },
+        ], 
+        value='DESIGNATE',
         id=name,
         inline=False,
         ))
@@ -722,6 +865,40 @@ def call_precursor_mz_filter_wrapper():
             'width' : '60%'},
         )
 
+def call_samplenumber_filter_wrapper():
+    '''Call div of sample number filter_wrapper '''
+    return html.Div([
+        html.Div(
+            call_int_filter_input(
+                'filter_samplenumber_min', 
+                'min nr of samples', 
+                '100%',
+                ),
+            style={
+                'width' : '49%',
+                'display' : 'inline-block', 
+                'float' : 'left', 
+                },
+            ),
+        html.Div(
+            call_int_filter_input(
+                'filter_samplenumber_max', 
+                'max nr of samples',
+                '100%',
+                ),
+            style={
+                'width' : '49%',
+                'display' : 'inline-block', 
+                'float' : 'right', },
+            ),
+        ],
+        style={
+            'display' : 'inline-block', 
+            'margins' : 'auto',
+            'width' : '60%'},
+        )
+
+
 def call_export_session_file_button():
     '''Call session file export button'''
     return html.Div([
@@ -798,9 +975,7 @@ def call_feature_export_button():
 
 dashboard = html.Div([
     dbc.Row([
-        #top left: sample names + scores
         dbc.Col([
-            ####STORAGE####
             html.Div([
                 dcc.Store(id='threshold_values'),
                 dcc.Store(id='samples_subsets'),
@@ -810,70 +985,67 @@ dashboard = html.Div([
                 dcc.Store(id='storage_active_feature_id'), 
                 dcc.Store(id='selected_viz_toggle_value'), 
                 ]),
-            ###############
-                html.Div(style={'margin-top' : '10px'}),
-                html.Div(
-                    dash_table.DataTable(
-                        id='table_general_stats',
-                        columns=[
-                            {"name": i, "id": i} 
-                            for i in [
-                                'Nr of samples',
-                                'Nr of features',
-                                'Selected features',
-                                'Selected networks',
-                                'Non-blank',
-                                'Blank & MS1',
-                                ]
-                            ],
-                        style_as_list_view=True,
-                        style_data=style_data_table,
-                        style_header=style_header_table,
-                        ),
-                ),
-                html.Div(style={'margin-top' : '10px'}),
-                html.Div(
-                    dash_table.DataTable(
-                        id='table_sample_names',
-                        columns=[
-                            {"name": i, "id": i} 
-                            for i in [
-                                'Filename',
-                                'Group',
-                                'Selected features',
-                                'Selected networks',
-                                'Diversity score',
-                                'Spec score',
-                                'Mean Novelty score',
-                                'Total',
-                                'Non-blank',
-                                'Blank & MS1',
-                                ]
-                            ],
-                        style_as_list_view=True,
-                        style_data=style_data_table,
-                        style_data_conditional=style_data_cond_table,
-                        style_header=style_header_table,
-                        tooltip_header={
-                            'Diversity score' : 'Chemical diversity of sample. Nr of discrete spectral similarity cliques per sample, divided by total of cliques across all samples (excluding cliques from BLANKs).',
-                            'Spec score' : 'Specificity score: Group-specific chemistry per sample. Nr of spectral similarity cliques specific to group the sample is in, divided by total nr of cliques in sample.'
-                            },
-                        tooltip_delay=0,
-                        tooltip_duration=None,
-                        ),
+            html.Div(style={'margin-top' : '10px'}),
+            html.Div(
+                dash_table.DataTable(
+                    id='table_general_stats',
+                    columns=[
+                        {"name": i, "id": i} 
+                        for i in [
+                            'Nr of samples',
+                            'Nr of features',
+                            'Selected features',
+                            'Selected networks',
+                            'Non-blank',
+                            'Blank & MS1',
+                            ]
+                        ],
+                    style_as_list_view=True,
+                    style_data=style_data_table,
+                    style_header=style_header_table,
+                    ),
+            ),
+            html.Div(style={'margin-top' : '10px'}),
+            html.Div(
+                dash_table.DataTable(
+                    id='table_sample_names',
+                    columns=[
+                        {"name": i, "id": i} 
+                        for i in [
+                            'Filename',
+                            'Group',
+                            'Selected features',
+                            'Selected networks',
+                            'Diversity score',
+                            'Spec score',
+                            'Mean Novelty score',
+                            'Total',
+                            'Non-blank',
+                            'Blank & MS1',
+                            ]
+                        ],
+                    style_as_list_view=True,
+                    style_data=style_data_table,
+                    style_data_conditional=style_data_cond_table,
+                    style_header=style_header_table,
+                    tooltip_header={
+                        'Diversity score' : diversity_score_text,
+                        'Spec score' : specificity_score_text,
+                        },
+                    tooltip_delay=0,
+                    tooltip_duration=None,
+                    ),
                 ),
             ],
             id="dashboard_row_1_col_1",
             width=3,
             ),
-        #top right: chromatogram view
         dbc.Col([
             html.Div([
                 html.Div(id='title_central_chrom'),
                 ],
                 style={
                     'margin-top' : '10px',
-                    'margin-left' : '25px',
                     'font-size' : '18px',
                     'font-weight' : 'bold',
                     'width' : '100%',
@@ -881,10 +1053,7 @@ dashboard = html.Div([
                 ),
             html.Div('Click any row in the left-hand table to visualize the sample',
                 style={
-                    # ~ 'display': 'inline-block', 
-                    # ~ 'float': 'left',
                     'margin-top' : '5px',
-                    'margin-left' : '25px',
                     'width' : '100%',
                     }
                 ),
@@ -954,7 +1123,6 @@ dashboard = html.Div([
             html.Hr(
                 style={
                     'margin-top' : '10px',
-                    # ~ 'margin-bottom' : '10px',
                     'width' : '75%',
                     'display' : 'inline-block',
                     }
@@ -964,6 +1132,9 @@ dashboard = html.Div([
             html.Div([
                 call_visualization_selected_name(),
                 call_selected_viz_toggle('selected_viz_toggle'),
+                html.Div(style={'margin-top' : '5px'}),
+                call_designate_blanks_name(),
+                call_blank_des_toggle('blank_designation_toggle'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_novelty_title(),
                 call_rangeslider_inp('novelty_threshold'),
@@ -984,19 +1155,28 @@ dashboard = html.Div([
                 call_regexp_filter_str('filter_annotation'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_feature_id_filter_name(),
-                call_int_filter_input('filter_feature_id', 'Feature ID number'),
+                call_int_filter_input('filter_feature_id',
+                    'Feature ID number', '60%',),
                 html.Div(style={'margin-top' : '5px'}),
                 call_clique_filter_name(),
-                call_int_filter_input('filter_spectral_sim_netw', 'Network ID number'),
+                call_int_filter_input('filter_spectral_sim_netw', 
+                    'Network ID number', '60%',),
                 html.Div(style={'margin-top' : '5px'}),
                 call_foldchange_search_name(),
-                call_int_filter_input('filter_fold_change', 'Search fold-change'),
+                call_int_filter_input('filter_fold_change', 
+                    'Search fold-change', '60%',),
                 html.Div(style={'margin-top' : '5px'}),
                 call_group_search_name(),
                 call_regexp_filter_str('filter_group'),
                 html.Div(style={'margin-top' : '5px'}),
                 call_group_search_clique_name(),
                 call_regexp_filter_str('filter_group_cliques'),
+                html.Div(style={'margin-top' : '5px'}),
+                call_samplename_name(),
+                call_regexp_filter_str('filter_samplename'),
+                html.Div(style={'margin-top' : '5px'}),
+                call_number_samples_filter_name(),
+                call_samplenumber_filter_wrapper(),
                 html.Div(style={'margin-top' : '5px'}),
                 call_precursor_mz_filter_name(),
                 call_precursor_mz_filter_wrapper(),
@@ -1012,7 +1192,6 @@ dashboard = html.Div([
             id="dashboard_row_2_col_1",
             width=3,
         ),
-        #bottom second: spectrum similarity network
         dbc.Col([
             html.Div(
                 'Cytoscape view - spectral similarity networking',
@@ -1121,7 +1300,6 @@ dashboard = html.Div([
             id="dashboard_row_2_col_2",
             width=4,
             ),
-        #bottom third: mini-chromatograms, sample overview
         dbc.Col([
             html.Div(
                 'Sample chromatograms',
@@ -1138,8 +1316,6 @@ dashboard = html.Div([
                     'font-size' : '16px'
                     },
                 ),
-            
-            
             html.Div(
                 id='mini_chromatograms',
                 style={
@@ -1152,7 +1328,6 @@ dashboard = html.Div([
             id="dashboard_row_2_col_3",
             width=2,
             ),
-        #bottom fourth: feature info table
         dbc.Col([
             html.Div(
                 dash_table.DataTable(

@@ -6,6 +6,7 @@ from plotly.subplots import make_subplots
 import re
 import json
 from dash import dcc, html
+from statistics import mean
 
 from app_utils.variables import color_dict
 
@@ -54,30 +55,24 @@ def generate_subsets(
     samples[selected_sample].loc[
         samples[selected_sample]['feature_ID'] == ID].squeeze(),
     """
-    ###STATS###
-    
-    #all features per sample
     all_feature_set = set(samples[sample]['feature_ID'])
 
-    #which of these features blank associated
     features_blanks_set = set()
     for feature_ID in all_feature_set:
         if 'BLANK' in feature_dicts[str(feature_ID)]['set_groups']:
             features_blanks_set.add(feature_ID)
     
-    #extract features w ms1 only from samples ^S$
     ms1_only_df = samples[sample].loc[
         samples[sample]['ms1_only'] == True
         ]
     ms1_only_set = set(ms1_only_df['feature_ID'])
     
-    #combine ms1 and blank features
-    blank_ms1_set = features_blanks_set.union(ms1_only_set)
-    
-    #from all features, filter blank and features with ms1 only
+
+    blank_ms1_set = ms1_only_set
     all_nonblank_set = all_feature_set.difference(blank_ms1_set)
-    
-    ###FILTERS###
+    if thresholds['blank_designation_toggle'] == 'DESIGNATE':
+        blank_ms1_set = features_blanks_set.union(ms1_only_set)
+        all_nonblank_set = all_feature_set.difference(blank_ms1_set)
     
     #filter for numeric thresholds
     filt_df = samples[sample].loc[
@@ -132,7 +127,6 @@ def generate_subsets(
     if thresholds['filter_annotation'] != '':
         temp_set = set()
         for feature in filtered_thrsh_set:
-            #construct string to query against
             search_list = ['',]
             if feature_dicts[str(feature)]['ms2query']:
                 search_list.append(
@@ -144,7 +138,6 @@ def generate_subsets(
                     feature_dicts[str(feature)][
                         'cosine_annotation_list'][0]['name']
                     )
-            #match query against string
             if filter_str_regex(
                 thresholds['filter_annotation'],
                 ','.join([i for i in search_list])
@@ -257,11 +250,70 @@ def generate_subsets(
                 pass
         filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
     
+    if thresholds['filter_samplename'] != '':
+        temp_set = set()
+        for feature in filtered_thrsh_set:
+            try:
+                if filter_str_regex(
+                    thresholds['filter_samplename'],
+                    ','.join([i for i in feature_dicts[str(feature)][
+                    'presence_samples']]),
+                    ):
+                    temp_set.add(feature)
+            except:
+                pass
+        filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
     
+    if (
+        thresholds['filter_samplenumber_min'] != '' 
+    or 
+        thresholds['filter_samplenumber_max'] != '' 
+    ):
+        snum_min = None
+        snum_max = None
+        if thresholds['filter_samplenumber_min'] != '':
+            snum_min = float(thresholds['filter_samplenumber_min'])
+        if thresholds['filter_samplenumber_max'] != '':
+            snum_max = float(thresholds['filter_samplenumber_max'])
+        
+        if (snum_min is not None) and (snum_max is not None):
+            temp_set = set()
+            if snum_min > snum_max:
+                temp_min = copy.deepcopy(snum_max)
+                temp_max = copy.deepcopy(snum_min)
+                snum_min = temp_min
+                snum_max = temp_max
+            
+            for feature in filtered_thrsh_set:
+                if ( 
+                    (
+                    snum_min 
+                    <= 
+                    len(feature_dicts[str(feature)]['presence_samples'])
+                    <=
+                    snum_max
+                    )
+                ):
+                    temp_set.add(feature)
+            filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+        
+        elif (snum_min is not None) and (snum_max is None):
+            temp_set = set()
+            for feature in filtered_thrsh_set:
+                
+                if snum_min <= len(feature_dicts[str(feature)]['presence_samples']):
+                    temp_set.add(feature)
+            filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+        
+        elif (snum_min is None) and (snum_max is not None):
+            temp_set = set()
+            for feature in filtered_thrsh_set:
+                if len(feature_dicts[str(feature)]['presence_samples']) <= snum_max:
+                    temp_set.add(feature)
+            filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
 
     #subtract ms1 and blanks from features over threshold
     all_select_no_blank = filtered_thrsh_set.difference(blank_ms1_set)
-    
     
     #subset of selected sample specific features
     select_sample_spec = set()
@@ -323,7 +375,174 @@ def generate_subsets(
         'nonselect_remainder' : list(nonselect_remainder),
         }
 
-def calc_diversity_score(sample_stats, samples):
+
+def calc_sample_unique_cliques(
+    samples,
+    samples_subsets,
+    feature_dicts,
+    ):
+    '''Calculate unique cliques per sample
+    
+    Parameters
+    ----------
+    samples : `dict`
+    samples_subsets : `dict`
+    feature_dicts : `dict`
+    
+    Returns
+    -------
+    sample_unique_cliques : `dict`
+    
+    Notes
+    -----
+    how many cliques in this sample are only found in group (corrected
+    for blanks)
+    '''
+    sample_unique_cliques = dict()
+    for sample in samples:
+        unique_cliques = set()
+        for ID in samples_subsets[sample]['all_nonblank']:
+            if (
+                (len(feature_dicts[str(ID)]['set_groups_clique']) == 1)
+                and
+                (sample in feature_dicts[str(ID)]['presence_samples'])
+            ):
+                unique_cliques.add(
+                    feature_dicts[str(ID)]['similarity_clique_number']
+                    )
+        sample_unique_cliques[sample] = list(unique_cliques)
+    
+    return sample_unique_cliques
+
+
+def calc_sample_mean_novelty(
+    samples,
+    samples_subsets,
+    feature_dicts,
+    ):
+    '''Calculate unique cliques per sample
+    
+    Parameters
+    ----------
+    samples : `dict`
+    samples_subsets : `dict`
+    feature_dicts : `dict`
+    
+    Returns
+    -------
+    sample_mean_novelty : `dict`
+    
+    Notes
+    -----
+    statistics.mean() throws error if any None in list
+    '''
+    sample_mean_novelty = dict()
+
+    for sample in samples:
+        list_novelty_scores = list()
+        for ID in samples_subsets[sample]['all_nonblank']:
+            nov_score = feature_dicts[str(ID)]['novelty_score']
+            if isinstance(nov_score, int) or isinstance(nov_score, float):
+                list_novelty_scores.append(nov_score)
+        try:
+            sample_mean_novelty[sample] = round(mean(list_novelty_scores),2)
+        except:
+            sample_mean_novelty[sample] = 0
+    
+    return sample_mean_novelty
+
+
+def calc_sample_sel_cliques(
+    samples,
+    samples_subsets,
+    feature_dicts,
+    ):
+    '''Calculate number of selected cliques
+    
+    Parameters
+    ----------
+    samples : `dict`
+    samples_subsets : `dict`
+    feature_dicts : `dict`
+    
+    Returns
+    -------
+    sample_sel_cliques : `dict`
+    '''
+    sample_sel_cliques = dict()
+    for sample in samples:
+        clique_set = set()
+        for ID in samples_subsets[sample]['all_select_no_blank']:
+            if feature_dicts[str(ID)]['similarity_clique']:
+                clique_set.add(
+                    feature_dicts[str(ID)]['similarity_clique_number']
+                    )
+        sample_sel_cliques[sample] = len(clique_set)
+    
+    return sample_sel_cliques
+
+def prepare_sample_scores_df(
+    samples,
+    samples_subsets,
+    feature_dicts,
+    sample_stats,
+    sample_sel_cliques,
+    diversity_score,
+    specificity_score,
+    sample_unique_cliques,
+    sample_mean_novelty,
+    ):
+    '''Prepare pandas df containing sample scores
+    
+    Parameters
+    ----------
+    samples : `dict`
+    samples_subsets : `dict`
+    feature_dicts : `dict`
+    sample_stats : `dict`
+    sample_sel_cliques : `dict`
+    diversity_score : `list`
+    specificity_score : `list`
+    sample_unique_cliques : `dict`
+    sample_mean_novelty : `dict`
+    
+    Returns
+    -------
+    sample_scores : `Pandas.DataFrame`
+    '''
+    sample_scores = pd.DataFrame({
+        'Filename' : [i for i in samples],
+        'Group' : [sample_stats['samples_dict'][i] for i in samples],
+        'Selected features' : [len(samples_subsets[i][
+            'all_select_no_blank']) for i in samples],
+        'Selected networks' : [sample_sel_cliques[i] for i in
+            sample_sel_cliques],
+        'Diversity score' : diversity_score,
+        'Spec score' : specificity_score,
+        'Mean Novelty score' : [sample_mean_novelty[i] for i in sample_mean_novelty],
+        'Total' : [len(samples_subsets[i]['all_features']) for i in samples],
+        'Non-blank' : [len(samples_subsets[i]['all_nonblank']) for i in samples],
+        'Blank & MS1' : [len(samples_subsets[i]['blank_ms1']) for i in samples], 
+    })
+
+    sample_scores.sort_values(
+        by=[
+            'Diversity score',
+            'Spec score',
+            'Non-blank',
+            ], 
+        inplace=True, 
+        ascending=[False, False, False]
+        )
+        
+    sample_scores.reset_index(drop=True, inplace=True)
+    
+    return sample_scores
+
+def calc_diversity_score(
+    sample_stats,
+    samples,
+    ):
     '''Calculate diversity scores for each sample
     
     Parameters
@@ -357,7 +576,11 @@ def calc_diversity_score(sample_stats, samples):
             list_div_scores.append(0)
     return list_div_scores
 
-def calc_specificity_score(sample_stats, samples, sample_unique_cliques):
+def calc_specificity_score(
+    sample_stats,
+    samples, 
+    sample_unique_cliques,
+    ):
     '''Calculate specificity scores for each sample
     
     Parameters
@@ -457,7 +680,9 @@ def append_scatter_text(
             'bordercolor' : bordercolor}
         )
 
-def append_invis_trace(row):
+def append_invis_trace(
+    row,
+    ):
     '''Create incisible scatter trace to keep track of peaks
     
     Parameters
@@ -485,8 +710,6 @@ def append_invis_trace(row):
             'width' : 0,
             },
         )
-    
-
 
 def plot_central_chrom(
     sel_sample,
@@ -685,7 +908,6 @@ def plot_central_chrom(
                 'width' : 5,
                 'dash' : 'dash',}
         )
-    
     return fig
 
 
@@ -774,10 +996,6 @@ def plot_clique_chrom(
                     )
                 )
     return fig
-
-
-
-
 
 def plot_sample_chrom(
     selected_sample,
@@ -1367,7 +1585,10 @@ def add_nodedata(
     return df.to_dict('records')
 
 
-def add_edgedata(data, feat_dicts,):
+def add_edgedata(
+    data,
+    feat_dicts,
+    ):
     '''Append edge data to df
     
     Parameters
@@ -1390,7 +1611,11 @@ def add_edgedata(data, feat_dicts,):
 
 
 
-def feat2table(feat_dicts, row, key):
+def feat2table(
+    feat_dicts,
+    row, 
+    key,
+    ):
     '''Return value to insert in pandas df column
     
     Parameters
@@ -1405,7 +1630,10 @@ def feat2table(feat_dicts, row, key):
     '''
     return feat_dicts[str(row['feature_ID'])][key]
 
-def feat2table_clique(feat_dicts, row,): 
+def feat2table_clique(
+    feat_dicts,
+    row,
+    ): 
     '''Return clique information if any
     
     Parameters
@@ -1422,7 +1650,10 @@ def feat2table_clique(feat_dicts, row,):
     else:
         return ""
 
-def feat2table_library(feat_dicts, row,): 
+def feat2table_library(
+    feat_dicts,
+    row,
+    ): 
     '''Return library annotation information if any
     
     Parameters
@@ -1444,7 +1675,10 @@ def feat2table_library(feat_dicts, row,):
     else:
         return ""
 
-def feat2table_ms2query(feat_dicts, row,): 
+def feat2table_ms2query(
+    feat_dicts,
+    row,
+    ): 
     '''Return ms2query annotation information if any
     
     Parameters
@@ -1468,9 +1702,23 @@ def feat2table_ms2query(feat_dicts, row,):
 
 
 
-def export_sel_peaktable(samples, sel_sample, feat_dicts):
-    '''Return columns from pandas df'''
+def export_sel_peaktable(
+    samples,
+    sel_sample,
+    feat_dicts,
+    ):
+    '''Return columns from pandas df
     
+    Parameters
+    ---------
+    samples : `dict`
+    sel_sample : `str`
+    feat_dicts : `dict`
+    
+    Returns
+    -------
+    `Pandas.DataFrame()`
+    '''
     df = samples[sel_sample].loc[:,[
             'feature_ID',
             'precursor_mz',
@@ -1508,8 +1756,19 @@ def export_sel_peaktable(samples, sel_sample, feat_dicts):
 
     return df
 
-def prepare_log_file(contents):
-    '''Concatenate information for logging file'''
+def prepare_log_file(
+    contents,
+    ):
+    '''Concatenate information for logging file
+    
+    Parameters
+    ---------
+    contents : `dict`
+    
+    Returns
+    -------
+    `list`
+    '''
     return [
         ''.join(['FERMO_version: ', str(contents['FERMO_version'])]),
         'Input file names:',
@@ -1520,8 +1779,21 @@ def prepare_log_file(contents):
         contents['logging_dict']
         ]
 
-def prepare_log_file_filters(contents, thresholds):
-    '''Concatenate information for logging file - include set filters'''
+def prepare_log_file_filters(
+    contents,
+    thresholds,
+    ):
+    '''Concatenate information for logging file - include set filters
+    
+    Parameters
+    ---------
+    contents : `dict`
+    thresholds : `dict`
+    
+    Returns
+    -------
+    `list`
+    '''
     return [
         ''.join(['FERMO_version: ', str(contents['FERMO_version'])]),
         'Input file names:',
@@ -1534,22 +1806,48 @@ def prepare_log_file_filters(contents, thresholds):
         contents['logging_dict']
         ]
 
-def prepare_ms2qery_info(feature_dicts, ID):
-    '''Prepare MS2Query info for feature table'''
+def prepare_ms2qery_info(
+    feature_dicts,
+    ID,
+    ):
+    '''Prepare MS2Query info for feature table
+
+    Parameters
+    ---------
+    feature_dicts : `dict`
+    ID : `int`
     
+    Returns
+    -------
+    `str`
+    '''
     if feature_dicts[ID]['ms2query']:
         return "".join([
-            str(feature_dicts[ID]['ms2query_results'][0]['analog_compound_name']),
+            str(feature_dicts[ID][
+                'ms2query_results'][0]['analog_compound_name']),
             ' (score: ',
-            str(round(feature_dicts[ID]['ms2query_results'][0]['ms2query_model_prediction'],2)),
+            str(round(feature_dicts[ID][
+                'ms2query_results'][0]['ms2query_model_prediction'],2)),
             ')',
         ])
     else:
         return ""
 
-def prepare_cosine_info(feature_dicts, ID):
-    '''Prepare library match info for feature table'''
+def prepare_cosine_info(
+    feature_dicts,
+    ID
+    ):
+    '''Prepare library match info for feature table
     
+    Parameters
+    ---------
+    feature_dicts : `dict`
+    ID : `int`
+    
+    Returns
+    -------
+    `str`
+    '''
     if feature_dicts[ID]['cosine_annotation']:
         return "".join([
             str(feature_dicts[ID]['cosine_annotation_list'][0]['name']),
@@ -1561,8 +1859,19 @@ def prepare_cosine_info(feature_dicts, ID):
         return ""
 
 
-def export_features(feature_dicts):
-    '''From feature dicts, create lists, return pandas df'''
+def export_features(
+    feature_dicts,
+    ):
+    '''Create pandas df from feature dicts
+    
+    Parameters
+    ---------
+    feature_dicts : `dict`
+    
+    Returns
+    -------
+    `Pandas.DataFrame()`
+    '''
     t_feature_ID = []
     t_prec_mz = []
     t_avg_ret_time = []
@@ -1614,7 +1923,10 @@ def export_features(feature_dicts):
         'groups_fold_differences': t_dict_fold_diff,
         })
 
-def download_sel_sample_all_features(sel_sample, contents):
+def download_sel_sample_all_features(
+    sel_sample, 
+    contents,
+    ):
     '''Export peaktable of all sample - selected features
     
     Parameters
@@ -1655,7 +1967,7 @@ def download_sel_sample_sel_features(
     sel_sample, 
     contents, 
     samples_subsets, 
-    thresholds
+    thresholds,
     ):
     '''Export peaktable of selected sample - selected features
     
@@ -1701,7 +2013,9 @@ def download_sel_sample_sel_features(
             )
         )
 
-def download_all_samples_all_features(contents):
+def download_all_samples_all_features(
+    contents,
+    ):
     '''Export peaktable of all samples - all features
     
     Parameters
@@ -1743,7 +2057,8 @@ def download_all_samples_all_features(contents):
 def download_all_samples_selected_features(
     contents, 
     samples_subsets, 
-    thresholds):
+    thresholds,
+    ):
     '''Export peaktable of all samples - selected features
     
     Parameters
@@ -1776,7 +2091,6 @@ def download_all_samples_selected_features(
             samples[sample]['feature_ID'].isin(active_features_set)]
         mod_dfs[sample] = mod_dfs[sample].reset_index(drop=True)
         
-        
     list_dfs = []
     for sample in mod_dfs:
         df = export_sel_peaktable(mod_dfs, sample, feature_dicts)
@@ -1795,7 +2109,9 @@ def download_all_samples_selected_features(
             )
         )
 
-def download_all_features(contents):
+def download_all_features(
+    contents,
+    ):
     '''Convert feature dicts into df and export
     
     Parameters
@@ -1823,7 +2139,8 @@ def download_all_features(contents):
 def download_selected_features(
     contents,
     samples_subsets,
-    thresholds):
+    thresholds,
+    ):
     '''Convert feature dicts into df and export
     
     Parameters

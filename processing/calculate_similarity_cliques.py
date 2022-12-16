@@ -6,8 +6,6 @@ from matchms.similarity.vector_similarity_functions import cosine_similarity_mat
 from ms2deepscore import MS2DeepScore
 from ms2deepscore.models import load_model as load_ms2ds_model
 
-
-
 def calculate_similarity_cliques(
     feature_dicts,
     sample_stats,

@@ -1,7 +1,3 @@
-##########
-#STYLES
-##########
-
 style_data_table={
     'color': 'black',
     'backgroundColor': 'white',
@@ -12,8 +8,8 @@ style_data_table={
     }
 
 style_data_cond_table=[{
-        'if': {'row_index': 'odd'},
-        'backgroundColor': 'rgb(220, 220, 220)',
+    'if': {'row_index': 'odd'},
+    'backgroundColor': 'rgb(220, 220, 220)',
     }]
 
 style_header_table={
@@ -49,17 +45,6 @@ color_dict = {
     'black' : 'rgba(0,0,0,1)',
     'light_black' : 'rgba(0,0,0,0.5)',
     }
-
-##########
-#STORAGE PROCESSING
-##########
-
-##########
-#DASHBOARD VARIABLES
-##########
-
-
-
 
 stylesheet_cytoscape = [
             {

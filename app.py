@@ -4,10 +4,8 @@ from dash import Dash, html, dcc, Input, Output, State, callback
 from dash import dash_table, ctx, DiskcacheManager, CeleryManager
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
-from statistics import mean
 
 ###OTHER EXTERNAL MODULES###
-
 import base64
 import diskcache
 import io
@@ -32,7 +30,8 @@ from app_utils.app_input_testing import (
     assert_peaktable_format,
     div_file_format_error,
     div_successful_load_message,
-    div_no_file_loaded,
+    div_no_file_loaded_optional,
+    div_no_file_loaded_mandatory,
     test_for_None,
     extract_mgf_for_json_storage,
     div_no_quantbio_format,
@@ -45,6 +44,7 @@ from app_utils.app_input_testing import (
     empty_loading_table,
     session_loading_table,
     div_session_version_error,
+    ms2query_download_text,
     )
 
 from app_utils.FERMO_peaktable_processing import (
@@ -74,6 +74,10 @@ from app_utils.dashboard_functions import (
     download_all_features,
     download_selected_features,
     plot_sample_chrom,
+    calc_sample_unique_cliques,
+    calc_sample_mean_novelty,
+    calc_sample_sel_cliques,
+    prepare_sample_scores_df,
     )
 
 from app_utils.variables import (
@@ -87,17 +91,16 @@ from pages.pages_header_footer import footer_row, header_row
 from pages.pages_landing import landing
 from pages.pages_dashboard import dashboard
 from pages.pages_processing import processing
-# ~ from pages.pages_peakpicking import peakpicking
 from pages.pages_loading import loading
 
-
-#Required for background callbacks
-cache = diskcache.Cache("./cache")
-background_callback_manager = DiskcacheManager(cache)
 
 ##########
 #LAYOUT
 ##########
+
+#Required for background callbacks
+cache = diskcache.Cache("./cache")
+background_callback_manager = DiskcacheManager(cache)
 
 app = Dash(
     __name__,
@@ -112,20 +115,13 @@ server = app.server
 framework_app = dbc.Container([
         header_row,
         html.Div([
-            ##ROUTING
             dcc.Store(id='store_landing'),
             dcc.Store(id='store_processing'),
             dcc.Store(id='store_loading'),
-            
-            ##PROCESSING
             dcc.Store(id='data_processing_FERMO'),
             dcc.Store(id='processed_data_FERMO'),
             dcc.Store(id='loaded_data_FERMO'),
-            
-            ##LOCATION - 'BROWSER BAR'
             dcc.Location(id='url', refresh=False), 
-            
-            ##VARIABLE PAGE CONTENT
             html.Div(id='page_content')
             ]),
         footer_row,
@@ -149,7 +145,20 @@ app.layout = framework_app
     Input('url', 'pathname'),
     )
 def app_display_page(pathname):
-    '''Routing function on which page to display'''
+    '''Display page depending on routing input
+    
+    Parameters
+    ----------
+    pathname : `str`
+    
+    Returns
+    ------
+    `dash html.Div object`
+    
+    Notes
+    -----
+    Calls pages as Div() objects. 
+    '''
     if pathname == '/dashboard':
         return dashboard
     elif pathname == '/processing':
@@ -166,17 +175,34 @@ def app_display_page(pathname):
     Input('store_loading', 'data'),
     )
 def app_return_pathname(
-    landing, 
-    processing, 
-    loading,
+    signal_landing, 
+    signal_processing, 
+    signal_loading,
     ):
-    '''Combine callback input for routing, decision via ctx.triggered_id'''
+    '''Combine callback input for routing
+    
+    Parameters
+    ----------
+    signal_landing : `str`
+    signal_processing : `str`
+    signal_loading : `str`
+    
+    Returns
+    ------
+    `str`
+    
+    Notes
+    -----
+    Combines input from callbacks, which is then sent to the 'url' element.
+    Callback is required since in Dash, an Output element can be only
+    targeted by a single Callback.
+    '''
     if ctx.triggered_id == 'store_landing':
-        return landing
+        return signal_landing
     elif ctx.triggered_id == 'store_processing':
-        return processing
+        return signal_processing
     elif ctx.triggered_id == 'store_loading':
-        return loading
+        return signal_loading
 
 @callback(
     Output('store_landing', 'data'),
@@ -184,20 +210,28 @@ def app_return_pathname(
     Input('call_loading_button', 'n_clicks'),
     )
 def landing_call_pages(
-    processing_page, 
-    loading_page,
+    processing, 
+    loading,
     ):
-    '''On button click, redirect to respective page'''
-    if not any((
-        processing_page, 
-        loading_page,
-        )):
+    '''Redirect from landing page to processing or loading page
+    
+    Parameters
+    ----------
+    processing : `int`
+    loading : `int`
+    
+    Returns
+    ------
+    `str`
+    '''
+    if not any((processing, loading)):
         raise PreventUpdate
-    else:
-        if processing_page:
-            return '/processing'
-        elif loading_page:
-            return '/loading'
+    
+    if ctx.triggered_id == 'call_processing_button':
+        return '/processing'
+    elif ctx.triggered_id == 'call_loading_button':
+        return '/loading'
+
 
 @callback(
     Output('processing_start_cache', 'children'),
@@ -210,24 +244,38 @@ def landing_call_pages(
     State('upload_userlib_store', 'data'),
     )
 def processing_start_click(
-    start_processing,
+    signal,
     peaktable_store,
     mgf_store,
     bioactiv_store,
     metadata_store,
     userlib_store,
     ):
-    '''On button click, test for starting conditions for processing'''
-    if not start_processing:
+    '''Test condition, start FERMO processing
+    
+    Parameters
+    ----------
+    signal : `int`
+    peaktable_store : `dict`
+    mgf_store : `dict`
+    bioactiv_store : `dict`
+    metadata_store : `dict`
+    userlib_store : `dict`
+ 
+    Returns
+    ------
+    (`html.Div`, `dict`)
+    '''
+    if not signal:
         raise PreventUpdate
     elif (
         (peaktable_store['peaktable_name'] is None) 
-    or
+        or
         (mgf_store['mgf_name'] is None)
     ):
         raise PreventUpdate
     else:
-        dict_uploaded_files = {
+        return html.Div('Started processing, please wait ...'), {
             'peaktable' : peaktable_store['peaktable'],
             'peaktable_name' : peaktable_store['peaktable_name'],
             'mgf' : mgf_store['mgf'],
@@ -239,10 +287,7 @@ def processing_start_click(
             'metadata_name' : metadata_store['metadata_name'],
             'user_library_dict' : userlib_store['user_library_dict'],
             'user_library_name' : userlib_store['user_library_name'],
-        }
-        return html.Div('Started processing, please wait ...'
-            ), dict_uploaded_files
-
+            }
 
 
 @callback(
@@ -250,8 +295,21 @@ def processing_start_click(
     Input('call_dashboard_loading', 'n_clicks'),
     State('upload_session_storage', 'data'),
 )
-def loading_start_click(start_loading, session_storage):
-    '''On button click, test for starting conditions for loading'''
+def loading_start_click(    
+    start_loading, 
+    session_storage
+    ):
+    '''Test conditions, start FERMO loading
+    
+    Parameters
+    ----------
+    start_loading : `int`
+    session_storage : `dict`
+    
+    Returns
+    ------
+    (`html.Div`, `dict`)
+    '''
     if not start_loading:
         raise PreventUpdate
     elif session_storage is None:
@@ -259,20 +317,28 @@ def loading_start_click(start_loading, session_storage):
     else:
         return html.Div('Started processing, please wait ...')
 
-
-
 @callback(
     Output('data_processing_FERMO', 'data'),
     Input('processed_data_FERMO', 'data'),
     Input('loaded_data_FERMO', 'data'),
     )
 def app_bundle_inputs_dashboard(
-    storage,
+    processing,
     loading,
     ):
-    '''Bundle inputs, return active option for dashboard visualization'''
+    '''Bundle inputs and return active option
+    
+    Parameters
+    ----------
+    processing : `dict`
+    loading : `dict`
+    
+    Returns
+    ------
+    `dict`
+    '''
     if ctx.triggered_id == 'processed_data_FERMO':
-        return storage
+        return processing
     elif ctx.triggered_id == 'loaded_data_FERMO':
         return loading
 
@@ -293,19 +359,25 @@ def app_bundle_inputs_dashboard(
 def app_peaktable_processing(
     signal, 
     dict_params,
-    uploaded_files_store
+    uploaded_files
     ):
-    '''Call FERMO processing functions, serialize data and store'''
+    '''Call FERMO processing functions, serialize data and store
+    
+    Parameters
+    ----------
+    signal : `html.Div`
+    dict_params : `dict`
+    uploaded_files : `dict`
+    
+    Returns
+    ------
+    (`dict`, `dict`)
+    '''
     if signal is None:
         raise PreventUpdate
     else:
-        FERMO_data = peaktable_processing(
-            uploaded_files_store,
-            dict_params,
-            )
-
+        FERMO_data = peaktable_processing(uploaded_files, dict_params,)
         storage_JSON_dict = make_JSON_serializable(FERMO_data, __version__)
-
         return '/dashboard', storage_JSON_dict
 
 
@@ -316,8 +388,21 @@ def app_peaktable_processing(
     Input('loading_start_cache', 'children'),
     State('upload_session_storage', 'data'),
     )
-def app_loading_processing(signal, session_storage):
-    '''Route loaded data'''
+def app_loading_processing(
+    signal, 
+    session_storage
+    ):
+    '''Route data from loading page to dashboard
+    
+    Parameters
+    ----------
+    signal : `html.Div`
+    session_storage : `dict`
+    
+    Returns
+    ------
+    (`html.Div()`, `dict`)
+    '''
     if signal is None:
         raise PreventUpdate
     else:
@@ -330,6 +415,7 @@ def app_loading_processing(signal, session_storage):
 
 @callback(
     Output('out_params_assignment', 'data'),
+    Output('ms2query_download_info', 'children'),
     Input('mass_dev_inp', 'value'),
     Input('min_ms2_inpt', 'value'),
     Input('bioact_fact_inp', 'value'),
@@ -359,8 +445,28 @@ def bundle_params_into_cache(
     relative_intensity_filter_range,
     ms2query_filter_range,
     ):
-    '''Bundle parameter input values, test for None values'''
+    '''Test and bundle processing parameters
     
+    Parameters
+    ----------
+    mass_dev_ppm : `int`
+    min_nr_ms2 : `int`
+    bioact_fact : `int`
+    column_ret_fact : `int`
+    spectral_sim_tol : `float`
+    spec_sim_score_cutoff : `float`
+    max_nr_links_ss : `int`
+    min_nr_matched_peaks : `int`
+    ms2query : `bool`
+    spec_sim_net_alg : `str`
+    ms2query_blank_annotation : `bool`
+    relative_intensity_filter_range : `list`
+    ms2query_filter_range : `list`
+    
+    Returns
+    ------
+    (`dict`, `html.Div()`)
+    '''
     if None not in [
         mass_dev_ppm, 
         min_nr_ms2, 
@@ -390,7 +496,7 @@ def bundle_params_into_cache(
             'ms2query_blank_annotation' : ms2query_blank_annotation,
             'relative_intensity_filter_range' : relative_intensity_filter_range,
             'ms2query_filter_range' : ms2query_filter_range,
-            }
+            }, ms2query_download_text(ms2query)
     else:
         raise PreventUpdate
 
@@ -400,13 +506,26 @@ def bundle_params_into_cache(
     Input('processing-upload-peaktable', 'contents'),
     State('processing-upload-peaktable', 'filename'),
     )
-def upload_peaktable(contents, filename):
-    '''Peaktable parsing, format check, storage in json'''
+def upload_peaktable(
+    contents,
+    filename,
+    ):
+    '''Parse peaktable, test format, store as json
+    
+    Parameters
+    ----------
+    contents : `base64 encoded string`
+    filename : `str`
+    
+    Returns
+    ------
+    (`html.Div()`, `dict`)
+    '''
     
     file_store = {'peaktable' : None, 'peaktable_name' : None,}
     
     if contents is None:
-        return div_no_file_loaded('peaktable'), file_store
+        return div_no_file_loaded_mandatory('peaktable'), file_store
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
@@ -443,13 +562,26 @@ def upload_peaktable(contents, filename):
     Input('processing-upload-mgf', 'contents'),
     State('processing-upload-mgf', 'filename'),
     )
-def upload_mgf(contents, filename):
-    '''mgf file parsing and format check'''
+def upload_mgf(
+    contents, 
+    filename,
+    ):
+    '''Paser mgf file, test format, store as json
+    
+    Parameters
+    ----------
+    contents : `base64 encoded string`
+    filename : `str`
+    
+    Returns
+    ------
+    (`html.Div()`, `dict`)
+    '''
     
     file_store = {'mgf' : None, 'mgf_name' : None,}
 
     if contents is None:
-        return div_no_file_loaded('.mgf-file'), file_store
+        return div_no_file_loaded_mandatory('.mgf-file'), file_store
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
@@ -474,8 +606,23 @@ def upload_mgf(contents, filename):
     State('upload-bioactiv', 'filename'),
     Input('bioact_type', 'value'),
     )
-def upload_bioactiv(contents, filename, value):
-    '''Quantitative biological data table parsing and format check'''
+def upload_bioactiv(
+    contents,
+    filename,
+    value,
+    ):
+    '''Parse bioactivity file, check format, store as json
+    
+    Parameters
+    ----------
+    contents : `base64 encoded string`
+    filename : `str`
+    value : `str`
+    
+    Returns
+    ------
+    (`html.Div()`, `dict`)
+    '''
     
     file_store = {
         'bioactivity' : None,
@@ -484,7 +631,7 @@ def upload_bioactiv(contents, filename, value):
         }
     
     if contents is None:
-        return div_no_file_loaded('quantitative biological data'), file_store
+        return div_no_file_loaded_optional('quantitative biological data'), file_store
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
@@ -522,8 +669,19 @@ def upload_bioactiv(contents, filename, value):
     Output('store_bioact_type', 'children'),
     Input('bioact_type', 'value'),
     )
-def store_bioactiv_format(value):
-    '''Stores the value of bioactivity data format'''
+def store_bioactiv_format(
+    value
+    ):
+    '''Store value of bioactivity data format
+    
+    Parameters
+    ----------
+    value : `str`
+    
+    Returns
+    ------
+    `str`
+    '''
     return html.Div(value)
 
 @callback(
@@ -532,13 +690,26 @@ def store_bioactiv_format(value):
     Input('upload-metadata', 'contents'),
     State('upload-metadata', 'filename'),
     )
-def upload_metadata(contents, filename,):
-    '''Group metadata table parsing and format check'''
+def upload_metadata(
+    contents, 
+    filename,
+    ):
+    '''Parse grouping metadata file, test formart, store in json
+    
+    Parameters
+    ----------
+    contents : `base64 encoded string`
+    filename : `str`
+
+    Returns
+    ------
+    (`html.Div()`, `dict`)
+    '''
     
     file_store = {'metadata' : None, 'metadata_name' : None,}
     
     if contents is None:
-        return div_no_file_loaded('group metadata'), file_store
+        return div_no_file_loaded_optional('group metadata'), file_store
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
@@ -566,16 +737,28 @@ def upload_metadata(contents, filename,):
     Input('upload-userlib', 'contents'),
     State('upload-userlib', 'filename'),
     )
-def upload_userlib(contents, filename):
-    '''mgf file parsing and format check for user-provided spectral lib'''
+def upload_userlib(
+    contents, 
+    filename,
+    ):
+    '''Parse spectral library, test format, store in json
     
+    Parameters
+    ----------
+    contents : `base64 encoded string`
+    filename : `str`
+
+    Returns
+    ------
+    (`html.Div()`, `dict`)
+    '''
     file_store = {
         'user_library_dict' : None,
         'user_library_name' : None,
         }
     
     if contents is None:
-        return div_no_file_loaded('spectral library'), file_store
+        return div_no_file_loaded_optional('spectral library'), file_store
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
@@ -604,13 +787,30 @@ def upload_userlib(contents, filename):
     Input('upload-session', 'contents'),
     State('upload-session', 'filename'),
     )
-def upload_sessionfile(contents, filename):
-    '''JSON session file parsing and storage'''
+def upload_sessionfile(
+    contents,
+    filename,
+    ):
+    '''Parse FERMO session file, test format, store as json
+    
+    Parameters
+    ----------
+    contents : `base64 encoded string`
+    filename : `str`
+
+    Returns
+    ------
+    (`html.Div()`, `dict`, `dict`)
+    '''
     
     empty_df = empty_loading_table()
     
     if contents is None:
-        return div_no_file_loaded('session file'), None, empty_df.to_dict('records')
+        return (
+            div_no_file_loaded_mandatory('session file'), 
+            None,
+            empty_df.to_dict('records')
+            )
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
@@ -697,7 +897,16 @@ def upload_sessionfile(contents, filename):
 def store_selected_viz_toggle(
     sel_all_vis,
     ):
-    '''Store value toggle of visualization of all or selected features'''
+    '''Store value for feature visualization
+    
+    Parameters
+    ----------
+    sel_all_vis : `str`
+
+    Returns
+    ------
+    `dict`
+    '''
     return {'sel_all_vis' : sel_all_vis}
     
 
@@ -716,6 +925,10 @@ def store_selected_viz_toggle(
     Input('filter_group', 'value'),
     Input('filter_group_cliques', 'value'),
     Input('peak_overlap_threshold', 'value'),
+    Input('filter_samplename', 'value'),
+    Input('filter_samplenumber_min', 'value'),
+    Input('filter_samplenumber_max', 'value'),
+    Input('blank_designation_toggle', 'value'),
     )
 def read_threshold_values_function(
     rel_intensity_threshold, 
@@ -731,8 +944,40 @@ def read_threshold_values_function(
     filter_group,
     filter_group_cliques,
     peak_overlap_threshold,
+    filter_samplename,
+    filter_samplenumber_min,
+    filter_samplenumber_max,
+    blank_designation_toggle,
     ):
-    '''Bundle input values'''
+    '''Bundle filter values into dict
+    
+    Parameters
+    ----------
+    rel_intensity_threshold : `list`
+    filter_adduct_isotopes : `str`
+    quant_biological_value : `str`
+    novelty_threshold : `list`
+    filter_annotation : `str`
+    filter_feature_id : `int`
+    filter_precursor_min : `float`
+    filter_precursor_max : `float`
+    filter_spectral_sim_netw : `int`
+    filter_fold_change : `int`
+    filter_group : `str`
+    filter_group_cliques : `str`
+    peak_overlap_threshold : `list`
+    filter_samplename : `str`
+    filter_samplenumber_min : `int` 
+    filter_samplenumber_max : `int`
+    blank_designation_toggle : `str`
+
+    Returns
+    ------
+    `dict`
+    Notes
+    -----
+    int and float values must be tested for None
+    '''
     
     if filter_feature_id is None:
         filter_feature_id = ''
@@ -744,6 +989,10 @@ def read_threshold_values_function(
         filter_precursor_max = ''
     if filter_fold_change is None:
         filter_fold_change = ''
+    if filter_samplenumber_min is None:
+        filter_samplenumber_min = ''
+    if filter_samplenumber_max is None:
+        filter_samplenumber_max = ''
     
     if None not in [
         rel_intensity_threshold, 
@@ -759,6 +1008,10 @@ def read_threshold_values_function(
         filter_group,
         filter_group_cliques,
         peak_overlap_threshold,
+        filter_samplename,
+        filter_samplenumber_min,
+        filter_samplenumber_max,
+        blank_designation_toggle,
         ]:
         return {
             'rel_intensity_threshold' : rel_intensity_threshold,
@@ -774,22 +1027,36 @@ def read_threshold_values_function(
             'filter_group' : filter_group,
             'filter_group_cliques' : filter_group_cliques,
             'peak_overlap_threshold' : peak_overlap_threshold,
+            'filter_samplename' : filter_samplename,
+            'filter_samplenumber_min' : filter_samplenumber_min,
+            'filter_samplenumber_max' : filter_samplenumber_max,
+            'blank_designation_toggle' : blank_designation_toggle,
             }
     else:
         raise PreventUpdate
 
 @callback(
-        Output('table_sample_names', 'data'),
-        Output('samples_subsets', 'data'),
-        Output('sample_list', 'data'),
-        Input('threshold_values', 'data'),
-        Input('data_processing_FERMO', 'data'),
-        )
+    Output('table_sample_names', 'data'),
+    Output('samples_subsets', 'data'),
+    Output('sample_list', 'data'),
+    Input('threshold_values', 'data'),
+    Input('data_processing_FERMO', 'data'),
+    )
 def calculate_feature_score(
-        thresholds,
-        contents,
-        ):
-    '''For each sample, create subsets of features and calculate scores'''
+    thresholds,
+    contents,
+    ):
+    '''Create subsets of features and calculate stats
+    
+    Parameters
+    ----------
+    thresholds : `dict`
+    contents : `dict`
+
+    Returns
+    ------
+    (`dict`,`dict`, `list`)
+    '''
     feature_dicts = contents['feature_dicts']
     samples_JSON = contents['samples_JSON']
     sample_stats = contents['sample_stats']
@@ -807,75 +1074,47 @@ def calculate_feature_score(
             thresholds,
             feature_dicts,)
     
-    #how many cliques in this sample are only found in group
-    #extract all features per sample (corrected for blanks)
-    sample_unique_cliques = dict()
-    for sample in samples:
-        unique_cliques = set()
-        for ID in samples_subsets[sample]['all_nonblank']:
-            if (
-                (len(feature_dicts[str(ID)]['set_groups_clique']) == 1)
-                and
-                (sample in feature_dicts[str(ID)]['presence_samples'])
-            ):
-                unique_cliques.add(
-                    feature_dicts[str(ID)]['similarity_clique_number']
-                    )
-        sample_unique_cliques[sample] = list(unique_cliques)
-    
-    sample_mean_novelty = dict()
-    for sample in samples:
-        list_novelty_scores = list()
-        for ID in samples_subsets[sample]['all_nonblank']:
-            nov_score = feature_dicts[str(ID)]['novelty_score']
-            if isinstance(nov_score, int) or isinstance(nov_score, float):
-                list_novelty_scores.append(nov_score)
-        try:
-            sample_mean_novelty[sample] = round(mean(list_novelty_scores),2)
-        except:
-            sample_mean_novelty[sample] = None
-    
-    sample_sel_cliques = dict()
-    for sample in samples:
-        clique_set = set()
-        for ID in samples_subsets[sample]['all_select_no_blank']:
-            if feature_dicts[str(ID)]['similarity_clique']:
-                clique_set.add(feature_dicts[str(ID)]['similarity_clique_number'])
-        sample_sel_cliques[sample] = len(clique_set)
-        
-        
-    
-    sample_scores = pd.DataFrame({
-        'Filename' : [i for i in samples],
-        'Group' : [sample_stats['samples_dict'][i] for i in samples],
-        'Selected features' : [len(samples_subsets[i][
-            'all_select_no_blank']) for i in samples],
-        'Selected networks' : [sample_sel_cliques[i] for i in
-            sample_sel_cliques],
-        'Diversity score' : calc_diversity_score(
-            sample_stats, 
-            samples),
-        'Spec score' : calc_specificity_score(
-            sample_stats, 
-            samples, 
-            sample_unique_cliques),
-        'Mean Novelty score' : [sample_mean_novelty[i] for i in sample_mean_novelty],
-        'Total' : [len(samples_subsets[i]['all_features']) for i in samples],
-        'Non-blank' : [len(samples_subsets[i]['all_nonblank']) for i in samples],
-        'Blank & MS1' : [len(samples_subsets[i]['blank_ms1']) for i in samples], 
-    })
-
-    sample_scores.sort_values(
-        by=[
-            'Diversity score',
-            'Spec score',
-            'Non-blank',
-            ], 
-        inplace=True, 
-        ascending=[False, False, False]
+    sample_unique_cliques = calc_sample_unique_cliques(
+        samples,
+        samples_subsets,
+        feature_dicts,
         )
-    sample_scores.reset_index(drop=True, inplace=True)
     
+    sample_mean_novelty = calc_sample_mean_novelty(
+        samples,
+        samples_subsets,
+        feature_dicts,
+        )
+    
+    sample_sel_cliques = calc_sample_sel_cliques(
+        samples,
+        samples_subsets,
+        feature_dicts,
+        )
+    
+    diversity_score = calc_diversity_score(
+        sample_stats, 
+        samples
+        )
+    
+    specificity_score = calc_specificity_score(
+        sample_stats, 
+        samples, 
+        sample_unique_cliques
+        )
+    
+    sample_scores = prepare_sample_scores_df(
+        samples,
+        samples_subsets,
+        feature_dicts,
+        sample_stats,
+        sample_sel_cliques,
+        diversity_score,
+        specificity_score,
+        sample_unique_cliques,
+        sample_mean_novelty,
+        )
+
     sample_list = sample_scores['Filename'].tolist()
     
     return sample_scores.to_dict('records'), samples_subsets, sample_list
@@ -887,8 +1126,21 @@ def calculate_feature_score(
         Input('samples_subsets', 'data'),
         State('data_processing_FERMO', 'data'),
         )
-def plot_general_stats_table(subsets, contents):
-    '''Calculate basic statistics, return table'''
+def plot_general_stats_table(
+    subsets, 
+    contents,
+    ):
+    '''Calculate basic statistics, return table
+    
+    Parameters
+    ----------
+    subsets : `dict`
+    contents : `dict`
+
+    Returns
+    ------
+    `dict`
+    '''
     
     sample_stats = contents['sample_stats']
     feature_dicts = contents['feature_dicts']
@@ -937,19 +1189,48 @@ def plot_general_stats_table(subsets, contents):
     Input('table_sample_names', 'active_cell'),
     Input('table_sample_names', 'data'),
     Input('sample_list', 'data'),
-)
-def storage_active_sample(data, update_table, sample_list):
-    '''Store active cell in dcc.Storage'''
-    #Null coalescing assignment: default value if var not assigned
-    data = data or {'row' : 0,}
+    )
+def storage_active_sample(
+    data,
+    update_table,
+    sample_list,
+    ):
+    '''Store active cell in dcc.Storage
     
+    Parameters
+    ----------
+    data : `dict`
+    update_table : `list`
+    sample_list : `list`
+
+    Returns
+    ------
+    `str`
+    
+    Notes:
+    data or {'row' : 0,} -> Null coalescing assignment
+    Default value if var not assigned
+    '''
+    data = data or {'row' : 0,}
     return sample_list[data["row"]]
 
 @callback(
     Output('title_central_chrom', 'children'),
     Input('storage_active_sample', 'data'),
-)
-def title_central_chrom(selected_sample,):
+    )
+def title_central_chrom(
+    selected_sample,
+    ):
+    '''Return currently selected sample
+    
+    Parameters
+    ----------
+    selected_sample : `str`
+
+    Returns
+    ------
+    `html.Div()`
+    '''
     return html.Div(f'Sample chromatogram overview: {selected_sample}')
 
 @callback(
@@ -959,7 +1240,7 @@ def title_central_chrom(selected_sample,):
     Input('samples_subsets', 'data'),
     Input('selected_viz_toggle_value', 'data'),
     State('data_processing_FERMO', 'data'),
-)
+    )  
 def plot_chromatogram(
     selected_sample, 
     active_feature_index,
@@ -967,7 +1248,20 @@ def plot_chromatogram(
     selected_viz_toggle_value,
     contents,
     ):
-    '''Plot central chromatogram'''
+    '''Plot central sample chromatogram
+    
+    Parameters
+    ----------
+    selected_sample : `str`
+    active_feature_index : `int`
+    samples_subsets : `dict`
+    selected_viz_toggle_value : `dict`
+    contents : `dict`
+
+    Returns
+    ------
+    `go.Figure()`
+    '''
     samples_JSON = contents['samples_JSON']
     sample_stats = contents['sample_stats']
     feature_dicts = contents['feature_dicts']
@@ -993,9 +1287,24 @@ def plot_chromatogram(
     Input('chromat_out', 'clickData'),
     Input('storage_active_sample', 'data'),
     State('data_processing_FERMO', 'data'),
-)
-def storage_active_feature(data, selected_sample, contents):
-    '''Stores active feature in dcc.Storage'''
+    )
+def storage_active_feature(
+    data,
+    selected_sample,
+    contents
+    ):
+    '''Stores active feature in dcc.Storage
+    
+    Parameters
+    ----------
+    data : `dict`
+    selected_sample : `str`
+    contents : `dict`
+
+    Returns
+    ------
+    (`int` or `None`, `int` or `None`,)
+    '''
     if data is None:
         raise PreventUpdate
     
@@ -1023,14 +1332,26 @@ def storage_active_feature(data, selected_sample, contents):
     Input('storage_active_feature_index', 'data'),
     Input('storage_active_feature_id', 'data'),
     State('data_processing_FERMO', 'data'),
-)
+    )
 def plot_chromatogram_clique(
     selected_sample, 
     active_feature_index,
     active_feature_id,
     contents,
     ):
-    '''Plot clique chromatogram'''
+    '''Plot clique chromatogram
+    
+    Parameters
+    ----------
+    selected_sample : `str`
+    active_feature_index : `int`
+    active_feature_id : `int`
+    contents : `dict`
+
+    Returns
+    ------
+    `go.Figure()`
+    '''
     feature_dicts = contents['feature_dicts']
     samples_JSON = contents['samples_JSON']
     sample_stats = contents['sample_stats']
@@ -1046,21 +1367,31 @@ def plot_chromatogram_clique(
         active_feature_id,
         sample_stats,
         samples,
-        feature_dicts,)
+        feature_dicts,
+        )
 
 @callback(
     Output('title_mini_chrom', 'children'),
     Input('storage_active_feature_id', 'data'),
     State('data_processing_FERMO', 'data'),
-)
+    )
 def title_mini_chrom(
     active_feature_id,
     contents,
     ):
-    '''Print title of mini chromatograms'''
+    '''Print title of mini chromatograms
+    
+    Parameters
+    ----------
+    active_feature_id : `int`
+    contents : `dict`
+
+    Returns
+    ------
+    `str`
+    '''
     feature_dicts = contents['feature_dicts']
     sample_stats = contents['sample_stats']
-    
     
     if active_feature_id is None:
         return '''No feature selected - click any feature in the
@@ -1081,7 +1412,18 @@ def plot_chrom_overview(
     active_feature_id,
     contents
     ):
-    '''Plot mini-chromatograms'''
+    '''Plot mini-chromatograms
+    
+    Parameters
+    ----------
+    selected_sample : `str`
+    active_feature_id : `int`
+    contents : `dict`
+
+    Returns
+    ------
+    `html.Div(go.Figure())`
+    '''
     
     if active_feature_id is None:
         return html.Div()
@@ -1102,11 +1444,6 @@ def plot_chrom_overview(
         samples,
         feature_dicts,)
     
-    
-    
-    
-    
-
 @callback(
     Output('featureinfo_out', 'data'), 
     Input('storage_active_sample', 'data'),
@@ -1120,7 +1457,19 @@ def update_selected_feature(
     active_feature_index,
     contents,
     ):
-    '''Return info on active feature'''
+    '''Return info table on active feature
+    
+    Parameters
+    ----------
+    selected_sample : `str`
+    active_feature_id : `int`
+    active_feature_index : `int`
+    contents : `dict`
+
+    Returns
+    ------
+    `dict`
+    '''
     feature_dicts = contents['feature_dicts']
     samples_JSON = contents['samples_JSON']
     sample_stats = contents['sample_stats']
@@ -1154,7 +1503,18 @@ def update_cytoscape(
     active_feature_id,
     contents,
     ):
-    '''Plot spectral similarity network'''
+    '''Plot spectral similarity network
+    
+    Parameters
+    ----------
+    selected_sample : `str`
+    active_feature_id : `int`
+    contents : `dict`
+
+    Returns
+    ------
+    (`list`, html.Div())
+    '''
     feature_dicts = contents['feature_dicts']
     sample_stats = contents['sample_stats']
     
@@ -1188,7 +1548,19 @@ def displayTapNodeData(
     active_feature_id,
     contents
     ):
-    '''Display node data after cytoscape click'''
+    '''Display node data after cytoscape click
+    
+    Parameters
+    ----------
+    nodedata : `dict`
+    selected_sample : `str`
+    active_feature_id : `int`
+    contents : `dict`
+
+    Returns
+    ------
+    `dict`
+    '''
     feature_dicts = contents['feature_dicts']
     
     if (
@@ -1223,7 +1595,19 @@ def displayTapEdgeData(
     active_feature_id,
     contents
     ):
-    '''Display edge data after cytoscape click'''
+    '''Display edge data after cytoscape click
+    
+    Parameters
+    ----------
+    edgedata : `dict`
+    selected_sample : `str`
+    active_feature_id : `int`
+    contents : `dict`
+
+    Returns
+    ------
+    `dict`
+    '''
     feature_dicts = contents['feature_dicts']
     
     if (
@@ -1241,8 +1625,6 @@ def displayTapEdgeData(
     
     elif ctx.triggered_id == 'cytoscape':
         return add_edgedata(edgedata, feature_dicts,)
-
-
 
 @callback(
     Output("download_feature_export_logging", "data"),
@@ -1262,7 +1644,21 @@ def export_dd_menu_table(
     samples_subsets,
     thresholds,
     ):
-    '''Export table selected in drop down menu'''
+    '''Export table selected in drop down menu
+    
+    Parameters
+    ----------
+    n_clicks : `int`
+    selected_sample : `str`
+    contents : `dict`
+    option : `str`
+    samples_subsets : `dict`
+    thresholds : `dict`
+
+    Returns
+    ------
+    `tuple`
+    '''
     if n_clicks == 0:
         raise PreventUpdate
     elif option == None:
@@ -1308,8 +1704,21 @@ def export_dd_menu_table(
     Input("button_export_session", "n_clicks"),
     State('data_processing_FERMO', 'data'),
     )
-def export_session_file_json(n_clicks, contents):
-    '''Export FERMO data as JSON'''
+def export_session_file_json(
+    n_clicks,
+    contents
+    ):
+    '''Export FERMO session file in json format
+    
+    Parameters
+    ----------
+    n_clicks : `int`
+    contents : `dict`
+
+    Returns
+    ------
+    `str`
+    '''
     if n_clicks == 0:
         raise PreventUpdate
     else:

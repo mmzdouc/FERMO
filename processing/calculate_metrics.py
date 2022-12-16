@@ -198,7 +198,7 @@ def novelty_new(
 
 def bioactivity(
     row, 
-    feature_dicts
+    feature_dicts,
     ):
     """Extracts bioactivity information."""
     
@@ -208,10 +208,6 @@ def bioactivity(
         return max(bioactiv)
     else: 
         return 0
-
-
-
-
 
 def in_blank(
     row,
@@ -317,7 +313,11 @@ def convolutedness(
         return 0
 
 
-def calculate_metrics(samples, feature_dicts, sample_stats):
+def calculate_metrics(
+    samples,
+    feature_dicts,
+    sample_stats,
+    ):
     """Calculate metrics for samples and score them:
     
     Parameters

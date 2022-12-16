@@ -1,6 +1,8 @@
 import pandas as pd
 
-def set_from_sample_tables(samples):
+def set_from_sample_tables(
+    samples,
+    ):
     """Return set from features in all sample dataframes
     
     Parameters

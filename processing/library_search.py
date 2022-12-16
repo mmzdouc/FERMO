@@ -97,16 +97,18 @@ def library_search(
             if len(best_matches) >= 1: 
                 
                 #set annotation attribute to True
-                feature_dicts[spectra[i].get('id')]['cosine_annotation'] = True
+                feature_dicts[spectra[i].get('id')][
+                    'cosine_annotation'] = True
                 
                 #adds reference library matches to feature object
-                feature_dicts[spectra[i].get('id')]['cosine_annotation_list'] = (
-                    [{
-                        'name' : x[0].metadata.get('compound_name'),
-                        'smiles' : x[0].metadata.get('smiles'),
-                        'inchi' : x[0].metadata.get('inchi'),
-                        'score' : float(x[1]['score'].round(2)), 
-                        'nr_matches' : int(x[1]['matches']), 
-                    }
-                    for x in best_matches]
-                )
+                feature_dicts[spectra[i].get('id')][
+                    'cosine_annotation_list'] = (
+                        [{
+                            'name' : x[0].metadata.get('compound_name'),
+                            'smiles' : x[0].metadata.get('smiles'),
+                            'inchi' : x[0].metadata.get('inchi'),
+                            'score' : float(x[1]['score'].round(2)), 
+                            'nr_matches' : int(x[1]['matches']), 
+                        }
+                        for x in best_matches]
+                    )

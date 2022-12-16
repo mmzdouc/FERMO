@@ -1,6 +1,10 @@
 import pandas as pd
 
-def calculate_feature_overlap(samples, strictness_ppm, feature_dicts):
+def calculate_feature_overlap(
+    samples,
+    strictness_ppm,
+    feature_dicts,
+    ):
     """Detects feature collision (overlap of peaks) based on retent time.
     
     Parameters
@@ -267,8 +271,11 @@ def calculate_feature_overlap(samples, strictness_ppm, feature_dicts):
     return returned_samples
 
 
-def detect_adducts(A_mz: float, B_mz: float,
-strictness_ppm) -> list:
+def detect_adducts(
+    A_mz, 
+    B_mz,
+    strictness_ppm,
+    ):
     """Check if features A and B are common adducts of each other.
     
     Parameters
@@ -455,8 +462,10 @@ strictness_ppm) -> list:
     else:
         return [False]
 
-def calc_mass_deviation(A_mz: float, B_mz: float
-) -> float:
+def calc_mass_deviation(
+    A_mz, 
+    B_mz,
+    ):
     """Calculates mass deviation in ppm between two precursor m/z:
     
     Parameters
@@ -474,15 +483,15 @@ def calc_mass_deviation(A_mz: float, B_mz: float
     doi.org/10.1016/j.jasms.2010.06.006 
     """
     return abs(
-                ((A_mz - B_mz) / B_mz) * (10**6)
-            )
+        ((A_mz - B_mz) / B_mz) * (10**6)
+        )
 
 def app_addct_inf(
-    samples: str, 
-    sample: str,
-    adduct: list, 
-    first: int,
-    second: int,
+    samples, 
+    sample,
+    adduct, 
+    first,
+    second,
     feature_dicts,
     ):
     """Append info on adducts to table.
@@ -540,12 +549,13 @@ def app_addct_inf(
     
 
 def app_dimer_dbl(
-    samples: str, 
-    sample: str,
-    adduct: list, 
-    first: int,
-    second: int,
-    feature_dicts):
+    samples, 
+    sample,
+    adduct, 
+    first,
+    second,
+    feature_dicts,
+    ):
     """Append info on dimer/double charged ion 
     
     Parameters

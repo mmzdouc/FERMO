@@ -2,12 +2,16 @@ from ms2query.run_ms2query import download_zenodo_files
 from ms2query.ms2library import create_library_object_from_one_dir
 import os
 
-def get_feature_int_range(samples, filter_range):
+def get_feature_int_range(
+    samples,
+    filter_range,
+    ):
     '''Return dictionary with feature rel intensities across all samples
     
     Parameters
     ----------
     samples : `dict`
+    filter_range : `list`
     
     Returns
     -------
@@ -29,7 +33,10 @@ def get_feature_int_range(samples, filter_range):
     
     return rel_int
 
-def get_features_inside_filter_range(rel_int, filter_range):
+def get_features_inside_filter_range(
+    rel_int,
+    filter_range,
+    ):
     '''Return set of features inside the filter range
     
     Parameters
