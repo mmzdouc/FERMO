@@ -1,10 +1,12 @@
 # FERMO Dashboard
 
-**FERMO** is a dashboard app for the processing and visualization of liquid chromatography - (tandem) mass spectrometry data, and its pairing to quantitative biological data and other metadata. In particular, **FERMO** is aimed toward the prioritization of compounds putatively responsible for a biological observation. Prioritization is based on comprehensible criteria like chemical novelty and diversity. Developed with natural products research in mind, **FERMO** can be also used in different areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
+**FERMO** is a dashboard app for the processing and visualization of liquid chromatography - (tandem) mass spectrometry data, and its pairing to quantitative biological data and other metadata. In particular, **FERMO** is aimed toward the prioritization of compounds putatively responsible for a biological observation. Prioritization is based on comprehensible criteria like chemical novelty and diversity. Developed with natural products research in mind, **FERMO** can be also used in other areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
 
 More information on the software can be found in the publication **Zdouc M.M. et al. FERMO: a Dashboard for Streamlined Rationalized Prioritization of Molecular Features from Mass Spectrometry Data** (Link TBA).
 
 References, tutorials, and guides can be found in the [FERMO Github Wiki](https://github.com/mmzdouc/FERMO/wiki/).
+
+(ADD FIGURE DASHBOARD)
 
 ## Getting Started
 
@@ -15,6 +17,7 @@ Although FERMO uses a browser (e.g. Firefox, Google Chrome, Microsoft Edge, ...)
 FERMO uses **untargeted, high resolution data-dependend acquisition liquid chromatography tandem mass spectrometry (HR-DDA-LC-MS/MS) data**. Currently, annotation is restricted to **positive ion mode data**.
 
 FERMO needs the following prerequisites:
+- Write permissions on the computer
 - Python version 3.8
 - Python package manager (recommended, tested with Miniconda3/Anaconda3)
 - Dependencies (for details, see below)
@@ -42,7 +45,7 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 4. If the script is not able to start FERMO, it might be because Miniconda3/Anaconda3 were installed on another drive than `C:`. In this case, start FERMO manually as indicated in step **5**. Alternatively, it is possible to edit the `FERMO_START_WINDOWS.bat` file and adapt the path variables to their system setup ( `MINICONDAPATH` and `MINIENVPATH` for Miniconda3 or `ANACONDAPATH` and `ANAENVPATH` for Anaconda3).
 
-5. **Manual install and start of FERMO**: Open the **Anaconda Prompt** from the Windows Start menu. Perform the following steps in the Anaconda Prompt command line interface. 
+5. **Manual install and start of FERMO**: Open the **Anaconda Prompt** from the Windows Start menu and perform the following steps:
 
 6. Navigate to the previously downloaded and unpacked FERMO directory, changing directories with the command `cd` and showing the contents of the current directory with the command `dir`. This must be done every time FERMO is started.
 
@@ -50,7 +53,9 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 8. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done every time FERMO is started.
 
-9. Install the packages required by FERMO in the newly created virtual environment by entering the command `pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache]`. This must be done only the first time FERMO is run.
+9. Install the packages required by FERMO in the newly created virtual environment by entering the command:
+ ```pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache]``` 
+ When copying the command, take care that it is not broken over multiple lines, since can cause problems during installation of packages. This must be done only the first time FERMO is run.
 
 10. Start FERMO with the command `python app.py` and open the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
 
@@ -72,7 +77,9 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 6. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment .This must be done whenever FERMO is started.
 
-7. Install the packages required by FERMO in the newly created virtual environment by entering the command `pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" "dash[diskcache]"`. This must be done only at the first start of FERMO.
+7. Install the packages required by FERMO in the newly created virtual environment by entering the command:
+ ```pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" "dash[diskcache]"```. 
+ When copying the command, take care that it is not broken over multiple lines, since can cause problems during installation of packages. This must be done only at the first start of FERMO.
 
 8. To start FERMO, enter the command `python app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window.
 
@@ -107,7 +114,9 @@ Afterwards, repeat the command in point 7.
 
 7. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done whenever FERMO is started.
 
-8. Install the packages required by FERMO in the newly created virtual environment by entering the command `pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache]`. This must be done only at the first start of FERMO.
+8. Install the packages required by FERMO in the newly created virtual environment by entering the command:
+ ```pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache]```
+ When copying the command, take care that it is not broken over multiple lines, since can cause problems during installation of packages. This must be done only at the first start of FERMO.
 
 9. To start FERMO, enter the command `python app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
 
