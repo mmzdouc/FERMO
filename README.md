@@ -53,9 +53,11 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 8. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done every time FERMO is started.
 
-9. Install the packages required by FERMO in the newly created virtual environment by entering the command:
- ```pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache]``` 
- When copying the command, take care that it is not broken over multiple lines, since can cause problems during installation of packages. This must be done only the first time FERMO is run.
+9. Install the packages required by FERMO in the newly created virtual environment. When copying the command, take care that it is not broken over multiple lines, since can cause problems during installation of packages. This must be done only at the first start of FERMO.
+
+```
+pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache]
+```
 
 10. Start FERMO with the command `python app.py` and open the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
 
@@ -77,9 +79,11 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 6. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment .This must be done whenever FERMO is started.
 
-7. Install the packages required by FERMO in the newly created virtual environment by entering the command:
- ```pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" "dash[diskcache]"```. 
- When copying the command, take care that it is not broken over multiple lines, since can cause problems during installation of packages. This must be done only at the first start of FERMO.
+7. Install the packages required by FERMO in the newly created virtual environment. When copying the command, take care that it is not broken over multiple lines, since can cause problems during installation of packages. This must be done only at the first start of FERMO.
+
+```
+pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" "dash[diskcache]"
+```
 
 8. To start FERMO, enter the command `python app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window.
 
@@ -114,9 +118,12 @@ Afterwards, repeat the command in point 7.
 
 7. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done whenever FERMO is started.
 
-8. Install the packages required by FERMO in the newly created virtual environment by entering the command:
- ```pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache]```
- When copying the command, take care that it is not broken over multiple lines, since can cause problems during installation of packages. This must be done only at the first start of FERMO.
+8. Install the packages required by FERMO in the newly created virtual environment. When copying the command, take care that it is not broken over multiple lines, since can cause problems during installation of packages. This must be done only at the first start of FERMO.
+
+```
+pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache]
+```
+ 
 
 9. To start FERMO, enter the command `python app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
 
