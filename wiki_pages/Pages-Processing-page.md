@@ -15,42 +15,49 @@ Optionally, users can provide:
 - a table containing [**quantitative biological data**](https://github.com/mmzdouc/FERMO/wiki/Bioactivity-data-file-preparation-tutorial)
 - a targeted [**spectral library**](https://github.com/mmzdouc/FERMO/wiki/Spectral-library-preparation-tutorial)
 
-The file formats of the input files are described in their respective Wiki pages (see the hyperlinks above). Input files are tested for correct formatting, and a message indicates pass or fail of the assessment.
+The file formats of the input files are described in their respective Wiki pages. Input files are tested for correct formatting, and a message indicates pass or fail of the assessment.
 
 With respect to parameter settings, the default settings should match most data types but can be adjusted as needed:
 
-#### Parameter settings
+### Parameter settings
+
+#### General parameters
 
 - **Mass deviation**:
-States the expected mass deviation of the data. Used as precision threshold during different calculation steps, such as ion adduct calculation. This parameter should be set respective to the input data. As a rule of thumb, using the same mass deviation that was used for the peak table generation is suggested. The mass deviation of the data can be estimated by looking at the *m/z* ratio of a known compound (e.g. a spike-in) and calculating the mass deviation respective to the theoretical (monoisotopic) mass. 
+States the expected mass deviation of the data. Used as precision threshold during different calculation steps, such as ion species calculation. This parameter should be set respective to the input data. As a rule of thumb, using the same mass deviation as used for the peak table generation in MZmine3 is suggested. The mass deviation of the data can be estimated by looking at the *m/z* ratio of a known compound (e.g. a spike-in) and calculating the mass deviation respective to the theoretical (monoisotopic) mass. 
 
 - **Min fragments per MS² spectrum**:
-Quality control parameter. Sets the minimal number of fragments that have to be detected in a MS² spectrum. If a MS² spectrum contains less fragments than the set parameter, it is dropped, and the associated molecular feature is considered MS¹ only. To disable this filter, set it to 0 (all spectra are retained. The reasoning behind filtering of spectra is that MS² spectra with a low number of peaks have (i) low information content and (ii) may lead to false matches in (modified) cosine-based similarity searches, since the low number of fragments automatically leads to a high 'coverage' of the spectrum, even if the similarity is low.
+Quality control parameter. Sets the minimal number of fragments that have to be detected in a MS/MS spectrum. If a MS/MS spectrum contains less fragments than the set parameter, it is dropped, and the associated molecular feature is considered MS1 only. To disable this filter, set it to 0 (all spectra retained). The reasoning behind filtering of spectra is that MS/MS spectra with a low number of peaks have (i) low information content and (ii) may lead to false matches in (modified) cosine-based similarity searches.
 
-
-- **Relative intensity filter**:
-Range used to filter out undesired molecular features (for example, low intensity molecular features to 'cut the grass', or all-dominating molecular features, for example from the solvent peak at the beginning of the analysis run). This allows to adjust the feature table without having to re-process the data via MZmine3. Only molecular features with a relative intensity inside the set range are retained. By default, the range is from 0-1 (i.e. all molecular features are retained for the analysis).
-
-- **Bioactivity factor**:
-Factor used in the identification of bioactivity-associated molecular features (if bioactivity data was provided). If a molecular features was only detected in bioactive samples, it is possible that it is associated to bioactivity. If a molecular features is detected only in inactive samples, it is very unlikely that it is associated to bioactivity. However, if a molecular features was detected in both bioactive and inactive samples, it is more complicated, since a compound could be present in sub-inhibitory concentration and therefore lead to a missing bioactivity signal, but it could be still detected by the instrument. A pragmatic solution is to use a fold-difference between active and inactive samples: The intensity of the molecular features in the sample with the lowest bioactivity must be n times higher than the highest molecular features intensity across all inactive samples, while n is the user-specifiable Bioactivity factor. For example, a value of 10 would mean that the intensity of a molecular features must be 10 times higher in a bioactive sample than across the inactive samples to be still considered bioactivity-associated. 
+- **QuantData factor**:
+Factor used in the identification of molecular features associated to quantitative biological data (if such data was provided). See the [Scores page](https://github.com/mmzdouc/FERMO/wiki/Scores-page) for a thorough description. 
 
 - **Blank factor**:
-Factor used in the identification of medium-blank/sample-blank associated molecular features (if metadata on blank samples was provided). If a molecular features was only detected in blank samples, it is clearly blank-associated. If a molecular features is detected only in normal samples, it is unlikely to be blank-associated. However, if a molecular features was detected in both blank and normal samples, it is more complicated, since a high-concentration compound could be retained by the column and bleed into the blank, where it is detected by the instrument. Therefore, a simple blank subtraction is not ideal. Instead, we compare the average intensity of the molecular feature across blanks with the average intensity across samples. Blank-associated molecular features should be present in similar intensities across blanks and samples, while cross-contaminated molecular features should be much lower in the blank than in the samples. Therefore, if the average intensity in samples is n times higher than the average intensity across blanks, the molecular features is not considered blank-associated, while n is the Blank factor. For example, a Blank factor of 10 would mean that the average intensity of the molecular features across samples must be 10 times higher than the average intensity across blanks to not be considered blank-associated.
+Factor used in the differentiation of medium-blank/sample-blank associated molecular features (if metadata on blank samples was provided). If a molecular feature was detected in both normal samples and blank samples, the average intensities across samples or blanks is compared. If the fold-difference is higher than the **Blank factor**, the molecular feature would not be considered blank-associated, even though it is found in the blank. The reasoning behind this is that blank-associated features should be detected in similar intensities in both blank samples and normal samples. If not, the molecular feature might actually be a cross-contamination from sample into blank due to column retention. Therefore, such molecular features are 'rescued' from being considered blank-associated.
+By default, the Blank factor is 10 (the average intensity of the molecular features across samples must be 10 times higher than the average intensity across blanks to not be considered blank-associated).
+
+- **Relative intensity filter**:
+Range used to filter out undesired molecular features based on their lowest/highest relative intensity across samples (for example, low intensity molecular features to 'cut the grass', or all-dominating high-intensity molecular features, for example from the solvent peak at the beginning of the analysis run). This allows to adjust the feature table without having to re-process the data via MZmine3. Only molecular features with a relative intensity inside the set range are retained. By default, the range is from 0-1 (i.e. all molecular features are retained for the analysis).
+
+#### Networking and annotation parameters
 
 - **MS2Query**:
-Allows to switch the annotation by [**MS2Query**](https://github.com/iomega/ms2query) **ON** or **OFF**. Annotation by **MS2Query** is highly efficient and also allows to search for analogues of known compounds. However, it is computationally expensive and should be ideally only run after parameter finding. 
+Toggle to enable ( **ON**) or disable ( **OFF**) [**MS2Query**](https://github.com/iomega/ms2query). Annotation by **MS2Query** is highly efficient and also allows to search for analogues of known compounds. However, it is computationally expensive and should be ideally only run after initial parameter finding. 
+
+- **MS2Query relative intensity filter**:
+Range used to filter out undesired molecular features based on their lowest/highest relative intensity across samples from [**MS2Query**](https://github.com/iomega/ms2query) annotation to save on computation time.
 
 - **MS2Query - annotate features from blanks?"**:
-Allows to switch annotations of molecular features associated to blank samples ON or OFF. Not annotating blank-associated molecular features can save in computation time.
+Allows to ( **ON**) or disable ( **OFF**) annotation of BLANK-associated molecular features by [**MS2Query**](https://github.com/iomega/ms2query) to save on computation time. Only applicable if sample grouping metadata was provided.
 
 - **Spectral similarity networking algorithm**: 
-Allows to change the algorithm used for the spectral similarity networking. By default, modified cosine is selected, which is a reliable and widely-used algorithm. There is also the possibility to use the [MS2DeepScore algorithm](https://github.com/matchms/ms2deepscore). 
+Allows to change the algorithm used for the spectral similarity networking. By default, **Modified Cosine** is selected, which is usually employed in spectral similarity networking (for example, by [GNPS](https://gnps.ucsd.edu/)). There is also the possibility to use the [MS2DeepScore algorithm](https://github.com/matchms/ms2deepscore). 
 
 - **Fragment similarity tolerance**:
-Tolerance in m/z used in the calculation of spectra similarity scores between MS² spectra. When comparing two MS² fragmentation spectra, two fragments will be considered a match if their difference is less then or equal to the m/z tolerance. Dependent on the precision and mass deviation of the mass spectrometry instrument.
+Tolerance in *m/z* used in the calculation of spectra similarity scores between MS/MS spectra. When comparing two MS/MS fragmentation spectra, two fragments will be considered a match if their difference is less then or equal to the *m/z* tolerance. Dependent on the precision and resolution of the mass spectrometry instrument.
 
 - **Spectrum similarity score cutoff**:
-Score cutoff used in the evaluation of modified cosine scores between MS2 spectra. Two spectra will be considered related only if their score exceeds the cutoff threshold. Therefore, this parameter controls how strict the similarity between two spectra must be. Therefore, this parameter controls how strict the similarity between two spectra must be that they are counted related. Keep in mind that the [Diversity](https://github.com/mmzdouc/FERMO/wiki/Scores-page) and [Specificity](https://github.com/mmzdouc/FERMO/wiki/Scores-page) scores are built upon spectral similarity, and a low score might lead to the clustering of hardly related spectra.
+Cutoff used in the evaluation of modified cosine scores between MS/MS spectra. Two spectra will be considered related only if their score exceeds the cutoff. Therefore, this parameter controls how strict the similarity between two spectra must be that they are considered to be related. Keep in mind that the [Diversity](https://github.com/mmzdouc/FERMO/wiki/Scores-page) and [Specificity](https://github.com/mmzdouc/FERMO/wiki/Scores-page) scores are built upon the spectral similarity score, and a low score might lead to the clustering of hardly related spectra.
 
 - **Max spectral links**:
 Maximal number of links to other nodes, per node. Makes spectral similarity network less convoluted since it restricts the number of links between nodes to the highest n ones. 
@@ -61,4 +68,4 @@ In spectrum similarity matching, the minimum number of peaks that have to be mat
 ### Start FERMO
 
 Once the minimal required files are loaded into FERMO, the button **Start FERMO** can be clicked, which will start the analysis. 
-Dependent on the size of the input files, the set parameters, and the computational power of the computer, the analysis can take anywhere between a few seconds and a few hours. If in doubt, the terminal window can be checked for hints on progress.
+Dependent on the size of the input files, the set parameters, and the computational power of the computer, the analysis can take anywhere between a few seconds and a few hours. To check for the progress of the calculation, check the log messages in the terminal window in which FERMO is running.

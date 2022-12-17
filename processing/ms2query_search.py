@@ -89,6 +89,10 @@ def ms2query_search(
     samples : `dict`
     sample_stats : `dict`
     
+    Returns
+    -------
+    feature_dicts : `dict`
+    
     Notes
     -----
     Directly modifies the feature objects, so no return value.
@@ -170,3 +174,5 @@ def ms2query_search(
         results_info_dict = results_info.to_dict('records')
         feature_dicts[feature_ID]['ms2query_results'] = results_info_dict
         feature_dicts[feature_ID]['ms2query'] = True
+
+    return feature_dicts

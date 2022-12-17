@@ -26,6 +26,10 @@ def determine_bioactive_features(
         dict containing general info on dataset, inclucing sample list
     filename : `str` or `None`
     
+    Returns
+    -------
+    feature_dicts : `dict`
+    
     Notes
     -----
     Compares set of features from bioactive samples against set
@@ -134,5 +138,7 @@ def determine_bioactive_features(
 
             else:
                 feature_dicts[feature_ID]['bioactivity_associated'] = False
+        
+        return feature_dicts
     else:
-        pass
+        return feature_dicts

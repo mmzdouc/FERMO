@@ -2,7 +2,7 @@ Hello and welcome to the FERMO Dashboard Wiki pages.
 
 FERMO is a dashboard app for the processing and visualization of LC-MS/MS data, and its pairing to quantitative biological data and group metadata. It is aimed toward the exploration and prioritization of compounds and/or samples for consecutive investigation, isolation and elucidation. 
 
-This Wiki is written for FERMO version 0.7.x. We are attempting to keep the Wiki up-to-date with newer versions.
+This Wiki is written for FERMO version 0.9.0. We are trying to keep the wiki updated with future changes.
 
 The pages in this Wiki are separated into three parts, which are listed below. Clicking on any of the items leads to the respective page.
 
@@ -20,7 +20,6 @@ The pages in this Wiki are separated into three parts, which are listed below. C
     - [Dashboard page](https://github.com/mmzdouc/FERMO/wiki/Pages-Dashboard-page)
 - References
     - [Scores](https://github.com/mmzdouc/FERMO/wiki/Scores-page)
-    - [Adduct detection](https://github.com/mmzdouc/FERMO/wiki/Adduct-detection)
-    - [Peak collision detection](https://github.com/mmzdouc/FERMO/wiki/Peak-collision-detection)
-    - [Chromatogram drawing](https://github.com/mmzdouc/FERMO/wiki/Chromatogram-drawing)
+    - [Peak overlap and Adduct detection](https://github.com/mmzdouc/FERMO/wiki/Adduct-detection)
+    - [Pseudo-chromatogram drawing](https://github.com/mmzdouc/FERMO/wiki/Chromatogram-drawing)
     - [FAQ](https://github.com/mmzdouc/FERMO/wiki/FAQ)

@@ -1,16 +1,21 @@
 ### Overview
 
-FERMO provides annotation of molecular features by using the tool [**MS2Query**](https://github.com/iomega/ms2query), which matches against a large library of public mass spectrometry data. However, users may desire to search against their in-house libraries, which are often more targeted and better suited for the research question in mind. Data is matched against the spectral library using the **'modified cosine'** algorithm implemented in the Python package [**MatchMS**](https://github.com/matchms/matchms). The settings used for spectral library matching are explained in detail on the page [Processing](https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page) in this Wiki.
+Annotation of molecular features is an essential part in LC-MS/MS data processing. FERMO offers different ways to annotate molecular features. This article is about **Modified Cosine Score** based **spectral library matching** using the package [**matchms**](https://github.com/matchms/matchms). The settings used for spectral library matching are explained in detail on the page [Processing](https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page) in this Wiki.
+
+**Spectral library matching** is intended for search against a targeted, user-provided in-house library. We remind users that FERMO's default annotation algorithm [**MS2Query**](https://github.com/iomega/ms2query) searches against a large generalized library of hundreds of thousands of spectra taken from the GNPS annotated spectra library. We encourage users to provide targeted libraries which are as large as necessary, but as small as possible.
+
 
 ### Spectral library preparation
 
-FERMO accepts a user-provided library in the .mgf-format. For a minimal example, see below. 
+FERMO accepts a user-provided library in the .mgf-format. Further formats may be added in future releases.
 
-Keep in mind that library matching (based on modified cosine similarity) is computationally expensive, and might significantly increase computation time if a very large spectral library is used. We encourage users to provide targeted libraries which are as large as necessary, but as small as possible. For example, a targeted library with up to a few hundred entries is tolerable, while a generalized library with (tens of) thousands of entries can add take a very long time to tun. 
+A minimum spectral library entry must:
+    - Start with `BEGIN IONS`
+    - Have a `PEPMASS` entry denoting the precursor ion *m/z* which must not be 0.0 or 1.0
+    - Have fragment - intensity paris
+    - End with `END IONS`
 
-We remind users that FERMO's default annotation algorithm [**MS2Query**](https://github.com/iomega/ms2query) searches against a large generalized library of hundreds of thousands of spectra in a computationally much more efficient way. It is also possible to provide **MS2Query**-compatible libraries, which can be used in place of the standard libraries. However, this exceeds the scope of this tutorial.
-
-#### Example file
+#### Example spectral library entry
 
 ```
 BEGIN IONS
@@ -18,18 +23,18 @@ PEPMASS=1649.45
 CHARGE=1
 MSLEVEL=2
 IONMODE=Positive
-NAME=Siomycin_A/Sporangiomycin M+H
+NAME=Example
 SCANS=1
 172.073334	80.0
 190.080322	201.0
-... 
+271.136536	73.0
+287.135376	325.0
+305.145782	284.0
+333.128418	64.0
+335.041229	73.0
+340.161713	218.0
+356.154663	101.0
+358.177368	58.0
+360.074463	66.0
 END IONS
 ```
-Note: The `...` indicate further lines of fragment-intensity pairs and are not to be taken literally. 
-
-
-Furthermore, following conditions that have to be met:
-- Providing less than the minimally required data may lead to errors and failure of the library search.
-- If the field `PEPMASS` is set to `0.0` or `1.0`, the search may fail (the case for some entries in the GNPS library).
-
-

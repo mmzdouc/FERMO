@@ -1139,12 +1139,12 @@ def modify_feature_info_df(
     cosine_annotation = None
     if feat_dicts[ID]['cosine_annotation']:
         cosine_annotation = ''.join([
-            '(Name: <b>', feat_dicts[ID]['cosine_annotation_list'][0]['name'],
+            'Name: <b>', feat_dicts[ID]['cosine_annotation_list'][0]['name'],
             '</b>;', '<br>', 'Score: ',
             str(feat_dicts[ID]['cosine_annotation_list'][0]['score']), ';',
             '<br>', 'Nr of matched fragments: ',
             str(feat_dicts[ID]['cosine_annotation_list'][0]['nr_matches']),
-            ')', ])
+            ])
 
     #Best ms2query match
     ann_ms2query = None

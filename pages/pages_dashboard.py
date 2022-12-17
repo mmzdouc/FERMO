@@ -125,7 +125,7 @@ def call_legend_clique_chrom():
                     'background-color': color_dict['light_red'],
                     'border-color' : color_dict['red'],},
                 ),
-            'Related (same molecular network)',
+            'Related (same network)',
             ]),
         ],
     style={

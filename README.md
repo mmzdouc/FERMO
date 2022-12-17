@@ -1,8 +1,8 @@
 # FERMO Dashboard
 
-**FERMO** is a dashboard app for the processing and visualization of liquid chromatography - (tandem) mass spectrometry data, and its pairing to quantitative biological data and other metadata. In particular, **FERMO** is aimed toward the prioritization of compounds putatively responsible for a biological observation. Prioritization is based on comprehensible criteria like chemical novelty and diversity. Developed with natural products research in mind, **FERMO** can be also used in other areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
+**FERMO** is a dashboard app for the processing and visualization of liquid chromatography - (tandem) mass spectrometry data, and its pairing to quantitative biological data and other metadata. In particular, **FERMO** is aimed toward the prioritization of compounds putatively responsible for a biological observation, for example investigating molecules that are putatively responsible for antibiotic activity. Developed with natural products research in mind, **FERMO** can be also used in other areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
 
-More information on the software can be found in the publication **Zdouc M.M. et al. FERMO: a Dashboard for Streamlined Rationalized Prioritization of Molecular Features from Mass Spectrometry Data** (Link TBA).
+More information on the software can be found in the publication **Zdouc M.M. et al. FERMO: a Dashboard for Streamlined Rationalized Prioritization of Molecular Features from Mass Spectrometry Data. bioRxiv (2022)** (Link TBA).
 
 References, tutorials, and guides can be found in the [FERMO Github Wiki](https://github.com/mmzdouc/FERMO/wiki/).
 
@@ -12,24 +12,26 @@ References, tutorials, and guides can be found in the [FERMO Github Wiki](https:
 
 ### Prerequisites
 
-Although FERMO uses a browser (e.g. Firefox, Google Chrome, Microsoft Edge, ...) to render the graphical user interface of the application, it runs fully local. No internet connection is required except for the installation, and no data is shared across the internet. 
+Although FERMO uses a browser (e.g. Firefox, Google Chrome, Microsoft Edge, ...) to render the graphical user interface of the application, it runs fully local. No internet connection is required except during the installation, and no data is shared across the internet. 
 
-FERMO uses **untargeted, high resolution data-dependend acquisition liquid chromatography tandem mass spectrometry (HR-DDA-LC-MS/MS) data**. Currently, annotation is restricted to **positive ion mode data**.
+FERMO requires **untargeted high resolution data-dependend acquisition liquid chromatography tandem mass spectrometry (HR-DDA-LC-MS/MS) data** to work properly. Currently, annotation is restricted to **positive ion mode data**.
 
 FERMO needs the following prerequisites:
 - Write permissions on the computer
 - Python version 3.8
 - Python package manager (recommended, tested with Miniconda3/Anaconda3)
-- Dependencies (for details, see below)
-- Mandatory files for analysis (for examples, see the `example_data` folder)
+- Python dependencies (see below for a list of required packages)
+
+FERMO performs the analysis with following input files:
+- Mandatory files for analysis:
     - a peak table in MZmine 3 'quant_full.csv' format (tested with MZmine3 versions 3.0.0 - 3.3.0)
-    - the accompanying .mgf-file (automatically created with peak table)
-- Optional files for analysis (for examples, see the `example_data` folder)
+    - the accompanying .mgf-file
+- Optional files for analysis:
     - a .csv file containing group metadata information
     - a .csv file containing quantitative biological data information
     - a .mgf file containing a spectral library
 
-Instructions for the generation of the analysis files, as well as the required format, can be found in the [user guides on input data formats](https://github.com/mmzdouc/FERMO/wiki/Input-data-formats) in the FERMO GitHub Wiki.
+Example files can be found in the `example_data` folder. Instructions for the generation of the analysis files, as well as the required format, can be found in the [user guides on input data formats](https://github.com/mmzdouc/FERMO/wiki/Input-data-formats) in the FERMO GitHub Wiki.
 
 ### Installation
 
@@ -41,11 +43,11 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 2. Download the latest Miniconda3 version from the [Conda website](https://docs.conda.io/en/latest/miniconda.html). Install the program (we recommend using the default settings). Details on the installation procedure can be found in [this Guide.](https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html) Anaconda can also be used, but its installation requires substantially more disk space. Of note, other package managers may be used, but have not been tested.
 
-3. Once the package manager is installed, there are two options to run FERMO. The easiest option is by double-clicking the startup batch script `FERMO_START_WINDOWS.bat` in the FERMO directory. This script will start FERMO, create a package management environment, download and install all dependencies, and open a browser window where FERMO can be used (refresh after a few seconds if there is nothing to see). However, the script will only work if Miniconda3 or Anaconda3 were installed with default parameters (the startup script will check for a Conda installation in `C:\Users\your_username\miniconda3\` or `C:\Users\your_username\anaconda3\`). 
+3. Once Miniconda3/Anaconda3 was installed, there are two options to run FERMO. The easiest option is by double-clicking the startup script `FERMO_START_WINDOWS.bat` in the FERMO directory. This script will start FERMO, create a package management environment, download and install all dependencies, and open a browser window where FERMO can be used (refresh after a few seconds if there is nothing to see). However, the script will only work if Miniconda3 or Anaconda3 were installed with default parameters (the startup script will check for an installation in `C:\Users\your_username\miniconda3\` or `C:\Users\your_username\anaconda3\`). 
 
-4. If the script was not able to install and/or start FERMO, it might be because Miniconda3/Anaconda3 were installed on another drive than `C:`. In this case, start FERMO manually as indicated in step **5**. Alternatively, it is possible to edit the `FERMO_START_WINDOWS.bat` file and adapt the path variables to their system setup ( `MINICONDAPATH` and `MINIENVPATH` for Miniconda3 or `ANACONDAPATH` and `ANAENVPATH` for Anaconda3).
+4. If the script was not able to install and/or start FERMO, it might be because Miniconda3/Anaconda3 was installed on another drive than `C:`. In this case, start FERMO manually as indicated in step **5**. Alternatively, it is possible to edit the `FERMO_START_WINDOWS.bat` file and adapt the path variables to their system setup ( `MINICONDAPATH` and `MINIENVPATH` for Miniconda3 or `ANACONDAPATH` and `ANAENVPATH` for Anaconda3).
 
-5. **Manual install and start of FERMO**: Open the **Anaconda Prompt** from the Windows Start menu. The following steps must be performed in the Anaconda prompt command line window.
+5. **Manual installation and start of FERMO**: Open the **Anaconda Prompt** from the Windows Start menu. The following steps must be performed in the Anaconda prompt command line window.
 
 6. Navigate to the previously downloaded and unpacked FERMO directory, changing directories with the command `cd` and showing the contents of the current directory with the command `dir`. This must be done every time FERMO is started.
 
@@ -61,7 +63,7 @@ pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_boots
 
 10. Start FERMO with the command `python app.py` and open the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
 
-11. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting ctrl+c.
+11. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
 
 
 #### macOS
@@ -71,7 +73,7 @@ pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_boots
 
 2. Download the latest Miniconda3 version from the [Conda website](https://docs.conda.io/en/latest/miniconda.html). Install the program (we recommend using the default settings). Details on the installation procedure can be found in [this Guide.](https://docs.conda.io/projects/conda/en/latest/user-guide/install/macos.html) Anaconda can also be used, but its installation requires substantially more disk space. Of note, other package managers may be used, but have not been tested.
 
-3. Once Miniconda3/Anaconda3 are installed, close and re-open the terminal window to make changes take effect. The terminal prompt should now have the prefix `(base)`.
+3. Once Miniconda3/Anaconda3 was installed, close and re-open the terminal window to make changes take effect. The terminal prompt should now have the prefix `(base)`.
 
 4. In the terminal window, navigate to the previously downloaded and unpacked FERMO directory, using the `cd` ("change directory") and `ls` ("list directory") commands. This must be done every time FERMO is started.
 
@@ -87,7 +89,7 @@ pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_boots
 
 8. To start FERMO, enter the command `python app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window.
 
-9. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting ctrl+c.
+9. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
 
 For Apple Mac laptops with the new M1 chip, the error `zsh: illegal hardware instruction ...` was observed. If such an error occurs, the following commands can help to fix the problem:
 
@@ -109,7 +111,7 @@ Afterwards, repeat the command in point 7.
 
 2. Download the latest Miniconda3 version from the [Conda website](https://docs.conda.io/en/latest/miniconda.html). Install the program (we recommend using the default settings). Details on the installation procedure can be found in [this Guide.](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) Anaconda can also be used, but its installation requires substantially more disk space. Of note, other package managers may be used, but have not been tested with FERMO.
 
-3. Once Miniconda3 is installed, close and re-open the terminal window to make changes take effect. The terminal prompt should now have the prefix `(base)`.
+3. Once Miniconda3/Anaconda3 is installed, close and re-open the terminal window to make changes take effect. The terminal prompt should now have the prefix `(base)`.
 
 4. FERMO can be started in two ways. The easiest option is double-clicking the startup script `FERMO_START_LINUX.sh`, which can be found in the FERMO directory. This script will start FERMO, create a conda environment, activate it, install all dependencies, and open a browser window where FERMO can be used (refresh after a few seconds if there is nothing to see). However, on some Linux distributions, shell-scripts cannot be opened in the file explorer for security reasons. In this case, open a new terminal window, navigate to the FERMO directory, and execute the commands `chmod +x ./FERMO_START_LINUX.sh` and `./FERMO_START_LINUX.sh`. If that does not work, FERMO can also be started manually, as indicated below:
 
@@ -127,7 +129,7 @@ pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_boots
 
 9. To start FERMO, enter the command `python app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
 
-10. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting ctrl+c.
+10. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
 
 
 ### Quickstart Guide
@@ -158,7 +160,7 @@ This guide describes the essential steps to process and analyze data with FERMO,
 
 5. Start FERMO by clicking the **'Start FERMO'** button at the bottom of the page. Processing will take a few minutes. If MS2Query annotation was selected, library files are automatically downloaded from [Zenodo](https://zenodo.org/record/6997924) . Due to their size, this can take a while. Once processing is finished, the dashboard will load automatically. 
 
-6. The dashboard is organized into 6 fields:
+6. The dashboard is organized into six fields:
     - **sample information tables (1)**
     - **sample chromatogram overview (2)**
     - **molecular feature information table (3)**

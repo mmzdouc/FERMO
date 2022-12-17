@@ -21,7 +21,11 @@ def determine_blank_features(
         and a blank, can be not considered a blank-associated feature
     sample_stats : `dict`
         dict containing general info on dataset, inclucing sample list
-
+    
+    Returns
+    --------
+    feature_dicts : `dict`
+    
     Notes
     -----
     Compares set of features from blank/medium samples against set
@@ -116,5 +120,6 @@ def determine_blank_features(
             #add to feature objects
             for feature_ID in blank_associated_features:
                 feature_dicts[feature_ID]['blank_associated'] = True
+        return feature_dicts
     except KeyError:
-        pass
+        return feature_dicts

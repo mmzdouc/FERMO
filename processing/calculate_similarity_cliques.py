@@ -35,6 +35,7 @@ def calculate_similarity_cliques(
     -------
     algorithm_used : `str`
         Reports algorithm used for logging
+    feature_dicts : `dict`
     
     Notes
     -----
@@ -96,7 +97,7 @@ def calculate_similarity_cliques(
             modified_cosine,
             is_symmetric=True,
             )
-        algorithm_used = 'ms2deepscore'
+        algorithm_used = 'modified_cosine'
 
     #sets settings of spectral similarity network 
     network_spec_sim = matchms.networking.SimilarityNetwork(
@@ -207,5 +208,5 @@ def calculate_similarity_cliques(
         sample_stats["cliques_per_sample"][sample] = list(sample_stats[
             "cliques_per_sample"][sample])
     
-    return algorithm_used
+    return algorithm_used, feature_dicts
     

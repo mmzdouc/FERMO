@@ -224,7 +224,7 @@ def peaktable_processing(
             ])
         )
     
-    determine_blank_features(
+    feature_dicts = determine_blank_features(
         samples, 
         feature_dicts, 
         dict_params['column_ret_fact'],
@@ -239,7 +239,7 @@ def peaktable_processing(
             ])
         )
 
-    determine_bioactive_features(
+    feature_dicts = determine_bioactive_features(
         bioactivity, 
         samples,
         feature_dicts, 
@@ -256,7 +256,7 @@ def peaktable_processing(
             ])
         )
     
-    spec_sim_net_alg_used = calculate_similarity_cliques(
+    spec_sim_net_alg_used, feature_dicts = calculate_similarity_cliques(
         feature_dicts,
         sample_stats,
         dict_params['spectral_sim_tol'], 
@@ -274,7 +274,7 @@ def peaktable_processing(
         )
 
     if user_library_name:
-        library_search(
+        feature_dicts = library_search(
             feature_dicts, 
             ref_library,
             dict_params['spectral_sim_tol'],
@@ -295,7 +295,7 @@ def peaktable_processing(
             os.path.dirname(os.path.dirname(__file__)),
             'libraries',)
         if os.path.exists(input_folder):
-            ms2query_search(
+            feature_dicts = ms2query_search(
                 feature_dicts, 
                 input_folder,
                 dict_params['ms2query_blank_annotation'],

@@ -25,6 +25,10 @@ def library_search(
         minimal number of matched peaks for a match between spectra to 
         be considered
     
+    Returns
+    -------
+    feature_dicts : `dict`
+    
     Notes
     -----
     Inspired by the tutorial of Florian Huber
@@ -104,11 +108,14 @@ def library_search(
                 feature_dicts[spectra[i].get('id')][
                     'cosine_annotation_list'] = (
                         [{
-                            'name' : x[0].metadata.get('compound_name'),
-                            'smiles' : x[0].metadata.get('smiles'),
-                            'inchi' : x[0].metadata.get('inchi'),
+                            'name' : x[0].metadata.get('compound_name') or "",
+                            'smiles' : x[0].metadata.get('smiles') or "",
+                            'inchi' : x[0].metadata.get('inchi') or "",
                             'score' : float(x[1]['score'].round(2)), 
                             'nr_matches' : int(x[1]['matches']), 
                         }
                         for x in best_matches]
                     )
+        return feature_dicts
+    else:
+        return feature_dicts
