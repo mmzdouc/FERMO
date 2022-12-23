@@ -2,11 +2,11 @@
 
 **FERMO** is a dashboard app for the processing and visualization of liquid chromatography - (tandem) mass spectrometry data, and its pairing to quantitative biological data and other metadata. In particular, **FERMO** is aimed toward the prioritization of compounds putatively responsible for a biological observation, for example investigating molecules that are putatively responsible for antibiotic activity. Developed with natural products research in mind, **FERMO** can be also used in other areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
 
-More information on the software can be found in the publication **Zdouc M.M. et al. FERMO: a Dashboard for Streamlined Rationalized Prioritization of Molecular Features from Mass Spectrometry Data. bioRxiv (2022)** (Link TBA).
+More information on the software can be found in the preprint on biorXiv: [**Mitja M. Zdouc et al. FERMO: a Dashboard for Streamlined Rationalized Prioritization of Molecular Features from Mass Spectrometry Data. bioRxiv (2022)**](https://doi.org/10.1101/2022.12.21.521422).
 
 References, tutorials, and guides can be found in the [FERMO Github Wiki](https://github.com/mmzdouc/FERMO/wiki/).
 
-(ADD FIGURE DASHBOARD)
+Of note, FERMO is currently in beta development. If you notice a bug or another issue, please contact us by opening an issue on FERMO's GitHub page.
 
 ## Getting Started
 
@@ -142,7 +142,7 @@ pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_boots
 
 #### Step-by-Step Guide
 
-This guide describes the essential steps to process and analyze data with FERMO, using files from the example data described in the article **Zdouc M.M. et al. FERMO: a Dashboard for Streamlined Rationalized Prioritization of Molecular Features from Mass Spectrometry Data** (Link TBA). A more thorough guide, including information on scores and data processing, can be found in the [FERMO Github Wiki](https://github.com/mmzdouc/FERMO/wiki/).
+This guide describes the essential steps to process and analyze data with FERMO, using files from the example data described in the article [**Mitja M. Zdouc et al. FERMO: a Dashboard for Streamlined Rationalized Prioritization of Molecular Features from Mass Spectrometry Data. bioRxiv (2022)**](https://doi.org/10.1101/2022.12.21.521422). A more thorough guide, including information on scores and data processing, can be found in the [FERMO Github Wiki](https://github.com/mmzdouc/FERMO/wiki/).
 
 1. Start FERMO, following the instructions in the installation guide above.
 
