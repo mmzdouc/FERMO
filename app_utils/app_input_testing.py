@@ -305,8 +305,14 @@ def remove_zero_values_df(
     Parameter
     ---------
     df : `pandas.core.frame.DataFrame`
+    
+    Returns
+    -------
+    filtered_df : `pandas.core.frame.DataFrame`
     '''
-    return df[df.quant_data != 0]
+    new_df = df[df.quant_data != 0]
+    filtered_df = new_df.reset_index(drop=True)
+    return filtered_df
 
 
 def parse_bioactiv_conc(

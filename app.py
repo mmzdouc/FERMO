@@ -635,7 +635,8 @@ def upload_bioactiv(
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
-
+        
+        
         try:
             bioactiv_table = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
         except:
