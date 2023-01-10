@@ -1,0 +1,55 @@
+# YAML 1.2
+---
+abstract: "Dashboard for analysis of (tandem) mass spectrometry data."
+authors:
+  -
+    affiliation: "Wageningen University & Research"
+    family-names: "Zdouc"
+    given-names: "Mitja M."
+    orcid: https://orcid.org/0000-0001-6534-6609
+  -
+    affiliation: "Leiden University"
+    family-names: "Bayona Maldonado"
+    given-names: "Lina M."
+    orcid: https://orcid.org/0000-0002-5026-3621
+  -
+    affiliation: "Wageningen University & Research and Leiden University"
+    family-names: "Augustijn"
+    given-names: "Hannah E."
+    orcid: https://orcid.org/0000-0002-1862-6699
+  -
+    affiliation: "University of Aberdeen"
+    family-names: "Soldatou"
+    given-names: "Sylvia"
+    orcid: https://orcid.org/0000-0002-3868-102X
+  -
+    affiliation: "Wageningen University & Research"
+    family-names: "de Jonge"
+    given-names: "Niek F."
+    orcid: https://orcid.org/0000-0002-3054-6210
+  -
+    affiliation: "University of Aberdeen"
+    family-names: "Jaspars"
+    given-names: "Marcel"
+    orcid: https://orcid.org/0000-0002-2426-6028
+  -
+    affiliation: "Leiden University"
+    family-names: "van Wezel"
+    given-names: "Gilles P."
+    orcid: https://orcid.org/0000-0003-0341-1561
+  -
+    affiliation: "Wageningen University & Research"
+    family-names: "Medema"
+    given-names: "Marnix H."
+    orcid: https://orcid.org/0000-0002-2191-2821
+  -
+    affiliation: "Wageningen University & Research"
+    family-names: "van der Hooft"
+    given-names: "Justin J. J."
+    orcid: https://orcid.org/0000-0002-9340-5511
+
+cff-version: 1.2.0
+license: "MIT"
+message: "If you use this software, please cite it using these metadata."
+repository-code: "https://github.com/mmzdouc/FERMO/"
+title: FERMO
