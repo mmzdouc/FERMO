@@ -1,7 +1,7 @@
 ###DASH IMPORTS###
 import dash
 from dash import Dash, html, dcc, Input, Output, State, callback
-from dash import dash_table, ctx, DiskcacheManager, CeleryManager
+from dash import dash_table, ctx, DiskcacheManager
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 

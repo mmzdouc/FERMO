@@ -9,6 +9,8 @@ libraries/spec2vec_model_GNPS_15_12_2021.model
 libraries/spec2vec_model_GNPS_15_12_2021.model.syn1neg.npy
 libraries/spec2vec_model_GNPS_15_12_2021.model.wv.vectors.npy
 
+# Temporary files Dash
+cache/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

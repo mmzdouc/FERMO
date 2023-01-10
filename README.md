@@ -1,12 +1,16 @@
 # FERMO Dashboard
 
+![FERMO logo](readme_assets/Fermo_logo_blue.svg)
+
 **FERMO** is a dashboard app for the processing and visualization of liquid chromatography - (tandem) mass spectrometry data, and its pairing to quantitative biological data and other metadata. In particular, **FERMO** is aimed toward the prioritization of compounds putatively responsible for a biological observation, for example investigating molecules that are putatively responsible for antibiotic activity. Developed with natural products research in mind, **FERMO** can be also used in other areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
 
 More information on the software can be found in the preprint on biorXiv: [**Mitja M. Zdouc et al. FERMO: a Dashboard for Streamlined Rationalized Prioritization of Molecular Features from Mass Spectrometry Data. bioRxiv (2022)**](https://doi.org/10.1101/2022.12.21.521422).
 
-References, tutorials, and guides can be found in the [FERMO Github Wiki](https://github.com/mmzdouc/FERMO/wiki/).
+References, tutorials, and guides can be found in the [**FERMO Github Wiki**](https://github.com/mmzdouc/FERMO/wiki/).
 
-Of note, FERMO is currently in beta development. If you notice a bug or another issue, please contact us by opening an issue on FERMO's GitHub page.
+Of note, FERMO is currently in beta development. If you notice a bug or another issue, please contact us by opening an issue on [**FERMO's Github page**](https://github.com/mmzdouc/FERMO/).
+
+![FERMO Dashboard Overview](readme_assets/Figure_1.png)
 
 ## Getting Started
 
@@ -161,25 +165,24 @@ This guide describes the essential steps to process and analyze data with FERMO,
 5. Start FERMO by clicking the **'Start FERMO'** button at the bottom of the page. Processing will take a few minutes. If MS2Query annotation was selected, library files are automatically downloaded from [Zenodo](https://zenodo.org/record/6997924) . Due to their size, this can take a while. Once processing is finished, the dashboard will load automatically. 
 
 6. The dashboard is organized into six fields:
-    - **sample information tables (1)**
-    - **sample chromatogram overview (2)**
-    - **molecular feature information table (3)**
-    - **sample chromatograms (4)**
-    - **Cytoscape view - spectral similarity networking (5)**
-    - **filter and export panel (6)**
+    - **Sample Information Tables (A)**
+    - **Sample Chromatogram Overview (B)**
+    - **Molecular Feature Information Table (C)**
+    - **Cytoscape Spectral Similarity Networking (D)**
+    - **Sample Chromatograms (E)**
+    - **Filter and Export Panel**
 
+![FERMO Dashboard Overview](readme_assets/Figure_2.png)
 
-(INSERT FIGURE)
+7. To display a specific sample, click on one of the rows in the **Sample Information Tables (A)**. This triggers the update of the **Sample Chromatogram Overview (B)**, which displays the molecular features detected in the sample. Hovering over a molecular feature presents general information. A click on a molecular feature focuses it, which triggers an update of the **Molecular Feature Information Table (C)**, the **Cytoscape Spectral Similarity Networking (D)**, and the **Sample Chromatograms (E)**.
 
-7. To display a specific sample, click on one of the rows in the **sample information tables (1)**. This triggers the update of the **sample chromatogram overview (2)**, which displays the molecular features detected in the sample. Hovering over a molecular feature presents general information. A click on a molecular feature focuses it, which triggers an update of the **molecular feature information table (3)**, the **sample chromatograms (4)**, and the **Cytoscape view - spectral similarity networking (5)**.
+8. In the **Molecular Feature Information Table (C)**, all information about the focused molecular feature is displayed. This includes its general attributes, its calculated scores, its annotations, and information about its similarity network.
 
-8. In the **molecular feature information table (3)**, all information about the focused molecular feature is displayed. This includes its general attributes, its calculated scores, its annotations, and information about its similarity network.
+9. In the **Sample Chromatograms (E)** view, the distribution of the focused molecular feature across samples is displayed, which can be used to determine the sample most suitable for further exploration (e.g. chromatographic isolation). 
 
-9. In the **sample chromatograms (4)** view, the distribution of the focused molecular feature across samples is displayed, which can be used to determine the sample most suitable for further exploration (e.g. chromatographic isolation). 
+10. The **Cytoscape Spectral Similarity Networking (D)** shows the relationship between molecular features, based on similarity of their MS/MS spectra. Clicking nodes or edges triggers the **node information table** or **edge information table**, respectively, which are below the network view.
 
-10. The **Cytoscape view - spectral similarity networking (5)** shows the relationship between molecular features, based on similarity of their MS/MS spectra. Clicking nodes or edges triggers the **node information table** or **edge information table**, respectively, which are below the network view.
-
-11. In the **filter and export panel (6)**, different filters can be set that change the current selection of molecular features. For example, to find all molecular features annotated as *siomycin*, enter "siomycin" into the "Annotation search" field and press enter. Filters can be also combined with each other, to generate more complex selection conditions.
+11. In the **Filter and Export Panel**, different filters can be set that change the current selection of molecular features. For example, to find all molecular features annotated as *siomycin*, enter "siomycin" into the "Annotation search" field and press enter. Filters can be also combined with each other, to generate more complex selection conditions.
 
 ## Dependencies
 - Python (version 3.8.13)
