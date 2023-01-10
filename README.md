@@ -1,8 +1,6 @@
-# FERMO Dashboard
-
 ![FERMO logo](readme_assets/Fermo_logo_blue.svg)
 
-**FERMO** is a dashboard app for the processing and visualization of liquid chromatography - (tandem) mass spectrometry data, and its pairing to quantitative biological data and other metadata. In particular, **FERMO** is aimed toward the prioritization of compounds putatively responsible for a biological observation, for example investigating molecules that are putatively responsible for antibiotic activity. Developed with natural products research in mind, **FERMO** can be also used in other areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
+**FERMO** is a dashboard app for the processing and visualization of **liquid chromatography - (tandem) mass spectrometry data**, and its **pairing** to **quantitative biological data and other metadata**. In particular, **FERMO** is aimed toward the prioritization of compounds putatively responsible for a biological observation, for example investigating molecules that may be responsible for antibiotic activity. Developed with natural products research in mind, **FERMO** can be also used in other areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
 
 More information on the software can be found in the preprint on biorXiv: [**Mitja M. Zdouc et al. FERMO: a Dashboard for Streamlined Rationalized Prioritization of Molecular Features from Mass Spectrometry Data. bioRxiv (2022)**](https://doi.org/10.1101/2022.12.21.521422).
 
@@ -205,7 +203,7 @@ FERMO is licensed under the [MIT License](LICENSE.md) - see the [LICENSE.md](LIC
 
 ### Contributing
 
-For details on our code of conduct and the process for submitting pull requests to us, please read [CONTRIBUTING.md](CONTRIBUTING.md).
+For details on our code of conduct and the process for submitting pull requests to us, please read [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ### Versioning
 
