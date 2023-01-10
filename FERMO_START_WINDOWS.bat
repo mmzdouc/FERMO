@@ -19,27 +19,27 @@ ECHO Looking for miniconda3 in C:\Users\%USERNAME%\ or anaconda3 in C:\Users\%US
 rem If env fermo_ver does not exist, create new environment, activate it, install packages using pip and run the python script
 IF EXIST %MINICONDAPATH% (
 	IF NOT EXIST %MINIENVPATH% (
-		 ECHO WARNING: Did not find conda environment %FERMO_VER% in %MINIENVPATH%. Attempting to create environment. & CALL %MINICONDAPATH% & conda create --name %FERMO_VER% python=3.8 -y & ECHO %FERMO_VER% successfully created. Attempting to activate conda environment & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. Attempting to install modules & pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache] & ECHO Packages successfully installed & python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')" & python app.py & PAUSE & GOTO :exit
+		 ECHO WARNING: Did not find conda environment %FERMO_VER% in %MINIENVPATH%. Attempting to create environment. & CALL %MINICONDAPATH% & conda create --name %FERMO_VER% python=3.8 -y & ECHO %FERMO_VER% successfully created. Attempting to activate conda environment & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. Attempting to install modules & pip install . & ECHO Packages successfully installed & python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')" & python fermo\app.py & PAUSE & GOTO :exit
 	)
 )
 
 rem If env exists, activate environment, and run the script
 IF EXIST %MINICONDAPATH% (
 	IF EXIST %MINIENVPATH% (
-		ECHO Attempting to activate conda environment %FERMO_VER% & CALL %MINICONDAPATH% & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. & python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')" & python app.py & PAUSE & GOTO :exit
+		ECHO Attempting to activate conda environment %FERMO_VER% & CALL %MINICONDAPATH% & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. & python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')" & python fermo\app.py & PAUSE & GOTO :exit
 	)
 )
 
 rem The same as before for anaconda3
 IF EXIST %ANACONDAPATH% (
 	IF NOT EXIST %ANAENVPATH% (
-		 ECHO WARNING: Did not find conda environment %FERMO_VER% in %ANAENVPATH%. Attempting to create environment. & CALL %ANACONDAPATH% & conda create --name %FERMO_VER% python=3.8 -y & ECHO %FERMO_VER% successfully created. Attempting to activate conda environment & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. Attempting to install modules & pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache] & ECHO Packages successfully installed & python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')" & python app.py & PAUSE & GOTO :exit
+		 ECHO WARNING: Did not find conda environment %FERMO_VER% in %ANAENVPATH%. Attempting to create environment. & CALL %ANACONDAPATH% & conda create --name %FERMO_VER% python=3.8 -y & ECHO %FERMO_VER% successfully created. Attempting to activate conda environment & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. Attempting to install modules & pip install . & ECHO Packages successfully installed & python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')" & python fermo\app.py & PAUSE & GOTO :exit
 	)
 )
 
 IF EXIST %ANACONDAPATH% (
 	IF EXIST %ANAENVPATH% (
-		ECHO Attempting to activate conda environment %FERMO_VER% & CALL %ANACONDAPATH% & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. & python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')" & python app.py & PAUSE & GOTO :exit
+		ECHO Attempting to activate conda environment %FERMO_VER% & CALL %ANACONDAPATH% & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. & python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')" & python fermo\app.py & PAUSE & GOTO :exit
 	)
 )
 

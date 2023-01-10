@@ -57,13 +57,11 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 8. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done every time FERMO is started.
 
-9. Install the dependencies in the newly created virtual environment (when copying the command below, take care that it is **not** broken over multiple lines). This must be done only at the first start of FERMO.
+9. In the FERMO directory, install the dependencies by running the command below (take care to also copy the trailing dot):
 
-```
-pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache]
-```
+`pip install .`
 
-10. Start FERMO with the command `python app.py` and open the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
+10. Start FERMO with the command `python fermo/app.py` and open the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
 
 11. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
 
@@ -83,13 +81,11 @@ pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_boots
 
 6. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done whenever FERMO is started.
 
-7. Install the dependencies in the newly created virtual environment (when copying the command below, take care that it is **not** broken over multiple lines). This must be done only at the first start of FERMO.
+7. In the FERMO directory, install the dependencies by running the command below (take care to also copy the trailing dot):
 
-```
-pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" "dash[diskcache]"
-```
+`pip install .`
 
-8. To start FERMO, enter the command `python app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window.
+8. To start FERMO, enter the command `python fermo/app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window.
 
 9. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
 
@@ -123,13 +119,11 @@ Afterwards, repeat the command in point 7.
 
 7. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done whenever FERMO is started.
 
-8. Install the dependencies in the newly created virtual environment (when copying the command below, take care that it is **not** broken over multiple lines). This must be done only at the first start of FERMO.
+8. In the FERMO directory, install the dependencies by running the command below (take care to also copy the trailing dot):
 
-```
-pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache]
-```
+`pip install .`
 
-9. To start FERMO, enter the command `python app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
+9. To start FERMO, enter the command `python fermo/app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
 
 10. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
 
