@@ -2,7 +2,7 @@
 
 eval "$(command conda 'shell.bash' 'hook' 2> /dev/null)"
 
-FERMO_VER="FERMO"
+FERMO_VER="test_env_src"
 
 if ! command -v conda >/dev/null 2>&1
 then
@@ -24,11 +24,11 @@ then
     pip install . --quiet
     echo "Packages were successfully installed in conda environment $FERMO_VER"
     python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')"
-    python ./fermo/app.py
+    python ./src/fermo/app.py
 else 
     echo "conda environment $FERMO_VER was found and will be activated"
     conda activate $FERMO_VER
     echo "conda environment $FERMO_VER was successfully activated"
     python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')"
-    python ./fermo/app.py
+    python ./src/fermo/app.py
 fi

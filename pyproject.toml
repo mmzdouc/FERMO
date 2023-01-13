@@ -29,6 +29,3 @@ dev = [
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = ["setuptools"]
-
-[tool.setuptools]
-packages = ["fermo"]
