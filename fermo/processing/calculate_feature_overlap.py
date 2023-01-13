@@ -1,4 +1,3 @@
-import pandas as pd
 from copy import deepcopy
 
 def prepare_pandas_tables(

@@ -2,7 +2,6 @@ import copy
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 import re
 import json
 from dash import dcc, html
@@ -63,7 +62,7 @@ def generate_subsets(
             features_blanks_set.add(feature_ID)
     
     ms1_only_df = samples[sample].loc[
-        samples[sample]['ms1_only'] == True
+        samples[sample]['ms1_only'] is True
         ]
     ms1_only_set = set(ms1_only_df['feature_ID'])
     
