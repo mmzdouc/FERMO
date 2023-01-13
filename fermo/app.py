@@ -15,6 +15,9 @@ import pandas as pd
 ###INTERNAL MODULES###
 from __version__ import __version__
 
+###SUPPRESS TENSORFLOW WARNINGS###
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 from app_utils.app_input_testing import (
     assert_peaktable_format,
     div_file_format_error,
@@ -70,8 +73,7 @@ from pages.pages_dashboard import dashboard
 from pages.pages_processing import processing
 from pages.pages_loading import loading
 
-###SUPPRESS TENSORFLOW WARNINGS###
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 
 ##########
 #LAYOUT

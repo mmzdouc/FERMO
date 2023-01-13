@@ -62,7 +62,7 @@ def generate_subsets(
             features_blanks_set.add(feature_ID)
     
     ms1_only_df = samples[sample].loc[
-        samples[sample]['ms1_only'] is True
+        samples[sample]['ms1_only'] == True
         ]
     ms1_only_set = set(ms1_only_df['feature_ID'])
     
