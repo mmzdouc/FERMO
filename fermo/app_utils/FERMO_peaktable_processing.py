@@ -314,7 +314,7 @@ def peaktable_processing(
                     ])
                 )
 
-    samples = calculate_feature_overlap(
+    samples, feature_dicts = calculate_feature_overlap(
         samples,
         dict_params['mass_dev_ppm'],
         feature_dicts,
@@ -328,7 +328,7 @@ def peaktable_processing(
             ])
         )
     
-    samples = calculate_metrics(
+    samples, feature_dicts = calculate_metrics(
         samples, 
         feature_dicts,
         sample_stats,
