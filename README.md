@@ -1,7 +1,7 @@
 ![FERMO logo](readme_assets/Fermo_logo_blue.svg)
 <br/>
 <br/>
-![CI_build](https://img.shields.io/github/actions/workflow/status/mmzdouc/fermo/CI_build.yml?branch=dev_0.8.7)
+![CI_build](https://github.com/mmzdouc/fermo/actions/workflows/CI_build.yml/badge.svg?branch=dev_0.8.7)
 
 **FERMO** is a dashboard app for the processing and visualization of **liquid chromatography - (tandem) mass spectrometry data**, and its **pairing** to **quantitative biological data and other metadata**. In particular, **FERMO** is aimed toward the prioritization of compounds putatively responsible for a biological observation, for example investigating molecules that may be responsible for antibiotic activity. Developed with natural products research in mind, **FERMO** can be also used in other areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
 
