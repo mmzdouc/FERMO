@@ -171,17 +171,8 @@ This guide describes the essential steps to process and analyze data with FERMO,
 11. In the **Filter and Export Panel**, different filters can be set that change the current selection of molecular features. For example, to find all molecular features annotated as *siomycin*, enter "siomycin" into the "Annotation search" field and press enter. Filters can be also combined with each other, to generate more complex selection conditions.
 
 ## Dependencies
-- Python (version 3.8.13)
-- Numpy (version 1.23.3)
-- matchms (version 1.4.4.)
-- Pyteomics (version 4.5.5)
-- Plotly (version 5.10.0)
-- Dash (version 2.6.1)
-- Dash Cytoscape (version 0.3.0)
-- Dash Bootstrap Components (version 1.2.1)
-- NetworkX (version 2.8.6)
-- MS2Query (version 0.4.3)
-- Dash Diskcache (version 5.4.0)
+
+A list of dependencies can be found in [requirements.txt](requirements.txt).
 
 ## License
 

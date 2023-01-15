@@ -242,6 +242,10 @@ def detect_frst_isot_adduct(
     Returns
     -------
     `bool`
+    
+    Notes
+    -----
+    #single charged +1 isotopic peak
     '''
     C13_12 = 1.0033548 #difference between 13C and 12C isotopes 
     
@@ -268,6 +272,10 @@ def detect_scnd_isot_adduct(
     Returns
     -------
     `bool`
+    
+    Notes
+    -----
+    #single charged +2 isotopic peak
     '''
     C13_12 = 1.0033548 #difference between 13C and 12C isotopes 
     
@@ -294,6 +302,10 @@ def detect_thrd_isot_adduct(
     Returns
     -------
     `bool`
+    
+    Notes
+    -----
+    #single charged +3 isotopic peak
     '''
     C13_12 = 1.0033548 #difference between 13C and 12C isotopes 
     
@@ -320,6 +332,10 @@ def detect_fourth_isot_adduct(
     Returns
     -------
     `bool`
+    
+    Notes
+    -----
+    #single charged +4 isotopic peak
     '''
     C13_12 = 1.0033548 #difference between 13C and 12C isotopes 
     
@@ -346,6 +362,10 @@ def detect_fifth_isot_adduct(
     Returns
     -------
     `bool`
+    
+    Notes
+    -----
+    #single charged +5 isotopic peak
     '''
     C13_12 = 1.0033548 #difference between 13C and 12C isotopes 
     
@@ -535,7 +555,7 @@ def detect_first_isot_double_adduct(
     
     Notes
     -----
-    #+1 isotopic peak of a double protonated ion: [M+2H] vs [M+1+2H]
+    #+1 isotopic peak of a double protonated ion: [M+2H]2+ vs [M+1+2H]2+
     '''
     C13_12 = 1.0033548 #difference between 13C and 12C isotopes
     
