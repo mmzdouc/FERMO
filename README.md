@@ -26,12 +26,12 @@ FERMO needs the following prerequisites:
 
 FERMO performs the analysis with following input files:
 - Mandatory files for analysis:
-    - a peak table in MZmine 3 'quant_full.csv' format (tested with MZmine3 versions 3.0.0 - 3.3.0)
+    - a peak table in MZmine 3 'quant_full.csv' format (tested with MZmine3 versions **3.0.0 - 3.3.0**)
     - the accompanying .mgf-file
 - Optional files for analysis:
-    - a .csv file containing group metadata information
-    - a .csv file containing quantitative biological data information
-    - a .mgf file containing a spectral library
+    - a .csv file containing **group metadata information**
+    - a .csv file containing **quantitative biological data** information
+    - a .mgf file containing a targeted **spectral library**
 
 Example files can be found in the `example_data` folder. Instructions for the generation of the analysis files, as well as the required format, can be found in the [user guides on input data formats](https://github.com/mmzdouc/FERMO/wiki/Input-data-formats) in the FERMO GitHub Wiki.
 
