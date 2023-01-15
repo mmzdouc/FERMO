@@ -1,12 +1,16 @@
-# FERMO Dashboard
+![FERMO logo](readme_assets/Fermo_logo_blue.svg)
+<br/>
+<br/>
 
-**FERMO** is a dashboard app for the processing and visualization of liquid chromatography - (tandem) mass spectrometry data, and its pairing to quantitative biological data and other metadata. In particular, **FERMO** is aimed toward the prioritization of compounds putatively responsible for a biological observation, for example investigating molecules that are putatively responsible for antibiotic activity. Developed with natural products research in mind, **FERMO** can be also used in other areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
+**FERMO** is a dashboard app for the processing and visualization of **liquid chromatography - (tandem) mass spectrometry data**, and its **pairing** to **quantitative biological data and other metadata**. In particular, **FERMO** is aimed toward the prioritization of compounds putatively responsible for a biological observation, for example investigating molecules that may be responsible for antibiotic activity. Developed with natural products research in mind, **FERMO** can be also used in other areas of the life sciences, such as metabolomics or environmental sciences, to investigate metabolites, drugs, pollutants, or agrochemicals.
 
 More information on the software can be found in the preprint on biorXiv: [**Mitja M. Zdouc et al. FERMO: a Dashboard for Streamlined Rationalized Prioritization of Molecular Features from Mass Spectrometry Data. bioRxiv (2022)**](https://doi.org/10.1101/2022.12.21.521422).
 
-References, tutorials, and guides can be found in the [FERMO Github Wiki](https://github.com/mmzdouc/FERMO/wiki/).
+References, tutorials, and guides can be found in the [**FERMO Github Wiki**](https://github.com/mmzdouc/FERMO/wiki/).
 
-Of note, FERMO is currently in beta development. If you notice a bug or another issue, please contact us by opening an issue on FERMO's GitHub page.
+Of note, FERMO is currently in beta development. If you notice a bug or another issue, please contact us by opening an issue on [**FERMO's Github page**](https://github.com/mmzdouc/FERMO/).
+
+![FERMO Dashboard Overview](readme_assets/Figure_1.png)
 
 ## Getting Started
 
@@ -24,12 +28,12 @@ FERMO needs the following prerequisites:
 
 FERMO performs the analysis with following input files:
 - Mandatory files for analysis:
-    - a peak table in MZmine 3 'quant_full.csv' format (tested with MZmine3 versions 3.0.0 - 3.3.0)
+    - a peak table in MZmine 3 'quant_full.csv' format (tested with MZmine3 versions **3.0.0 - 3.3.0**)
     - the accompanying .mgf-file
 - Optional files for analysis:
-    - a .csv file containing group metadata information
-    - a .csv file containing quantitative biological data information
-    - a .mgf file containing a spectral library
+    - a .csv file containing **group metadata information**
+    - a .csv file containing **quantitative biological data** information
+    - a .mgf file containing a targeted **spectral library**
 
 Example files can be found in the `example_data` folder. Instructions for the generation of the analysis files, as well as the required format, can be found in the [user guides on input data formats](https://github.com/mmzdouc/FERMO/wiki/Input-data-formats) in the FERMO GitHub Wiki.
 
@@ -55,13 +59,9 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 8. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done every time FERMO is started.
 
-9. Install the dependencies in the newly created virtual environment (when copying the command below, take care that it is **not** broken over multiple lines). This must be done only at the first start of FERMO.
+9. In the FERMO directory, install the dependencies by running the command `pip install .` (take care to also copy the trailing dot).
 
-```
-pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache]
-```
-
-10. Start FERMO with the command `python app.py` and open the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
+10. Start FERMO with the command `python ./src/fermo/app.py` and open the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
 
 11. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
 
@@ -81,13 +81,9 @@ pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_boots
 
 6. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done whenever FERMO is started.
 
-7. Install the dependencies in the newly created virtual environment (when copying the command below, take care that it is **not** broken over multiple lines). This must be done only at the first start of FERMO.
+7. In the FERMO directory, install the dependencies by running the command `pip install .` (take care to also copy the trailing dot).
 
-```
-pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" "dash[diskcache]"
-```
-
-8. To start FERMO, enter the command `python app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window.
+8. To start FERMO, enter the command `python ./src/fermo/app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window.
 
 9. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
 
@@ -121,13 +117,9 @@ Afterwards, repeat the command in point 7.
 
 7. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done whenever FERMO is started.
 
-8. Install the dependencies in the newly created virtual environment (when copying the command below, take care that it is **not** broken over multiple lines). This must be done only at the first start of FERMO.
+8. In the FERMO directory, install the dependencies by running the command `pip install .` (take care to also copy the trailing dot).
 
-```
-pip install numpy pandas matchms pyteomics plotly dash dash-cytoscape dash_bootstrap_components networkx "ms2query==0.4.3" dash[diskcache]
-```
-
-9. To start FERMO, enter the command `python app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
+9. To start FERMO, enter the command `python ./src/fermo/app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
 
 10. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
 
@@ -161,38 +153,28 @@ This guide describes the essential steps to process and analyze data with FERMO,
 5. Start FERMO by clicking the **'Start FERMO'** button at the bottom of the page. Processing will take a few minutes. If MS2Query annotation was selected, library files are automatically downloaded from [Zenodo](https://zenodo.org/record/6997924) . Due to their size, this can take a while. Once processing is finished, the dashboard will load automatically. 
 
 6. The dashboard is organized into six fields:
-    - **sample information tables (1)**
-    - **sample chromatogram overview (2)**
-    - **molecular feature information table (3)**
-    - **sample chromatograms (4)**
-    - **Cytoscape view - spectral similarity networking (5)**
-    - **filter and export panel (6)**
+    - **Sample Information Tables (A)**
+    - **Sample Chromatogram Overview (B)**
+    - **Molecular Feature Information Table (C)**
+    - **Cytoscape Spectral Similarity Networking (D)**
+    - **Sample Chromatograms (E)**
+    - **Filter and Export Panel**
 
+![FERMO Dashboard Overview](readme_assets/Figure_2.png)
 
-(INSERT FIGURE)
+7. To display a specific sample, click on one of the rows in the **Sample Information Tables (A)**. This triggers the update of the **Sample Chromatogram Overview (B)**, which displays the molecular features detected in the sample. Hovering over a molecular feature presents general information. A click on a molecular feature focuses it, which triggers an update of the **Molecular Feature Information Table (C)**, the **Cytoscape Spectral Similarity Networking (D)**, and the **Sample Chromatograms (E)**.
 
-7. To display a specific sample, click on one of the rows in the **sample information tables (1)**. This triggers the update of the **sample chromatogram overview (2)**, which displays the molecular features detected in the sample. Hovering over a molecular feature presents general information. A click on a molecular feature focuses it, which triggers an update of the **molecular feature information table (3)**, the **sample chromatograms (4)**, and the **Cytoscape view - spectral similarity networking (5)**.
+8. In the **Molecular Feature Information Table (C)**, all information about the focused molecular feature is displayed. This includes its general attributes, its calculated scores, its annotations, and information about its similarity network.
 
-8. In the **molecular feature information table (3)**, all information about the focused molecular feature is displayed. This includes its general attributes, its calculated scores, its annotations, and information about its similarity network.
+9. In the **Sample Chromatograms (E)** view, the distribution of the focused molecular feature across samples is displayed, which can be used to determine the sample most suitable for further exploration (e.g. chromatographic isolation). 
 
-9. In the **sample chromatograms (4)** view, the distribution of the focused molecular feature across samples is displayed, which can be used to determine the sample most suitable for further exploration (e.g. chromatographic isolation). 
+10. The **Cytoscape Spectral Similarity Networking (D)** shows the relationship between molecular features, based on similarity of their MS/MS spectra. Clicking nodes or edges triggers the **node information table** or **edge information table**, respectively, which are below the network view.
 
-10. The **Cytoscape view - spectral similarity networking (5)** shows the relationship between molecular features, based on similarity of their MS/MS spectra. Clicking nodes or edges triggers the **node information table** or **edge information table**, respectively, which are below the network view.
-
-11. In the **filter and export panel (6)**, different filters can be set that change the current selection of molecular features. For example, to find all molecular features annotated as *siomycin*, enter "siomycin" into the "Annotation search" field and press enter. Filters can be also combined with each other, to generate more complex selection conditions.
+11. In the **Filter and Export Panel**, different filters can be set that change the current selection of molecular features. For example, to find all molecular features annotated as *siomycin*, enter "siomycin" into the "Annotation search" field and press enter. Filters can be also combined with each other, to generate more complex selection conditions.
 
 ## Dependencies
-- Python (version 3.8.13)
-- Numpy (version 1.23.3)
-- matchms (version 1.4.4.)
-- Pyteomics (version 4.5.5)
-- Plotly (version 5.10.0)
-- Dash (version 2.6.1)
-- Dash Cytoscape (version 0.3.0)
-- Dash Bootstrap Components (version 1.2.1)
-- NetworkX (version 2.8.6)
-- MS2Query (version 0.4.3)
-- Dash Diskcache (version 5.4.0)
+
+A list of dependencies can be found in [requirements.txt](requirements.txt).
 
 ## License
 
@@ -202,7 +184,7 @@ FERMO is licensed under the [MIT License](LICENSE.md) - see the [LICENSE.md](LIC
 
 ### Contributing
 
-For details on our code of conduct and the process for submitting pull requests to us, please read [CONTRIBUTING.md](CONTRIBUTING.md).
+For details on our code of conduct and the process for submitting pull requests to us, please read [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ### Versioning
 

@@ -1,14 +1,16 @@
 # MS2Query library files
-libraries/ALL_GNPS_210409_positive_processed_annotated_CF_NPC_classes.txt
-libraries/library_GNPS_15_12_2021_ms2ds_embeddings.pickle
-libraries/library_GNPS_15_12_2021_s2v_embeddings.pickle
-libraries/library_GNPS_15_12_2021.sqlite
-libraries/ms2ds_model_GNPS_15_12_2021.hdf5
-libraries/ms2query_random_forest_model.pickle
-libraries/spec2vec_model_GNPS_15_12_2021.model
-libraries/spec2vec_model_GNPS_15_12_2021.model.syn1neg.npy
-libraries/spec2vec_model_GNPS_15_12_2021.model.wv.vectors.npy
+src/fermo/libraries/ALL_GNPS_210409_positive_processed_annotated_CF_NPC_classes.txt
+src/fermo/libraries/library_GNPS_15_12_2021_ms2ds_embeddings.pickle
+src/fermo/libraries/library_GNPS_15_12_2021_s2v_embeddings.pickle
+src/fermo/libraries/library_GNPS_15_12_2021.sqlite
+src/fermo/libraries/ms2ds_model_GNPS_15_12_2021.hdf5
+src/fermo/libraries/ms2query_random_forest_model.pickle
+src/fermo/libraries/spec2vec_model_GNPS_15_12_2021.model
+src/fermo/libraries/spec2vec_model_GNPS_15_12_2021.model.syn1neg.npy
+src/fermo/libraries/spec2vec_model_GNPS_15_12_2021.model.wv.vectors.npy
 
+# Temporary files Dash
+cache/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

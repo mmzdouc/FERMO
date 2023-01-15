@@ -6,7 +6,7 @@ FERMO_VER="FERMO"
 
 if ! command -v conda >/dev/null 2>&1
 then
-    echo "conda could not be found. Have you installed miniconda?"
+    echo "conda could not be found. Have you installed miniconda or anaconda?"
     exit
 else
     echo "conda installation was found - continue"
@@ -21,16 +21,14 @@ then
     conda activate $FERMO_VER
     echo "conda environment $FERMO_VER was successfully activated"
     echo "Starting with package installation - this might take some time"
-    pip install numpy pandas matchms pyteomics plotly argparse dash \
-        dash-cytoscape dash_bootstrap_components networkx \
-        'ms2query==0.4.3' dash[diskcache] --quiet
+    pip install . --quiet
     echo "Packages were successfully installed in conda environment $FERMO_VER"
     python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')"
-    python ./app.py
+    python ./src/fermo/app.py
 else 
     echo "conda environment $FERMO_VER was found and will be activated"
     conda activate $FERMO_VER
     echo "conda environment $FERMO_VER was successfully activated"
     python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')"
-    python ./app.py
+    python ./src/fermo/app.py
 fi

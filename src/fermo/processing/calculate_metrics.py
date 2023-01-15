@@ -332,6 +332,7 @@ def calculate_metrics(
     -------
     samples : `dict`
         sample_names(keys):pandas.core.frame.DataFrame(values)
+    feature_dicts : `dict`
     
     Notes
     -----
@@ -387,6 +388,7 @@ def calculate_metrics(
                 ms1_only.append(True)
             else:
                 ms1_only.append(False)
+                
         #appends lists to existing dataframe
         samples[sample]['rel_intensity_score'] = rel_intensity
         samples[sample]['convolutedness_score'] = convolutedness
@@ -395,5 +397,5 @@ def calculate_metrics(
         samples[sample]['in_blank'] = blank_associatedness
         samples[sample]['ms1_only'] = ms1_only
         
-    return samples
+    return samples, feature_dicts
 

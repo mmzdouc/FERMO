@@ -1,7 +1,6 @@
 ###DASH IMPORTS###
-import dash
 from dash import Dash, html, dcc, Input, Output, State, callback
-from dash import dash_table, ctx, DiskcacheManager, CeleryManager
+from dash import ctx, DiskcacheManager
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 
@@ -10,21 +9,14 @@ import base64
 import diskcache
 import io
 import json
-import matchms
-from matchms.Spectrum import Spectrum
-import numpy as np
 import os
 import pandas as pd
-from pyteomics import mgf
-import sys
-import time
-import webbrowser
-
-###SUPPRESS TENSORFLOW WARNINGS###
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 ###INTERNAL MODULES###
 from __version__ import __version__
+
+###SUPPRESS TENSORFLOW WARNINGS###
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 from app_utils.app_input_testing import (
     assert_peaktable_format,
@@ -32,7 +24,6 @@ from app_utils.app_input_testing import (
     div_successful_load_message,
     div_no_file_loaded_optional,
     div_no_file_loaded_mandatory,
-    test_for_None,
     extract_mgf_for_json_storage,
     div_no_quantbio_format,
     assert_bioactivity_format,
@@ -56,9 +47,6 @@ from app_utils.dashboard_functions import (
     generate_subsets,
     calc_diversity_score,
     calc_specificity_score,
-    export_features,
-    export_sel_peaktable,
-    prepare_log_file,
     add_edgedata,
     add_nodedata,
     generate_cyto_elements,
@@ -66,7 +54,6 @@ from app_utils.dashboard_functions import (
     modify_feature_info_df,
     plot_clique_chrom,
     plot_central_chrom,
-    prepare_log_file_filters,
     download_sel_sample_all_features,
     download_sel_sample_sel_features,
     download_all_samples_all_features,
@@ -80,18 +67,12 @@ from app_utils.dashboard_functions import (
     prepare_sample_scores_df,
     )
 
-from app_utils.variables import (
-    style_data_table,
-    style_data_cond_table,
-    style_header_table,
-    color_dict,
-    )
-
 from pages.pages_header_footer import footer_row, header_row
 from pages.pages_landing import landing
 from pages.pages_dashboard import dashboard
 from pages.pages_processing import processing
 from pages.pages_loading import loading
+
 
 
 ##########
@@ -127,7 +108,7 @@ framework_app = dbc.Container([
         footer_row,
         ], 
     id="bounding_box",
-    fluid="True", 
+    fluid="True",
 )
 
 app.layout = framework_app
@@ -631,7 +612,10 @@ def upload_bioactiv(
         }
     
     if contents is None:
-        return div_no_file_loaded_optional('quantitative biological data'), file_store
+        return (
+            div_no_file_loaded_optional('quantitative biological data'), 
+            file_store
+            )
     else:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
@@ -1120,8 +1104,6 @@ def calculate_feature_score(
     
     return sample_scores.to_dict('records'), samples_subsets, sample_list
 
-
-
 @callback(
         Output('table_general_stats', 'data'),
         Input('samples_subsets', 'data'),
@@ -1182,9 +1164,6 @@ def plot_general_stats_table(
     
     return df.to_dict('records')
 
-
-
-
 @callback(
     Output('storage_active_sample', 'data'),
     Input('table_sample_names', 'active_cell'),
@@ -1212,7 +1191,7 @@ def storage_active_sample(
     data or {'row' : 0,} -> Null coalescing assignment
     Default value if var not assigned
     '''
-    data = data or {'row' : 0,}
+    data = data or {'row' : 0, }
     return sample_list[data["row"]]
 
 @callback(
@@ -1570,12 +1549,12 @@ def displayTapNodeData(
         ctx.triggered_id == 'storage_active_feature_id'
     ):
         data = [
-        ['Feature ID', None],
-        ['Precursor <i>m/z</i>', None],
-        ['Retention time (avg)', None],
-        ['Annotation', None],
-        ['MS2Query class pred', None],
-        ['Detected in samples', None],
+            ['Feature ID', None],
+            ['Precursor <i>m/z</i>', None],
+            ['Retention time (avg)', None],
+            ['Annotation', None],
+            ['MS2Query class pred', None],
+            ['Detected in samples', None],
         ]
         df = pd.DataFrame(data, columns=['Node info', 'Description'])
         return df.to_dict('records')
@@ -1617,9 +1596,9 @@ def displayTapEdgeData(
         ctx.triggered_id == 'storage_active_feature_id'
     ):
         data = [
-        ['Connected nodes (IDs)', None],
-        ['Weight of edge', None],
-        ['<i>m/z</i> difference between nodes', None],
+            ['Connected nodes (IDs)', None],
+            ['Weight of edge', None],
+            ['<i>m/z</i> difference between nodes', None],
         ]
         df = pd.DataFrame(data, columns=['Node info', 'Description'])
         return df.to_dict('records')
@@ -1662,7 +1641,7 @@ def export_dd_menu_table(
     '''
     if n_clicks == 0:
         raise PreventUpdate
-    elif option == None:
+    elif option is None:
         raise PreventUpdate
     else:
         if option == 'peak_sel_sam_all_feat':
@@ -1700,6 +1679,7 @@ def export_dd_menu_table(
         else:
             raise PreventUpdate
 
+
 @callback(
     Output("export_session_file", "data"),
     Input("button_export_session", "n_clicks"),
@@ -1710,7 +1690,7 @@ def export_session_file_json(
     contents
     ):
     '''Export FERMO session file in json format
-    
+
     Parameters
     ----------
     n_clicks : `int`
@@ -1723,12 +1703,15 @@ def export_session_file_json(
     if n_clicks == 0:
         raise PreventUpdate
     else:
-        return dcc.send_string(json.dumps(contents, indent=4), 'FERMO_session.json')
+        return dcc.send_string(
+            json.dumps(contents, indent=4), 
+            'FERMO_session.json'
+            )
 
 ##########
-#START APP 
+#START APP
 ##########
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True) #switch to True for debugging
+    app.run_server(debug=True)  # switch to True for debugging

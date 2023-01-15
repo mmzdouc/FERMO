@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fermo"
+description = "FERMO dashboard: analysis of liquid chromatography (tandem) mass spectrometry data."
+version = "0.8.7"
+authors = [
+    { name = "Mitja M. Zdouc", email = "mitja.zdouc@wur.nl" }
+]
+dynamic = ["dependencies"]
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit", 
+    "pytest"
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+pythonpath = [
+  "src"
+]
