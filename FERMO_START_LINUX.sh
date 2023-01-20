@@ -23,12 +23,10 @@ then
     echo "Starting with package installation - this might take some time"
     pip install . --quiet
     echo "Packages were successfully installed in conda environment $FERMO_VER"
-    python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')"
     python ./src/fermo/app.py
 else 
     echo "conda environment $FERMO_VER was found and will be activated"
     conda activate $FERMO_VER
     echo "conda environment $FERMO_VER was successfully activated"
-    python -c "import webbrowser;webbrowser.open('http://127.0.0.1:8050/')"
     python ./src/fermo/app.py
 fi

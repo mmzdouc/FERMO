@@ -11,6 +11,10 @@ import io
 import json
 import os
 import pandas as pd
+import webbrowser
+import threading
+import time
+import os
 
 ###INTERNAL MODULES###
 from __version__ import __version__
@@ -1729,6 +1733,23 @@ def export_session_file_json(
 #START APP
 ##########
 
+def wait_webbrowser():
+    '''Delay webbrowser until app has loaded
+    
+    Notes
+    -----
+    Use of os.environ prevents double opening of webbrowser, which
+    is caused by the debug=True flag in the flask app.
+    '''
+    if "FERMO_DASHBOARD_UNIQUE" not in os.environ:
+        os.environ['FERMO_DASHBOARD_UNIQUE'] = 'running'
+        time.sleep(10)
+        webbrowser.open('http://127.0.0.1:8050/')
+        return
+    else:
+        return
 
 if __name__ == '__main__':
+    x = threading.Thread(target=wait_webbrowser, daemon=True)
+    x.start()
     app.run_server(debug=True)  # switch to True for debugging
