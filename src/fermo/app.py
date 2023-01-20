@@ -906,7 +906,6 @@ def store_selected_viz_toggle(
     Input('filter_precursor_min', 'value'),
     Input('filter_precursor_max', 'value'),
     Input('filter_spectral_sim_netw', 'value'),
-    Input('filter_fold_change', 'value'),
     Input('filter_group', 'value'),
     Input('filter_group_cliques', 'value'),
     Input('peak_overlap_threshold', 'value'),
@@ -914,6 +913,10 @@ def store_selected_viz_toggle(
     Input('filter_samplenumber_min', 'value'),
     Input('filter_samplenumber_max', 'value'),
     Input('blank_designation_toggle', 'value'),
+    Input('filter_fold_greater_int', 'value'),
+    Input('filter_fold_greater_regex', 'value'),
+    Input('filter_fold_greater_exclude_int', 'value'),
+    Input('filter_fold_greater_exclude_regex', 'value'),
     )
 def read_threshold_values_function(
     rel_intensity_threshold, 
@@ -925,7 +928,6 @@ def read_threshold_values_function(
     filter_precursor_min,
     filter_precursor_max,
     filter_spectral_sim_netw,
-    filter_fold_change,
     filter_group,
     filter_group_cliques,
     peak_overlap_threshold,
@@ -933,6 +935,10 @@ def read_threshold_values_function(
     filter_samplenumber_min,
     filter_samplenumber_max,
     blank_designation_toggle,
+    filter_fold_greater_int,
+    filter_fold_greater_regex,
+    filter_fold_greater_exclude_int,
+    filter_fold_greater_exclude_regex,
     ):
     '''Bundle filter values into dict
     
@@ -947,7 +953,6 @@ def read_threshold_values_function(
     filter_precursor_min : `float`
     filter_precursor_max : `float`
     filter_spectral_sim_netw : `int`
-    filter_fold_change : `int`
     filter_group : `str`
     filter_group_cliques : `str`
     peak_overlap_threshold : `list`
@@ -955,6 +960,10 @@ def read_threshold_values_function(
     filter_samplenumber_min : `int` 
     filter_samplenumber_max : `int`
     blank_designation_toggle : `str`
+    filter_fold_greater_int : `int`
+    filter_fold_greater_regex : `str`
+    filter_fold_greater_exclude_int : `int`
+    filter_fold_greater_exclude_regex : `str`
 
     Returns
     ------
@@ -972,12 +981,14 @@ def read_threshold_values_function(
         filter_precursor_min = ''
     if filter_precursor_max is None:
         filter_precursor_max = ''
-    if filter_fold_change is None:
-        filter_fold_change = ''
     if filter_samplenumber_min is None:
         filter_samplenumber_min = ''
     if filter_samplenumber_max is None:
         filter_samplenumber_max = ''
+    if filter_fold_greater_int is None:
+        filter_fold_greater_int = ''
+    if filter_fold_greater_exclude_int is None:
+        filter_fold_greater_exclude_int = ''
     
     if None not in [
         rel_intensity_threshold, 
@@ -989,7 +1000,6 @@ def read_threshold_values_function(
         filter_precursor_min,
         filter_precursor_max,
         filter_spectral_sim_netw,
-        filter_fold_change,
         filter_group,
         filter_group_cliques,
         peak_overlap_threshold,
@@ -997,6 +1007,10 @@ def read_threshold_values_function(
         filter_samplenumber_min,
         filter_samplenumber_max,
         blank_designation_toggle,
+        filter_fold_greater_int,
+        filter_fold_greater_regex,
+        filter_fold_greater_exclude_int,
+        filter_fold_greater_exclude_regex,
         ]:
         return {
             'rel_intensity_threshold' : rel_intensity_threshold,
@@ -1008,7 +1022,6 @@ def read_threshold_values_function(
             'filter_precursor_min' : filter_precursor_min,
             'filter_precursor_max' : filter_precursor_max,
             'filter_spectral_sim_netw' : filter_spectral_sim_netw,
-            'filter_fold_change' : filter_fold_change,
             'filter_group' : filter_group,
             'filter_group_cliques' : filter_group_cliques,
             'peak_overlap_threshold' : peak_overlap_threshold,
@@ -1016,6 +1029,10 @@ def read_threshold_values_function(
             'filter_samplenumber_min' : filter_samplenumber_min,
             'filter_samplenumber_max' : filter_samplenumber_max,
             'blank_designation_toggle' : blank_designation_toggle,
+            'filter_fold_greater_int' : filter_fold_greater_int,
+            'filter_fold_greater_regex' : filter_fold_greater_regex,
+            'filter_fold_greater_exclude_int' : filter_fold_greater_exclude_int,
+            'filter_fold_greater_exclude_regex' : filter_fold_greater_exclude_regex,
             }
     else:
         raise PreventUpdate
