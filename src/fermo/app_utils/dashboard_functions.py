@@ -208,21 +208,6 @@ def generate_subsets(
                 ):
                     temp_set.add(feature)
         filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
-
-    
-    if thresholds['filter_fold_change'] != '':
-        temp_set = set()
-        for feature in filtered_thrsh_set:
-            if feature_dicts[str(feature)]['dict_fold_diff']:
-                for i in feature_dicts[str(feature)]['dict_fold_diff']:
-                    if (
-                        feature_dicts[str(feature)]['dict_fold_diff'][i]
-                        >=
-                        float(thresholds['filter_fold_change'])
-                    ):
-                        temp_set.add(feature)
-        filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
-    
     
     if thresholds['filter_group'] != '':
         temp_set = set()
@@ -310,6 +295,97 @@ def generate_subsets(
                 if len(feature_dicts[str(feature)]['presence_samples']) <= snum_max:
                     temp_set.add(feature)
             filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+
+    #Fold-changes: Include
+    if (
+        (thresholds['filter_fold_greater_int'] != '')
+        and
+        (thresholds['filter_fold_greater_regex'] == '')
+        ):
+        temp_set = set()
+        for feature in filtered_thrsh_set:
+            if feature_dicts[str(feature)]['dict_fold_diff']:
+                for i in feature_dicts[str(feature)]['dict_fold_diff']:
+                    if (
+                        feature_dicts[str(feature)]['dict_fold_diff'][i]
+                        >=
+                        float(thresholds['filter_fold_greater_int'])
+                    ):
+                        temp_set.add(feature)
+        filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+    elif (
+        (thresholds['filter_fold_greater_int'] != '')
+        and
+        (thresholds['filter_fold_greater_regex'] != '')
+        ):
+        temp_set = set()
+        for feature in filtered_thrsh_set:
+            if feature_dicts[str(feature)]['dict_fold_diff']:
+                for i in feature_dicts[str(feature)]['dict_fold_diff']:
+                    if (
+                        (
+                            feature_dicts[str(feature)]['dict_fold_diff'][i]
+                            >=
+                            float(thresholds['filter_fold_greater_int'])
+                        )
+                        and
+                        (
+                            filter_str_regex(
+                                thresholds['filter_fold_greater_regex'],
+                                i,
+                                )
+                        )
+                    ):
+                        temp_set.add(feature)
+        filtered_thrsh_set = filtered_thrsh_set.intersection(temp_set)
+
+
+    #Fold-changes: exclude
+    if (
+        (thresholds['filter_fold_greater_exclude_int'] != '')
+        and
+        (thresholds['filter_fold_greater_exclude_regex'] == '')
+        ):
+        temp_set = set()
+        for feature in filtered_thrsh_set:
+            if feature_dicts[str(feature)]['dict_fold_diff']:
+                for i in feature_dicts[str(feature)]['dict_fold_diff']:
+                    if (
+                        feature_dicts[str(feature)]['dict_fold_diff'][i]
+                        >=
+                        float(thresholds['filter_fold_greater_exclude_int'])
+                    ):
+                        temp_set.add(feature)
+        filtered_thrsh_set = filtered_thrsh_set.difference(temp_set)
+    elif (
+        (thresholds['filter_fold_greater_exclude_int'] != '')
+        and
+        (thresholds['filter_fold_greater_exclude_regex'] != '')
+        ):
+        temp_set = set()
+        for feature in filtered_thrsh_set:
+            if feature_dicts[str(feature)]['dict_fold_diff']:
+                for i in feature_dicts[str(feature)]['dict_fold_diff']:
+                    if (
+                        (
+                            feature_dicts[str(feature)]['dict_fold_diff'][i]
+                            >=
+                            float(thresholds['filter_fold_greater_exclude_int'])
+                        )
+                        and
+                        (
+                            filter_str_regex(
+                                thresholds['filter_fold_greater_exclude_regex'],
+                                i,
+                                )
+                        )
+                    ):
+                        temp_set.add(feature)
+        filtered_thrsh_set = filtered_thrsh_set.difference(temp_set)
+
+
+
+
 
     #subtract ms1 and blanks from features over threshold
     all_select_no_blank = filtered_thrsh_set.difference(blank_ms1_set)
@@ -1175,7 +1251,7 @@ def modify_feature_info_df(
     fold_diff_list = []
     if feat_dicts[ID]['dict_fold_diff'] is not None:
         for comp in feat_dicts[ID]['sorted_fold_diff']:
-            if feat_dicts[ID]['dict_fold_diff'][comp] > 1:
+            if feat_dicts[ID]['dict_fold_diff'][comp] >= 1:
                 fold_diff_list.append(''.join([
                     str(feat_dicts[ID]['dict_fold_diff'][comp]),
                     ' (', comp, '),', '<br>',])) 
@@ -1259,10 +1335,10 @@ def modify_feature_info_df(
         ['Peak overlap (%)', round((samples[smpl].at[index, 'convolutedness_score']*100),0)],
         [placeholder, placeholder],
         ['Spectral library: best match', cosine_annotation],
-        ['MS2Query: best match/analog', ann_ms2query],
-        ['MS2Query: <i>m/z</i> difference to best match/analog', mass_diff_ms2query],
-        ['MS2Query: predicted class of best match/analog', class_ms2query],
-        ['MS2Query: predicted superclass of best match/analog', superclass_ms2query],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: best match/analog', ann_ms2query],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: <i>m/z</i> difference to best match/analog', mass_diff_ms2query],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: predicted class of best match/analog', class_ms2query],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: predicted superclass of best match/analog', superclass_ms2query],
         [placeholder, placeholder],
         ['Feature found in groups', ("".join(f"{i}<br>" for i in feat_dicts[ID]['set_groups']))],
         ['Fold-differences across groups', ("".join(str(i) for i in fold_diff_list))],
@@ -1278,6 +1354,8 @@ def modify_feature_info_df(
     ]
     df = pd.DataFrame(data, columns=['Attribute', 'Description'])
     return df.to_dict('records')
+
+
 
 
 def empty_feature_info_df():
@@ -1297,10 +1375,10 @@ def empty_feature_info_df():
         ['Peak overlap (%)', None],
         [placeholder, placeholder],
         ['Spectral library: best match', None],
-        ['MS2Query: best match/analog', None],
-        ['MS2Query: <i>m/z</i> difference to best match/analog', None],
-        ['MS2Query: predicted class of best match/analog', None],
-        ['MS2Query: predicted superclass of best match/analog', None],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: best match/analog', None],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: <i>m/z</i> difference to best match/analog', None],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: predicted class of best match/analog', None],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: predicted superclass of best match/analog', None],
         [placeholder, placeholder],
         ['Feature found in groups', None],
         ['Fold-differences across groups', None],

@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "fermo"
 description = "FERMO dashboard: analysis of liquid chromatography (tandem) mass spectrometry data."
-version = "0.8.7"
+version = "0.8.8"
 authors = [
     { name = "Mitja M. Zdouc", email = "mitja.zdouc@wur.nl" }
 ]

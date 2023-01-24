@@ -61,7 +61,7 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 9. In the FERMO directory, install the dependencies by running the command `pip install .` (take care to also copy the trailing dot).
 
-10. Start FERMO with the command `python ./src/fermo/app.py` and open the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
+10. Start FERMO with the command `python ./src/fermo/app.py`. After a few seconds, a browser window will automatically open, running FERMO on the local IP address `127.0.0.1:8050`.
 
 11. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
 
@@ -83,7 +83,7 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 7. In the FERMO directory, install the dependencies by running the command `pip install .` (take care to also copy the trailing dot).
 
-8. To start FERMO, enter the command `python ./src/fermo/app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window.
+8. To start FERMO, enter the command `python ./src/fermo/app.py`. After a few seconds, a browser window will automatically open, running FERMO on the local IP address `127.0.0.1:8050`.
 
 9. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
 
@@ -119,7 +119,7 @@ Afterwards, repeat the command in point 7.
 
 8. In the FERMO directory, install the dependencies by running the command `pip install .` (take care to also copy the trailing dot).
 
-9. To start FERMO, enter the command `python ./src/fermo/app.py` and enter the local IP address `127.0.0.1:8050` in any browser window. The dashboard should appear after a couple of seconds. If not, simply reload the browser window. 
+9. To start FERMO, enter the command `python ./src/fermo/app.py`. After a few seconds, a browser window will automatically open, running FERMO on the local IP address `127.0.0.1:8050`.
 
 10. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
 

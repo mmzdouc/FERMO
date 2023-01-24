@@ -489,40 +489,6 @@ def call_designate_blanks_name():
         style={'display': 'inline-block', 'width': '60%',},
         )
 
-
-def call_foldchange_search_name():
-    '''Title for foldchange search'''
-    return html.Div([
-        html.Div([ 
-            "Fold-changes filter ",
-            html.A(
-                html.Div(
-                    "?",
-                    id="call_foldchange_search_name_tooltip",
-                    className="info_dot"
-                    ),
-                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
-                target='_blank',
-                ),
-            ]),
-        dbc.Tooltip(
-            html.Div(
-                '''Filter for fold-changes of features between groups.
-                Fold-changes between groups are calculated by pairwise
-                division of average intensity between groups. 
-                Only applicable if group metadata was provided.
-                For more information,
-                click the info-button to access the docs.
-                ''',
-                ),
-            placement='right',
-            className='info_dot_tooltip',
-            target="call_foldchange_search_name_tooltip",
-            ),
-        ],
-        style={'display': 'inline-block', 'width': '60%',},
-        )
-
 def call_group_search_name():
     '''Title for group search in features'''
     return html.Div([
@@ -656,11 +622,86 @@ def call_number_samples_filter_name():
                 ),
             placement='right',
             className='info_dot_tooltip',
-            target="call_samplename_name_tooltip",
+            target="call_number_samples_filter_name_tooltip",
             ),
         ],
         style={'display': 'inline-block', 'width': '60%',},
         )
+
+def call_foldchange_greater_regex_search_include_name():
+    '''Title for foldchange_greater_regex_include search'''
+    return html.Div([
+        html.Div([ 
+            "Fold-changes filter: INCLUDE ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_foldchange_greater_regex_search_include_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter to include features with certain fold-changes
+                between groups (
+                calculated by pairwise
+                division of average intensity between groups). Left
+                field allows to filter for the desired fold change. 
+                Right field allows to filter for specific groups, using
+                regular expressions.
+                Only applicable if group metadata was provided.
+                For more information,
+                click the info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_foldchange_greater_regex_search_include_tooltip",
+            ),
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
+
+def call_foldchange_greater_regex_search_exclude_name():
+    '''Title for foldchange_greater_regex exclude_search'''
+    return html.Div([
+        html.Div([ 
+            "Fold-changes filter: EXCLUDE ",
+            html.A(
+                html.Div(
+                    "?",
+                    id="call_foldchange_greater_regex_search_exclude_tooltip",
+                    className="info_dot"
+                    ),
+                href='https://github.com/mmzdouc/FERMO/wiki/Scores-page', 
+                target='_blank',
+                ),
+            ]),
+        dbc.Tooltip(
+            html.Div(
+                '''Filter to exclude features with certain fold-changes
+                between groups (
+                calculated by pairwise
+                division of average intensity between groups). Left
+                field allows to filter for the desired fold change. 
+                Right field allows to filter for specific groups, using
+                regular expressions.
+                Only applicable if group metadata was provided.
+                For more information,
+                click the info-button to access the docs.
+                ''',
+                ),
+            placement='right',
+            className='info_dot_tooltip',
+            target="call_foldchange_greater_regex_search_exclude_tooltip",
+            ),
+        ],
+        style={'display': 'inline-block', 'width': '60%',},
+        )
+
 
 
 def call_rangeslider_inp(name):
@@ -871,7 +912,7 @@ def call_samplenumber_filter_wrapper():
         html.Div(
             call_int_filter_input(
                 'filter_samplenumber_min', 
-                'min nr of samples', 
+                'min # samples', 
                 '100%',
                 ),
             style={
@@ -883,7 +924,7 @@ def call_samplenumber_filter_wrapper():
         html.Div(
             call_int_filter_input(
                 'filter_samplenumber_max', 
-                'max nr of samples',
+                'max # samples',
                 '100%',
                 ),
             style={
@@ -967,6 +1008,97 @@ def call_feature_export_button():
             'margins' : 'auto',
             'margin-left' : '10px',
             'width' : '60%'},
+        )
+
+
+
+
+
+
+
+
+
+def call_fold_change_greater_include():
+    '''Call combined fold-change and regex search button - include'''
+    return html.Div([
+            html.Div(dcc.Input(
+                id='filter_fold_greater_int', 
+                value='', 
+                debounce=True,
+                placeholder='≥ n-fold',
+                min=0,
+                step=1,
+                type='number',
+                style={'font-size' : '15px','width': '100%',},
+                ),
+            style={
+                'width': '49%',
+                'display' : 'inline-block', 
+                'float' : 'left', 
+                },
+            ),
+        html.Div(dcc.Input(
+                id='filter_fold_greater_regex', 
+                value='', 
+                debounce=True,
+                placeholder='group1/group2',
+                type='text',
+                style={'font-size' : '15px','width': '100%',},
+            ),
+            style={
+                'width': '49%',
+                'display' : 'inline-block', 
+                'float' : 'right', 
+                },
+            ),
+        ],
+        style={
+            'display' : 'inline-block', 
+            'margins' : 'auto',
+            'width' : '60%'
+            },
+        )
+
+
+def call_fold_change_greater_exclude():
+    '''Call combined fold-change and regex search button - exclude'''
+    return html.Div([
+            html.Div(dcc.Input(
+                id='filter_fold_greater_exclude_int', 
+                value='', 
+                debounce=True,
+                placeholder='≥ n-fold',
+                min=0,
+                step=1,
+                type='number',
+                style={'font-size' : '15px','width': '100%',},
+                ),
+            style={
+                'width': '49%',
+                'display' : 'inline-block', 
+                'float' : 'left', 
+                },
+            ),
+        html.Div(dcc.Input(
+                id='filter_fold_greater_exclude_regex', 
+                value='', 
+                debounce=True,
+                placeholder='group1/group2',
+                type='text',
+                style={'font-size' : '15px','width': '100%',},
+            ),
+            style={
+                'width': '49%',
+                'display' : 'inline-block', 
+                'float' : 'right', 
+                },
+            ),
+        ],
+        style={
+            'display' : 'inline-block', 
+            'margins' : 'auto',
+            'width' : '60%'
+            },
         )
 
 ##########
@@ -1162,10 +1294,6 @@ dashboard = html.Div([
                 call_int_filter_input('filter_spectral_sim_netw', 
                     'Network ID number', '60%',),
                 html.Div(style={'margin-top' : '5px'}),
-                call_foldchange_search_name(),
-                call_int_filter_input('filter_fold_change', 
-                    'Search fold-change', '60%',),
-                html.Div(style={'margin-top' : '5px'}),
                 call_group_search_name(),
                 call_regexp_filter_str('filter_group'),
                 html.Div(style={'margin-top' : '5px'}),
@@ -1180,6 +1308,14 @@ dashboard = html.Div([
                 html.Div(style={'margin-top' : '5px'}),
                 call_precursor_mz_filter_name(),
                 call_precursor_mz_filter_wrapper(),
+                html.Div(style={'margin-top' : '5px'}),
+                html.Hr(style={'width' : '60%','float': 'left'}),
+                html.Div(style={'margin-top' : '5px'}),
+                call_foldchange_greater_regex_search_include_name(),
+                call_fold_change_greater_include(),
+                html.Div(style={'margin-top' : '5px'}),
+                call_foldchange_greater_regex_search_exclude_name(),
+                call_fold_change_greater_exclude(),
                 ],
                 style={'margin-left': '10px','font-size': '17px',}
                 ),
@@ -1187,7 +1323,7 @@ dashboard = html.Div([
             call_dd_menu_export(),
             html.Div(style={'margin-top' : '5px'}),
             call_feature_export_button(),
-            html.Div(style={'margin-top' : '5px'}),
+            html.Div(style={'margin-top' : '30px'}),
             ],
             id="dashboard_row_2_col_1",
             width=3,
