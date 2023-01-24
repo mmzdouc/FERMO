@@ -151,7 +151,7 @@ def detect_sodium_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect adduct
+    '''Detect [M+Na]+
     
     Parameters
     ----------
@@ -162,6 +162,12 @@ def detect_sodium_adduct(
     Returns
     -------
     `bool`
+    
+    Notes
+    -----
+    Monoisotopic masses H+ and Na+ taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
     '''
     Na = 22.989218
     H = 1.007276
@@ -178,7 +184,7 @@ def detect_dimer_sodium_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [2M+Na]+
     
     Parameters
     ----------
@@ -189,6 +195,12 @@ def detect_dimer_sodium_adduct(
     Returns
     -------
     `bool`
+    
+    Notes
+    -----
+    Monoisotopic masses H+ and Na+ taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
     '''
     Na = 22.989218
     H = 1.007276
@@ -205,7 +217,7 @@ def detect_trimer_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+3H]3+
     
     Parameters
     ----------
@@ -216,6 +228,12 @@ def detect_trimer_adduct(
     Returns
     -------
     `bool`
+    
+    Notes
+    -----
+    Monoisotopic mass H+ taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
     '''
     H = 1.007276
     
@@ -231,7 +249,7 @@ def detect_frst_isot_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+1+H]+
     
     Parameters
     ----------
@@ -245,9 +263,13 @@ def detect_frst_isot_adduct(
     
     Notes
     -----
-    #single charged +1 isotopic peak
+    Difference between 12C and 13C taken from:
+    ATOMIC WEIGHTS OF THE ELEMENTS: REVIEW 2000
+    LAETER ET AL, PURE APPL CHEM, 75 (6) 683-800, 2003.
+    https://media.iupac.org/publications/pac/2003/pdf/7506x0683.pdf
+    Accessed 24.01.2023
     '''
-    C13_12 = 1.0033548 #difference between 13C and 12C isotopes 
+    C13_12 = 1.0033548
     
     if (calc_mass_deviation(
         (mh_ion + C13_12), adduct) < strictness_ppm
@@ -261,7 +283,7 @@ def detect_scnd_isot_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+2+H]+
     
     Parameters
     ----------
@@ -275,9 +297,13 @@ def detect_scnd_isot_adduct(
     
     Notes
     -----
-    #single charged +2 isotopic peak
+    Difference between 12C and 13C taken from:
+    ATOMIC WEIGHTS OF THE ELEMENTS: REVIEW 2000
+    LAETER ET AL, PURE APPL CHEM, 75 (6) 683-800, 2003.
+    https://media.iupac.org/publications/pac/2003/pdf/7506x0683.pdf
+    Accessed 24.01.2023
     '''
-    C13_12 = 1.0033548 #difference between 13C and 12C isotopes 
+    C13_12 = 1.0033548
     
     if (calc_mass_deviation(
         (mh_ion + (2 * C13_12)), adduct) < strictness_ppm
@@ -291,7 +317,7 @@ def detect_thrd_isot_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+3+H]+
     
     Parameters
     ----------
@@ -305,9 +331,13 @@ def detect_thrd_isot_adduct(
     
     Notes
     -----
-    #single charged +3 isotopic peak
+    Difference between 12C and 13C taken from:
+    ATOMIC WEIGHTS OF THE ELEMENTS: REVIEW 2000
+    LAETER ET AL, PURE APPL CHEM, 75 (6) 683-800, 2003.
+    https://media.iupac.org/publications/pac/2003/pdf/7506x0683.pdf
+    Accessed 24.01.2023
     '''
-    C13_12 = 1.0033548 #difference between 13C and 12C isotopes 
+    C13_12 = 1.0033548
     
     if (calc_mass_deviation(
         (mh_ion + (3 * C13_12)), adduct) < strictness_ppm
@@ -321,7 +351,7 @@ def detect_fourth_isot_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+4+H]+
     
     Parameters
     ----------
@@ -335,9 +365,13 @@ def detect_fourth_isot_adduct(
     
     Notes
     -----
-    #single charged +4 isotopic peak
+    Difference between 12C and 13C taken from:
+    ATOMIC WEIGHTS OF THE ELEMENTS: REVIEW 2000
+    LAETER ET AL, PURE APPL CHEM, 75 (6) 683-800, 2003.
+    https://media.iupac.org/publications/pac/2003/pdf/7506x0683.pdf
+    Accessed 24.01.2023
     '''
-    C13_12 = 1.0033548 #difference between 13C and 12C isotopes 
+    C13_12 = 1.0033548
     
     if (calc_mass_deviation(
         (mh_ion + (4 * C13_12)), adduct) < strictness_ppm
@@ -351,7 +385,7 @@ def detect_fifth_isot_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+5+H]+
     
     Parameters
     ----------
@@ -365,9 +399,13 @@ def detect_fifth_isot_adduct(
     
     Notes
     -----
-    #single charged +5 isotopic peak
+    Difference between 12C and 13C taken from:
+    ATOMIC WEIGHTS OF THE ELEMENTS: REVIEW 2000
+    LAETER ET AL, PURE APPL CHEM, 75 (6) 683-800, 2003.
+    https://media.iupac.org/publications/pac/2003/pdf/7506x0683.pdf
+    Accessed 24.01.2023
     '''
-    C13_12 = 1.0033548 #difference between 13C and 12C isotopes 
+    C13_12 = 1.0033548
     
     if (calc_mass_deviation(
         (mh_ion + (5 * C13_12)), adduct) < strictness_ppm
@@ -381,7 +419,7 @@ def detect_double_first_isot_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+1+2H]2+
     
     Parameters
     ----------
@@ -395,10 +433,17 @@ def detect_double_first_isot_adduct(
     
     Notes
     -----
-    #double charged +1 isotopic peak, addition of 1 neutron and 1 proton
-    
+    Monoisotopic mass H+ taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
+    -
+    Difference between 12C and 13C taken from:
+    ATOMIC WEIGHTS OF THE ELEMENTS: REVIEW 2000
+    LAETER ET AL, PURE APPL CHEM, 75 (6) 683-800, 2003.
+    https://media.iupac.org/publications/pac/2003/pdf/7506x0683.pdf
+    Accessed 24.01.2023
     '''
-    C13_12 = 1.0033548 #difference between 13C and 12C isotopes
+    C13_12 = 1.0033548
     H = 1.007276
     
     if (calc_mass_deviation(
@@ -413,7 +458,7 @@ def detect_double_second_isot_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+2+2H]2+
     
     Parameters
     ----------
@@ -427,10 +472,17 @@ def detect_double_second_isot_adduct(
     
     Notes
     -----
-    #double charged +2 isotopic peak, addition of 2 neutron and 1 proton
-    
+    Monoisotopic mass H+ taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
+    -
+    Difference between 12C and 13C taken from:
+    ATOMIC WEIGHTS OF THE ELEMENTS: REVIEW 2000
+    LAETER ET AL, PURE APPL CHEM, 75 (6) 683-800, 2003.
+    https://media.iupac.org/publications/pac/2003/pdf/7506x0683.pdf
+    Accessed 24.01.2023
     '''
-    C13_12 = 1.0033548 #difference between 13C and 12C isotopes
+    C13_12 = 1.0033548
     H = 1.007276
     
     if (calc_mass_deviation(
@@ -445,7 +497,7 @@ def detect_double_third_isot_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+3+2H]2+
     
     Parameters
     ----------
@@ -459,10 +511,17 @@ def detect_double_third_isot_adduct(
     
     Notes
     -----
-    #double charged +3 isotopic peak, addition of 3 neutron and 1 proton
-    
+    Monoisotopic mass H+ taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
+    -
+    Difference between 12C and 13C taken from:
+    ATOMIC WEIGHTS OF THE ELEMENTS: REVIEW 2000
+    LAETER ET AL, PURE APPL CHEM, 75 (6) 683-800, 2003.
+    https://media.iupac.org/publications/pac/2003/pdf/7506x0683.pdf
+    Accessed 24.01.2023
     '''
-    C13_12 = 1.0033548 #difference between 13C and 12C isotopes
+    C13_12 = 1.0033548
     H = 1.007276
     
     if (calc_mass_deviation(
@@ -477,7 +536,7 @@ def detect_double_fourth_isot_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+4+2H]2+
     
     Parameters
     ----------
@@ -491,10 +550,17 @@ def detect_double_fourth_isot_adduct(
     
     Notes
     -----
-    #double charged +4 isotopic peak, addition of 4 neutron and 1 proton
-    
+    Monoisotopic mass H+ taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
+    -
+    Difference between 12C and 13C taken from:
+    ATOMIC WEIGHTS OF THE ELEMENTS: REVIEW 2000
+    LAETER ET AL, PURE APPL CHEM, 75 (6) 683-800, 2003.
+    https://media.iupac.org/publications/pac/2003/pdf/7506x0683.pdf
+    Accessed 24.01.2023
     '''
-    C13_12 = 1.0033548 #difference between 13C and 12C isotopes
+    C13_12 = 1.0033548
     H = 1.007276
     
     if (calc_mass_deviation(
@@ -509,7 +575,7 @@ def detect_double_fifth_isot_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+5+2H]2+
     
     Parameters
     ----------
@@ -523,10 +589,17 @@ def detect_double_fifth_isot_adduct(
     
     Notes
     -----
-    #double charged +5 isotopic peak, addition of 5 neutron and 1 proton
-    
+    Monoisotopic mass H+ taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
+    -
+    Difference between 12C and 13C taken from:
+    ATOMIC WEIGHTS OF THE ELEMENTS: REVIEW 2000
+    LAETER ET AL, PURE APPL CHEM, 75 (6) 683-800, 2003.
+    https://media.iupac.org/publications/pac/2003/pdf/7506x0683.pdf
+    Accessed 24.01.2023
     '''
-    C13_12 = 1.0033548 #difference between 13C and 12C isotopes
+    C13_12 = 1.0033548
     H = 1.007276
     
     if (calc_mass_deviation(
@@ -541,7 +614,7 @@ def detect_first_isot_double_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+2H]2+ vs [M+1+2H]2+
     
     Parameters
     ----------
@@ -555,9 +628,13 @@ def detect_first_isot_double_adduct(
     
     Notes
     -----
-    #+1 isotopic peak of a double protonated ion: [M+2H]2+ vs [M+1+2H]2+
+    Difference between 12C and 13C taken from:
+    ATOMIC WEIGHTS OF THE ELEMENTS: REVIEW 2000
+    LAETER ET AL, PURE APPL CHEM, 75 (6) 683-800, 2003.
+    https://media.iupac.org/publications/pac/2003/pdf/7506x0683.pdf
+    Accessed 24.01.2023
     '''
-    C13_12 = 1.0033548 #difference between 13C and 12C isotopes
+    C13_12 = 1.0033548
     
     if (calc_mass_deviation(
         (mh_ion + (C13_12/2)), adduct) < strictness_ppm
@@ -571,7 +648,7 @@ def detect_iron_adduct(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+56Fe-2H]+
     
     Parameters
     ----------
@@ -585,10 +662,18 @@ def detect_iron_adduct(
     
     Notes
     -----
-    #56^Fe adduct
+    Monoisotopic mass H+ taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
+    -
+    Monoisotopic mass 56Fe taken from:
+    ATOMIC WEIGHTS OF THE ELEMENTS: REVIEW 2000
+    LAETER ET AL, PURE APPL CHEM, 75 (6) 683-800, 2003.
+    https://media.iupac.org/publications/pac/2003/pdf/7506x0683.pdf
+    Accessed 24.01.2023
     '''
     H = 1.007276
-    Fe56 = 55.934940
+    Fe56 = 55.934941
     
     if (calc_mass_deviation(
         (mh_ion - (3 * H) + Fe56), adduct) < strictness_ppm
@@ -602,7 +687,7 @@ def detect_dimer_dbl(
     adduct, 
     strictness_ppm,
     ):
-    '''Detect and append adduct information
+    '''Detect [M+2H]2+ and [2M+H]+
     
     Parameters
     ----------
@@ -616,12 +701,145 @@ def detect_dimer_dbl(
     
     Notes
     -----
-    #M+2H and 2M+H
+    Monoisotopic mass H+ taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
     '''
     H = 1.007276
     
     if (calc_mass_deviation(
         ((mh_ion + H)/2), adduct) < strictness_ppm
+    ):
+        return True
+    else:
+        return False
+
+def detect_ammonium(
+    mh_ion, 
+    adduct, 
+    strictness_ppm,
+    ):
+    '''Detect [M+NH4]+
+    
+    Parameters
+    ----------
+    mh_ion : `float`
+    adduct : `float`
+    strictness_ppm : `int`
+    
+    Returns
+    -------
+    `bool`
+    
+    Notes
+    -----
+    Monoisotopic masses H+ and NH4+ taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
+    '''
+    H = 1.007276
+    NH4 = 18.033823
+    
+    if (calc_mass_deviation(
+        ((mh_ion - H) + NH4), adduct) < strictness_ppm
+    ):
+        return True
+    else:
+        return False
+
+def detect_potassium(
+    mh_ion, 
+    adduct, 
+    strictness_ppm,
+    ):
+    '''Detect [M+K]+
+    
+    Parameters
+    ----------
+    mh_ion : `float`
+    adduct : `float`
+    strictness_ppm : `int`
+    
+    Returns
+    -------
+    `bool`
+    
+    Notes
+    -----
+    Monoisotopic masses H+ and K+ taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
+    '''
+    H = 1.007276
+    K = 38.963158
+    
+    if (calc_mass_deviation(
+        ((mh_ion - H) + K), adduct) < strictness_ppm
+    ):
+        return True
+    else:
+        return False
+
+def detect_proton_plus_water(
+    mh_ion, 
+    adduct, 
+    strictness_ppm,
+    ):
+    '''Detect [M+H2O+H]+
+    
+    Parameters
+    ----------
+    mh_ion : `float`
+    adduct : `float`
+    strictness_ppm : `int`
+    
+    Returns
+    -------
+    `bool`
+    
+    Notes
+    -----
+    Monoisotopic mass H2O taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
+    '''
+    H2O = 18.011114
+    
+    if (calc_mass_deviation(
+        (mh_ion + H2O), adduct) < strictness_ppm
+    ):
+        return True
+    else:
+        return False
+
+def detect_proton_minus_water(
+    mh_ion, 
+    adduct, 
+    strictness_ppm,
+    ):
+    '''Detect [M-H2O+H]+
+    
+    Parameters
+    ----------
+    mh_ion : `float`
+    adduct : `float`
+    strictness_ppm : `int`
+    
+    Returns
+    -------
+    `bool`
+    
+    Notes
+    -----
+    Monoisotopic masses H+ and H2O taken from:
+    https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
+    Accessed 24.01.2023
+    '''
+    H2O = 18.011114
+    H = 1.007276
+    
+    if (calc_mass_deviation(
+        (mh_ion - H2O), adduct) < strictness_ppm
     ):
         return True
     else:
@@ -678,10 +896,6 @@ def calculate_feature_overlap(
     not registered as overlaps.
     
     [1]: doi.org/10.1021/acs.jcim.1c00579 
-    
-    monoisotopic masses taken from:    
-    - https://fiehnlab.ucdavis.edu/staff/kind/Metabolomics/MS-Adduct-Calculator/
-    - http://www.chemspider.com/Chemical-Structure.22368.html
     '''
     samples_mod = prepare_pandas_tables(samples)
     
@@ -1048,7 +1262,95 @@ def calculate_feature_overlap(
                             A,
                             )
                         continue
-
+                    
+                    elif detect_ammonium(A_mz, B_mz, strictness_ppm,):
+                        samples_mod, feature_dicts = add_mh_adduct_info(
+                            feature_dicts,
+                            samples_mod,
+                            sample,
+                            "[M+NH4]+",
+                            A,
+                            B,
+                            )
+                        continue
+                    
+                    elif detect_ammonium(B_mz, A_mz, strictness_ppm,):
+                        samples_mod, feature_dicts = add_mh_adduct_info(
+                            feature_dicts,
+                            samples_mod,
+                            sample,
+                            "[M+NH4]+",
+                            B,
+                            A,
+                            )
+                        continue
+                    
+                    elif detect_potassium(A_mz, B_mz, strictness_ppm,):
+                        samples_mod, feature_dicts = add_mh_adduct_info(
+                            feature_dicts,
+                            samples_mod,
+                            sample,
+                            "[M+K]+",
+                            A,
+                            B,
+                            )
+                        continue
+                    
+                    elif detect_potassium(B_mz, A_mz, strictness_ppm,):
+                        samples_mod, feature_dicts = add_mh_adduct_info(
+                            feature_dicts,
+                            samples_mod,
+                            sample,
+                            "[M+K]+",
+                            B,
+                            A,
+                            )
+                        continue
+                    
+                    elif detect_proton_plus_water(A_mz, B_mz, strictness_ppm,):
+                        samples_mod, feature_dicts = add_mh_adduct_info(
+                            feature_dicts,
+                            samples_mod,
+                            sample,
+                            "[M+H2O+H]+",
+                            A,
+                            B,
+                            )
+                        continue
+                    
+                    elif detect_proton_plus_water(B_mz, A_mz, strictness_ppm,):
+                        samples_mod, feature_dicts = add_mh_adduct_info(
+                            feature_dicts,
+                            samples_mod,
+                            sample,
+                            "[M+H2O+H]+",
+                            B,
+                            A,
+                            )
+                        continue
+                    
+                    elif detect_proton_minus_water(A_mz, B_mz, strictness_ppm,):
+                        samples_mod, feature_dicts = add_mh_adduct_info(
+                            feature_dicts,
+                            samples_mod,
+                            sample,
+                            "[M-H2O+H]+",
+                            A,
+                            B,
+                            )
+                        continue
+                    
+                    elif detect_proton_minus_water(B_mz, A_mz, strictness_ppm,):
+                        samples_mod, feature_dicts = add_mh_adduct_info(
+                            feature_dicts,
+                            samples_mod,
+                            sample,
+                            "[M-H2O+H]+",
+                            B,
+                            A,
+                            )
+                        continue
+                    
                     #additional adducts: add here
 
                     else:

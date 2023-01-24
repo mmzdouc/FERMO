@@ -1743,7 +1743,7 @@ def wait_webbrowser():
     '''
     if "FERMO_DASHBOARD_UNIQUE" not in os.environ:
         os.environ['FERMO_DASHBOARD_UNIQUE'] = 'running'
-        time.sleep(10)
+        time.sleep(8)
         webbrowser.open('http://127.0.0.1:8050/')
         return
     else:

@@ -1335,10 +1335,10 @@ def modify_feature_info_df(
         ['Peak overlap (%)', round((samples[smpl].at[index, 'convolutedness_score']*100),0)],
         [placeholder, placeholder],
         ['Spectral library: best match', cosine_annotation],
-        ['MS2Query: best match/analog', ann_ms2query],
-        ['MS2Query: <i>m/z</i> difference to best match/analog', mass_diff_ms2query],
-        ['MS2Query: predicted class of best match/analog', class_ms2query],
-        ['MS2Query: predicted superclass of best match/analog', superclass_ms2query],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: best match/analog', ann_ms2query],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: <i>m/z</i> difference to best match/analog', mass_diff_ms2query],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: predicted class of best match/analog', class_ms2query],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: predicted superclass of best match/analog', superclass_ms2query],
         [placeholder, placeholder],
         ['Feature found in groups', ("".join(f"{i}<br>" for i in feat_dicts[ID]['set_groups']))],
         ['Fold-differences across groups', ("".join(str(i) for i in fold_diff_list))],
@@ -1354,6 +1354,8 @@ def modify_feature_info_df(
     ]
     df = pd.DataFrame(data, columns=['Attribute', 'Description'])
     return df.to_dict('records')
+
+
 
 
 def empty_feature_info_df():
@@ -1373,10 +1375,10 @@ def empty_feature_info_df():
         ['Peak overlap (%)', None],
         [placeholder, placeholder],
         ['Spectral library: best match', None],
-        ['MS2Query: best match/analog', None],
-        ['MS2Query: <i>m/z</i> difference to best match/analog', None],
-        ['MS2Query: predicted class of best match/analog', None],
-        ['MS2Query: predicted superclass of best match/analog', None],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: best match/analog', None],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: <i>m/z</i> difference to best match/analog', None],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: predicted class of best match/analog', None],
+        ['**[MS2Query](https://github.com/iomega/ms2query)**: predicted superclass of best match/analog', None],
         [placeholder, placeholder],
         ['Feature found in groups', None],
         ['Fold-differences across groups', None],
