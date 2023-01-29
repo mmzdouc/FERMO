@@ -1,5 +1,4 @@
 import pandas as pd
-import re
 
 def read_from_metadata_table(
     metadata_table,

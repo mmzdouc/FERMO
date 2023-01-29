@@ -1,4 +1,3 @@
-import pandas as pd
 import copy
 
 def collect_stats_samples(

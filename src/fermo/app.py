@@ -17,12 +17,12 @@ import time
 import os
 
 ###INTERNAL MODULES###
-from __version__ import __version__
+from fermo.__version__ import __version__
 
 ###SUPPRESS TENSORFLOW WARNINGS###
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-from app_utils.app_input_testing import (
+from fermo.app_utils.app_input_testing import (
     assert_peaktable_format,
     div_file_format_error,
     div_successful_load_message,
@@ -42,12 +42,12 @@ from app_utils.app_input_testing import (
     ms2query_download_text,
     )
 
-from app_utils.FERMO_peaktable_processing import (
+from fermo.app_utils.FERMO_peaktable_processing import (
     peaktable_processing,
     make_JSON_serializable
     )
 
-from app_utils.dashboard_functions import (
+from fermo.app_utils.dashboard_functions import (
     generate_subsets,
     calc_diversity_score,
     calc_specificity_score,
@@ -71,11 +71,11 @@ from app_utils.dashboard_functions import (
     prepare_sample_scores_df,
     )
 
-from pages.pages_header_footer import footer_row, header_row
-from pages.pages_landing import landing
-from pages.pages_dashboard import dashboard
-from pages.pages_processing import processing
-from pages.pages_loading import loading
+from fermo.pages.pages_header_footer import footer_row, header_row
+from fermo.pages.pages_landing import landing
+from fermo.pages.pages_dashboard import dashboard
+from fermo.pages.pages_processing import processing
+from fermo.pages.pages_loading import loading
 
 
 

@@ -5,23 +5,20 @@ from matchms.Spectrum import Spectrum
 import os
 from datetime import datetime
 
-from processing.read_from_metadata_table import read_from_metadata_table
-from processing.collect_stats_samples import collect_stats_samples
-from processing.get_samplespecific_features import get_samplespecific_features
-from processing.set_from_sample_tables import set_from_sample_tables
-from processing.feature_dicts_creation import feature_dicts_creation
-from processing.determine_blank_features import determine_blank_features
-from processing.determine_bioactive_features import determine_bioactive_features
-from processing.calculate_similarity_cliques import calculate_similarity_cliques
-from processing.library_search import library_search
-from processing.ms2query_search import ms2query_search
-from processing.calculate_feature_overlap import calculate_feature_overlap
-from processing.calculate_metrics import calculate_metrics
-from processing.calculate_pseudochrom_traces import calculate_pseudochrom_traces
-from processing.determine_trend_bioactivity import determine_trend_bioactivity
-
-from app_utils.variables import color_dict
-
+from fermo.processing.read_from_metadata_table import read_from_metadata_table
+from fermo.processing.collect_stats_samples import collect_stats_samples
+from fermo.processing.get_samplespecific_features import get_samplespecific_features
+from fermo.processing.set_from_sample_tables import set_from_sample_tables
+from fermo.processing.feature_dicts_creation import feature_dicts_creation
+from fermo.processing.determine_blank_features import determine_blank_features
+from fermo.processing.determine_bioactive_features import determine_bioactive_features
+from fermo.processing.calculate_similarity_cliques import calculate_similarity_cliques
+from fermo.processing.library_search import library_search
+from fermo.processing.ms2query_search import ms2query_search
+from fermo.processing.calculate_feature_overlap import calculate_feature_overlap
+from fermo.processing.calculate_metrics import calculate_metrics
+from fermo.processing.calculate_pseudochrom_traces import calculate_pseudochrom_traces
+from fermo.processing.determine_trend_bioactivity import determine_trend_bioactivity
 
 def prepare_spectral_library(
     userlib_dict,

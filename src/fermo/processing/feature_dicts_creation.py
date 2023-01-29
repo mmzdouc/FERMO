@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import matchms
 
 def extract_from_peaktable(

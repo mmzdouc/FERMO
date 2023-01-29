@@ -1,5 +1,3 @@
-import pandas as pd
-
 def set_from_sample_tables(
     samples,
     ):

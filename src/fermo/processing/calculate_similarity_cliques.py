@@ -2,7 +2,6 @@ import matchms
 import os
 import networkx as nx
 
-from matchms.similarity.vector_similarity_functions import cosine_similarity_matrix
 from ms2deepscore import MS2DeepScore
 from ms2deepscore.models import load_model as load_ms2ds_model
 

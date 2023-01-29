@@ -1,5 +1,3 @@
-import pandas as pd
-
 def determine_bioactive_features(
     bioactivity_samples,
     samples,
@@ -114,7 +112,7 @@ def determine_bioactive_features(
         #for each bioactivity-associated feature
         for feature_ID in list_bioactiv_associated:
             #if not detected in a blank/medium blank
-            if feature_dicts[feature_ID]['blank_associated'] == False:
+            if feature_dicts[feature_ID]['blank_associated'] is False:
                 
                 #collect samples in which feature was found
                 presence_samples = feature_dicts[feature_ID]['presence_samples']

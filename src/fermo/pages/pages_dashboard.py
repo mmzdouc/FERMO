@@ -1,10 +1,8 @@
-from dash import Dash, html, dcc, dash_table
-from dash.exceptions import PreventUpdate
+from dash import html, dcc, dash_table
 import dash_bootstrap_components as dbc
-import pandas as pd
 import dash_cytoscape as cyto
 
-from app_utils.variables import (
+from fermo.app_utils.variables import (
     style_data_table,
     style_data_cond_table,
     style_header_table,
