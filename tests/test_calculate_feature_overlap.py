@@ -88,6 +88,71 @@ def example_samples_dict_output():
             )
         }
 
+@pytest.fixture
+def example_feature_dict_base():
+    return {
+        1 : {
+            'feature_ID': 1,
+            'precursor_mz': 1648.4547,
+            'average_retention_time': 12.5,
+            'rt_in_samples': {"sample_1" : 12.5,},
+            'presence_samples': ["sample_1",],
+            'intensities_samples': [1200,],
+            'median_fwhm': 0.1,
+            'fwhm_samples': {"sample_1": 0.1,},
+            'feature_max_int': 1200,
+            'ms2spectrum' : None,
+            'ms1_bool' : True,
+            'bioactivity_associated' : False,
+            'bioactivity_trend' : False,
+            'bioactivity_samples' : [],
+            'blank_associated' : False,
+            'similarity_clique' : False,
+            'similarity_clique_number' : "",
+            'similarity_clique_list' : [],
+            'cosine_annotation' : False,
+            'cosine_annotation_list' : [],
+            'ms2query' : False,
+            'ms2query_results' : '',
+            'novelty_score' : '',
+            'set_groups' : set("S",),
+            'set_groups_clique' : set(),
+            'dict_fold_diff' : None,
+            'sorted_fold_diff' : [],
+            'ann_adduct_isotop': [],
+            },
+        2 : {
+            'feature_ID': 2,
+            'precursor_mz': 1510.4198,
+            'average_retention_time': 12.7,
+            'rt_in_samples': {"sample_1" : 12.7,},
+            'presence_samples': ["sample_1",],
+            'intensities_samples': [1200,],
+            'median_fwhm': 0.1,
+            'fwhm_samples': {"sample_1": 0.1,},
+            'feature_max_int': 1200,
+            'ms2spectrum' : None,
+            'ms1_bool' : True,
+            'bioactivity_associated' : False,
+            'bioactivity_trend' : False,
+            'bioactivity_samples' : [],
+            'blank_associated' : False,
+            'similarity_clique' : False,
+            'similarity_clique_number' : "",
+            'similarity_clique_list' : [],
+            'cosine_annotation' : False,
+            'cosine_annotation_list' : [],
+            'ms2query' : False,
+            'ms2query_results' : '',
+            'novelty_score' : '',
+            'set_groups' : set("S",),
+            'set_groups_clique' : set(),
+            'dict_fold_diff' : None,
+            'sorted_fold_diff' : [],
+            'ann_adduct_isotop': [],
+            },
+        }
+
 
 
 # TESTS #
@@ -186,11 +251,6 @@ def test_detect_proton_plus_water():
 def test_detect_proton_minus_water():
     '''Assert proton-water adduct - authentic data cholic acid (JGI)'''
     assert detect_proton_minus_water(409.29477, 391.284, 20)
-
-
-
-
-
 
 def test_calculate_feature_overlap(
     example_samples_dict_post_prepare_pandas_tables,
