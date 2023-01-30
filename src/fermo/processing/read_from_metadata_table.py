@@ -19,10 +19,8 @@ def read_from_metadata_table(
         
     Notes
     -------
-    Creates a dict of groups, with group names as keys and sets of 
-    samples as values.
+    Tests if (optional) metadata table was provided
     """
-    #tests if (optional) metadata table was provided
     if metadata_name is None:
         groups_samples = dict()
         groups_samples['GENERAL'] = set()

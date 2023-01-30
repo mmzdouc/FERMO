@@ -115,47 +115,53 @@ def peaktable_processing(
         contains data to feed into dashboard visualization
     """
     log_dict = dict()
-    counter = 0
-    
-    peaktable_name = uploaded_files_store['peaktable_name']
-    peaktable = pd.read_json(uploaded_files_store['peaktable'], orient='split')
-    
-    mgf_name =  uploaded_files_store['mgf_name']
-    mgf = uploaded_files_store['mgf']
-    
     ms2_dict = dict()
+    counter = 0
+    peaktable = None
+    metadata = None
+    bioactivity = None
+    orig_bioactiv = None
+    ref_library = None
+    
+    
+    peaktable = pd.read_json(
+        uploaded_files_store['peaktable'],
+        orient='split'
+        )
+    
+    mgf = uploaded_files_store['mgf']
     for ID in mgf:
         ms2_dict[int(ID)] = [
             np.array(mgf[ID][0], dtype=float), 
             np.array(mgf[ID][1], dtype=float),
             ]
     
-    metadata = None
-    metadata_name = uploaded_files_store['metadata_name']
-    if metadata_name is not None:
+    if uploaded_files_store['metadata_name'] is not None:
         metadata = pd.read_json(
-            uploaded_files_store['metadata'], orient='split')
+            uploaded_files_store['metadata'], 
+            orient='split',
+            )
     
-    bioactivity = None
-    orig_bioactiv = None
-    bioactivity_name = uploaded_files_store['bioactivity_name']
-    if bioactivity_name is not None:
+    if uploaded_files_store['bioactivity_name'] is not None:
         bioactivity = pd.read_json(
-            uploaded_files_store['bioactivity'], orient='split')
+            uploaded_files_store['bioactivity'], 
+            orient='split'
+            )
         orig_bioactiv = pd.read_json(
-            uploaded_files_store['bioactivity_original'], orient='split')
+            uploaded_files_store['bioactivity_original'],
+            orient='split',
+            )
 
-    ref_library = None
-    user_library_name = uploaded_files_store['user_library_name']
-    userlib_dict = uploaded_files_store['user_library_dict']
-    if user_library_name is not None:
-        ref_library = prepare_spectral_library(userlib_dict)
+    if uploaded_files_store['user_library_name'] is not None:
+        ref_library = prepare_spectral_library(
+            uploaded_files_store['user_library_dict']
+            )
     
     ###BEGIN PROCESSING
     
     groups = read_from_metadata_table(
         metadata,
-        metadata_name,
+        uploaded_files_store['metadata_name'],
         )
     log_dict, counter =  write_process_log(
         log_dict, 
@@ -242,7 +248,7 @@ def peaktable_processing(
         feature_dicts, 
         dict_params['bioact_fact'],
         sample_stats,
-        bioactivity_name,
+        uploaded_files_store['bioactivity_name'],
         )
     log_dict, counter =  write_process_log(
         log_dict, 
@@ -270,7 +276,7 @@ def peaktable_processing(
             ])
         )
 
-    if user_library_name:
+    if uploaded_files_store['user_library_name']:
         feature_dicts = library_search(
             feature_dicts, 
             ref_library,
