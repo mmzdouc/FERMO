@@ -59,7 +59,7 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 8. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done every time FERMO is started.
 
-9. In the FERMO directory, install the dependencies by running the command `pip install .` (take care to also copy the trailing dot).
+9. In the FERMO directory, install the dependencies by running the command `pip install -e .` (take care to also copy the trailing dot).
 
 10. Start FERMO with the command `python ./src/fermo/app.py`. After a few seconds, a browser window will automatically open, running FERMO on the local IP address `127.0.0.1:8050`.
 
@@ -80,7 +80,7 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 6. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done whenever FERMO is started.
 
-7. In the FERMO directory, install the dependencies by running the command `pip install .` (take care to also copy the trailing dot).
+7. In the FERMO directory, install the dependencies by running the command `pip install -e .` (take care to also copy the trailing dot).
 
 8. To start FERMO, enter the command `python ./src/fermo/app.py`. After a few seconds, a browser window will automatically open, running FERMO on the local IP address `127.0.0.1:8050`.
 
@@ -116,7 +116,7 @@ Afterwards, repeat the command in point 7.
 
 7. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done whenever FERMO is started.
 
-8. In the FERMO directory, install the dependencies by running the command `pip install .` (take care to also copy the trailing dot).
+8. In the FERMO directory, install the dependencies by running the command `pip install -e .` (take care to also copy the trailing dot).
 
 9. To start FERMO, enter the command `python ./src/fermo/app.py`. After a few seconds, a browser window will automatically open, running FERMO on the local IP address `127.0.0.1:8050`.
 
