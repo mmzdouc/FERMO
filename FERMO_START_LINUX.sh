@@ -2,7 +2,7 @@
 
 eval "$(command conda 'shell.bash' 'hook' 2> /dev/null)"
 
-FERMO_VER="FERMO"
+FERMO_VER="FERMO_v0.8.9"
 
 if ! command -v conda >/dev/null 2>&1
 then
@@ -21,7 +21,7 @@ then
     conda activate $FERMO_VER
     echo "conda environment $FERMO_VER was successfully activated"
     echo "Starting with package installation - this might take some time"
-    pip install . --quiet
+    pip install -e . --quiet
     echo "Packages were successfully installed in conda environment $FERMO_VER"
     python ./src/fermo/app.py
 else 

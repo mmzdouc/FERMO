@@ -21,11 +21,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Cytoscape view: incorporate group metadata information & connect to chromatogram view to update via click on node
 
-## [0.8.9] - 2023-??-??
+## [0.8.9] - 2023-02-10
 
 ### Added 
 
 - Tracking of changes with CHANGELOG.md
+
+### Changed
+
+- Changed relative module import paths to absolute ones, making installation of tool via `pip install -e .` mandatory
+
+### Fixed
+
+- Bugfix by modifying `requirements.txt`: specifying package `matchmsextras==0.3.0`
 
 ## [0.8.8] - 2023-01-24
 

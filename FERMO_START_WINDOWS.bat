@@ -1,5 +1,5 @@
 @ECHO OFF
-SET FERMO_VER=FERMO
+SET FERMO_VER=FERMO_v0.8.9
 SET MINICONDAPATH=C:\Users\%USERNAME%\miniconda3\condabin\activate.bat
 SET MINIENVPATH=C:\Users\%USERNAME%\miniconda3\envs\%FERMO_VER%\
 SET ANACONDAPATH=C:\Users\%USERNAME%\anaconda3\condabin\activate.bat
@@ -19,7 +19,7 @@ ECHO Looking for miniconda3 in C:\Users\%USERNAME%\ or anaconda3 in C:\Users\%US
 rem If env fermo_ver does not exist, create new environment, activate it, install packages using pip and run the python script
 IF EXIST %MINICONDAPATH% (
 	IF NOT EXIST %MINIENVPATH% (
-		 ECHO WARNING: Did not find conda environment %FERMO_VER% in %MINIENVPATH%. Attempting to create environment. & CALL %MINICONDAPATH% & conda create --name %FERMO_VER% python=3.8 -y & ECHO %FERMO_VER% successfully created. Attempting to activate conda environment & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. Attempting to install modules & pip install . & ECHO Packages successfully installed & python src\fermo\app.py & PAUSE & GOTO :exit
+		 ECHO WARNING: Did not find conda environment %FERMO_VER% in %MINIENVPATH%. Attempting to create environment. & CALL %MINICONDAPATH% & conda create --name %FERMO_VER% python=3.8 -y & ECHO %FERMO_VER% successfully created. Attempting to activate conda environment & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. Attempting to install modules & pip install -e . & ECHO Packages successfully installed & python src\fermo\app.py & PAUSE & GOTO :exit
 	)
 )
 
@@ -33,7 +33,7 @@ IF EXIST %MINICONDAPATH% (
 rem The same as before for anaconda3
 IF EXIST %ANACONDAPATH% (
 	IF NOT EXIST %ANAENVPATH% (
-		 ECHO WARNING: Did not find conda environment %FERMO_VER% in %ANAENVPATH%. Attempting to create environment. & CALL %ANACONDAPATH% & conda create --name %FERMO_VER% python=3.8 -y & ECHO %FERMO_VER% successfully created. Attempting to activate conda environment & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. Attempting to install modules & pip install . & ECHO Packages successfully installed & python src\fermo\app.py & PAUSE & GOTO :exit
+		 ECHO WARNING: Did not find conda environment %FERMO_VER% in %ANAENVPATH%. Attempting to create environment. & CALL %ANACONDAPATH% & conda create --name %FERMO_VER% python=3.8 -y & ECHO %FERMO_VER% successfully created. Attempting to activate conda environment & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. Attempting to install modules & pip install -e . & ECHO Packages successfully installed & python src\fermo\app.py & PAUSE & GOTO :exit
 	)
 )
 
