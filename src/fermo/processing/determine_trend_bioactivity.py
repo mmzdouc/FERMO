@@ -1,4 +1,3 @@
-
 def determine_trend_bioactivity(
     feature_dicts,
     sample_stats,

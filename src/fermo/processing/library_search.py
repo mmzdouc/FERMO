@@ -1,6 +1,4 @@
-import matchms 
-import os
-import networkx as nx
+import matchms
 
 def library_search(
     feature_dicts,

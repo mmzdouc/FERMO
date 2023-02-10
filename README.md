@@ -45,11 +45,11 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 1. Download FERMO to an easily accessible location with write permissions, such as the Downloads folder or the Desktop. Unpack the package, for example by using [7-Zip ](https://www.7-zip.org/). Alternatively, clone this repository.
 
-2. Download the latest Miniconda3 version from the [Conda website](https://docs.conda.io/en/latest/miniconda.html). Install the program (we recommend using the default settings). Details on the installation procedure can be found in [this Guide.](https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html) Anaconda can also be used, but its installation requires substantially more disk space. Of note, other package managers may be used, but have not been tested.
+2. Download the latest Miniconda3 version from the [Conda website](https://docs.conda.io/en/latest/miniconda.html) and install it with default settings. Details on the installation procedure can be found in [this Guide.](https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html) Anaconda can also be used, but its installation requires substantially more disk space. If Miniconda or Anaconda were already installed before, please **update** to the latest version, to prevent errors during the installation. Of note, other package managers may be used, but have not been tested.
 
-3. Once Miniconda3/Anaconda3 was installed, there are two options to run FERMO. The easiest option is by double-clicking the startup script `FERMO_START_WINDOWS.bat` in the FERMO directory. This script will start FERMO, create a package management environment, download and install all dependencies, and open a browser window where FERMO can be used (refresh after a few seconds if there is nothing to see). However, the script will only work if Miniconda3 or Anaconda3 were installed with default parameters (the startup script will check for an installation in `C:\Users\your_username\miniconda3\` or `C:\Users\your_username\anaconda3\`). 
+3. Once Miniconda3/Anaconda3 was installed/updated, there are two options to run FERMO. The easiest option is by double-clicking the startup script `FERMO_START_WINDOWS.bat` in the FERMO directory. This script will start FERMO, create a package management environment, download and install all dependencies, and open a browser window where FERMO will already be running. 
 
-4. If the script was not able to install and/or start FERMO, it might be because Miniconda3/Anaconda3 was installed on another drive than `C:`. In this case, start FERMO manually as indicated in step **5**. Alternatively, it is possible to edit the `FERMO_START_WINDOWS.bat` file and adapt the path variables to their system setup ( `MINICONDAPATH` and `MINIENVPATH` for Miniconda3 or `ANACONDAPATH` and `ANAENVPATH` for Anaconda3).
+4. If the script was not able to install and/or start FERMO, it might be because Miniconda3/Anaconda3 was installed on another drive than `C:`. In this case, start FERMO manually as indicated in step **5**. Other commonly observed errors and their solutions are described int the [FAQs.](https://github.com/mmzdouc/FERMO/wiki/FAQ)
 
 5. **Manual installation and start of FERMO**: Open the **Anaconda Prompt** from the Windows Start menu. The following steps must be performed in the Anaconda prompt command line window.
 
@@ -68,12 +68,11 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 #### macOS
 
-
 1. Download FERMO to an easily accessible location with write permissions, such as the Downloads folder or the Desktop. Unpack the package, for example by using [7-Zip ](https://www.7-zip.org/). Alternatively, clone this repository.
 
-2. Download the latest Miniconda3 version from the [Conda website](https://docs.conda.io/en/latest/miniconda.html). Install the program (we recommend using the default settings). Details on the installation procedure can be found in [this Guide.](https://docs.conda.io/projects/conda/en/latest/user-guide/install/macos.html) Anaconda can also be used, but its installation requires substantially more disk space. Of note, other package managers may be used, but have not been tested.
+2. Download the latest Miniconda3 version from the [Conda website](https://docs.conda.io/en/latest/miniconda.html) and install it with default settings. Details on the installation procedure can be found in [this Guide.](https://docs.conda.io/projects/conda/en/latest/user-guide/install/macos.html) Anaconda can also be used, but its installation requires substantially more disk space. If Miniconda or Anaconda were already installed before, please **update** to the latest version, to prevent errors during the installation. Of note, other package managers may be used, but have not been tested.
 
-3. Once Miniconda3/Anaconda3 was installed, close and re-open the terminal window to make changes take effect. The terminal prompt should now have the prefix `(base)`.
+3. Once Miniconda3/Anaconda3 was installed/updated, close and re-open the terminal window to make changes take effect. The terminal prompt should now have the prefix `(base)`.
 
 4. In the terminal window, navigate to the previously downloaded and unpacked FERMO directory, using the `cd` ("change directory") and `ls` ("list directory") commands. This must be done every time FERMO is started.
 
@@ -105,11 +104,11 @@ Afterwards, repeat the command in point 7.
 
 1. Download FERMO to an easily accessible location with write permissions, such as the Downloads folder or the Desktop. Unpack the package. Alternatively, clone this repository.
 
-2. Download the latest Miniconda3 version from the [Conda website](https://docs.conda.io/en/latest/miniconda.html). Install the program (we recommend using the default settings). Details on the installation procedure can be found in [this Guide.](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) Anaconda can also be used, but its installation requires substantially more disk space. Of note, other package managers may be used, but have not been tested with FERMO.
+2. Download the latest Miniconda3 version from the [Conda website](https://docs.conda.io/en/latest/miniconda.html) and install it with default settings. Details on the installation procedure can be found in [this Guide.](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) Anaconda can also be used, but its installation requires substantially more disk space. If Miniconda or Anaconda were already installed before, please **update** to the latest version, to prevent errors during the installation. Of note, other package managers may be used, but have not been tested with FERMO.
 
-3. Once Miniconda3/Anaconda3 is installed, close and re-open the terminal window to make changes take effect. The terminal prompt should now have the prefix `(base)`.
+3. Once Miniconda3/Anaconda3 was installed/updated, close and re-open the terminal window to make changes take effect. The terminal prompt should now have the prefix `(base)`.
 
-4. FERMO can be started in two ways. The easiest option is double-clicking the startup script `FERMO_START_LINUX.sh`, which can be found in the FERMO directory. This script will start FERMO, create a conda environment, activate it, install all dependencies, and open a browser window where FERMO can be used (refresh after a few seconds if there is nothing to see). However, on some Linux distributions, shell-scripts cannot be opened in the file explorer for security reasons. In this case, open a new terminal window, navigate to the FERMO directory, and execute the commands `chmod +x ./FERMO_START_LINUX.sh` and `./FERMO_START_LINUX.sh`. If that does not work, FERMO can also be started manually, as indicated below:
+4. FERMO can be started in two ways. The easiest option is double-clicking the startup script `FERMO_START_LINUX.sh`, which can be found in the FERMO directory. This script will start FERMO, create a conda environment, activate it, install all dependencies, and open a browser window where FERMO will already be running. However, on some Linux distributions, shell-scripts cannot be opened in the file explorer for security reasons. In this case, open a new terminal window, navigate to the FERMO directory, and execute the commands `chmod +x ./FERMO_START_LINUX.sh` and `./FERMO_START_LINUX.sh`. If that does not work, FERMO can also be started manually, as indicated in the next step. Other commonly observed errors and their solutions are described int the [FAQs.](https://github.com/mmzdouc/FERMO/wiki/FAQ)
 
 5. **Manual installation and start of FERMO:** Open a new terminal window. Navigate to the previously downloaded and unpacked FERMO directory, using the `cd` ("change directory") and `ls` ("list directory") commands. This must be done every time FERMO is started.
 

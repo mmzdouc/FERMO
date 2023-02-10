@@ -1,6 +1,3 @@
-import pandas as pd
-import numpy as np
-
 def calculate_feature_score(
     row, 
     feature_dicts,

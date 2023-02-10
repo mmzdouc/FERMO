@@ -7,7 +7,7 @@ import json
 from dash import dcc, html
 from statistics import mean
 
-from app_utils.variables import color_dict
+from fermo.app_utils.variables import color_dict
 
 
 def filter_str_regex(
