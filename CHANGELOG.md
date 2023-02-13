@@ -21,6 +21,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Cytoscape view: incorporate group metadata information & connect to chromatogram view to update via click on node
 
+## [0.9.0] - 2023-??-??
+
+### Changed
+
+- Replacement of Dash with Flask
+- Folder structure in src/fermo/ changed following Flask 2.2.0 recommendations
+
+
 ## [0.8.9] - 2023-02-10
 
 ### Added 
