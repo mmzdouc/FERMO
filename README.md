@@ -1,3 +1,7 @@
+# WARNING: This branch is under heavy development and is not intended for normal use. Please use the [latest release](https://github.com/mmzdouc/FERMO/releases/latest).
+<br/>
+<br/>
+
 ![FERMO logo](readme_assets/Fermo_logo_blue.svg)
 <br/>
 <br/>
