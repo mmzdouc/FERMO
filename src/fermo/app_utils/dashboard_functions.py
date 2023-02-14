@@ -1278,10 +1278,16 @@ def modify_feature_info_df(
     if feat_dicts[ID]['bioactivity_associated']:
         for i in range(len(feat_dicts[ID]['presence_samples'])):
             sample = feat_dicts[ID]['presence_samples'][i]
-            combined_list_orig_bio.append(''.join([
-                str(sample_stats['original_bioactivity'][sample]), ' (',
-                str(sample), '),', '<br>',
-            ]))
+            try:
+                combined_list_orig_bio.append(''.join([
+                    str(sample_stats['original_bioactivity'][sample]), ' (',
+                    str(sample), '),', '<br>',
+                ]))
+            except KeyError:
+                combined_list_orig_bio.append(''.join([
+                    str(0), ' (',
+                    str(sample), '),', '<br>',
+                ]))
     else:
         combined_list_orig_bio = [None]
     
