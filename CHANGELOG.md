@@ -28,6 +28,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Replacement of Dash with Flask
 - Folder structure in src/fermo/ changed following Flask 2.2.0 recommendations
 
+## [0.8.10] - 2023-02-14
+
+### Fixed
+
+- Bugfix of `modify_feature_info_df()` in  `dashboard_functions.py`
 
 ## [0.8.9] - 2023-02-10
 
