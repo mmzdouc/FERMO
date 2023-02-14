@@ -21,6 +21,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Cytoscape view: incorporate group metadata information & connect to chromatogram view to update via click on node
 
+## [0.8.10] - 2023-02-14
+
+### Fixed
+
+- Bugfix of `modify_feature_info_df()` in  `dashboard_functions.py`
+
 ## [0.8.9] - 2023-02-10
 
 ### Added 
