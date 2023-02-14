@@ -1,28 +1,46 @@
 {% extends "layout.html" %}
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %} 
-    <h1>Loading mode (Restart Session)</h1>
-    <div> 
-        On this page, you can load <strong>FERMO session files</strong> in the <strong>.json-format</strong>. 
-        Reloading is very fast, since time-consuming computation steps are omitted.
-        However, the parameters set during the previous
-        computation cannot be changed anymore.
+    <div class="row"> 
+        <div class="col">
+            <div class="row">
+                <h1 class="text-center">Loading mode (Restart&nbsp;Session)</h1>
+                <p> 
+                    On this page, you can load <strong>FERMO session files</strong> in the <strong>.json-format</strong>. 
+                    Reloading is very fast, since time-consuming computation steps are omitted.
+                    However, the parameters set during the previous
+                    computation cannot be changed anymore.
+                </p>
+                <p>
+                    To upload a <strong>FERMO session file</strong>,
+                    click the button with the name 
+                    <strong>'Upload FERMO Session File'</strong> on the left side 
+                    of the page. A message will appear to inform you 
+                    about the outcome of data loading. 
+                </p>
+                <p>
+                    If successful, session file metadata will be shown
+                    in the table on the right side of the window, 
+                    including the time, date, and version of FERMO
+                    during creation, the names of the files used
+                    for processing, and the used parameter settings. 
+                </p>
+                <p>
+                    After loading your data, click the button 'Start FERMO Dashboard' to go to the dashboard view.
+                </p>
+            </div>
+            <div class="row">
+                <hr/>
+                <span> load Fermo session-Button</span>
+            </div>
+        </div>
+        <div class="col"> 
+            <div class="text-center"> 
+                File Info Table placeholder
+            </div>
+        </div>
     </div>
-    <div>
-        To upload a <strong>FERMO session file</strong>,
-        click the button with the name 
-        <strong>'Upload FERMO Session File'</strong> on the left side 
-        of the page. A message will appear to inform you 
-        about the outcome of data loading. 
-    </div>
-    <div>
-        If successful, session file metadata will be shown
-        in the table on the right side of the window, 
-        including the time, date, and version of FERMO
-        during creation, the names of the files used
-        for processing, and the used parameter settings. 
-    </div>
-    <div>
-        After loading your data, click the button 'Start FERMO Dashboard' to go to the dashboard view.
+    <div class="row">
+        <span class="text-center"> Start dashboard Button </span>
     </div>
 {% endblock %}
