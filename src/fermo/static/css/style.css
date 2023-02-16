@@ -1,3 +1,10 @@
 :root, [data-bs-theme="light"] {
 --bs-primary-rgb: 17,103,137;
 }
+
+.btn-primary {--bs-btn-bg: #116789;
+    --bs-btn-border-color: #116789;
+    --bs-btn-hover-bg: #0e526e;
+    --bs-btn-hover-border-color: #0e526e;
+}
+

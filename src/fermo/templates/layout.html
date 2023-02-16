@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column min-vh-100">
   <header>
     <nav class="navbar navbar-dark bg-primary">
       <div class="container-fluid">
@@ -28,17 +28,20 @@
       {% block content %}The content was not populated{% endblock %}
     </div>
   </main>  
-      <footer class="footer mt-auto py-3">
-        <div class="divider py-1 bg-primary"></div>
-        <div class="col">
-          <a href="https://www.wur.nl/en/research-results/chair-groups/plant-sciences/bioinformatics/people.htm" > 
-            <img src="./static/images/WUR_logo.png" alt="WUR Logo" height="100" class="d-inline-block" />
-          </a>
-          <a href="https://marblesproject.eu/" > 
-            <img src="./static/images/Marbles_logo.svg" alt="Marbles Logo" height="100"  class="d-inline-block"/>
-          </a>
-        </div>
-      </footer>
+
+  <footer class="footer mt-auto py-3">
+    <div class="divider py-1 bg-primary"></div>
+    <div class="container-fluid">
+      <div class="col">
+        <a href="https://www.wur.nl/en/research-results/chair-groups/plant-sciences/bioinformatics/people.htm" > 
+          <img src="./static/images/WUR_logo.png" alt="WUR Logo" height="100" class="d-inline-block" />
+        </a>
+        <a href="https://marblesproject.eu/" > 
+          <img src="./static/images/Marbles_logo.svg" alt="Marbles Logo" height="100"  class="d-inline-block"/>
+        </a>
+      </div>
+    </div>
+  </footer>
 
   <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.css') }}"></script>
 </body>

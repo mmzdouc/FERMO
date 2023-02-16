@@ -29,9 +29,13 @@
                     After loading your data, click the button 'Start FERMO Dashboard' to go to the dashboard view.
                 </p>
             </div>
-            <div class="row">
-                <hr/>
-                <span> load Fermo session-Button</span>
+            <div class="row ">
+                <div class="col mt-auto">
+                    <hr/>
+                    <div class="d-grid gap-2 col-6 mx-auto">
+                        <button class="btn btn-primary" type="button">Load FERMO session File (*.json)</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col"> 
@@ -41,6 +45,10 @@
         </div>
     </div>
     <div class="row">
-        <span class="text-center"> Start dashboard Button </span>
+        <div class="col my-2">
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button class="btn btn-primary" type="button">Start FERMO Dashboard</button>
+            </div>
+        </div>
     </div>
 {% endblock %}
