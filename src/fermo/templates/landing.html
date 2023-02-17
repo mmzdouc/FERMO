@@ -2,36 +2,64 @@
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %} 
     <div class="row mb-3">
-        <div class="col">
-            <h1 class="text-center my-3">
+        <div class="col text-center">
+            <h1 class="my-3">
                 <strong>FERMO: Streamlined Molecular Feature Prioritization</strong>
             </h1>
-            <div class="text-center my-5">
+            <div class="my-5 mx-3">
                 <img src="{{ url_for('static', filename='images/app-landing-workflow.svg') }}" 
                     alt="FERMO Workflow" 
-                    class="img-fluid">
+                    class="img-fluid"
+                    id="workflow"
+                    width="700">
             </div>
-            <p class="text">
-                FERMO is an app for the processing, analysis, and prioritization of molecules from complex <strong>LC-MS/MS</strong> data.
-            </p>
-            <p>
-                FERMO integrates <strong>LC-MS/MS data, quantitative biological data,</strong> and <strong>group metadata</strong> in a combined analysis platform. 
-                Samples and molecular features are scored for their putative novelty, chemical diversity, and associatedness to quantitative biological data. 
-                This allows for pragmatic prioritization of molecular features and samples for further investigation.
-            </p>
-            <p>
-                FERMO can be used in different modes, which can be accessed by clicking the buttons on the bottom of the page.
-                <br> More information on FERMO can be found in the <a href="https://github.com/mmzdouc/FERMO/"><strong>README</strong></a>
-                or in the <a href="https://github.com/mmzdouc/FERMO/wiki/"><strong>FERMO Wiki</strong></a>.
-            </p>
+            <div class="text-start mx-1">
+                <p>
+                    FERMO is an app for the processing, analysis, and prioritization of molecules from complex <strong>LC-MS/MS</strong> data.
+                </p>
+                <p>
+                    FERMO integrates <strong>LC-MS/MS data, quantitative biological data,</strong> and <strong>group metadata</strong> in a combined analysis platform. 
+                    Samples and molecular features are scored for their putative novelty, chemical diversity, and associatedness to quantitative biological data. 
+                    This allows for pragmatic prioritization of molecular features and samples for further investigation.
+                </p>
+                <p>
+                    FERMO can be used in different modes, which can be accessed by clicking the buttons on the bottom of the page.
+                    <br> More information on FERMO can be found in the <a href="https://github.com/mmzdouc/FERMO/"><strong>README</strong></a>
+                    or in the <a href="https://github.com/mmzdouc/FERMO/wiki/"><strong>FERMO Wiki</strong></a>.
+                </p>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col">
+    <div class="row mt-5">
+        <div class="col text-center">
             <h2><strong>Processing mode</strong></h2>
+            <div class=" mt-auto mb-3">
+                <img src="{{ url_for('static', filename='images/icon-peaktable-processing.svg') }}" 
+                    height="70">
+            </div>
+            <div>
+                <p> Standard peak table processing mode. </p>
+                <p>This mode requires a <strong>molecular features peak table</strong> and <strong>MS/MS data</strong> in the <strong>MZmine3</strong> format. 
+                    Optionally, users can also provide files containing <strong>grouping metadata, quantitative biological data</strong>, 
+                    and a <strong> spectral library</strong> for annotation purposes. 
+                </p>
+            </div>
+            <a href="{{url_for('views.processing')}}" class="btn btn-primary">Processing mode</a>
         </div>
-        <div class="col">
-            <h2><strong>Loading mode</strong></h2>
+        <div class="col text-center">
+            <h2 class=><strong>Loading mode</strong></h2>
+            <div class="mt-auto mb-3">
+                <img src="{{ url_for('static', filename='images/icon-loading-processing.svg') }}" 
+                    height="70">
+            </div>
+            <div class=>
+                <p> Session file loading mode. </p>
+                <p>This mode requires a previously created <strong>FERMO session file</strong> in the <strong>json format</strong>.
+                   This can be either created by running data in the peak table processing (standard) mode, or by obtaining a session file from others. 
+                </p>
+            </div>
+            <a href="{{url_for('views.loading')}}" class="btn btn-primary">Loading mode</a>
+
         </div>
 
     </div>
