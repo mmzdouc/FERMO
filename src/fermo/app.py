@@ -1,7 +1,7 @@
 # external imports
 from flask import Flask, render_template, url_for
 
-#internal file imports
+# internal file imports
 from views import views
 
 app = Flask(__name__)

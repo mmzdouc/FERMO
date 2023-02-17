@@ -1,3 +1,8 @@
+/* General */
+
+body {
+    font-family: Veranda, sans-serif;
+}
 :root, [data-bs-theme="light"] {
 --bs-primary-rgb: 17,103,137;
 }
@@ -8,6 +13,8 @@
     --bs-btn-hover-border-color: #0e526e;
 }
 
+
+/* Specifics */
 #loading-button{
     margin-top: 100px;
 }
