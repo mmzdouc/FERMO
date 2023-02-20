@@ -13,7 +13,9 @@ body {
     --bs-btn-hover-bg: #0e526e;
     --bs-btn-hover-border-color: #0e526e;
 }
-
+.btn-label {
+    font-weight: bold;
+}
 
 /* Specifics */
 #loading-button{

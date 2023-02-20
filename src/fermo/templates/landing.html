@@ -33,7 +33,7 @@
     <div class="row mt-5">
         <div class="col text-center">
             <h2><strong>Processing mode</strong></h2>
-            <div class=" mt-auto mb-3">
+            <div class=" mt-auto mb-3 mx-sm-auto mx-md-3">
                 <img src="{{ url_for('static', filename='images/icon-peaktable-processing.svg') }}" 
                     height="70">
             </div>
@@ -44,7 +44,6 @@
                     and a <strong> spectral library</strong> for annotation purposes. 
                 </p>
             </div>
-            <a href="{{url_for('views.processing')}}" class="btn btn-primary">Processing mode</a>
         </div>
         <div class="col text-center">
             <h2 class=><strong>Loading mode</strong></h2>
@@ -58,9 +57,14 @@
                    This can be either created by running data in the peak table processing (standard) mode, or by obtaining a session file from others. 
                 </p>
             </div>
-            <a href="{{url_for('views.loading')}}" class="btn btn-primary">Loading mode</a>
-
         </div>
-
+    </div>
+    <div class="row text-center">
+        <div class="col ">
+            <a href="{{url_for('views.processing')}}" class="btn btn-primary btn-label">Processing mode</a>
+        </div>
+        <div class="col">
+            <a href="{{url_for('views.loading')}}" class="btn btn-primary btn-label">Loading mode</a>
+        </div>
     </div>
 {% endblock %}
