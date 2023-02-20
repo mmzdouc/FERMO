@@ -1,4 +1,4 @@
-flake8==3.8.16
+flake8==6.0.0
 flask==2.2.2
 matchms==0.13.0
 matchmsextras==0.3.0
