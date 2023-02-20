@@ -14,7 +14,7 @@ body {
     --bs-btn-hover-border-color: #0e526e;
 }
 .btn-label {
-    font-weight: bold;
+    font-weight: bold; /* only keep if more button-label specific styles are added, otherwise use fw-bold*/
 }
 
 /* Specifics */

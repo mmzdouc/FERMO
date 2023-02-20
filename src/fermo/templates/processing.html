@@ -1,5 +1,69 @@
 {% extends "layout.html" %}
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %} 
-    <h1> This is the processing page</h1>
+    <div class="row"> 
+        <div class="col">
+            <div class="text-content ms-2">
+                <h1 class="text-center mt-2 mx-2 fw-bold">Processing mode (peaktable&nbsp;processing)</h1>
+                <p> 
+                    On this page, you can process your data with FERMO. The minimum requirements are:
+                    <ul>
+                        <li>a <strong>peak table</strong> containing general data on feature 
+                            (in the <strong>'_quant_full.scv'</strong> format created by </li>
+                        <li>a <strong>.mgf-file</strong> containing <strong>MS²</strong> data (created together with peak table by <strong>MZmine3</strong>) </li>
+                    </ul>
+                </p>
+                <p>
+                    Optionally, you can provide:
+                    <ul>
+                        <li>data on samples (as .csv-file)</li>
+                        <li>group metadata of samples (as .csv-file)</li>
+                        <li>a spectral library (as .mgf-file)</li>
+                    </ul> 
+                </p>
+                <p>
+                    On the left side of the page, you can <strong>load input files</strong> into FERMO. <br>
+                    On the right, you can <strong>adjust processing parameters</strong>.
+                    <br><br>
+                    <strong>Attention:</strong> if you want to have your features annotated, 
+                    switch <strong>MS2Query</strong> to <strong>ON</strong>. This will increase calculation time.
+                    <br><br>
+                    You can find more information on <a href="https://github.com/mmzdouc/FERMO/wiki/Input-data-formats">input data formats</a> 
+                    and <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"> parameter settings</a> in the FERMO Wiki.
+                    <br><br>
+                    You can start the analysis by clicking the <strong>'Start FERMO'</strong> button at the bottom of the page.
+                </p>
+            </div>
+            <div class="container-fluid " id="input_file_buttons">
+                <hr/>
+                <div class="d-grid gap-2 col-4 ms-0 my-2">
+                    <button class="btn btn-primary btn-label" type="button">Load peaktable (*_quant_full.csv)</button>
+                    <button class="btn btn-primary btn-label" type="button">Load the MS/MS file (*.mgf)</button>
+                    <div> 
+                        <div style="width: 300%;">Specify format of quantitative biological data:</div>
+                        <select class="form-select" aria-label="Default select example">
+                            <option selected hidden>Select...</option>
+                            <option value="1">Concentration-like (i.e. lowest value = highest activity)</option>
+                            <option value="2">Percentage-like (i.e. highest value = highest activity)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-label" type="button">Load quantitative biological data (*.csv)</button>
+                    <button class="btn btn-primary btn-label" type="button">Load group metadata table (*.csv)</button>
+                    <button class="btn btn-primary btn-label" type="button">Load spectral library (*.mgf)</button>
+                </div>
+            </div>
+        </div>
+        <div class="col"> 
+            <div class="text-center"> 
+                Parameter settings Placeholder
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col my-2">
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button class="btn btn-primary btn-label" type="button">Start FERMO</button>
+            </div>
+        </div>
+    </div>
 {% endblock %}

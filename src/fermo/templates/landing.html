@@ -30,31 +30,33 @@
             </div>
         </div>
     </div>
-    <div class="row mt-5">
-        <div class="col text-center">
+    <div class="row text-center mt-5">
+        <div class="col ">
             <h2><strong>Processing mode</strong></h2>
             <div class=" mt-auto mb-3 mx-sm-auto mx-md-3">
                 <img src="{{ url_for('static', filename='images/icon-peaktable-processing.svg') }}" 
                     height="70">
             </div>
             <div>
-                <p> Standard peak table processing mode. </p>
-                <p>This mode requires a <strong>molecular features peak table</strong> and <strong>MS/MS data</strong> in the <strong>MZmine3</strong> format. 
+                <p> Standard peak table processing mode.
+                    <br><br>
+                    This mode requires a <strong>molecular features peak table</strong> and <strong>MS/MS data</strong> in the <strong>MZmine3</strong> format. 
                     Optionally, users can also provide files containing <strong>grouping metadata, quantitative biological data</strong>, 
                     and a <strong> spectral library</strong> for annotation purposes. 
                 </p>
             </div>
         </div>
-        <div class="col text-center">
+        <div class="col ">
             <h2 class=><strong>Loading mode</strong></h2>
             <div class="mt-auto mb-3">
                 <img src="{{ url_for('static', filename='images/icon-loading-processing.svg') }}" 
                     height="70">
             </div>
             <div class=>
-                <p> Session file loading mode. </p>
-                <p>This mode requires a previously created <strong>FERMO session file</strong> in the <strong>json format</strong>.
-                   This can be either created by running data in the peak table processing (standard) mode, or by obtaining a session file from others. 
+                <p> Session file loading mode.
+                    <br><br>
+                    This mode requires a previously created <strong>FERMO session file</strong> in the <strong>json format</strong>.
+                    This can be either created by running data in the peak table processing (standard) mode, or by obtaining a session file from others. 
                 </p>
             </div>
         </div>

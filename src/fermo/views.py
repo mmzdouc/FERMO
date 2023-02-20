@@ -22,4 +22,3 @@ def dashboard(version=__version__.__version__):
 @views.route("/processing")
 def processing(version=__version__.__version__):
     return render_template('processing.html', version=__version__.__version__)
-
