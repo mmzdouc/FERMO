@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-### Added 
+### Added
 
 - MS/MS mirror plots in dashboard
 - Support for MASSQL search in dashboard
@@ -36,7 +36,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [0.8.9] - 2023-02-10
 
-### Added 
+### Added
 
 - Tracking of changes with CHANGELOG.md
 
@@ -50,7 +50,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [0.8.8] - 2023-01-24
 
-### Added 
+### Added
 
 - Expanded adduct detection functionality - FERMO now also recognizes `[M+NH4]+`, `[M+K]+`, `[M+H2O+H]+`, `[M-H2O+H]+` (0.8.8.3)
 

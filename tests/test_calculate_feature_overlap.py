@@ -266,4 +266,3 @@ def test_calculate_feature_overlap(
     assert samples_mod['sample_1'].equals(
         example_samples_dict_output['sample_1']
         )
-

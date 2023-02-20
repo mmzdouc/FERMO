@@ -11,7 +11,7 @@ IF NOT EXIST %MINICONDAPATH% (
 	IF NOT EXIST %ANACONDAPATH% (
 		ECHO WARNING: Looking for miniconda3 in C:\Users\%USERNAME%\miniconda3\ and anaconda3 in C:\Users\%USERNAME%\miniconda3\ failed. Do you have miniconda or anaconda installed? & PAUSE & GOTO :exit
 	)
-) 
+)
 
 rem Found miniconda/anaconda
 ECHO Looking for miniconda3 in C:\Users\%USERNAME%\ or anaconda3 in C:\Users\%USERNAME%\ was successful. Proceeding ...
@@ -42,7 +42,3 @@ IF EXIST %ANACONDAPATH% (
 		ECHO Attempting to activate conda environment %FERMO_VER% & CALL %ANACONDAPATH% & conda activate %FERMO_VER% & ECHO %FERMO_VER% successfully activated. & python src\fermo\app.py & PAUSE & GOTO :exit
 	)
 )
-
-
- 
-

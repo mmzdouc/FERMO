@@ -17,7 +17,7 @@ files = ["requirements.txt"]
 
 [project.optional-dependencies]
 dev = [
-    "pre-commit", 
+    "pre-commit",
     "pytest"
 ]
 
