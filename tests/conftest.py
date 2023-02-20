@@ -6,7 +6,7 @@ import numpy as np
 @pytest.fixture
 def example_dict_params():
     return {
-        'mass_dev_ppm': 20, 
+        'mass_dev_ppm': 20,
         'min_nr_ms2': 8,
         'bioact_fact': 10,
         'column_ret_fact': 10,
@@ -64,7 +64,7 @@ def example_ms2_dict():
     ms2_dict = dict()
     for ID in mgf:
         ms2_dict[int(ID)] = [
-            np.array(mgf[ID][0], dtype=float), 
+            np.array(mgf[ID][0], dtype=float),
             np.array(mgf[ID][1], dtype=float),
             ]
     return ms2_dict

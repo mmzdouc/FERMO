@@ -1,9 +1,12 @@
+flake8==6.0.0
+flask==2.2.2
 matchms==0.13.0
+matchmsextras==0.3.0
 ms2query==0.4.3
 networkx==3.0
 numpy==1.23.5
 pandas==1.5.2
 plotly==5.11.0
+pre-commit==3.0.4
 pyteomics==4.5.6
-matchmsextras==0.3.0
-flask==2.2.2
+pytest==7.2.1
