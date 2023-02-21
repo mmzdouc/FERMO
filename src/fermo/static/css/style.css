@@ -1,11 +1,11 @@
 /* General */
+:root, [data-bs-theme="light"] {
+    --bs-primary-rgb: 17,103,137;
+    }
 
 body {
     font-family: Verdana, sans-serif;
     font-size: 20px;
-}
-:root, [data-bs-theme="light"] {
---bs-primary-rgb: 17,103,137;
 }
 
 .btn-primary {--bs-btn-bg: #116789;
@@ -24,4 +24,8 @@ body {
 
 #workflow{
     float: right;
+}
+
+.custom-tooltip {
+    --bs-tooltip-bg: var(--bs-primary-rgb);
 }

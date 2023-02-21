@@ -29,6 +29,7 @@
     </div>
   </main>  
 
+  {% block footer %} 
   <footer class="footer mt-auto py-3">
     <div class="divider py-1 bg-primary"></div>
     <div class="container-fluid">
@@ -42,7 +43,12 @@
       </div>
     </div>
   </footer>
+  {% endblock %}
 
+  {% block scripts %}
   <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.css') }}"></script>
+  {% endblock %}
+
 </body>
 </html>
+

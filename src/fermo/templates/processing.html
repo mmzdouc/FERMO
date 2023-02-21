@@ -4,7 +4,7 @@
     <div class="row"> 
         <div class="col">
             <div class="text-content ms-2">
-                <h1 class="text-center mt-2 mx-2 fw-bold">Processing mode (peaktable&nbsp;processing)</h1>
+                <h2 class="text-center mt-2 mx-2 fw-bold">Processing mode (peaktable&nbsp;processing)</h2>
                 <p> 
                     On this page, you can process your data with FERMO. The minimum requirements are:
                     <ul>
@@ -37,26 +37,52 @@
             <div class="container-fluid " id="input_file_buttons">
                 <hr/>
                 <div class="d-grid gap-2 col-4 ms-0 my-2">
-                    <button class="btn btn-primary btn-label" type="button">Load peaktable (*_quant_full.csv)</button>
-                    <button class="btn btn-primary btn-label" type="button">Load the MS/MS file (*.mgf)</button>
+                    <button class="btn btn-primary btn-label" 
+                        type="button" 
+                        title="Reads a MZmine3-style peak table with the '_quant_full.csv'-suffix (exported in the FULL/ALL mode). For more information on the format, see the documentation.">
+                        Load peaktable (*_quant_full.csv)
+                    </button>
+                    <button class="btn btn-primary btn-label" 
+                            type="button"
+                            title="Reads a MZmine3 style .mgf-file containing tandem mass (MS/MS) spectra, accompanying the peak table. Generated through MZmine3 export. For more information on the format, see the documentation.">
+                            Load the MS/MS file (*.mgf)
+                    </button>
                     <div> 
-                        <div style="width: 300%;">Specify format of quantitative biological data:</div>
+                        <div style="width: 300%;">
+                            <span>Specify format of quantitative biological data:</span>
+                            <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page" 
+                               title="Accepts two formats: concentration and percentage (positive numbers only). For concentrations, the lowest value will be considered the highest activity. For percentage, the highest value will be considered the highest activity.">
+                               <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
+                            </a>
+                        </div>
                         <select class="form-select" aria-label="Default select example">
                             <option selected hidden>Select...</option>
                             <option value="1">Concentration-like (i.e. lowest value = highest activity)</option>
                             <option value="2">Percentage-like (i.e. highest value = highest activity)</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary btn-label" type="button">Load quantitative biological data (*.csv)</button>
-                    <button class="btn btn-primary btn-label" type="button">Load group metadata table (*.csv)</button>
-                    <button class="btn btn-primary btn-label" type="button">Load spectral library (*.mgf)</button>
+                    <button class="btn btn-primary btn-label" 
+                            type="button"
+                            title="Quantitative biological data file in the .csv format. For more information on the format, see the documentation.">
+                            Load quantitative biological data (*.csv)
+                    </button>
+                    <button class="btn btn-primary btn-label" 
+                            type="button"
+                            title="Metadata annotation file in .csv format. For more information on the format, see the documentation.">
+                            Load group metadata table (*.csv)
+                    </button>
+                    <button class="btn btn-primary btn-label" 
+                            type="button"
+                            title="Reads a user-provided spectral library in the .mgf-format. For more information on the format, see the documentation.">
+                            Load spectral library (*.mgf)
+                    </button>
                 </div>
             </div>
         </div>
         <div class="col"> 
-            <div class="text-center"> 
+            <form>
                 Parameter settings Placeholder
-            </div>
+            </form>
         </div>
     </div>
     <div class="row">
@@ -66,4 +92,11 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.css') }}"></script>
+<script> 
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 {% endblock %}
