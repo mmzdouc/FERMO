@@ -22,7 +22,7 @@ Of note, FERMO is currently in beta development. If you notice a bug or another 
 
 ### Prerequisites
 
-Although FERMO uses a browser (e.g. Firefox, Google Chrome, Microsoft Edge, ...) to render the graphical user interface of the application, it runs fully local. No internet connection is required except during the installation, and no data is shared across the internet. 
+Although FERMO uses a browser (e.g. Firefox, Google Chrome, Microsoft Edge, ...) to render the graphical user interface of the application, it runs fully local. No internet connection is required except during the installation, and no data is shared across the internet.
 
 FERMO requires **untargeted high resolution data-dependend acquisition liquid chromatography tandem mass spectrometry (HR-DDA-LC-MS/MS) data** to work properly. Currently, annotation is restricted to **positive ion mode data**.
 
@@ -53,7 +53,7 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 2. Download the latest Miniconda3 version from the [Conda website](https://docs.conda.io/en/latest/miniconda.html) and install it with default settings. Details on the installation procedure can be found in [this Guide.](https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html) Anaconda can also be used, but its installation requires substantially more disk space. If Miniconda or Anaconda were already installed before, please **update** to the latest version, to prevent errors during the installation. Of note, other package managers may be used, but have not been tested.
 
-3. Once Miniconda3/Anaconda3 was installed/updated, there are two options to run FERMO. The easiest option is by double-clicking the startup script `FERMO_START_WINDOWS.bat` in the FERMO directory. This script will start FERMO, create a package management environment, download and install all dependencies, and open a browser window where FERMO will already be running. 
+3. Once Miniconda3/Anaconda3 was installed/updated, there are two options to run FERMO. The easiest option is by double-clicking the startup script `FERMO_START_WINDOWS.bat` in the FERMO directory. This script will start FERMO, create a package management environment, download and install all dependencies, and open a browser window where FERMO will already be running.
 
 4. If the script was not able to install and/or start FERMO, it might be because Miniconda3/Anaconda3 was installed on another drive than `C:`. In this case, start FERMO manually as indicated in step **5**. Other commonly observed errors and their solutions are described int the [FAQs.](https://github.com/mmzdouc/FERMO/wiki/FAQ)
 
@@ -133,8 +133,8 @@ Afterwards, repeat the command in point 7.
 
 #### Terminology
 
-- **Sample**: a contiguous instrument run containing **MS1** (surveying) scans and or **MS2** (collision cell) scans. 
-- **Molecular feature**: an LC-MS extracted ion chromatogram (EIC) peak with specific attributes (e.g. mass-to-charge-ratio *m/z*, retention time *RT*, ...). 
+- **Sample**: a contiguous instrument run containing **MS1** (surveying) scans and or **MS2** (collision cell) scans.
+- **Molecular feature**: an LC-MS extracted ion chromatogram (EIC) peak with specific attributes (e.g. mass-to-charge-ratio *m/z*, retention time *RT*, ...).
 - **Peak table**: a table summarizing detected molecular features across samples.
 
 #### Step-by-Step Guide
@@ -145,7 +145,7 @@ This guide describes the essential steps to process and analyze data with FERMO,
 
 2. On the landing page, select the **Processing mode**.
 
-3. On the **Processing mode** page, load the files by clicking on the respective buttons: 
+3. On the **Processing mode** page, load the files by clicking on the respective buttons:
     - *Load peak table* -> **"case_study_peak_table_quant_full.csv"**
     - *Load the MS/MS file* -> **"case_study_MSMS.mgf"**
     - *Specify format of quantitative biological data* -> **"Percentage-like"**
@@ -155,7 +155,7 @@ This guide describes the essential steps to process and analyze data with FERMO,
 
 4. (Optional) on the **Processing mode** page, set the "MS2Query" parameter on the right-hand side to "ON".
 
-5. Start FERMO by clicking the **'Start FERMO'** button at the bottom of the page. Processing will take a few minutes. If MS2Query annotation was selected, library files are automatically downloaded from [Zenodo](https://zenodo.org/record/6997924) . Due to their size, this can take a while. Once processing is finished, the dashboard will load automatically. 
+5. Start FERMO by clicking the **'Start FERMO'** button at the bottom of the page. Processing will take a few minutes. If MS2Query annotation was selected, library files are automatically downloaded from [Zenodo](https://zenodo.org/record/6997924) . Due to their size, this can take a while. Once processing is finished, the dashboard will load automatically.
 
 6. The dashboard is organized into six fields:
     - **Sample Information Tables (A)**
@@ -171,7 +171,7 @@ This guide describes the essential steps to process and analyze data with FERMO,
 
 8. In the **Molecular Feature Information Table (C)**, all information about the focused molecular feature is displayed. This includes its general attributes, its calculated scores, its annotations, and information about its similarity network.
 
-9. In the **Sample Chromatograms (E)** view, the distribution of the focused molecular feature across samples is displayed, which can be used to determine the sample most suitable for further exploration (e.g. chromatographic isolation). 
+9. In the **Sample Chromatograms (E)** view, the distribution of the focused molecular feature across samples is displayed, which can be used to determine the sample most suitable for further exploration (e.g. chromatographic isolation).
 
 10. The **Cytoscape Spectral Similarity Networking (D)** shows the relationship between molecular features, based on similarity of their MS/MS spectra. Clicking nodes or edges triggers the **node information table** or **edge information table**, respectively, which are below the network view.
 
@@ -213,4 +213,3 @@ See also the list of [contributors](https://github.com/mmzdouc/FERMO/contributor
 - Medema, Marnix H. - *project supervision*
 - Simone, Matteo - *beta testing*
 - Soldatou, Sylvia - *beta testing*
-

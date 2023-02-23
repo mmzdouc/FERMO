@@ -15,29 +15,29 @@
     <nav class="navbar navbar-dark bg-primary">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">
-          <img src="{{ url_for('static', filename='/images/Fermo_logo.svg') }}" alt="FERMO logo" width="150" height="40" class="d-inline-block align-text-bottom"> 
+          <img src="{{ url_for('static', filename='/images/Fermo_logo.svg') }}" alt="FERMO logo" width="150" height="40" class="d-inline-block align-text-bottom">
           {{version}}
         </a>
         <span class="text-white ">Developed by Mitja M. Zdouc, PhD et al.</span>
       </div>
     </nav>
   </header>
-  
+
   <main class="flex-shrink-0">
     <div class="container-fluid">
       {% block content %}The content was not populated{% endblock %}
     </div>
-  </main>  
+  </main>
 
   {% block footer %} 
   <footer class="footer mt-auto py-3">
     <div class="divider py-1 bg-primary"></div>
     <div class="container-fluid">
       <div class="col">
-        <a href="https://www.wur.nl/en/research-results/chair-groups/plant-sciences/bioinformatics/people.htm" > 
-          <img src="{{ url_for('static', filename='images/WUR_logo.png') }}" alt="WUR Logo" height="100" class="d-inline-block" />
+        <a href="https://www.wur.nl/en/research-results/chair-groups/plant-sciences/bioinformatics/people.htm">
+          <img src="{{ url_for('static', filename='images/WUR_logo.png') }}" alt="WUR Logo" height="100" class="d-inline-block"/>
         </a>
-        <a href="https://marblesproject.eu/" > 
+        <a href="https://marblesproject.eu/">
           <img src="{{ url_for('static', filename='images/Marbles_logo.svg') }}" alt="Marbles Logo" height="100"  class="d-inline-block"/>
         </a>
       </div>
@@ -51,4 +51,3 @@
 
 </body>
 </html>
-
