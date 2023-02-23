@@ -1,9 +1,32 @@
+/* General */
 :root, [data-bs-theme="light"] {
---bs-primary-rgb: 17,103,137;
+    --bs-primary-rgb: 17,103,137;
+    }
+
+body {
+    font-family: Verdana, sans-serif;
+    font-size: 20px;
 }
 
 .btn-primary {--bs-btn-bg: #116789;
     --bs-btn-border-color: #116789;
     --bs-btn-hover-bg: #0e526e;
     --bs-btn-hover-border-color: #0e526e;
+}
+
+.btn-label {
+    font-weight: bold; /* only keep if more button-label specific styles are added, otherwise use fw-bold*/
+}
+
+/* Specifics */
+#loading-button{
+    margin-top: 100px;
+}
+
+#workflow{
+    float: right;
+}
+
+.custom-tooltip {
+    --bs-tooltip-bg: var(--bs-primary-rgb);
 }
