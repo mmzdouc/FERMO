@@ -27,206 +27,77 @@ body {
     --bs-tooltip-bg: #116789;
 }
 
-/* multi range sliders */
-.selector {
-    position: relative;
-    padding: 20px;
-    width: 400px;
-    color: #116789;
+
+/* multi range slider from https://medium.com/@predragdavidovic10/native-dual-range-slider-html-css-javascript-91e778134816 */
+.range_container {
+display: flex;
+flex-direction: column;
+margin: 5%;
+margin-left: 0%;
 }
 
-.selector ul {
-    position: relative;
-    display: block;
-    overflow: auto;
-    min-width: 138px;
-    max-height: 200px;
-    background: #fff;
-    list-style: none;
-    white-space: inherit;
-    padding-right: 17px;
-    width: calc(100% + 17px)
+.sliders_control {
+position: relative;
+min-height: 15px;
 }
 
-.selector li {
-    position: relative;
-    padding: 3px 20px 3px 25px;
-    cursor: pointer
+.form_control_slider {
+position: relative;
+display: flex;
+justify-content: space-between;
 }
 
-.selector li:before {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    top: 4px;
-    display: inline-block;
-    margin-right: 9px;
-    width: 17px;
-    height: 17px;
-    background-color: #f4f4f4;
-    border: 1px solid #116789;
-    content: ""
+input[type=range]::-webkit-slider-thumb {
+-webkit-appearance: none;
+pointer-events: all;
+width: 24px;
+height: 24px;
+background-color: #fff;
+border-radius: 50%;
+box-shadow: 0 0 0 1px #C6C6C6;
+cursor: pointer;
 }
 
-.selector li[data-selected="1"]:before {
-    border: 1px solid #d7d7d7;
-    background-color: #fff
+input[type=range]::-moz-range-thumb {
+-webkit-appearance: none;
+pointer-events: all;
+width: 24px;
+height: 24px;
+background-color: #fff;
+border-radius: 50%;
+box-shadow: 0 0 0 1px #C6C6C6;
+cursor: pointer;  
 }
 
-.selector li[data-selected="1"]:after {
-    position: absolute;
-    top: 50%;
-    left: 3px;
-    top: 11px;
-    display: inline-block;
-    width: 4px;
-    height: 10px;
-    border-right: 2px solid;
-    border-bottom: 2px solid;
-    background: none;
-    color: #116789;
-    content: "";
-    -webkit-transform: rotate(40deg) translateY(-50%);
-    transform: rotate(40deg) translateY(-50%)
+input[type=range]::-webkit-slider-thumb:hover {
+background: #f7f7f7;
 }
 
-.selector li:hover {
-    color: #aaa
+input[type=range]::-webkit-slider-thumb:active {
+box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+-webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
 }
 
-.selector li .total {
-    position: absolute;
-    right: 0;
-    color: #d7d7d7
+.form_control_slider > .form_control_container > input[type=number] {
+max-width: 75px;
 }
 
-.selector .price-slider {
-    text-align: center;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    position: relative;
-    padding-top: 17px
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {  
+    opacity: 1;
 }
 
-@media (min-width: 768px) {
-    .selector .price-slider {
-        padding-top:8px
-    }
+input[type="range"] {
+-webkit-appearance: none; 
+appearance: none;
+height: 2px;
+width: 100%;
+position: absolute;
+background-color: #C6C6C6;
+pointer-events: none;
 }
 
-.selector .price-slider:before {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    margin-top: 0;
-    color: #116789;
-    content: attr(data-currency);
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%)
-}
-
-.selector #slider-range {
-    width: 90%;
-    margin-bottom: 30px;
-    border: none;
-    background: #cfe1e7;
-    height: 3px;
-    margin-left: 8px;
-    margin-right: 8px
-}
-
-@media (min-width: 768px) {
-     .selector #slider-range {
-        width:100%
-    }
-}
-
-.selector .ui-slider-handle {
-    border-radius: 50%;
-    background-color: #116789;
-    border: none;
-    top: -14px;
-    width: 28px;
-    height: 28px;
-    outline: none
-}
-
-@media (min-width: 768px) {
-    .selector .ui-slider-handle {
-        top:-7px;
-        width: 16px;
-        height: 16px
-    }
-}
-
-.selector .ui-slider-range {
-    background-color: #cfe1e7
-}
-
-.selector .slider-price {
-    position: relative;
-    display: inline-block;
-    padding: 5px 40px;
-    width: 40%;
-    background-color: #cfe1e7;
-    line-height: 28px;
-    text-align: center
-}
-
-.selector .slider-price:before {
-    position: absolute;
-    top: 50%;
-    left: 13px;
-    margin-top: 0;
-    color: #116789;
-    content: attr(data-currency);
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%)
-}
-
-.selector .show-all {
-    position: relative;
-    padding-left: 25px;
-    color: #116789;
-    cursor: pointer;
-    line-height: 28px
-}
-
-.selector .show-all:after, .selector .show-all:before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 4px;
-    margin-top: -1px;
-    color: #116789;
-    width: 10px;
-    border-bottom: 1px solid
-}
-
-.selector .show-all:after {
-    -webkit-transform: rotate(90deg);
-    transform: rotate(90deg)
-}
-
-.selector.open ul {
-    max-height: none
-}
-
-.selector.open .show-all:after {
-    display: none
-}
-
-* {
-    -webkit-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    box-sizing: border-box;
+#fromSlider, #fromSliderMS2Q {
+height: 0;
+z-index: 1;
 }

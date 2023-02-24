@@ -101,71 +101,89 @@
         </div>
         <div class="col col-lg-6 mt-5">
             <h4 class="fw-bold mt-2 mb-3">General parameters</h4>
-            <form>
-                <label for="mass-deviation" class="form-label">Mass deviation: </label>
-                <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                   target="_blank"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="right"
-                   data-bs-custom-class="custom-tooltip"
-                   data-bs-title="Estimated mass deviation of your data in ppm. Used as precision threshold during different calculation steps (e.g. ion species calculation). For more information, click this info-button.">
-                   <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
-                </a>
-                <div class="col-sm-6 col-md-5 col-lg-4">
-                    <input type="number" class="form-control" id="mass-deviation" min="0" step="1" value="20">
+            <form class="d-grid gap-2">
+                <div>
+                    <label for="mass-deviation" class="form-label">Mass deviation: </label>
+                    <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
+                    target="_blank"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="Estimated mass deviation of your data in ppm. Used as precision threshold during different calculation steps (e.g. ion species calculation). For more information, click this info-button.">
+                    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                    </a>
+                    <div class="col-sm-6 col-md-5 col-lg-4">
+                        <input type="number" class="form-control" id="mass-deviation" min="0" step="1" value="20">
+                    </div>
                 </div>
-
-                <label for="minimum-fragments">Min fragments per MS² spectrum: </label>
-                <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                   target="_blank"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="right"
-                   data-bs-custom-class="custom-tooltip"
-                   data-bs-title="Quality control parameter. MS² spectra that do not exceed the minimum number of fragments are discarded and the feature is considered MS¹ only. Set this parameter to '0' if all spectra should be retained. For more information, click this info-button.">
-                   <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
-                </a>
-                <div class="col-sm-6 col-md-5 col-lg-4">
-                    <input type="number" class="form-control" id="minimum-fragments" min="0" step="1" value="8">
+                <div>
+                    <label for="minimum-fragments">Min fragments per MS² spectrum: </label>
+                    <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
+                    target="_blank"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="Quality control parameter. MS² spectra that do not exceed the minimum number of fragments are discarded and the feature is considered MS¹ only. Set this parameter to '0' if all spectra should be retained. For more information, click this info-button.">
+                    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                    </a>
+                    <div class="col-sm-6 col-md-5 col-lg-4">
+                        <input type="number" class="form-control" id="minimum-fragments" min="0" step="1" value="8">
+                    </div>
                 </div>
-
-                <label for="quant-data-factor">QuantData factor: </label>
-                <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                   target="_blank"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="right"
-                   data-bs-custom-class="custom-tooltip"
-                   data-bs-title="Only used if quantitative biological data was provided. If a feature was detected in samples with and without associated biological measurement, the fold difference between the lowest feature intensity from the sample with the lowest measurement and the highest feature intensity across inactive samples must be higher than the QuantData factor to still consider the feature associated to the measurement. For more information, click this info-button.">
-                   <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
-                </a>
-                <div class="col-sm-6 col-md-5 col-lg-4">
-                    <input type="number" class="form-control" id="quant-data-factor" min="0" step="1" value="10">
+                <div>
+                    <label for="quant-data-factor">QuantData factor: </label>
+                    <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
+                    target="_blank"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="Only used if quantitative biological data was provided. If a feature was detected in samples with and without associated biological measurement, the fold difference between the lowest feature intensity from the sample with the lowest measurement and the highest feature intensity across inactive samples must be higher than the QuantData factor to still consider the feature associated to the measurement. For more information, click this info-button.">
+                    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                    </a>
+                    <div class="col-sm-6 col-md-5 col-lg-4">
+                        <input type="number" class="form-control" id="quant-data-factor" min="0" step="1" value="10">
+                    </div>
                 </div>
-
-                <label for="blank-factor">Blank factor: </label>
-                <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                   target="_blank"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="right"
-                   data-bs-custom-class="custom-tooltip"
-                   data-bs-title="Only used if group metadata was provided. If a feature was detected in both samples and blanks, the fold difference between the average intensity across samples and the average intensity across blanks must be higher than the blank factor to not consider the feature as blank-associated. For more information, click this info-button.">
-                   <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
-                </a>
-                <div class="col-sm-6 col-md-5 col-lg-4">
-                    <input type="number" class="form-control" id="blank-factor" min="0" step="1" value="10">
+                <div>
+                    <label for="blank-factor">Blank factor: </label>
+                    <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
+                    target="_blank"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="Only used if group metadata was provided. If a feature was detected in both samples and blanks, the fold difference between the average intensity across samples and the average intensity across blanks must be higher than the blank factor to not consider the feature as blank-associated. For more information, click this info-button.">
+                    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                    </a>
+                    <div class="col-sm-6 col-md-5 col-lg-4">
+                        <input type="number" class="form-control" id="blank-factor" min="0" step="1" value="10">
+                    </div>
                 </div>
-
-                <label for="intensity-filter">Relative intensity filter: </label>
-                <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                   target="_blank"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="right"
-                   data-bs-custom-class="custom-tooltip"
-                   data-bs-title="Filter to remove features with relative intensity outside of the selected range from the analysis. This can be used to reduce low-intensity features, or to remove all-dominating features, such as solvent peaks. For more information, click this info-button.">
-                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
-                </a>
-                <!-- placeholder because the one with two handles and proper styling will take more time -->
-                <div class="col-sm-6 col-md-5 col-lg-4">
-                    <input type="range" class="form-range" min="0" max="1" step="0.01" id="intensity-filter">
+                <div>
+                    <label for="intensity-filter">Relative intensity filter: </label>
+                    <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
+                    target="_blank"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="Filter to remove features with relative intensity outside of the selected range from the analysis. This can be used to reduce low-intensity features, or to remove all-dominating features, such as solvent peaks. For more information, click this info-button.">
+                    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                    </a>
+                    <div class="range_container col-sm-6 col-md-5 col-lg-4">
+                        <div class="sliders_control">
+                            <input id="fromSlider" type="range" value="0" min="0" max="100"/>
+                            <input id="toSlider" type="range" value="100" min="0" max="100"/>
+                        </div>
+                        <div class="form_control_slider">
+                            <div class="form_control_container">
+                                <div class="form_control_container__time">Min</div>
+                                <input class="form_control_container__time__input" type="number" id="fromInput" value="0" min="0" max="100"/>
+                            </div>
+                            <div class="form_control_container">
+                                <div class="form_control_container__time">Max</div>
+                                <input class="form_control_container__time__input" type="number" id="toInput" value="100" min="0" max="100"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
             <h4 class="fw-bold mt-2 mb-3">Networking and annotation parameters</h4>
@@ -182,19 +200,34 @@
                     <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                     </a>
                 </div>
-                <label for="MS2Query-filter">MS2Query relative intensity filter: </label>
-                <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                   target="_blank"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="right"
-                   data-bs-custom-class="custom-tooltip"
-                   data-bs-title="Filter to restrict MS2Query annotation to a certain relative intensity range. This can be used to reduce calculation time by omitting low relative intensity features. For more information, click this info-button.">
-                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
-                </a>
-                <!-- placeholder because the one with two handles and proper styling will take more time -->
-                <div class="col-sm-6 col-md-5 col-lg-4">
-                    <input type="range" class="form-range" min="0" max="1" step="0.01" id="MS2Query-filter">
+                <div>
+                    <label for="MS2Query-filter">MS2Query relative intensity filter: </label>
+                    <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
+                    target="_blank"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="Filter to restrict MS2Query annotation to a certain relative intensity range. This can be used to reduce calculation time by omitting low relative intensity features. For more information, click this info-button.">
+                    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                    </a>
+                    <div class="range_container col-sm-6 col-md-5 col-lg-4">
+                        <div class="sliders_control">
+                            <input id="fromSliderMS2Q" type="range" value="0" min="0" max="100"/>
+                            <input id="toSliderMS2Q" type="range" value="100" min="0" max="100"/>
+                        </div>
+                        <div class="form_control_slider">
+                            <div class="form_control_container">
+                                <div class="form_control_container__time">Min</div>
+                                <input class="form_control_container__time__input" type="number" id="fromInputMS2Q" value="0" min="0" max="100"/>
+                            </div>
+                            <div class="form_control_container">
+                                <div class="form_control_container__time">Max</div>
+                                <input class="form_control_container__time__input" type="number" id="toInputMS2Q" value="100" min="0" max="100"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" role="switch" id="MS2Query-blank-annotation">
                     <label class="form-check-label" for="MS2Query-blank-annotation">Enable MS2Query annotation of features from blank sample</label> 
@@ -203,22 +236,20 @@
                        data-bs-toggle="tooltip"
                        data-bs-placement="right"
                        data-bs-custom-class="custom-tooltip"
-                       data-bs-title="Toggle to switch on annotation of blank-associatedfeatures by MS2Query. This can give additional information, but also leads to an increase in computation time, since there are more features to process.">
+                       data-bs-title="Toggle to switch on annotation of blank-associated features by MS2Query. This can give additional information, but also leads to an increase in computation time, since there are more features to process.">
                     <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                     </a>
                 </div>
                 <div class="my-3">
-                    <div class="">
-                        Spectral similarity networking algorithm: 
-                        <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                           target="_blank"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="right"
-                           data-bs-custom-class="custom-tooltip"
-                           data-bs-title="Tolerance in m/z used in MS² spectra fragment comparison. Two fragments will be considered a match if their difference is less then or equal to the m/z tolerance. For more information, click this info-button.">
-                        <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
-                        </a>
-                    </div>
+                    Spectral similarity networking algorithm: 
+                    <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
+                        target="_blank"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                        data-bs-custom-class="custom-tooltip"
+                        data-bs-title="Tolerance in m/z used in MS² spectra fragment comparison. Two fragments will be considered a match if their difference is less then or equal to the m/z tolerance. For more information, click this info-button.">
+                    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
+                    </a>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked>
                         <label class="form-check-label" for="inlineRadio1">Modified Cosine</label>
@@ -298,4 +329,5 @@
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 </script>
+<script src="{{ url_for('static', filename='js/multi_range_slider.js') }}"></script>
 {% endblock %}
