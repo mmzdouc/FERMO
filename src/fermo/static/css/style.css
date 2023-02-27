@@ -46,31 +46,37 @@ position: relative;
 display: flex;
 justify-content: space-between;
 }
-
+/* pseudoelement for input[type=range] for webkit based browsers */
 input[type=range]::-webkit-slider-thumb {
 -webkit-appearance: none;
 pointer-events: all;
 width: 24px;
 height: 24px;
-background-color: #fff;
+background-color: #116789;
+border: none;
 border-radius: 50%;
 box-shadow: 0 0 0 1px #C6C6C6;
 cursor: pointer;
 }
-
+/* pseudoelement for Gecko based browsers (firefox) */
 input[type=range]::-moz-range-thumb {
 -webkit-appearance: none;
 pointer-events: all;
 width: 24px;
 height: 24px;
-background-color: #fff;
+background-color: #116789;
+border: none;
 border-radius: 50%;
 box-shadow: 0 0 0 1px #C6C6C6;
 cursor: pointer;  
 }
 
 input[type=range]::-webkit-slider-thumb:hover {
-background: #f7f7f7;
+background: #0e526e;
+}
+
+input[type=range]::-moz-range-thumb:hover {
+    background: #0e526e;
 }
 
 input[type=range]::-webkit-slider-thumb:active {

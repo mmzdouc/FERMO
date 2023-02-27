@@ -48,15 +48,15 @@ function controlToSlider(fromSlider, toSlider, toInput) {
 }
 
 function getParsed(currentFrom, currentTo) {
-  const from = parseInt(currentFrom.value, 10);
-  const to = parseInt(currentTo.value, 10);
+  const from = parseFloat(currentFrom.value);
+  const to = parseFloat(currentTo.value);
   return [from, to];
 }
 
 function fillSlider(from, to, sliderColor, rangeColor, controlSlider) {
-    const rangeDistance = to.max-to.min;
-    const fromPosition = from.value - to.min;
-    const toPosition = to.value - to.min;
+    const rangeDistance = (to.max-to.min) / to.step;
+    const fromPosition = (from.value - to.min) / to.step;
+    const toPosition = (to.value - to.min) / to.step;
     controlSlider.style.background = `linear-gradient(
       to right,
       ${sliderColor} 0%,
