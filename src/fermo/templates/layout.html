@@ -11,6 +11,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
+  {% block header%}
   <header>
     <nav class="navbar navbar-dark bg-primary">
       <div class="container-fluid">
@@ -22,10 +23,13 @@
       </div>
     </nav>
   </header>
+  {% endblock %}
 
   <main class="flex-shrink-0">
     <div class="container-fluid">
-      {% block content %}The content was not populated{% endblock %}
+      {% block content %}
+        The content was not populated
+      {% endblock %}
     </div>
   </main>
 
