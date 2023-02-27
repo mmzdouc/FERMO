@@ -99,9 +99,9 @@
                 </div>
             </div>
         </div>
-        <div class="col col-lg-6 mt-5">
-            <h4 class="fw-bold mt-2 mb-3">General parameters</h4>
-            <form class="d-grid gap-2">
+        <div class="col col-lg-5 col-xl-4 mt-4">
+            <h4 class="fw-bold my-3">General parameters</h4>
+            <form class="d-grid gap-3">
                 <div>
                     <label for="mass-deviation" class="form-label">Mass deviation: </label>
                     <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
@@ -117,7 +117,7 @@
                     </div>
                 </div>
                 <div>
-                    <label for="minimum-fragments">Min fragments per MS² spectrum: </label>
+                    <label for="minimum-fragments" class="form-label">Min fragments per MS² spectrum: </label>
                     <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                     target="_blank"
                     data-bs-toggle="tooltip"
@@ -131,7 +131,7 @@
                     </div>
                 </div>
                 <div>
-                    <label for="quant-data-factor">QuantData factor: </label>
+                    <label for="quant-data-factor" class="form-label">QuantData factor: </label>
                     <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                     target="_blank"
                     data-bs-toggle="tooltip"
@@ -145,7 +145,7 @@
                     </div>
                 </div>
                 <div>
-                    <label for="blank-factor">Blank factor: </label>
+                    <label for="blank-factor" class="form-label">Blank factor: </label>
                     <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                     target="_blank"
                     data-bs-toggle="tooltip"
@@ -159,7 +159,7 @@
                     </div>
                 </div>
                 <div>
-                    <label for="intensity-filter">Relative intensity filter: </label>
+                    <label for="intensity-filter" class="form-label mb-0">Relative intensity filter: </label>
                     <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                     target="_blank"
                     data-bs-toggle="tooltip"
@@ -175,22 +175,22 @@
                         </div>
                         <div class="form_control_slider">
                             <div class="form_control_container">
-                                <div class="form_control_container__time">Min</div>
-                                <input class="form_control_container__time__input" type="number" id="fromInput" value="0" min="0" max="1" step="0.01"/>
+                                <div>Min</div>
+                                <input type="number" class="form-control" id="fromInput" value="0" min="0" max="1" step="0.01"/>
                             </div>
                             <div class="form_control_container">
-                                <div class="form_control_container__time">Max</div>
-                                <input class="form_control_container__time__input" type="number" id="toInput" value="1" min="0" max="1" step="0.01"/>
+                                <div>Max</div>
+                                <input type="number" class="form-control" id="toInput" value="1" min="0" max="1" step="0.01"/>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
-            <h4 class="fw-bold mt-2 mb-3">Networking and annotation parameters</h4>
-            <form>
+            <h4 class="fw-bold mt-5">Networking and annotation parameters</h4>
+            <form class="d-grid gap-3 mt-3">
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" role="switch" id="MS2Query-switch">
-                    <label class="form-check-label" for="MS2Query-switch">Enable MS2Query</label>
+                    <label class="form-check-label" for="MS2Query-switch">Enable MS2Query annotation</label>
                     <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                        target="_blank"
                        data-bs-toggle="tooltip"
@@ -201,7 +201,7 @@
                     </a>
                 </div>
                 <div>
-                    <label for="MS2Query-filter">MS2Query relative intensity filter: </label>
+                    <label for="MS2Query-filter" class="form-label mb-0">MS2Query relative intensity filter: </label>
                     <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                     target="_blank"
                     data-bs-toggle="tooltip"
@@ -217,20 +217,19 @@
                         </div>
                         <div class="form_control_slider">
                             <div class="form_control_container">
-                                <div class="form_control_container__time">Min</div>
-                                <input class="form_control_container__time__input" type="number" id="fromInputMS2Q" value="0" min="0" max="1" step="0.01"/>
+                                <div>Min</div>
+                                <input type="number" class="form-control" id="fromInputMS2Q" value="0" min="0" max="1" step="0.01"/>
                             </div>
                             <div class="form_control_container">
-                                <div class="form_control_container__time">Max</div>
-                                <input class="form_control_container__time__input" type="number" id="toInputMS2Q" value="1" min="0" max="1" step="0.01"/>
+                                <div>Max</div>
+                                <input type="number" class="form-control" id="toInputMS2Q" value="1" min="0" max="1" step="0.01"/>
                             </div>
                         </div>
                     </div>
                 </div>
-                
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" role="switch" id="MS2Query-blank-annotation">
-                    <label class="form-check-label" for="MS2Query-blank-annotation">Enable MS2Query annotation of features from blank sample</label> 
+                    <label class="form-check-label" for="MS2Query-blank-annotation">Enable MS2Query blank annotation</label> 
                     <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                        target="_blank"
                        data-bs-toggle="tooltip"
@@ -240,8 +239,8 @@
                     <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                     </a>
                 </div>
-                <div class="my-3">
-                    Spectral similarity networking algorithm: 
+                <div>
+                    <label for="algorithm-radio" class="form-label">Spectral similarity networking algorithm: </label>
                     <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                         target="_blank"
                         data-bs-toggle="tooltip"
@@ -250,73 +249,79 @@
                         data-bs-title="Tolerance in m/z used in MS² spectra fragment comparison. Two fragments will be considered a match if their difference is less then or equal to the m/z tolerance. For more information, click this info-button.">
                     <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
                     </a>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked>
-                        <label class="form-check-label" for="inlineRadio1">Modified Cosine</label>
+                    <div id="algorithm-radio">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked>
+                            <label class="form-check-label" for="inlineRadio1">Modified Cosine</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                            <label class="form-check-label" for="inlineRadio2">MS2DeepScore</label>
+                        </div>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                        <label class="form-check-label" for="inlineRadio2">MS2DeepScore</label>
+                </div>
+                <div>
+                    <label for="fragment-similarity" class="form-label">Fragment similarity tolerance: </label>
+                    <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
+                    target="_blank"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="Tolerance in m/z used in MS² spectra fragment comparison. Two fragments will be considered a match if their difference is less then or equal to the m/z tolerance. For more information, click this info-button.">
+                    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                    </a>
+                    <div class="col-sm-6 col-md-5 col-lg-4">
+                        <input type="number" class="form-control" id="fragment-similarity" min="0" step="0.01" value="0.1">
                     </div>
                 </div>
-
-                <label for="fragment-similarity" class="form-label">Fragment similarity tolerance: </label>
-                <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                   target="_blank"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="right"
-                   data-bs-custom-class="custom-tooltip"
-                   data-bs-title="Tolerance in m/z used in MS² spectra fragment comparison. Two fragments will be considered a match if their difference is less then or equal to the m/z tolerance. For more information, click this info-button.">
-                   <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
-                </a>
-                <div class="col-sm-6 col-md-5 col-lg-4">
-                    <input type="number" class="form-control" id="fragment-similarity" min="0" step="0.01" value="0.1">
+                <div>
+                    <label for="spectrum-similarity" class="form-label">Spectrum similarity score cutoff: </label>
+                    <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
+                    target="_blank"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="Score cutoff used in the evaluation of modified cosine scores between MS2 spectra. Two spectra will be considered related only if their score exceeds the cutoff threshold. For more information, click this info-button.">
+                    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                    </a>
+                    <div class="col-sm-6 col-md-5 col-lg-4">
+                        <input type="number" class="form-control" id="spectrum-similarity" min="0" step="0.01" value="0.8">
+                    </div>
                 </div>
-
-                <label for="spectrum-similarity" class="form-label">Spectrum similarity score cutoff: </label>
-                <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                   target="_blank"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="right"
-                   data-bs-custom-class="custom-tooltip"
-                   data-bs-title="Score cutoff used in the evaluation of modified cosine scores between MS2 spectra. Two spectra will be considered related only if their score exceeds the cutoff threshold. For more information, click this info-button.">
-                   <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
-                </a>
-                <div class="col-sm-6 col-md-5 col-lg-4">
-                    <input type="number" class="form-control" id="spectrum-similarity" min="0" step="0.01" value="0.8">
+                <div>
+                    <label for="max-spectral-links" class="form-label">Maximum spectral links: </label>
+                    <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
+                    target="_blank"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="Maximum number of links to other nodes, per node. Makes spectral similarity network less convoluted since it restricts the number of links between nodes to the highest n ones. For more information, click this info-button.">
+                    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                    </a>
+                    <div class="col-sm-6 col-md-5 col-lg-4">
+                        <input type="number" class="form-control" id="max-spectral-links" min="0" max="10" step="1" value="10">
+                    </div>
                 </div>
-
-                <label for="max-spectral-links" class="form-label">Maximum spectral links: </label>
-                <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                   target="_blank"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="right"
-                   data-bs-custom-class="custom-tooltip"
-                   data-bs-title="Maximum number of links to other nodes, per node. Makes spectral similarity network less convoluted since it restricts the number of links between nodes to the highest n ones. For more information, click this info-button.">
-                   <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
-                </a>
-                <div class="col-sm-6 col-md-5 col-lg-4">
-                    <input type="number" class="form-control" id="max-spectral-links" min="0" max="10" step="1" value="10">
-                </div>
-
-                <label for="min-matched-peaks" class="form-label">Minimum matched peaks: </label>
-                <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                   target="_blank"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="right"
-                   data-bs-custom-class="custom-tooltip"
-                   data-bs-title="In spectrum similarity matching, the minimum number of peaks that have to be matched between two spectra to be considered a match. For more information, click this info-button."></a>
-                   <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
-                </a>
-                <div class="col-sm-6 col-md-5 col-lg-4">
-                    <input type="number" class="form-control" id="min-matched-peaks" min="0" step="1" value="8">
+                <div>
+                    <label for="min-matched-peaks" class="form-label">Minimum matched peaks: </label>
+                    <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
+                    target="_blank"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-custom-class="custom-tooltip"
+                    data-bs-title="In spectrum similarity matching, the minimum number of peaks that have to be matched between two spectra to be considered a match. For more information, click this info-button."></a>
+                    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                    </a>
+                    <div class="col-sm-6 col-md-5 col-lg-4">
+                        <input type="number" class="form-control" id="min-matched-peaks" min="0" step="1" value="8">
+                    </div>
                 </div>
             </form>
         </div>
     </div>
     <div class="row">
         <div class="col my-2">
-            <div class="d-grid gap-2 col-6 mx-auto">
+            <div class="d-grid col-6 mx-auto mt-3">
                 <button class="btn btn-primary btn-label" type="button">Start FERMO</button>
             </div>
         </div>
