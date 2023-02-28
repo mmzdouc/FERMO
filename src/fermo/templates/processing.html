@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %}
+<form id="processing" method = "post" enctype = "multipart/form-data">
     <div class="row mt-3">
         <div class="col">
             <div class="text-content ms-2">
@@ -37,25 +38,25 @@
             <div class="container-fluid " id="input_buttons">
                 <hr class="mt-5"/>
                 <div class="d-grid gap-3 ms-0 my-2">
-                    <button class="btn btn-primary btn-label col-md-6"
-                        type="button"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        data-bs-custom-class="custom-tooltip"
-                        data-bs-title="Reads a MZmine3 style peak table with the '_quant_full.csv' suffix (exported in the FULL/ALL mode).
-                        For more information on the format, see the documentation.">
-                        Load peaktable (*_quant_full.csv)
-                    </button>
-                    <button class="btn btn-primary btn-label col-md-6"
-                            type="button"
+                    <div id="peaktable" class="col-lg-9 col-xl-6">
+                        <label for="peaktableFile" class="form-label">Load peaktable (*_quant_full.csv): </label>
+                        <input class="form-control" type="file" id="peaktableFile" name="peaktableFile"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            data-bs-custom-class="custom-tooltip"
+                            data-bs-title="Reads a MZmine3 style peak table with the '_quant_full.csv' suffix (exported in the FULL/ALL mode).
+                            For more information on the format, see the documentation.">
+                    </div>
+                    <div id="spectrum" class="col-lg-9 col-xl-6">
+                        <label for="MSMSFile" class="form-label">Load the MS/MS file (*.mgf): </label>
+                        <input class="form-control" type="file" id="MSMSFile" name="MSMSFile"
                             data-bs-toggle="tooltip"
                             data-bs-placement="right"
                             data-bs-custom-class="custom-tooltip"
                             data-bs-title="Reads a MZmine3 style .mgf-file containing tandem mass (MS/MS) spectra, accompanying the peak table. Generated through MZmine3 export. For more information on the format, see the documentation.">
-                            Load the MS/MS file (*.mgf)
-                    </button>
+                    </div>
                     <div>
-                        <label for="quant-data-format-selector" class="form-label">Specify format of quantitative biological data:
+                        <label for="quantDataFormatSelector" class="form-label">Specify format of quantitative biological data:
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                                target="_blank"
                                data-bs-toggle="tooltip"
@@ -65,52 +66,52 @@
                                 <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
                             </a>
                         </label>
-                        <div class="col-md-6">
-                            <select class="form-select" aria-label="Default select example" id="quant-data-format-selector">
+                        <div class="col-lg-9 col-xl-6">
+                            <select class="form-select" aria-label="Default select example" id="quantDataFormatSelector">
                                 <option selected hidden>Select...</option>
                                 <option value="1">Concentration-like (i.e. lowest value = highest activity)</option>
                                 <option value="2">Percentage-like (i.e. highest value = highest activity)</option>
                             </select>
                         </div>
                     </div>
-                    <button class="btn btn-primary btn-label col-md-6"
-                            type="button"
+                    <div id="quantData" class="col-lg-9 col-xl-6">
+                        <label for="quantDataFile" class="form-label">Load quantitative biological data (*.csv): </label>
+                        <input class="form-control" type="file" id="quantDataFile" name="quantDataFile"
                             data-bs-toggle="tooltip"
                             data-bs-placement="right"
                             data-bs-custom-class="custom-tooltip"
                             data-bs-title="Quantitative biological data file in the .csv format. For more information on the format, see the documentation.">
-                            Load quantitative biological data (*.csv)
-                    </button>
-                    <button class="btn btn-primary btn-label col-md-6"
-                            type="button"
+                    </div>
+                    <div id="Metadata" class="col-lg-9 col-xl-6">
+                        <label for="MetadataFile" class="form-label">Load group metadata table (*.csv): </label>
+                        <input class="form-control" type="file" id="MetadataFile" name="MetadataFile"
                             data-bs-toggle="tooltip"
                             data-bs-placement="right"
                             data-bs-custom-class="custom-tooltip"
                             data-bs-title="Metadata annotation file in .csv format. For more information on the format, see the documentation.">
-                            Load group metadata table (*.csv)
-                    </button>
-                    <button class="btn btn-primary btn-label col-md-6"
-                            type="button"
+                    </div>
+                    <div id="spectralLibrary" class="col-lg-9 col-xl-6">
+                        <label for="spectralLibraryFile" class="form-label">Load spectral library (*.mgf): </label>
+                        <input class="form-control" type="file" id="spectralLibraryFile" name="spectralLibraryFile"
                             data-bs-toggle="tooltip"
                             data-bs-placement="right"
                             data-bs-custom-class="custom-tooltip"
                             data-bs-title="Reads a user-provided spectral library in the .mgf-format. For more information on the format, see the documentation.">
-                            Load spectral library (*.mgf)
-                    </button>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col col-lg-5 col-xl-4 mt-4">
             <h4 class="fw-bold my-3">General parameters</h4>
-            <form class="d-grid gap-3">
+            <div class="d-grid gap-3">
                 <div>
                     <label for="mass-deviation" class="form-label">Mass deviation:
                         <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                           target="_blank"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="right"
-                           data-bs-custom-class="custom-tooltip"
-                           data-bs-title="Estimated mass deviation of your data in ppm. Used as precision threshold during different calculation steps (e.g. ion species calculation). For more information, click this info-button.">
+                            target="_blank"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            data-bs-custom-class="custom-tooltip"
+                            data-bs-title="Estimated mass deviation of your data in ppm. Used as precision threshold during different calculation steps (e.g. ion species calculation). For more information, click this info-button.">
                             <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                         </a>
                     </label>
@@ -121,11 +122,11 @@
                 <div>
                     <label for="minimum-fragments" class="form-label">Min fragments per MS² spectrum:
                         <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                           target="_blank"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="right"
-                           data-bs-custom-class="custom-tooltip"
-                           data-bs-title="Quality control parameter. MS² spectra that do not exceed the minimum number of fragments are discarded and the feature is considered MS¹ only. Set this parameter to '0' if all spectra should be retained. For more information, click this info-button.">
+                            target="_blank"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            data-bs-custom-class="custom-tooltip"
+                            data-bs-title="Quality control parameter. MS² spectra that do not exceed the minimum number of fragments are discarded and the feature is considered MS¹ only. Set this parameter to '0' if all spectra should be retained. For more information, click this info-button.">
                             <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                         </a>
                     </label>
@@ -136,11 +137,11 @@
                 <div>
                     <label for="quant-data-factor" class="form-label">QuantData factor:
                         <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                           target="_blank"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="right"
-                           data-bs-custom-class="custom-tooltip"
-                           data-bs-title="Only used if quantitative biological data was provided. If a feature was detected in samples with and without associated biological measurement, the fold difference between the lowest feature intensity from the sample with the lowest measurement and the highest feature intensity across inactive samples must be higher than the QuantData factor to still consider the feature associated to the measurement. For more information, click this info-button.">
+                            target="_blank"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            data-bs-custom-class="custom-tooltip"
+                            data-bs-title="Only used if quantitative biological data was provided. If a feature was detected in samples with and without associated biological measurement, the fold difference between the lowest feature intensity from the sample with the lowest measurement and the highest feature intensity across inactive samples must be higher than the QuantData factor to still consider the feature associated to the measurement. For more information, click this info-button.">
                             <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                         </a>
                     </label>
@@ -151,11 +152,11 @@
                 <div>
                     <label for="blank-factor" class="form-label">Blank factor:
                         <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                           target="_blank"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="right"
-                           data-bs-custom-class="custom-tooltip"
-                           data-bs-title="Only used if group metadata was provided. If a feature was detected in both samples and blanks, the fold difference between the average intensity across samples and the average intensity across blanks must be higher than the blank factor to not consider the feature as blank-associated. For more information, click this info-button.">
+                            target="_blank"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            data-bs-custom-class="custom-tooltip"
+                            data-bs-title="Only used if group metadata was provided. If a feature was detected in both samples and blanks, the fold difference between the average intensity across samples and the average intensity across blanks must be higher than the blank factor to not consider the feature as blank-associated. For more information, click this info-button.">
                             <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                         </a>
                     </label>
@@ -166,11 +167,11 @@
                 <div>
                     <label for="intensity-filter" class="form-label">Relative intensity filter:
                         <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
-                           target="_blank"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="right"
-                           data-bs-custom-class="custom-tooltip"
-                           data-bs-title="Filter to remove features with relative intensity outside of the selected range from the analysis. This can be used to reduce low-intensity features, or to remove all-dominating features, such as solvent peaks. For more information, click this info-button.">
+                            target="_blank"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            data-bs-custom-class="custom-tooltip"
+                            data-bs-title="Filter to remove features with relative intensity outside of the selected range from the analysis. This can be used to reduce low-intensity features, or to remove all-dominating features, such as solvent peaks. For more information, click this info-button.">
                             <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                         </a>
                     </label>
@@ -191,9 +192,9 @@
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
             <h4 class="fw-bold mt-5">Networking and annotation parameters</h4>
-            <form class="d-grid gap-3 mt-3">
+            <div class="d-grid gap-3 mt-3">
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" role="switch" id="MS2Query-switch">
                     <label class="form-check-label" for="MS2Query-switch">Enable MS2Query annotation
@@ -330,16 +331,17 @@
                         <input type="number" class="form-control" id="min-matched-peaks" min="0" step="1" value="8">
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col my-2">
             <div class="d-grid col-6 mx-auto mt-3">
-                <button class="btn btn-primary btn-label" type="button">Start FERMO</button>
+                <button class="btn btn-primary btn-label" type="submit">Start FERMO</button>
             </div>
         </div>
     </div>
+</form>
 {% endblock %}
 
 {% block scripts %}
