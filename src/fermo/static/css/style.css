@@ -5,7 +5,10 @@
 
 body {
     font-family: Verdana, sans-serif;
-    font-size: 20px;
+}
+
+#landing {
+    font-size: 20px
 }
 
 .btn-primary {--bs-btn-bg: #116789;
