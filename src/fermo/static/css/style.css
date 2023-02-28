@@ -11,7 +11,9 @@ body {
     font-size: 20px
 }
 
-.btn-primary {--bs-btn-bg: #116789;
+/* input forms */
+.btn-primary {
+    --bs-btn-bg: #116789;
     --bs-btn-border-color: #116789;
     --bs-btn-hover-bg: #0e526e;
     --bs-btn-hover-border-color: #0e526e;
@@ -21,15 +23,10 @@ body {
     font-weight: bold; /* only keep if more button-label specific styles are added, otherwise use fw-bold*/
 }
 
-/* Specifics */
-#loading-button{
-    margin-top: 100px;
+input[type="file"]::file-selector-button {
+    background-color: #116789;
+    color: white;
 }
-
-.custom-tooltip {
-    --bs-tooltip-bg: #116789;
-}
-
 
 /* multi range slider from https://medium.com/@predragdavidovic10/native-dual-range-slider-html-css-javascript-91e778134816 */
 .range_container {
@@ -48,8 +45,8 @@ position: relative;
 display: flex;
 justify-content: space-between;
 }
-/* pseudoelement for input[type=range] for webkit based browsers */
-input[type=range]::-webkit-slider-thumb {
+
+input[type=range]::-webkit-slider-thumb { /* pseudoelement for the knob of the slider on webkit based browsers */
 -webkit-appearance: none;
 pointer-events: all;
 width: 24px;
@@ -60,8 +57,8 @@ border-radius: 50%;
 box-shadow: 0 0 0 1px #C6C6C6;
 cursor: pointer;
 }
-/* pseudoelement for Gecko based browsers (firefox) */
-input[type=range]::-moz-range-thumb {
+
+input[type=range]::-moz-range-thumb { /* pseudoelement for the knob of the slider on Gecko based browsers (firefox) */
 -webkit-appearance: none;
 pointer-events: all;
 width: 24px;
@@ -108,4 +105,13 @@ pointer-events: none;
 #fromSlider, #fromSliderMS2Q {
 height: 0;
 z-index: 1;
+}
+
+/* Specifics */
+#loading-button{
+    margin-top: 100px;
+}
+
+.custom-tooltip {
+    --bs-tooltip-bg: #116789;
 }
