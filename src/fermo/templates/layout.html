@@ -13,7 +13,7 @@
 <body class="d-flex flex-column min-vh-100">
   {% block header%}
   <header>
-    <nav class="navbar navbar-dark bg-primary">
+    <nav class="navbar navbar-dark bg-primary p-0">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">
           <img src="{{ url_for('static', filename='/images/Fermo_logo.svg') }}" alt="FERMO logo" width="150" height="40" class="d-inline-block align-text-bottom">
@@ -39,11 +39,20 @@
     <div class="container-fluid">
       <div class="col">
         <a href="https://www.wur.nl/en/research-results/chair-groups/plant-sciences/bioinformatics/people.htm">
-          <img src="{{ url_for('static', filename='images/WUR_logo.png') }}" alt="WUR Logo" height="100" class="d-inline-block"/>
-        </a>
+          <img src="{{ url_for('static', filename='images/WUR_logo.png') }}" 
+              alt="WUR Logo" 
+              height="70" 
+              class="d-inline-block"/></a>
         <a href="https://marblesproject.eu/">
-          <img src="{{ url_for('static', filename='images/Marbles_logo.svg') }}" alt="Marbles Logo" height="100"  class="d-inline-block"/>
-        </a>
+          <img src="{{ url_for('static', filename='images/Marbles_logo.svg') }}" 
+              alt="Marbles Logo" 
+              height="70" 
+              class="d-inline-block me-3"/></a>
+        <a href="https://vdhooftcompmet.github.io/">
+          <img src="{{ url_for('static', filename='images/CompMetab_logo.jpeg') }}" 
+              alt="Computational Metabolomics logo" 
+              height="70"
+              class="d-inline-block"/></a>
       </div>
     </div>
   </footer>
