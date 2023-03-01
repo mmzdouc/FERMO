@@ -7,8 +7,32 @@ body {
     font-family: Verdana, sans-serif;
 }
 
-#landing {
-    font-size: 20px
+/* elements on dashboard page */
+#dashboardPage .row {
+    height: 39vh;
+}
+
+#dashboardPage .col {
+    height: 100%;
+}
+
+.card {
+    height: 100%;
+    overflow: auto;
+    scrollbar-width: thin;
+}
+.card::-webkit-scrollbar {
+    width: 10px;
+}
+
+.card::-webkit-scrollbar-track{
+    background-color: #efefef;
+    border-radius: 8px;
+}
+
+.card::-webkit-scrollbar-thumb{
+    background-color: #cfcfcf;
+    border-radius: 8px;
 }
 
 /* input forms */
@@ -107,11 +131,15 @@ height: 0;
 z-index: 1;
 }
 
-/* Specifics */
+/* Specific elements */
 #loading-button{
     margin-top: 100px;
 }
 
 .custom-tooltip {
     --bs-tooltip-bg: #116789;
+}
+
+#landingPage {
+    font-size: 20px
 }

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column vh-100">
   {% block header%}
   <header>
     <nav class="navbar navbar-dark bg-primary p-0">
@@ -25,16 +25,16 @@
   </header>
   {% endblock %}
 
-  <main class="flex-shrink-0">
-    <div class="container-fluid">
-      {% block content %}
-        The content was not populated
-      {% endblock %}
-    </div>
-  </main>
+  
+  {% block content %}
+    <main>
+      The content was not populated
+    </main>
+  {% endblock %}
+
 
   {% block footer %} 
-  <footer class="footer mt-auto pt-3">
+  <footer class="footer mt-auto">
     <div class="divider py-1 bg-primary"></div>
     <div class="container-fluid">
       <div class="col">

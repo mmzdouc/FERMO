@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %}
-<div id="landing">
+<main id="landingPage" class="container-fluid">
     <div class="row mb-3">
         <h1 class="text-center my-3 fw-bold"> FERMO: Streamlined Molecular Feature Prioritization</h1>
         <div class="col">
@@ -68,5 +68,5 @@
             <a href="{{url_for('views.loading')}}" class="btn btn-primary btn-label">Loading mode</a>
         </div>
     </div>
-</div>
+</main>
 {% endblock %}
