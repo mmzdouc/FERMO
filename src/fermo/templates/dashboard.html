@@ -4,37 +4,91 @@
 <main id=dashboardPage class="container-fluid flex-grow-1">
     <div class="row gx-2 mb-2 mt-1">
         <div class="col col-3">
-            <div class="card">
-                sample table <br>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, dignissimos officia vero excepturi, officiis enim, accusantium laudantium iusto asperiores aut quidem. Architecto hic magnam eaque nisi eos fugiat, natus qui molestiae, omnis, repellendus sit velit iure quidem aspernatur. Fuga a consequatur, quo repellendus hic suscipit debitis eos consectetur facere iste.
+            <div class="accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="sampleTableHeader">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sampleTable" aria-expanded="true" aria-controls="sampleTable">
+                        Sample Table
+                        </button>
+                    </h2>
+                    <div id="sampleTable" class="accordion-collapse collapse" aria-labelledby="sampleTableHeader">
+                        <div class="accordion-body">
+                            This is the sample table <br>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur alias doloremque voluptate fuga aliquam reiciendis commodi eaque aperiam asperiores. Odit culpa sed consequatur nisi deserunt.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="filtersHeader">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filters" aria-expanded="false" aria-controls="filters">
+                            Filters
+                        </button>
+                    </h2>
+                    <div id="filters" class="accordion-collapse collapse" aria-labelledby="filtersHeader">
+                        <div class="accordion-body">
+                            This is the filters section. <br>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, dignissimos officia vero excepturi, officiis enim, accusantium laudantium iusto asperiores aut quidem. Architecto hic magnam eaque nisi eos fugiat, natus qui molestiae, omnis, repellendus sit velit iure quidem aspernatur. Fuga a consequatur, quo repellendus hic suscipit debitis.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="featureTableHeader">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#featureTable" aria-expanded="false" aria-controls="featureTable">
+                            Feature Table
+                        </button>
+                    </h2>
+                    <div id="featureTable" class="accordion-collapse collapse" aria-labelledby="featureTableHeader">
+                        <div class="accordion-body">
+                            This is the feature table <br>
+                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Excepturi accusantium distinctio voluptas commodi optio? Tempora voluptatibus qui quae pariatur tenetur.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col col-9">
-            <div class="card">
-                dashboard
+            <div class="row">
+                <div class="col"> 
+                    <div class="card"> 
+                        <div class="card-header">
+                            Dashboard <br>
+                        </div>
+                        <div class="card-body">
+                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis dolor quidem, ipsam ea eveniet autem. <br> Commodi dicta laboriosam sunt hic tempore! Ipsum magni alias officiis eum eligendi tenetur maxime culpa totam fugit assumenda necessitatibus sequi nihil perspiciatis commodi quod ad at aliquam cumque quos quisquam, <br> tempore nemo! Inventore ipsam adipisci accusamus quam amet fuga ex laborum error. Corrupti esse nam, magni distinctio eum maxime quos ipsam dicta, sunt modi placeat magnam iure fugiat id? <br> Maiores harum, aspernatur temporibus corporis, omnis asperiores recusandae sit corrupti rerum quidem quod sunt enim nulla iure quae dolor nobis nihil a numquam quam explicabo! Ipsum!
+                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis dolor quidem, ipsam ea eveniet autem. <br> Commodi dicta laboriosam sunt hic tempore! Ipsum magni alias officiis eum eligendi tenetur maxime culpa totam fugit assumenda necessitatibus sequi nihil perspiciatis commodi quod ad at aliquam cumque quos quisquam, <br> tempore nemo! Inventore ipsam adipisci accusamus quam amet fuga ex laborum error. Corrupti esse nam, magni distinctio eum maxime quos ipsam dicta, sunt modi placeat magnam iure fugiat id? <br> Maiores harum, aspernatur temporibus corporis, omnis asperiores recusandae sit corrupti rerum quidem quod sunt enim nulla iure quae dolor nobis nihil a numquam quam explicabo! Ipsum!
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="row gx-2 mb-2 mt-1">
-        <div class="col col-3">
-            <div class="card">
-                filters <br>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, dignissimos officia vero excepturi, officiis enim, accusantium laudantium iusto asperiores aut quidem. Architecto hic magnam eaque nisi eos fugiat, natus qui molestiae, omnis, repellendus sit velit iure quidem aspernatur. Fuga a consequatur, quo repellendus hic suscipit debitis eos consectetur facere iste.
-            </div>
-        </div>
-        <div class="col col-4">
-            <div class="card">
-                cytoscape
-            </div>
-        </div>
-        <div class="col col-2">
-            <div class="card">
-                sample chromatograms
-            </div>
-        </div>
-        <div class="col col-3">
-            <div class="card">
-                feature table
+            <div class="row gx-2 mt-1">
+                <div class="accordion col-7">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="CytoscapeHeader">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Cytoscape" aria-expanded="true" aria-controls="Cytoscape">
+                                Cytoscape
+                            </button>
+                        </h2>
+                        <div class="accordion-collapse collapse" id="Cytoscape" aria-labelledby="CytoscapeHeader">
+                            <div class="accordion-body">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion col-5">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="sampleChromatogramsHeader">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sampleChromatograms" aria-expanded="false" aria-controls="sampleChromatograms"> 
+                                Sample chromatograms
+                            </button>
+                        </h2>
+                        <div class="accordion-collapse collapse" id="sampleChromatograms" aria-labelledby="sampleChromatogramsHeader">
+                            <div class="accordion-body">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, dignissimos officia vero excepturi, officiis enim, accusantium laudantium iusto asperiores aut quidem.
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
