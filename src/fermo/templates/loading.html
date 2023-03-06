@@ -32,16 +32,26 @@
             </div>
                 <div class="container-fluid " id="loading-button">
                     <hr/>
-                    <form id="loading_file" method = "post" enctype = "multipart/form-data">
-                        <div class="mb-3 col-7">
+                    <form id="loading_file" action="/loading" method = "post" enctype = "multipart/form-data">
+                        <div class=" mb-1 col-xl-8">
                             <label for="sessionFile" class="form-label">Load FERMO session File (*.json)</label>
                             <input class="form-control" type="file" id="sessionFile" name="sessionFile">
                         </div>
+                        <p class="text-danger"> 
+                            {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {% print(message) %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
+                        </p>
                     </form>
                 </div>
         </div>
         <div class="col mt-3">
             <div class="text-center">
+                {% block table %}
                 <table class="table table-striped">
                     <thead>
                       <tr>
@@ -64,6 +74,7 @@
                       </tr>
                     </tbody>
                   </table>
+                {% endblock %}
             </div>
         </div>
     </div>
