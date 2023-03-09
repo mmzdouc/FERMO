@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %}
-    <div class="row">
+<main id=loadingPage class="container-fluid">
+    <div class="row mt-3">
         <div class="col">
             <div class="text-content">
                 <h2 class="text-center mt-2 mx-2 fw-bold">Loading mode (Restart&nbsp;Session)</h2>
@@ -31,24 +32,58 @@
             </div>
                 <div class="container-fluid " id="loading-button">
                     <hr/>
-                    <div class="d-grid gap-2 col-4 mx-auto">
-                        <button class="btn btn-primary" type="button">Load FERMO session File (*.json)</button>
-                    </div>
+                    <form id="loading_file" action="/loading" method = "post" enctype = "multipart/form-data">
+                        <div class=" mb-1 col-xl-8">
+                            <label for="sessionFile" class="form-label">Load FERMO session File (*.json)</label>
+                            <input class="form-control" type="file" id="sessionFile" name="sessionFile">
+                        </div>
+                        <p class="text-danger"> 
+                            {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {% print(message) %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
+                        </p>
+                    </form>
                 </div>
         </div>
-        <div class="col">
+        <div class="col mt-3">
             <div class="text-center">
-        <div class="col">
-            <div class="text-center">
-                File Info Table placeholder
+                {% block table %}
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Attribute</th>
+                        <th scope="col">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td scope="row">Date of creation</th>
+                        <td>null</td>
+                      </tr>
+                      <tr>
+                        <td scope="row">Time of creation</th>
+                        <td>null</td>
+                      </tr>
+                      <tr>
+                        <td scope="row">FERMO version</th>
+                        <td>null</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                {% endblock %}
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col my-2">
             <div class="d-grid gap-2 col-6 mx-auto">
-                <button class="btn btn-primary btn-label" type="button">Start FERMO Dashboard</button>
+                <button class="btn btn-primary btn-label" type="submit" form="loading_file">Start FERMO Dashboard</button>
             </div>
         </div>
     </div>
+</main>
 {% endblock %}

@@ -1,18 +1,10 @@
 {% extends "layout.html" %}
 {% block title %}Flask-FERMO{% endblock %}
-{% block content %} 
+{% block content %}
+<main id="landingPage" class="container-fluid">
     <div class="row mb-3">
-        <div class="col text-center">
-            <h1 class="my-3">
-                <strong>FERMO: Streamlined Molecular Feature Prioritization</strong>
-            </h1>
-            <div class="my-5 mx-3">
-                <img src="{{ url_for('static', filename='images/app-landing-workflow.svg') }}"
-                    alt="FERMO Workflow"
-                    class="img-fluid"
-                    id="workflow"
-                    width="700">
-            </div>
+        <h1 class="text-center my-3 fw-bold"> FERMO: Streamlined Molecular Feature Prioritization</h1>
+        <div class="col">
             <div class="text-start mx-1">
                 <p>
                     FERMO is an app for the processing, analysis, and prioritization of molecules from complex <strong>LC-MS/MS</strong> data.
@@ -28,6 +20,13 @@
                     or in the <a href="https://github.com/mmzdouc/FERMO/wiki/"><strong>FERMO Wiki</strong></a>.
                 </p>
             </div>
+        </div>
+        <div class="col col-md-12 col-lg-5 d-flex flex-column justify-content-center align-items-center">
+                <img src="{{ url_for('static', filename='images/app-landing-workflow.svg') }}" 
+                    alt="FERMO Workflow" 
+                    class="img-fluid"
+                    width="700"
+                    style="min-width: 500;">
         </div>
     </div>
     <div class="row text-center mt-5">
@@ -61,7 +60,7 @@
             </div>
         </div>
     </div>
-    <div class="row text-center">
+    <div class="row text-center mb-2">
         <div class="col ">
             <a href="{{url_for('views.processing')}}" class="btn btn-primary btn-label">Processing mode</a>
         </div>
@@ -69,4 +68,5 @@
             <a href="{{url_for('views.loading')}}" class="btn btn-primary btn-label">Loading mode</a>
         </div>
     </div>
+</main>
 {% endblock %}
