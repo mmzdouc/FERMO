@@ -139,6 +139,23 @@ height: 0;
 z-index: 1;
 }
 
+/* tables */
+th {
+    background-color: #116789 !important;
+    color: white !important;
+}
+
+
+
+td {
+font-size: 12px;
+}
+
+td hr {
+    opacity: 0.5;
+    margin: 0.6rem 0;
+}
+
 /* Specific elements */
 #loading-button{
     margin-top: 100px;
