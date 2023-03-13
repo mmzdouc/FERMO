@@ -39,7 +39,7 @@ Example files can be found in the `example_data` folder. Instructions for the ge
 
 ### Installation
 
-FERMO must be downloaded and installed before use. This can be done by simply downloading this repository as ZIP-compressed folder (via the green "Code" button on the top right side of this page -> "Download ZIP"), or by cloning it. For the installation, see the step-by-step instructions below (Windows, Mac, Linux).
+FERMO must be downloaded and installed before use. This can be done by simply downloading this repository as ZIP-compressed folder (via the green "Code" button on the top right side of this page -> "Download ZIP"), or by cloning it. For the installation, see the step-by-step instructions below (Windows, Linux).
 
 #### Windows
 
@@ -68,37 +68,7 @@ FERMO must be downloaded and installed before use. This can be done by simply do
 
 #### macOS
 
-1. Download FERMO to an easily accessible location with write permissions, such as the Downloads folder or the Desktop. Unpack the package, for example by using [7-Zip ](https://www.7-zip.org/). Alternatively, clone this repository.
-
-2. Download the latest Miniconda3 version from the [Conda website](https://docs.conda.io/en/latest/miniconda.html) and install it with default settings. Details on the installation procedure can be found in [this Guide.](https://docs.conda.io/projects/conda/en/latest/user-guide/install/macos.html) Anaconda can also be used, but its installation requires substantially more disk space. If Miniconda or Anaconda were already installed before, please **update** to the latest version, to prevent errors during the installation. Of note, other package managers may be used, but have not been tested.
-
-3. Once Miniconda3/Anaconda3 was installed/updated, close and re-open the terminal window to make changes take effect. The terminal prompt should now have the prefix `(base)`.
-
-4. In the terminal window, navigate to the previously downloaded and unpacked FERMO directory, using the `cd` ("change directory") and `ls` ("list directory") commands. This must be done every time FERMO is started.
-
-5. In the FERMO directory, create a Conda virtual environment by entering the command `conda create --name FERMO python=3.8`. This must be done only the first time FERMO is run.
-
-6. Activate the newly created virtual environment by entering the command `conda activate FERMO`. The prefix of the command prompt should switch to `(FERMO)`, to indicate the change in environment. This must be done whenever FERMO is started.
-
-7. In the FERMO directory, install the dependencies by running the command `pip install -e .` (take care to also copy the trailing dot).
-
-8. To start FERMO, enter the command `python ./src/fermo/app.py`. After a few seconds, a browser window will automatically open, running FERMO on the local IP address `127.0.0.1:8050`.
-
-9. After use, close the command line window in which FERMO runs, or terminate execution of the program by hitting `ctrl+c`.
-
-For Apple Mac laptops with the new M1 chip, the error `zsh: illegal hardware instruction ...` was observed. If such an error occurs, the following commands can help to fix the problem:
-
-```
-$_ pip install virtualenv
-$_ virtualenv ENV
-$_ source ENV/bin/activate
-$_ wget "https://github.com/tensorflow/tensorflow/archive/refs/tags/v2.4.1.zip"
-$_ unzip v2.4.1.zip
-$_ mv v2.4.1 tensorflow_v2.4.1.whl
-$_ pip install ./tensorflow_v2.4.1.whl
-```
-Afterwards, repeat the command in point 7.
-
+Installation on macOS is currently not possible. We are working on fixing the issue.
 
 #### (Ubuntu) Linux
 
@@ -199,12 +169,15 @@ See also the list of [contributors](https://github.com/mmzdouc/FERMO/contributor
 ## Acknowledgments (in Alphabetical Order)
 
 - Bayona Maldonado, Lina M.  - *beta testing*
+- Dell, Maria - *beta testing*
 - van der Hooft, Justin J. J. - *project supervision*
 - Iorio, Marianna - *beta testing*
 - de Jonge, Niek - *code review, beta testing*
 - Khatib, Soliman - *beta testing*
+- Lund, George - *beta testing*
 - Maffioli, Sonia - *beta testing*
 - Medema, Marnix H. - *project supervision*
+- Padva, Leo - *beta testing*
 - Simone, Matteo - *beta testing*
 - Soldatou, Sylvia - *beta testing*
 
