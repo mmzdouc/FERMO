@@ -1,72 +1,72 @@
 from flask import (
-    flash,
     current_app,  # allows to access the config elements
-    request,
 )
 from werkzeug.utils import secure_filename
 import os
 import json
 
 
-def allowed_file(filename):
-    ''' Returns boolean for valid filenames and allowed extensions
+def check_file_format(filename, file_format, allowed_extensions):
+    ''' Check filename for validity
 
     Parameters
     ----------
-    filename : 'str'
-
-    Notes
-    -----
-    Check for dot in filename and allowed extensions as specified in the
-    config file
-    '''
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in \
-        current_app.config.get('ALLOWED_EXTENSION')
-
-
-def save_file(inputID, file_format):
-    '''Check file for validity and save it
-
-    Parameters
-    ----------
-    inputID: 'str'
-    file_format: 'str'
+    filename: 'str'
+    file_format: 'str' file format of one specific input with the leading dot
+    allowed_extension: list of strings as specified in config file
 
     Return
     ------
-    'str': filename if user input was valid,
-    none otherwise
+    'None': if the filename is valid
+    'str': otherwise a string with feedback for the user to be flashed
+    '''
+    if '.' not in file_format:
+        raise ValueError('file_format should be specified with the leading dot'
+                         )
+    elif file_format not in allowed_extensions:
+        raise ValueError('file_format must be an allowed_extension as \
+specified in the config')
+    else:
+        if filename.endswith(file_format):
+            return None
+        else:
+            return f"File must be a {file_format}-file!"
+
+
+def save_file(file, file_format, allowed_extensions, upload_folder):
+    '''Save the file if it is valid
+
+    Parameters
+    ----------
+    file: 'werkzeug.datastructures.FileStorage' an element of request.files
+    file_format: 'str' file format of one specific input with the leading dot
+    allowed_extensions: 'list of str' as specified in config file
+    upload_folder: 'str' path to location where files should be stored
+
+    Return
+    ------
+    'str': feedback for the user to be flashed and
+    'str'/'None': filename if user input was valid, or 'None' otherwise
 
     Notes
     -----
-    Checks if the file was succesfully transmitted via request, if a filename
-    provided, and if it has the right format. If so, the file is saved in the
-    location specified in config.toml under 'UPLOAD_FOLDER'.
-    inputID must be taken from the corresponding html file.
+    Checks if a file was provided and if it has the right format (judging
+    by the filename). If so, the file is saved in the 'upload_folder'
     '''
-    if inputID not in request.files:
-        flash('Something went wrong, please try again')
-        return None
-    file = request.files[inputID]
-    if file.filename == '':
-        flash('No file was loaded. Please upload a session-file.')
-        return None
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        if filename.endswith(file_format):
-            try:
-                file.save(os.path.join(current_app.config.get(
-                    'UPLOAD_FOLDER'), filename))
-            except FileNotFoundError:
-                print("File or folder didn't exist, \
-                        so the uploaded file couldn't be saved")
-            return filename
-        else:
-            flash(f"File must be a {file_format}-file!")
-            return None
+    filename = secure_filename(file.filename)
+    if filename == '':
+        return 'No file was loaded. Please upload a session-file.', None
+    if file and not check_file_format(filename, file_format,
+                                      allowed_extensions):
+        try:
+            file.save(os.path.join(upload_folder, filename))
+        except FileNotFoundError as e:
+            print(e)
+            return "File or folder didn't exist, so the uploaded file couldn't\
+                be saved", None
+        return 'File loaded successfully', filename
     else:
-        print('something went wrong with the file upload of element:', inputID)
-        return None
+        return f'Upload of {filename} was not successful', None
 
 
 def check_version(content_dict, filename, version):
@@ -75,6 +75,8 @@ def check_version(content_dict, filename, version):
     Parameters
     ----------
     content_dict: 'dict' from opened json file
+    filename: 'str'
+    version: 'str' version of the running tool
 
     Return
     ------
@@ -110,7 +112,7 @@ def empty_loading_table():
 
     Returns
     -------
-    list of lists: placeholder pre-file-upload
+    list of lists: placeholder for table before file upload
     '''
     content = [
         ['Date of creation', None],
@@ -216,19 +218,19 @@ def parse_sessionfile(filename, version):
     Return
     ------
     'dict': containing the parsed file info
-    'str': message for (possible) incompatibility or Errors
+    'str': message for (possible) incompatibility or FileNotFoundError
     '''
     try:
         with open(os.path.join(current_app.config.get('UPLOAD_FOLDER'),
                                filename)) as f:
             content_dict = json.load(f)
-            table_dict = create_session_table(content_dict['params_dict'],
-                                              content_dict['input_filenames'],
-                                              content_dict['session_metadata'],
-                                              content_dict['FERMO_version'],
-                                              content_dict['logging_dict'])
-            message = check_version(content_dict, filename, version)
-            return table_dict, message
     except FileNotFoundError as e:
         print(e)
         return empty_loading_table(), 'FileNotFoundError'
+    table_dict = create_session_table(content_dict['params_dict'],
+                                      content_dict['input_filenames'],
+                                      content_dict['session_metadata'],
+                                      content_dict['FERMO_version'],
+                                      content_dict['logging_dict'])
+    message = check_version(content_dict, filename, version)
+    return table_dict, message

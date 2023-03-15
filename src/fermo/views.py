@@ -1,5 +1,6 @@
 from flask import (
     Blueprint,
+    current_app,
     flash,
     redirect,
     render_template,
@@ -7,11 +8,11 @@ from flask import (
     url_for,
 )
 import fermo.__version__ as __version__
-
 from fermo.app_utils.input_testing import (
     save_file,
     parse_sessionfile,
     empty_loading_table)
+
 views = Blueprint(__name__, "views")
 
 
@@ -24,17 +25,26 @@ def landing(version=__version__.__version__):
 @views.route("/loading", methods=['GET', 'POST'])
 def loading(version=__version__.__version__):
     if request.method == 'POST':
-        filename = save_file('sessionFile', 'json')
-        if filename:
-            return redirect(url_for('views.inspect_uploaded_file',
-                                    filename=filename))
+        if 'sessionFile' not in request.files:
+            print('Input ID was not in the request')
         else:
-            return redirect(request.url)
+            sessionfile = request.files['sessionFile']
+            allowed_extensions = current_app.config.get('ALLOWED_EXTENSION')
+            upload_folder = current_app.config.get('UPLOAD_FOLDER')
+            message, filename = save_file(sessionfile, '.json',
+                                          allowed_extensions, upload_folder)
+            if filename:
+                return redirect(url_for('views.inspect_uploaded_file',
+                                        filename=filename))
+            else:
+                flash(message)
+                return redirect(request.url)
     return render_template('loading.html', version=version,
                            table=empty_loading_table())
 
 
-@views.route("/loading/<filename>")  # for inspecting the uploaded file before submitting it to the dashboard.
+@views.route("/loading/<filename>")  # for inspecting the uploaded file before
+# submitting it to the dashboard.
 def inspect_uploaded_file(filename, version=__version__.__version__):
     table_dict, message = parse_sessionfile(filename, version)
     if message:
@@ -43,11 +53,17 @@ def inspect_uploaded_file(filename, version=__version__.__version__):
                            table=table_dict)
 
 
+@views.route("/processing", methods=['GET', 'POST'])
+def processing(version=__version__.__version__):
+    if request.method == 'POST':
+        filename = save_file(['peaktableFile', 'MSMSFile',
+                              'quantDataFile', 'MetadataFile',
+                              'spectralLibraryFile'])
+        if filename:
+            pass
+    return render_template('processing.html', version=version)
+
+
 @views.route("/dashboard")
 def dashboard(version=__version__.__version__):
     return render_template('dashboard.html', version=version)
-
-
-@views.route("/processing", methods=['GET', 'POST'])
-def processing(version=__version__.__version__):
-    return render_template('processing.html', version=version)
