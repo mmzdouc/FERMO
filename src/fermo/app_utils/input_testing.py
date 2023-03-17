@@ -5,48 +5,72 @@ from werkzeug.utils import secure_filename
 import os
 import json
 
+# for type hinting
+from typing import Tuple
+from werkzeug.datastructures import FileStorage
 
-def check_file_format(filename, file_format, allowed_extensions):
+
+def check_file_format(
+    filename: str,
+    file_format: str,
+    allowed_extensions: list,
+) -> (str):
     ''' Check filename for validity
 
     Parameters
     ----------
-    filename: 'str'
-    file_format: 'str' file format of one specific input with the leading dot
-    allowed_extension: list of strings as specified in config file
+    filename: `str`
+    file_format: `str`
+        file format of one specific input with the leading dot
+    allowed_extension: `list`
+        list of strings as specified in config file
 
     Return
     ------
-    'None': if the filename is valid
-    'str': otherwise a string with feedback for the user to be flashed
+    `str`
+        a string with feedback for the user to be flashed
     '''
     if '.' not in file_format:
-        raise ValueError('file_format should be specified with the leading dot'
-                         )
+        raise ValueError(
+            'file_format should be specified with the leading dot'
+        )
     elif file_format not in allowed_extensions:
-        raise ValueError('file_format must be an allowed_extension as \
-specified in the config')
+        raise ValueError(
+            '''file_format must be an allowed_extension as specified in
+            the config'''
+        )
     else:
         if filename.endswith(file_format):
-            return None
+            return ''
         else:
             return f"File must be a {file_format}-file!"
 
 
-def save_file(file, file_format, allowed_extensions, upload_folder):
+def save_file(
+        file: FileStorage,
+        file_format: str,
+        allowed_extensions: list,
+        upload_folder: str,
+) -> Tuple[str, str]:
     '''Save the file if it is valid
 
     Parameters
     ----------
-    file: 'werkzeug.datastructures.FileStorage' an element of request.files
-    file_format: 'str' file format of one specific input with the leading dot
-    allowed_extensions: 'list of str' as specified in config file
-    upload_folder: 'str' path to location where files should be stored
+    file: `werkzeug.datastructures.FileStorage`
+        an element of request.files
+    file_format: `str`
+        file format of one specific input with the leading dot
+    allowed_extensions: `list`
+        list of str, as specified in config file
+    upload_folder: `str`
+        path to location where files should be stored
 
     Return
     ------
-    'str': feedback for the user to be flashed and
-    'str'/'None': filename if user input was valid, or 'None' otherwise
+    `str`
+        feedback for the user to be flashed and
+    `str`
+        filename if user input was valid, empty string otherwise
 
     Notes
     -----
@@ -55,33 +79,42 @@ def save_file(file, file_format, allowed_extensions, upload_folder):
     '''
     filename = secure_filename(file.filename)
     if filename == '':
-        return 'No file was loaded. Please upload a session-file.', None
-    if file and not check_file_format(filename, file_format,
-                                      allowed_extensions):
+        return 'No file was loaded. Please upload a session-file.', ''
+    if file and not check_file_format(
+        filename,
+        file_format,
+        allowed_extensions
+    ):
         try:
             file.save(os.path.join(upload_folder, filename))
+            return 'File loaded successfully', filename
         except FileNotFoundError as e:
             print(e)
-            return "File or folder didn't exist, so the uploaded file couldn't\
-                be saved", None
-        return 'File loaded successfully', filename
+            return (
+                '''File or folder did not exist, so the uploaded file could not
+                be saved''',
+                '',
+            )
     else:
-        return f'Upload of {filename} was not successful', None
+        return f'Upload of {filename} was not successful', ''
 
 
-def check_version(content_dict, filename, version):
+def check_version(content_dict: dict, filename: str, version: str) -> str:
     '''Compare version of uploaded file with current FERMO-version
 
     Parameters
     ----------
-    content_dict: 'dict' from opened json file
-    filename: 'str'
-    version: 'str' version of the running tool
+    content_dict: `dict`
+        from opened json file
+    filename: `str`
+    version: `str`
+        version of the running tool
 
     Return
     ------
-    'str': Error/warning message if versions are(may) not (be) compatible,
-    none otherwise
+    `str`
+        Error/warning message if versions are(may) not (be) compatible,
+        empty string otherwise
     '''
     uploaded_version = content_dict['FERMO_version']
     uploaded_version_split = uploaded_version.split('.')
@@ -89,7 +122,7 @@ def check_version(content_dict, filename, version):
         uploaded_version_split[0],
         uploaded_version_split[1],
         uploaded_version_split[2],
-        )
+    )
     if major != version.split('.')[0] or \
        minor != version.split('.')[1]:
         return f'''❌ Error: The loaded session file "{filename}"
@@ -104,15 +137,16 @@ def check_version(content_dict, filename, version):
         While these versions should be compatible, there might be
         some unforseen behavior of the application.'''
     else:
-        return None
+        return ''
 
 
-def empty_loading_table():
+def empty_loading_table() -> list:
     '''Generate placeholder table for loading page
 
     Returns
     -------
-    list of lists: placeholder for table before file upload
+    `list`
+        list of lists: placeholder for table before file upload
     '''
     content = [
         ['Date of creation', None],
@@ -141,17 +175,17 @@ def empty_loading_table():
         ['MS2Query relative intensity range', None],
         ['-----', '-----'],
         ['Process log step', 'Description'],
-        ]
+    ]
     return content
 
 
 def create_session_table(
-    params,
-    files,
-    metadata,
-    version,
-    logging
-):
+    params: dict,
+    files: dict,
+    metadata: dict,
+    version: dict,
+    logging: dict,
+) -> list:
     '''Parse session file and generate overview table
 
     Parameters
@@ -164,7 +198,8 @@ def create_session_table(
 
     Returns
     -------
-    list of lists: session file info
+    `list`
+        list of lists with session file info
     '''
     content = [
         ['Date of creation', metadata['date']],
@@ -201,36 +236,42 @@ def create_session_table(
             '-'.join([str(i) for i in params['ms2query_filter_range']])],
         ['-----', '-----'],
         ['Process log step', 'Description'],
-        ]
+    ]
     for entry in logging:
         content.append([entry, logging[entry]])
     return content
 
 
-def parse_sessionfile(filename, version):
+def parse_sessionfile(filename: str, version: str) -> Tuple[dict, str]:
     '''Check version compatibility and create session file
 
     Parameters
     ----------
-    filename: 'str'
-    version: 'str'; current version of FERMO as read from __version__.py file
+    filename: `str`
+    version: `str`
+        current version of FERMO as read from __version__.py file
 
     Return
     ------
-    'dict': containing the parsed file info
-    'str': message for (possible) incompatibility or FileNotFoundError
+    `dict`
+        containing the parsed file info
+    `str`
+        message for (possible) incompatibility or FileNotFoundError
     '''
     try:
-        with open(os.path.join(current_app.config.get('UPLOAD_FOLDER'),
-                               filename)) as f:
+        with open(
+            os.path.join(current_app.config.get('UPLOAD_FOLDER'), filename)
+        ) as f:
             content_dict = json.load(f)
+            table_dict = create_session_table(
+                content_dict['params_dict'],
+                content_dict['input_filenames'],
+                content_dict['session_metadata'],
+                content_dict['FERMO_version'],
+                content_dict['logging_dict'],
+            )
+            message = check_version(content_dict, filename, version)
+            return table_dict, message
     except FileNotFoundError as e:
         print(e)
         return empty_loading_table(), 'FileNotFoundError'
-    table_dict = create_session_table(content_dict['params_dict'],
-                                      content_dict['input_filenames'],
-                                      content_dict['session_metadata'],
-                                      content_dict['FERMO_version'],
-                                      content_dict['logging_dict'])
-    message = check_version(content_dict, filename, version)
-    return table_dict, message
