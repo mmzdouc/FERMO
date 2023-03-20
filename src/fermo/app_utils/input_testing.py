@@ -1,6 +1,3 @@
-from flask import (
-    current_app,  # allows to access the config elements
-)
 from werkzeug.utils import secure_filename
 import os
 import json
@@ -84,7 +81,7 @@ def save_file(
     feedback = check_file_format(
             filename,
             file_format,
-            allowed_extensions
+            allowed_extensions,
         )
     if feedback:
         return feedback, False
@@ -242,7 +239,11 @@ def create_session_table(
     return content
 
 
-def parse_sessionfile(filename: str, version: str) -> Tuple[dict, str]:
+def parse_sessionfile(
+    filename: str,
+    version: str,
+    upload_folder: str,
+) -> Tuple[list, str]:
     '''Check version compatibility and create session file
 
     Parameters
@@ -250,20 +251,22 @@ def parse_sessionfile(filename: str, version: str) -> Tuple[dict, str]:
     filename: `str`
     version: `str`
         Current version of FERMO as read from __version__.py file
+    upload_folder: `str`
+        location were uploaded files are stored
 
     Return
     ------
-    `dict`
+    `list`
         Containing the parsed file info
     `str`
         Message for (possible) incompatibility or FileNotFoundError
     '''
     try:
         with open(
-            os.path.join(current_app.config.get('UPLOAD_FOLDER'), filename)
+            os.path.join(upload_folder, filename)
         ) as f:
             content_dict = json.load(f)
-            table_dict = create_session_table(
+            table_list = create_session_table(
                 content_dict['params_dict'],
                 content_dict['input_filenames'],
                 content_dict['session_metadata'],
@@ -271,7 +274,14 @@ def parse_sessionfile(filename: str, version: str) -> Tuple[dict, str]:
                 content_dict['logging_dict'],
             )
             message = check_version(content_dict, filename, version)
-            return table_dict, message
-    except FileNotFoundError as e:
-        print(e)
+            return table_list, message
+    except FileNotFoundError as file_error:
+        print(file_error)
         return empty_loading_table(), 'FileNotFoundError'
+    except KeyError as key_error:
+        print(key_error)
+        os.remove(os.path.join(upload_folder, filename))
+        return (
+            empty_loading_table(),
+            'Make sure the file is from a previous session!'
+        )

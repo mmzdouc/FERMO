@@ -57,12 +57,12 @@ def loading(version=__version__.__version__):
                 sessionfile,
                 '.json',
                 allowed_extensions,
-                upload_folder
+                upload_folder,
             )
             if file_saved:
                 return redirect(url_for(
                     'views.inspect_uploaded_file',
-                    filename=feedback_or_filename
+                    filename=feedback_or_filename,
                 ))
             else:
                 flash(feedback_or_filename)
@@ -71,24 +71,31 @@ def loading(version=__version__.__version__):
         return render_template(
             'loading.html',
             version=version,
-            table=empty_loading_table()
+            table=empty_loading_table(),
         )
 
 
-@views.route("/loading/<filename>")
+@views.route("/loading/<filename>", methods=['GET', 'POST'])
 def inspect_uploaded_file(filename, version=__version__.__version__):
     '''Display session file overview
     (and to be implemented: redirect to dashboard page)
     '''
-    table_dict, message = parse_sessionfile(filename, version)
-    if message:
-        print('this happens in the loading/filename page function')
-        flash(message)
-    return render_template(
-        'loaded_file.html',
-        version=version,
-        table=table_dict,
-    )
+    if request.method == 'POST':
+        redirect(url_for('views.dashboard'))
+    else:
+        upload_folder = current_app.config.get('UPLOAD_FOLDER')
+        table_dict, message = parse_sessionfile(
+            filename,
+            version,
+            upload_folder,
+        )
+        if message:
+            flash(message)
+        return render_template(
+            'loaded_file.html',
+            version=version,
+            table=table_dict,
+        )
 
 
 @views.route("/processing", methods=['GET', 'POST'])
