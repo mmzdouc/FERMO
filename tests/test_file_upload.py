@@ -112,9 +112,9 @@ def test_parse_sessionfile(session_file, upload_folder):
 
     Notes
     -----
-    Save a file that mimicks a session file but doesn't have all the necessary
+    Save a file that mimicks a session file but does not have all the necessary
     keys for test purposes in the upload folder, parse it and make sure
-    the correct message is returned before removing the file at the end
+    the correct message is returned
     '''
     filename = 'testfile'
     should_version = '0.9.0'
@@ -126,4 +126,4 @@ def test_parse_sessionfile(session_file, upload_folder):
     )
     expected_message = 'Make sure the file is from a previous session!'
     assert message == expected_message and isinstance(table_list, list)
-    os.remove(os.path.join(upload_folder, filename))
+    print(os.path.join(upload_folder, filename))
