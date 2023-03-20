@@ -21,14 +21,14 @@ def check_file_format(
     ----------
     filename: `str`
     file_format: `str`
-        file format of one specific input with the leading dot
+        File format of one specific input with the leading dot
     allowed_extension: `list`
-        list of strings as specified in config file
+        List of strings as specified in config file
 
     Return
     ------
-    `str`
-        a string with feedback for the user to be flashed
+    feedback: `str`
+        String with feedback for the user to be flashed
     '''
     if '.' not in file_format:
         raise ValueError(
@@ -39,11 +39,13 @@ def check_file_format(
             '''file_format must be an allowed_extension as specified in
             the config'''
         )
+    elif filename == '':
+        feedback = 'No file was loaded. Please upload a session-file.'
+    elif not filename.endswith(file_format):
+        feedback = f"File must be a {file_format}-file!"
     else:
-        if filename.endswith(file_format):
-            return ''
-        else:
-            return f"File must be a {file_format}-file!"
+        feedback = ''
+    return feedback
 
 
 def save_file(
@@ -57,20 +59,21 @@ def save_file(
     Parameters
     ----------
     file: `werkzeug.datastructures.FileStorage`
-        an element of request.files
+        An element of request.files
     file_format: `str`
-        file format of one specific input with the leading dot
+        File format of one specific input with the leading dot
     allowed_extensions: `list`
-        list of str, as specified in config file
+        List of str, as specified in config file
     upload_folder: `str`
-        path to location where files should be stored
+        Path to location where files should be stored
 
     Return
     ------
     `str`
-        feedback for the user to be flashed and
-    `str`
-        filename if user input was valid, empty string otherwise
+        Feedback for the user to be flashed or the secure filename of the saved
+        file
+    `bool`
+        True if file-saving was successfull, False otherwise
 
     Notes
     -----
@@ -78,25 +81,22 @@ def save_file(
     by the filename). If so, the file is saved in the 'upload_folder'
     '''
     filename = secure_filename(file.filename)
-    if filename == '':
-        return 'No file was loaded. Please upload a session-file.', ''
-    if file and not check_file_format(
-        filename,
-        file_format,
-        allowed_extensions
-    ):
+    feedback = check_file_format(
+            filename,
+            file_format,
+            allowed_extensions
+        )
+    if feedback:
+        return feedback, False
+    else:
         try:
             file.save(os.path.join(upload_folder, filename))
-            return 'File loaded successfully', filename
+            return filename, True
         except FileNotFoundError as e:
             print(e)
-            return (
-                '''File or folder did not exist, so the uploaded file could not
-                be saved''',
-                '',
-            )
-    else:
-        return f'Upload of {filename} was not successful', ''
+            feedback = '''File or folder did not exist, so the uploaded file
+            could not be saved'''
+            return feedback, False
 
 
 def check_version(content_dict: dict, filename: str, version: str) -> str:
@@ -105,10 +105,10 @@ def check_version(content_dict: dict, filename: str, version: str) -> str:
     Parameters
     ----------
     content_dict: `dict`
-        from opened json file
+        From opened json file
     filename: `str`
     version: `str`
-        version of the running tool
+        Version of the running tool
 
     Return
     ------
@@ -146,7 +146,7 @@ def empty_loading_table() -> list:
     Returns
     -------
     `list`
-        list of lists: placeholder for table before file upload
+        List of lists: placeholder for table before file upload
     '''
     content = [
         ['Date of creation', None],
@@ -199,7 +199,7 @@ def create_session_table(
     Returns
     -------
     `list`
-        list of lists with session file info
+        List of lists with session file info
     '''
     content = [
         ['Date of creation', metadata['date']],
@@ -249,14 +249,14 @@ def parse_sessionfile(filename: str, version: str) -> Tuple[dict, str]:
     ----------
     filename: `str`
     version: `str`
-        current version of FERMO as read from __version__.py file
+        Current version of FERMO as read from __version__.py file
 
     Return
     ------
     `dict`
-        containing the parsed file info
+        Containing the parsed file info
     `str`
-        message for (possible) incompatibility or FileNotFoundError
+        Message for (possible) incompatibility or FileNotFoundError
     '''
     try:
         with open(

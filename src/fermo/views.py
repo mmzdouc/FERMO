@@ -43,7 +43,7 @@ def loading(version=__version__.__version__):
     checks if it was transmitted via the request, then accesses the file from
     the request-object, allowed extensions and upload folder from the config
     and saves the file in the specified location. Then redirects to the loading
-    page that displays the file-overview table. If applicable, displays a 
+    page that displays the file-overview table. If applicable, displays a
     warning message for missing or (possibly) incompatible input.
     '''
     if request.method == 'POST':
@@ -53,34 +53,36 @@ def loading(version=__version__.__version__):
             sessionfile = request.files['sessionFile']
             allowed_extensions = current_app.config.get('ALLOWED_EXTENSION')
             upload_folder = current_app.config.get('UPLOAD_FOLDER')
-            message, filename = save_file(
+            feedback_or_filename, file_saved = save_file(
                 sessionfile,
                 '.json',
                 allowed_extensions,
                 upload_folder
             )
-            if filename:
+            if file_saved:
                 return redirect(url_for(
                     'views.inspect_uploaded_file',
-                    filename=filename
+                    filename=feedback_or_filename
                 ))
             else:
-                flash(message)
+                flash(feedback_or_filename)
                 return redirect(request.url)
-    return render_template(
-        'loading.html',
-        version=version,
-        table=empty_loading_table()
-    )
+    else:
+        return render_template(
+            'loading.html',
+            version=version,
+            table=empty_loading_table()
+        )
 
 
 @views.route("/loading/<filename>")
 def inspect_uploaded_file(filename, version=__version__.__version__):
-    '''Display session file overview 
+    '''Display session file overview
     (and to be implemented: redirect to dashboard page)
     '''
     table_dict, message = parse_sessionfile(filename, version)
     if message:
+        print('this happens in the loading/filename page function')
         flash(message)
     return render_template(
         'loaded_file.html',

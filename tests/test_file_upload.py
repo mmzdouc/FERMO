@@ -58,39 +58,50 @@ def test_check_file_format_valid(filename, file_format, allowed_extensions):
     assert not check_file_format(filename, file_format, allowed_extensions)
 
 
-@pytest.mark.parametrize('filename, file_format',
-                         [('metadatacsv', '.csv'),
-                          ('sessionfile_json', '.json'),
-                          ('MSMS.txt', '.mgf'),
-                          ('metadata.csv.txt', '.csv')
-                          ])
+@pytest.mark.parametrize('filename, file_format', [
+    ('metadatacsv', '.csv'),
+    ('sessionfile_json', '.json'),
+    ('MSMS.txt', '.mgf'),
+    ('metadata.csv.txt', '.csv')
+])
 def test_check_file_format_invalid(filename, file_format, allowed_extensions):
     '''test invalid input for check_file_format()'''
     # with pytest.raises, ('metadata.txt', '.txt')
     assert check_file_format(filename, file_format, allowed_extensions)
 
 
-@pytest.mark.parametrize('filename, file_format',
-                         [('metadata.txt', '.txt'),
-                          ('sessionfile.json', 'json')
-                          ])
+@pytest.mark.parametrize(
+        'filename, file_format',
+        [('metadata.txt', '.txt'), ('sessionfile.json', 'json')]
+    )
 def test_check_file_format_raise(filename, file_format, allowed_extensions):
     '''test input that should raise an error in check_file_format()'''
     with pytest.raises(ValueError):
         check_file_format(filename, file_format, allowed_extensions)
 
 
-def test_save_file_successfully(allowed_extensions, session_file,
-                                upload_folder):
-    _, filename = save_file(session_file, '.json', allowed_extensions,
-                            upload_folder)
+def test_save_file_successfully(
+        allowed_extensions,
+        session_file,
+        upload_folder,
+):
+    filename, success = save_file(
+        session_file,
+        '.json',
+        allowed_extensions,
+        upload_folder
+        )
+    assert success
     assert os.path.isfile(os.path.join(upload_folder, filename))
     os.remove(os.path.join(upload_folder, filename))
-    assert filename
 
 
 def test_save_file_nofilename(allowed_extensions, upload_folder):
-    message, filename = save_file(FileStorage(filename=''), '.json',
-                                  allowed_extensions, 'src/fermo/uploads/')
-    assert message == 'No file was loaded. Please upload a session-file.' and\
-           not filename
+    message, filename = save_file(
+        FileStorage(filename=''),
+        '.json',
+        allowed_extensions,
+        upload_folder
+    )
+    expected_message = 'No file was loaded. Please upload a session-file.'
+    assert message == expected_message and not filename
