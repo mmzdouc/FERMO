@@ -183,7 +183,7 @@ def create_session_table(
     version: dict,
     logging: dict,
 ) -> list:
-    '''Parse session file and generate overview table
+    '''Generate list of parsed session-file info
 
     Parameters
     ----------
@@ -244,7 +244,7 @@ def parse_sessionfile(
     version: str,
     upload_folder: str,
 ) -> Tuple[list, str]:
-    '''Check version compatibility and create session file
+    '''Parse session-file, check version compatibility and create session file
 
     Parameters
     ----------
