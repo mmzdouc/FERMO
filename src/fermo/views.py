@@ -81,10 +81,36 @@ def loading(version=__version__.__version__):
 def inspect_uploaded_file(filename, version=__version__.__version__):
     '''Display session file overview
     (and to be implemented: redirect to dashboard page)
+
+    Parameters
+    ----------
+    filename: `str`
+    version: `str`
+
+    Returns
+    -------
+    `str` or `flask.wrappers.Response`
+        either the html for the initial loading page, or the response to the
+        request
+
+    Notes
+    -----
+    Displays the sessionfile overview and determines the behavior after button
+    clicks when a file was uploaded:
+    - if file-upload button was clicked, redirect to loading() while keeping
+    the POST method (hence code 307)
+    - if Start_FERMO_Dashboard-Button was clicked, #doSomething and redirect to
+    dashboard()
     '''
     if request.method == 'POST':
-        # parse the sessionfile as the dashboard needs it
-        return redirect(url_for('views.dashboard'))
+        try:
+            request.form['Start_FERMO_Dashboard']
+        except KeyError:
+            return redirect(url_for('views.loading'), code=307)
+        else:
+            # to be implemented: parse the sessionfile as needed for the
+            # dashboard
+            return redirect(url_for('views.dashboard'))
     else:
         upload_folder = current_app.config.get('UPLOAD_FOLDER')
         table_dict, message = parse_sessionfile(
