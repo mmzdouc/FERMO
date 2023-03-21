@@ -60,12 +60,14 @@ def loading(version=__version__.__version__):
                 upload_folder,
             )
             if file_saved:
+                filename = feedback_or_filename
                 return redirect(url_for(
                     'views.inspect_uploaded_file',
-                    filename=feedback_or_filename,
+                    filename=filename,
                 ))
             else:
-                flash(feedback_or_filename)
+                feedback = feedback_or_filename
+                flash(feedback)
                 return redirect(request.url)
     else:
         return render_template(
@@ -81,7 +83,8 @@ def inspect_uploaded_file(filename, version=__version__.__version__):
     (and to be implemented: redirect to dashboard page)
     '''
     if request.method == 'POST':
-        redirect(url_for('views.dashboard'))
+        # parse the sessionfile as the dashboard needs it
+        return redirect(url_for('views.dashboard'))
     else:
         upload_folder = current_app.config.get('UPLOAD_FOLDER')
         table_dict, message = parse_sessionfile(
@@ -92,7 +95,7 @@ def inspect_uploaded_file(filename, version=__version__.__version__):
         if message:
             flash(message)
         return render_template(
-            'loaded_file.html',
+            'loading.html',
             version=version,
             table=table_dict,
         )

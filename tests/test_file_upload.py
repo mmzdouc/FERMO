@@ -126,4 +126,3 @@ def test_parse_sessionfile(session_file, upload_folder):
     )
     expected_message = 'Make sure the file is from a previous session!'
     assert message == expected_message and isinstance(table_list, list)
-    print(os.path.join(upload_folder, filename))

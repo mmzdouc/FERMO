@@ -32,10 +32,10 @@
             </div>
             <div class="container-fluid " id="loading-button">
                 <hr/>
-                <form id="loading_file" action="/loading" method = "post" enctype = "multipart/form-data">
+                <form id="loading_file" method="post" enctype="multipart/form-data">
                     <div class=" mb-1 col-xl-8">
                         <label for="sessionFile" class="form-label">Load FERMO session File (*.json)</label>
-                        <input class="form-control" type="file" id="sessionFile" name="sessionFile">
+                        <input class="form-control" type="file" id="sessionFile" name="sessionFile" onchange="this.form.submit();">
                     </div>
                     {% with messages = get_flashed_messages() %}
                         {% if messages %}
@@ -86,7 +86,12 @@
     <div class="row">
         <div class="col my-2">
             <div class="d-grid gap-2 col-6 mx-auto">
-                <button class="btn btn-primary btn-label" type="submit" form="loading_file">Start FERMO Dashboard</button>
+                <button 
+                class="btn btn-primary btn-label" 
+                type="submit"
+                form="loading_file">
+                    Start FERMO Dashboard
+                </button>
             </div>
         </div>
     </div>
