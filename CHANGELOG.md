@@ -9,17 +9,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added 
 
-- MS/MS mirror plots in dashboard
-- Support for MASSQL search in dashboard
-- Integration with [INVENTA](https://github.com/luigiquiros/inventa)
-- Compatibility with OpenMS output
-- Compatibility with XCMS output
-- Compatibility with SIRIUS output
-- Support for negative ion mode (adduct recognition, annotation)
-
 ### Changed
 
-- Cytoscape view: incorporate group metadata information & connect to chromatogram view to update via click on node
+- Updated to MS2Query v 0.7.1 (by Niek de Jonge)
 
 ## [0.8.10] - 2023-02-14
 
