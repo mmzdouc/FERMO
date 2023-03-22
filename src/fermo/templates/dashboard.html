@@ -51,11 +51,10 @@
                 <div class="col"> 
                     <div class="card"> 
                         <div class="card-header">
-                            Dashboard <br>
+                            Main Chromatogram <br>
                         </div>
                         <div class="card-body">
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis dolor quidem, ipsam ea eveniet autem. <br> Commodi dicta laboriosam sunt hic tempore! Ipsum magni alias officiis eum eligendi tenetur maxime culpa totam fugit assumenda necessitatibus sequi nihil perspiciatis commodi quod ad at aliquam cumque quos quisquam, <br> tempore nemo! Inventore ipsam adipisci accusamus quam amet fuga ex laborum error. Corrupti esse nam, magni distinctio eum maxime quos ipsam dicta, sunt modi placeat magnam iure fugiat id? <br> Maiores harum, aspernatur temporibus corporis, omnis asperiores recusandae sit corrupti rerum quidem quod sunt enim nulla iure quae dolor nobis nihil a numquam quam explicabo! Ipsum!
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis dolor quidem, ipsam ea eveniet autem. <br> Commodi dicta laboriosam sunt hic tempore! Ipsum magni alias officiis eum eligendi tenetur maxime culpa totam fugit assumenda necessitatibus sequi nihil perspiciatis commodi quod ad at aliquam cumque quos quisquam, <br> tempore nemo! Inventore ipsam adipisci accusamus quam amet fuga ex laborum error. Corrupti esse nam, magni distinctio eum maxime quos ipsam dicta, sunt modi placeat magnam iure fugiat id? <br> Maiores harum, aspernatur temporibus corporis, omnis asperiores recusandae sit corrupti rerum quidem quod sunt enim nulla iure quae dolor nobis nihil a numquam quam explicabo! Ipsum!
+                            <div id="mainChromatogram"></div>
                         </div>
                     </div>
                 </div>
@@ -93,4 +92,14 @@
         </div>
     </div>
 </main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{url_for('static', filename='js/plotly-2.18.2.min.js') }}"></script>
+<script>
+    var graph = {{ graphJSON | safe }};
+    Plotly.newPlot('mainChromatogram', graph, {});
+</script>
+
 {% endblock %}

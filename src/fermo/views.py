@@ -8,6 +8,7 @@ from flask import (
     url_for,
 )
 import fermo.__version__ as __version__
+from fermo.app_utils.dashboard_functions import placeholder_graph
 from fermo.app_utils.input_testing import (
     save_file,
     parse_sessionfile,
@@ -144,4 +145,12 @@ def processing(version=__version__.__version__):
 
 @views.route("/dashboard")
 def dashboard(version=__version__.__version__):
-    return render_template('dashboard.html', version=version)
+    '''Render dashboard page'''
+    # data for placeholder for main chromatogram
+    graphJSON = placeholder_graph()
+
+    return render_template(
+        'dashboard.html',
+        version=version,
+        graphJSON=graphJSON
+    )
