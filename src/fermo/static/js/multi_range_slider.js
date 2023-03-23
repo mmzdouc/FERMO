@@ -62,43 +62,80 @@ function fillSlider(from, to, sliderColor, rangeColor, controlSlider) {
       ${sliderColor} 0%,
       ${sliderColor} ${(fromPosition)/(rangeDistance)*100}%,
       ${rangeColor} ${((fromPosition)/(rangeDistance))*100}%,
-      ${rangeColor} ${(toPosition)/(rangeDistance)*100}%, 
-      ${sliderColor} ${(toPosition)/(rangeDistance)*100}%, 
+      ${rangeColor} ${(toPosition)/(rangeDistance)*100}%,
+      ${sliderColor} ${(toPosition)/(rangeDistance)*100}%,
       ${sliderColor} 100%)`;
 }
 
 function setToggleAccessible(currentTarget) {
-  const toSlider = document.querySelector('#toSlider');
+  /**Keep toSlider at the bottom of the 'stack' when the two sliders overlap
+   * to avoid interferance with the input elements */
   if (Number(currentTarget.value) <= 0 ) {
-    toSlider.style.zIndex = 2;
+    currentTarget.style.zIndex = 2;
   } else {
-    toSlider.style.zIndex = 0;
+    currentTarget.style.zIndex = 0;
   }
 }
 
-// slider for relative intensity filter
-const fromSlider = document.querySelector('#fromSlider');
-const toSlider = document.querySelector('#toSlider');
-const fromInput = document.querySelector('#fromInput');
-const toInput = document.querySelector('#toInput');
-fillSlider(fromSlider, toSlider, '#C6C6C6', '#116789', toSlider);
-setToggleAccessible(toSlider);
+function checkURL(pagename) {
+  /** Check from which URL the script was called */
+  var pageurl = window.location.href;
+  var pg = pageurl.split("/");
+  var pgname = (pg[pg.length - 1]); // access last element of the URL
+  if (pagename == pgname) /*check whether the current page is 'pagename' or not*/
+  {
+    return true;
+  } else {
+    return false;
+  }
+}
 
-fromSlider.oninput = () => controlFromSlider(fromSlider, toSlider, fromInput);
-toSlider.oninput = () => controlToSlider(fromSlider, toSlider, toInput);
-fromInput.oninput = () => controlFromInput(fromSlider, fromInput, toInput, toSlider);
-toInput.oninput = () => controlToInput(toSlider, fromInput, toInput, toSlider);
 
+// call functions with correct parameters depending on the page it was called from
+if(checkURL("processing")){
+  // Slider for relative intensity filter (processing page)
+  const fromSlider = document.querySelector('#fromSlider');
+  const toSlider = document.querySelector('#toSlider');
+  const fromInput = document.querySelector('#fromInput');
+  const toInput = document.querySelector('#toInput');
+  fillSlider(fromSlider, toSlider, '#C6C6C6', '#116789', toSlider);
+  setToggleAccessible(toSlider);
 
-// slider for MS2Query relative intensity filter
-const fromSliderMS2Q = document.querySelector('#fromSliderMS2Q');
-const toSliderMS2Q = document.querySelector('#toSliderMS2Q');
-const fromInputMS2Q = document.querySelector('#fromInputMS2Q');
-const toInputMS2Q = document.querySelector('#toInputMS2Q');
-fillSlider(fromSliderMS2Q, toSliderMS2Q, '#C6C6C6', '#116789', toSliderMS2Q);
-setToggleAccessible(toSliderMS2Q);
+  fromSlider.oninput = () => controlFromSlider(fromSlider, toSlider, fromInput);
+  toSlider.oninput = () => controlToSlider(fromSlider, toSlider, toInput);
+  fromInput.oninput = () => controlFromInput(fromSlider, fromInput, toInput, toSlider);
+  toInput.oninput = () => controlToInput(toSlider, fromInput, toInput, toSlider);
 
-fromSliderMS2Q.oninput = () => controlFromSlider(fromSliderMS2Q, toSliderMS2Q, fromInputMS2Q);
-toSliderMS2Q.oninput = () => controlToSlider(fromSliderMS2Q, toSliderMS2Q, toInputMS2Q);
-fromInputMS2Q.oninput = () => controlFromInput(fromSliderMS2Q, fromInputMS2Q, toInputMS2Q, toSliderMS2Q);
-toInputMS2Q.oninput = () => controlToInput(toSliderMS2Q, fromInputMS2Q, toInputMS2Q, toSliderMS2Q);
+  // Slider for MS2Query relative intensity filter (processing page)
+  const fromSliderMS2Q = document.querySelector('#fromSliderMS2Q');
+  const toSliderMS2Q = document.querySelector('#toSliderMS2Q');
+  const fromInputMS2Q = document.querySelector('#fromInputMS2Q');
+  const toInputMS2Q = document.querySelector('#toInputMS2Q');
+  fillSlider(fromSliderMS2Q, toSliderMS2Q, '#C6C6C6', '#116789', toSliderMS2Q);
+  setToggleAccessible(toSliderMS2Q);
+
+  fromSliderMS2Q.oninput = () => controlFromSlider(fromSliderMS2Q, toSliderMS2Q, fromInputMS2Q);
+  toSliderMS2Q.oninput = () => controlToSlider(fromSliderMS2Q, toSliderMS2Q, toInputMS2Q);
+  fromInputMS2Q.oninput = () => controlFromInput(fromSliderMS2Q, fromInputMS2Q, toInputMS2Q, toSliderMS2Q);
+  toInputMS2Q.oninput = () => controlToInput(toSliderMS2Q, fromInputMS2Q, toInputMS2Q, toSliderMS2Q);
+
+} else if (checkURL("dashboard")){
+
+  // Slider for Novelty Score (dashboard page)
+  const fromSliderNovel = document.querySelector('#fromSliderNovel');
+  const toSliderNovel = document.querySelector('#toSliderNovel');
+  const fromInputNovel = document.querySelector('#fromInputNovel');
+  const toInputNovel = document.querySelector('#toInputNovel');
+  fillSlider(fromSliderNovel, toSliderNovel, '#C6C6C6', '#116789', toSliderNovel);
+  setToggleAccessible(toSliderNovel);
+
+  fromSliderNovel.oninput = () => controlFromSlider(fromSliderNovel, toSliderNovel, fromInputNovel);
+  toSliderNovel.oninput = () => controlToSlider(fromSliderNovel, toSliderNovel, toInputNovel);
+  fromInputNovel.oninput = () => controlFromInput(fromSliderNovel, fromInputNovel, toInputNovel, toSliderNovel);
+  toInputNovel.oninput = () => controlToInput(toSliderNovel, fromInputNovel, toInputNovel, toSliderNovel);
+
+  // slider for Relative intensity (dashboard page)
+
+  // slider for Peak overlap (dashboard page)
+}
+

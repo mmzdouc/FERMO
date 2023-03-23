@@ -19,19 +19,6 @@
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="filtersHeader">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filters" aria-expanded="false" aria-controls="filters">
-                            Filters
-                        </button>
-                    </h2>
-                    <div id="filters" class="accordion-collapse collapse" aria-labelledby="filtersHeader">
-                        <div class="accordion-body">
-                            This is the filters section. <br>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, dignissimos officia vero excepturi, officiis enim, accusantium laudantium iusto asperiores aut quidem. Architecto hic magnam eaque nisi eos fugiat, natus qui molestiae, omnis, repellendus sit velit iure quidem aspernatur. Fuga a consequatur, quo repellendus hic suscipit debitis.
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
                     <h2 class="accordion-header" id="featureTableHeader">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#featureTable" aria-expanded="false" aria-controls="featureTable">
                             Feature Table
@@ -41,6 +28,107 @@
                         <div class="accordion-body">
                             This is the feature table <br>
                             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Excepturi accusantium distinctio voluptas commodi optio? Tempora voluptatibus qui quae pariatur tenetur.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="filtersHeader">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filters" aria-expanded="false" aria-controls="filters">
+                            Filters
+                        </button>
+                    </h2>
+                    <div id="filters" class="accordion-collapse collapse" aria-labelledby="filtersHeader">
+                        <div class="accordion-body">
+                            <div class="col-8">
+                                <button class="btn btn-primary btn-label"
+                                name="SaveSession"
+                                value="Saved"
+                                type="button">
+                                    Save FERMO session file (JSON)
+                                </button>
+                            </div>
+                            <hr>
+                            <h6>Set filters for cutoff and press enter:</h6>
+                            <form>
+                                <div class="d-grid gap-2 me-2">
+                                    <div id="featureVisibility">
+                                        <label for="feature-visualization-radio" class="form-label">Visualize features
+                                            <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                            target="_blank"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="right"
+                                            data-bs-custom-class="custom-tooltip"
+                                            data-bs-title="Toggles visualization of features in chromatogram. 'ALL' shows all features, 'SELECTED', shows only the currently selected features and grays out the remainder. 'HIDDEN' completely masks out the non-selected features. For more information, click the info-button to access the docs.">
+                                                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                                            </a>
+                                        </label>
+                                        <div id="feature-visualization-radio">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="visualize-all" value="All" checked>
+                                                <label class="form-check-label" for="visualize-all">ALL</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="visualize-selected" value="Selected">
+                                                <label class="form-check-label" for="visualize-selected">SELECTED</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="visualize-hidden" value="Hidden">
+                                                <label class="form-check-label" for="visualize-hidden">HIDDEN</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="blank-features">
+                                        <label for="blank-feature-radio" class="form-label">Blank associated features
+                                            <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                            target="_blank"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="right"
+                                            data-bs-custom-class="custom-tooltip"
+                                            data-bs-title="Toggle to allow special designation of blank-associated features. When 'DESIGNATE', such features are specifically color-coded and automatically excluded from selection. For more information, click the info-button to access the docs.">
+                                            <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
+                                            </a>
+                                        </label>
+                                        <div id="blank-feature-radio">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="BlankFeaturesOptions" id="designate-blank" value="Designate" checked>
+                                                <label class="form-check-label" for="designate-blank">DESIGNATE</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="not-designate-blank" value="DoNotDesignate">
+                                                <label class="form-check-label" for="not-designate-blank">DO NOT DESIGNATE</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="NoveltyScore">
+                                        <label for="Novelty-Score-Slider" class="form-label">Novelty Score
+                                            <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                                target="_blank"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="Filter for putatively novel (unknown) features (if MS2Query was active and/or a spectral library was provided). A value of '0' would select all features, while a value of '1' would select only features that are most likely unknown. Click button to access the docs.">
+                                                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                                            </a>
+                                        </label>
+                                        <div id="Novelty-Score-Slider" class="range_container col-md-10 col-lg-8">
+                                            <div class="sliders_control">
+                                                <input id="fromSliderNovel" type="range" value="0" min="0" max="1" step="0.01"/>
+                                                <input id="toSliderNovel" type="range" value="1" min="0" max="1" step="0.01"/>
+                                            </div>
+                                            <div class="form_control_slider">
+                                                <div class="form_control_container">
+                                                    <div>Min</div>
+                                                    <input type="number" class="form-control" id="fromInputNovel" value="0" min="0" max="1" step="0.01"/>
+                                                </div>
+                                                <div class="form_control_container">
+                                                    <div>Max</div>
+                                                    <input type="number" class="form-control" id="toInputNovel" value="1" min="0" max="1" step="0.01"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -96,10 +184,15 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script>
+    // activate the tooltips
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 <script src="{{url_for('static', filename='js/plotly-2.18.2.min.js') }}"></script>
 <script>
     var graph = {{ graphJSON | safe }};
     Plotly.newPlot('mainChromatogram', graph, {});
 </script>
-
+<script src="{{ url_for('static', filename='js/multi_range_slider.js') }}"></script>
 {% endblock %}
