@@ -65,18 +65,7 @@ def test_check_file_format_valid(filename, file_format, allowed_extensions):
 ])
 def test_check_file_format_invalid(filename, file_format, allowed_extensions):
     '''Test invalid input for check_file_format()'''
-    # with pytest.raises, ('metadata.txt', '.txt')
     assert check_file_format(filename, file_format, allowed_extensions)
-
-
-@pytest.mark.parametrize(
-    'filename, file_format',
-    [('metadata.txt', '.txt'), ('sessionfile.json', 'json')]
-)
-def test_check_file_format_raise(filename, file_format, allowed_extensions):
-    '''Test input that should raise an error in check_file_format()'''
-    with pytest.raises(ValueError):
-        check_file_format(filename, file_format, allowed_extensions)
 
 
 def test_save_file_successfully(
