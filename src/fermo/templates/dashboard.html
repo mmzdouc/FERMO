@@ -12,7 +12,7 @@
                         </button>
                     </h2>
                     <div id="sampleTable" class="accordion-collapse collapse" aria-labelledby="sampleTableHeader">
-                        <div class="accordion-body">
+                        <div class="accordion-body overflow-auto">
                             This is the sample table <br>
                             Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur alias doloremque voluptate fuga aliquam reiciendis commodi eaque aperiam asperiores. Odit culpa sed consequatur nisi deserunt.
                         </div>
@@ -25,7 +25,7 @@
                         </button>
                     </h2>
                     <div id="featureTable" class="accordion-collapse collapse" aria-labelledby="featureTableHeader">
-                        <div class="accordion-body">
+                        <div class="accordion-body overflow-auto">
                             This is the feature table <br>
                             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Excepturi accusantium distinctio voluptas commodi optio? Tempora voluptatibus qui quae pariatur tenetur.
                         </div>
@@ -38,7 +38,7 @@
                         </button>
                     </h2>
                     <div id="filters" class="accordion-collapse collapse" aria-labelledby="filtersHeader">
-                        <div class="accordion-body">
+                        <div class="accordion-body overflow-auto">
                             <div class="col-8">
                                 <button class="btn btn-primary btn-label"
                                 name="SaveSession"
@@ -127,6 +127,35 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div id="relative-intensity">
+                                        <label for="relative-intensity-Slider" class="form-label">Relative intensity
+                                            <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                                target="_blank"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="Filter features for relative intensity. Click button to access the docs.">
+                                                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                                            </a>
+                                        </label>
+                                        <div id="relative-intensity-Slider" class="range_container col-md-10 col-lg-8">
+                                            <div class="sliders_control">
+                                                <input id="fromSliderRelInt" type="range" value="0" min="0" max="1" step="0.01"/>
+                                                <input id="toSliderRelInt" type="range" value="1" min="0" max="1" step="0.01"/>
+                                            </div>
+                                            <div class="form_control_slider">
+                                                <div class="form_control_container">
+                                                    <div>Min</div>
+                                                    <input type="number" class="form-control" id="fromInputRelInt" value="0" min="0" max="1" step="0.01"/>
+                                                </div>
+                                                <div class="form_control_container">
+                                                    <div>Max</div>
+                                                    <input type="number" class="form-control" id="toInputRelInt" value="1" min="0" max="1" step="0.01"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </form>
                         </div>
@@ -141,7 +170,7 @@
                         <div class="card-header">
                             Main Chromatogram <br>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body overflow-auto">
                             <div id="mainChromatogram"></div>
                         </div>
                     </div>
@@ -156,8 +185,8 @@
                             </button>
                         </h2>
                         <div class="accordion-collapse collapse" id="Cytoscape" aria-labelledby="CytoscapeHeader">
-                            <div class="accordion-body">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            <div class="accordion-body overflow-auto">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt, nemo qui aliquam sapiente labore pariatur ipsum quidem molestiae rerum, natus nihil sunt et, incidunt cumque eius quisquam eligendi exercitationem ut libero modi iste laborum ad! Sunt earum nisi quasi? Totam dignissimos officia dolorum dolores fugiat nesciunt earum perferendis! Cupiditate, reiciendis?
                             </div> 
                         </div>
                     </div>
@@ -170,7 +199,7 @@
                             </button>
                         </h2>
                         <div class="accordion-collapse collapse" id="sampleChromatograms" aria-labelledby="sampleChromatogramsHeader">
-                            <div class="accordion-body">
+                            <div class="accordion-body overflow-auto">
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, dignissimos officia vero excepturi, officiis enim, accusantium laudantium iusto asperiores aut quidem.
                             </div>
                         </div>
@@ -184,15 +213,17 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{url_for('static', filename='js/plotly-2.18.2.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/multi_range_slider.js') }}"></script>
 <script>
     // activate the tooltips
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 </script>
-<script src="{{url_for('static', filename='js/plotly-2.18.2.min.js') }}"></script>
 <script>
+    // plot the main chromatogram
     var graph = {{ graphJSON | safe }};
     Plotly.newPlot('mainChromatogram', graph, {});
 </script>
-<script src="{{ url_for('static', filename='js/multi_range_slider.js') }}"></script>
+
 {% endblock %}

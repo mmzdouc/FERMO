@@ -82,7 +82,7 @@ function checkURL(pagename) {
   var pageurl = window.location.href;
   var pg = pageurl.split("/");
   var pgname = (pg[pg.length - 1]); // access last element of the URL
-  if (pagename == pgname) /*check whether the current page is 'pagename' or not*/
+  if (pagename == pgname) /*check whether the current page is {pagename} or not*/
   {
     return true;
   } else {
@@ -135,6 +135,17 @@ if(checkURL("processing")){
   toInputNovel.oninput = () => controlToInput(toSliderNovel, fromInputNovel, toInputNovel, toSliderNovel);
 
   // slider for Relative intensity (dashboard page)
+  const fromSliderRelInt = document.querySelector('#fromSliderRelInt');
+  const toSliderRelInt = document.querySelector('#toSliderRelInt');
+  const fromInputRelInt = document.querySelector('#fromInputRelInt');
+  const toInputRelInt = document.querySelector('#toInputRelInt');
+  fillSlider(fromSliderRelInt, toSliderRelInt, '#C6C6C6', '#116789', toSliderRelInt);
+  setToggleAccessible(toSliderRelInt);
+
+  fromSliderRelInt.oninput = () => controlFromSlider(fromSliderRelInt, toSliderRelInt, fromInputRelInt);
+  toSliderRelInt.oninput = () => controlToSlider(fromSliderRelInt, toSliderRelInt, toInputRelInt);
+  fromInputRelInt.oninput = () => controlFromInput(fromSliderRelInt, fromInputRelInt, toInputRelInt, toSliderRelInt);
+  toInputRelInt.oninput = () => controlToInput(toSliderRelInt, fromInputRelInt, toInputRelInt, toSliderRelInt);
 
   // slider for Peak overlap (dashboard page)
 }

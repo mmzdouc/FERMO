@@ -81,11 +81,12 @@ display: flex;
 justify-content: space-between;
 }
 
-input[type=range]::-webkit-slider-thumb { /* pseudoelement for the knob of the slider on webkit based browsers */
+input[type=range]::-webkit-slider-thumb { /* pseudoelement for the knob of the
+    slider on webkit based browsers (e.g. chrome, safari, opera) */
 -webkit-appearance: none;
 pointer-events: all;
-width: 24px;
-height: 24px;
+width: 18px;
+height: 18px;
 background-color: #116789;
 border: none;
 border-radius: 50%;
@@ -93,11 +94,12 @@ box-shadow: 0 0 0 1px #C6C6C6;
 cursor: pointer;
 }
 
-input[type=range]::-moz-range-thumb { /* pseudoelement for the knob of the slider on Gecko based browsers (firefox) */
+input[type=range]::-moz-range-thumb { /* pseudoelement for the knob of the
+    slider on Gecko based browsers (firefox) */
 -webkit-appearance: none;
 pointer-events: all;
-width: 24px;
-height: 24px;
+width: 18px;
+height: 18px;
 background-color: #116789;
 border: none;
 border-radius: 50%;
@@ -118,8 +120,10 @@ box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
 -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
 }
 
+/* number input fields that belong to range sliders */
 .form_control_slider > .form_control_container > input[type=number] {
-width: 90px;
+width: 70px;
+padding: .1rem .3rem;
 }
 
 input[type=number]::-webkit-inner-spin-button,
@@ -137,7 +141,7 @@ background-color: #C6C6C6;
 pointer-events: none;
 }
 
-#fromSlider, #fromSliderMS2Q, #fromSliderNovel {
+#fromSlider, #fromSliderMS2Q, #fromSliderNovel, #fromSliderRelInt {
 /*  elements must be accessed individually because otherwise styling of
     toSlider breaks... */
 height: 0;
