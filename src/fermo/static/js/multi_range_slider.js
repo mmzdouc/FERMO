@@ -148,5 +148,16 @@ if(checkURL("processing")){
   toInputRelInt.oninput = () => controlToInput(toSliderRelInt, fromInputRelInt, toInputRelInt, toSliderRelInt);
 
   // slider for Peak overlap (dashboard page)
+  const fromSliderPeak = document.querySelector('#fromSliderPeak');
+  const toSliderPeak = document.querySelector('#toSliderPeak');
+  const fromInputPeak = document.querySelector('#fromInputPeak');
+  const toInputPeak = document.querySelector('#toInputPeak');
+  fillSlider(fromSliderPeak, toSliderPeak, '#C6C6C6', '#116789', toSliderPeak);
+  setToggleAccessible(toSliderPeak);
+
+  fromSliderPeak.oninput = () => controlFromSlider(fromSliderPeak, toSliderPeak, fromInputPeak);
+  toSliderPeak.oninput = () => controlToSlider(fromSliderPeak, toSliderPeak, toInputPeak);
+  fromInputPeak.oninput = () => controlFromInput(fromSliderPeak, fromInputPeak, toInputPeak, toSliderPeak);
+  toInputPeak.oninput = () => controlToInput(toSliderPeak, fromInputPeak, toInputPeak, toSliderPeak);
 }
 

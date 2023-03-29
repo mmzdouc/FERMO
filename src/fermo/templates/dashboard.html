@@ -155,7 +155,34 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                    <div id="Peak-overlap">
+                                        <label for="peak-overlap-slider" class="form-label">Peak overlap (%)
+                                            <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                                target="_blank"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="Filter features for peak collisions. The higher the value, the more of the peak is overlapping (colliding) with another peak. Click button to access the docs.">
+                                                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                                            </a>
+                                        </label>
+                                        <div id="peak-overlap-slider" class="range_container col-md-10 col-lg-8">
+                                            <div class="sliders_control">
+                                                <input id="fromSliderPeak" type="range" value="0" min="0" max="1" step="0.01"/>
+                                                <input id="toSliderPeak" type="range" value="1" min="0" max="1" step="0.01"/>
+                                            </div>
+                                            <div class="form_control_slider">
+                                                <div class="form_control_container">
+                                                    <div>Min</div>
+                                                    <input type="number" class="form-control" id="fromInputPeak" value="0" min="0" max="1" step="0.01"/>
+                                                </div>
+                                                <div class="form_control_container">
+                                                    <div>Max</div>
+                                                    <input type="number" class="form-control" id="toInputPeak" value="1" min="0" max="1" step="0.01"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>

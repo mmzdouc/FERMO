@@ -141,7 +141,7 @@ background-color: #C6C6C6;
 pointer-events: none;
 }
 
-#fromSlider, #fromSliderMS2Q, #fromSliderNovel, #fromSliderRelInt {
+#fromSlider, #fromSliderMS2Q, #fromSliderNovel, #fromSliderRelInt, #fromSliderPeak {
 /*  elements must be accessed individually because otherwise styling of
     toSlider breaks... */
 height: 0;
