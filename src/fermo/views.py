@@ -146,7 +146,7 @@ def processing(version=__version__.__version__):
 @views.route("/dashboard")
 def dashboard(version=__version__.__version__):
     '''Render dashboard page'''
-    # data for placeholder for main chromatogram
+    # load data for placeholder main chromatogram
     graphJSON = placeholder_graph()
 
     return render_template(
