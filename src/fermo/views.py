@@ -55,7 +55,7 @@ def loading(version=__version__.__version__):
             upload_folder = current_app.config.get('UPLOAD_FOLDER')
             feedback_or_filename, file_saved = save_file(
                 sessionfile,
-                '.json',
+                'json',
                 allowed_extensions,
                 upload_folder,
             )

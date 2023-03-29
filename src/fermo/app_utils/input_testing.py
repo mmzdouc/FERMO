@@ -27,16 +27,7 @@ def check_file_format(
     feedback: `str`
         String with feedback for the user to be flashed
     '''
-    if '.' not in file_format:
-        raise ValueError(
-            'file_format should be specified with the leading dot'
-        )
-    elif file_format not in allowed_extensions:
-        raise ValueError(
-            '''file_format must be an allowed_extension as specified in
-            the config'''
-        )
-    elif filename == '':
+    if filename == '':
         feedback = 'No file was loaded. Please upload a session-file.'
     elif not filename.endswith(file_format):
         feedback = f"File must be a {file_format}-file!"
