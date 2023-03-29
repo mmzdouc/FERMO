@@ -82,7 +82,7 @@ function checkURL(pagename) {
   var pageurl = window.location.href;
   var pg = pageurl.split("/");
   var pgname = (pg[pg.length - 1]); // access last element of the URL
-  if (pagename == pgname) /*check whether the current page is {pagename} or not*/
+  if (pagename == pgname) /*check whether the current page is {pagename}*/
   {
     return true;
   } else {
@@ -90,14 +90,12 @@ function checkURL(pagename) {
   }
 }
 
-
-// call functions with correct parameters depending on the page it was called from
-if(checkURL("processing")){
-  // Slider for relative intensity filter (processing page)
-  const fromSlider = document.querySelector('#fromSlider');
-  const toSlider = document.querySelector('#toSlider');
-  const fromInput = document.querySelector('#fromInput');
-  const toInput = document.querySelector('#toInput');
+function initSlider(fromSliderID, toSliderID, fromInputID, toInputID) {
+  /** Initialize the multi-range-Slider */
+  const fromSlider = document.querySelector(fromSliderID);
+  const toSlider = document.querySelector(toSliderID);
+  const fromInput = document.querySelector(fromInputID);
+  const toInput = document.querySelector(toInputID);
   fillSlider(fromSlider, toSlider, '#C6C6C6', '#116789', toSlider);
   setToggleAccessible(toSlider);
 
@@ -105,59 +103,23 @@ if(checkURL("processing")){
   toSlider.oninput = () => controlToSlider(fromSlider, toSlider, toInput);
   fromInput.oninput = () => controlFromInput(fromSlider, fromInput, toInput, toSlider);
   toInput.oninput = () => controlToInput(toSlider, fromInput, toInput, toSlider);
+}
 
+
+// call functions with correct parameters depending on the page it was called from
+if(checkURL("processing")){
+
+  // Slider for relative intensity filter (processing page)
+  initSlider('#fromSlider', '#toSlider', '#fromInput', '#toInput');
   // Slider for MS2Query relative intensity filter (processing page)
-  const fromSliderMS2Q = document.querySelector('#fromSliderMS2Q');
-  const toSliderMS2Q = document.querySelector('#toSliderMS2Q');
-  const fromInputMS2Q = document.querySelector('#fromInputMS2Q');
-  const toInputMS2Q = document.querySelector('#toInputMS2Q');
-  fillSlider(fromSliderMS2Q, toSliderMS2Q, '#C6C6C6', '#116789', toSliderMS2Q);
-  setToggleAccessible(toSliderMS2Q);
-
-  fromSliderMS2Q.oninput = () => controlFromSlider(fromSliderMS2Q, toSliderMS2Q, fromInputMS2Q);
-  toSliderMS2Q.oninput = () => controlToSlider(fromSliderMS2Q, toSliderMS2Q, toInputMS2Q);
-  fromInputMS2Q.oninput = () => controlFromInput(fromSliderMS2Q, fromInputMS2Q, toInputMS2Q, toSliderMS2Q);
-  toInputMS2Q.oninput = () => controlToInput(toSliderMS2Q, fromInputMS2Q, toInputMS2Q, toSliderMS2Q);
+  initSlider('#fromSliderMS2Q', '#toSliderMS2Q', '#fromInputMS2Q', '#toInputMS2Q');
 
 } else if (checkURL("dashboard")){
 
   // Slider for Novelty Score (dashboard page)
-  const fromSliderNovel = document.querySelector('#fromSliderNovel');
-  const toSliderNovel = document.querySelector('#toSliderNovel');
-  const fromInputNovel = document.querySelector('#fromInputNovel');
-  const toInputNovel = document.querySelector('#toInputNovel');
-  fillSlider(fromSliderNovel, toSliderNovel, '#C6C6C6', '#116789', toSliderNovel);
-  setToggleAccessible(toSliderNovel);
-
-  fromSliderNovel.oninput = () => controlFromSlider(fromSliderNovel, toSliderNovel, fromInputNovel);
-  toSliderNovel.oninput = () => controlToSlider(fromSliderNovel, toSliderNovel, toInputNovel);
-  fromInputNovel.oninput = () => controlFromInput(fromSliderNovel, fromInputNovel, toInputNovel, toSliderNovel);
-  toInputNovel.oninput = () => controlToInput(toSliderNovel, fromInputNovel, toInputNovel, toSliderNovel);
-
-  // slider for Relative intensity (dashboard page)
-  const fromSliderRelInt = document.querySelector('#fromSliderRelInt');
-  const toSliderRelInt = document.querySelector('#toSliderRelInt');
-  const fromInputRelInt = document.querySelector('#fromInputRelInt');
-  const toInputRelInt = document.querySelector('#toInputRelInt');
-  fillSlider(fromSliderRelInt, toSliderRelInt, '#C6C6C6', '#116789', toSliderRelInt);
-  setToggleAccessible(toSliderRelInt);
-
-  fromSliderRelInt.oninput = () => controlFromSlider(fromSliderRelInt, toSliderRelInt, fromInputRelInt);
-  toSliderRelInt.oninput = () => controlToSlider(fromSliderRelInt, toSliderRelInt, toInputRelInt);
-  fromInputRelInt.oninput = () => controlFromInput(fromSliderRelInt, fromInputRelInt, toInputRelInt, toSliderRelInt);
-  toInputRelInt.oninput = () => controlToInput(toSliderRelInt, fromInputRelInt, toInputRelInt, toSliderRelInt);
-
-  // slider for Peak overlap (dashboard page)
-  const fromSliderPeak = document.querySelector('#fromSliderPeak');
-  const toSliderPeak = document.querySelector('#toSliderPeak');
-  const fromInputPeak = document.querySelector('#fromInputPeak');
-  const toInputPeak = document.querySelector('#toInputPeak');
-  fillSlider(fromSliderPeak, toSliderPeak, '#C6C6C6', '#116789', toSliderPeak);
-  setToggleAccessible(toSliderPeak);
-
-  fromSliderPeak.oninput = () => controlFromSlider(fromSliderPeak, toSliderPeak, fromInputPeak);
-  toSliderPeak.oninput = () => controlToSlider(fromSliderPeak, toSliderPeak, toInputPeak);
-  fromInputPeak.oninput = () => controlFromInput(fromSliderPeak, fromInputPeak, toInputPeak, toSliderPeak);
-  toInputPeak.oninput = () => controlToInput(toSliderPeak, fromInputPeak, toInputPeak, toSliderPeak);
+  initSlider('#fromSliderNovel', '#toSliderNovel', '#fromInputNovel', '#toInputNovel');
+  // Slider for Relative intensity (dashboard page)
+  initSlider('#fromSliderRelInt', '#toSliderRelInt', '#fromInputRelInt', '#toInputRelInt');
+  // Slider for Peak overlap (dashboard page)
+  initSlider('#fromSliderPeak', '#toSliderPeak', '#fromInputPeak', '#toInputPeak');
 }
-
