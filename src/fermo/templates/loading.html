@@ -30,50 +30,55 @@
                     After loading your data, click the button 'Start FERMO Dashboard' to go to the dashboard view.
                 </p>
             </div>
-                <div class="container-fluid " id="loading-button">
-                    <hr/>
-                    <form id="loading_file" action="/loading" method = "post" enctype = "multipart/form-data">
-                        <div class=" mb-1 col-xl-8">
-                            <label for="sessionFile" class="form-label">Load FERMO session File (*.json)</label>
-                            <input class="form-control" type="file" id="sessionFile" name="sessionFile">
-                        </div>
-                        <p class="text-danger"> 
-                            {% with messages = get_flashed_messages() %}
-                                {% if messages %}
-                                    {% for message in messages %}
-                                        {% print(message) %}
-                                    {% endfor %}
+            <div class="container-fluid " id="loading-button">
+                <hr/>
+                <form id="loading_file" action="/loading" method = "post" enctype = "multipart/form-data">
+                    <div class=" mb-1 col-xl-8">
+                        <label for="sessionFile" class="form-label">Load FERMO session File (*.json)</label>
+                        <input class="form-control" type="file" id="sessionFile" name="sessionFile">
+                    </div>
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if message.startswith('❗') %}
+                                <p class="text-warning">
+                                    {% print(message) %}
+                                </p>
+                                {% else %}
+                                <p class="text-danger">
+                                    {% print(message) %}
+                                </p>
                                 {% endif %}
-                            {% endwith %}
-                        </p>
-                    </form>
-                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </form>
+            </div>
         </div>
-        <div class="col mt-3">
+        <div class="col mt-3 ms-3 me-5">
             <div class="text-center">
                 {% block table %}
                 <table class="table table-striped">
                     <thead>
-                      <tr>
-                        <th scope="col">Attribute</th>
-                        <th scope="col">Description</th>
-                      </tr>
+                        <tr>
+                          <th scope="col" class="col col-5">Attribute</th>
+                          <th scope="col">Description</th>
+                        </tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <td scope="row">Date of creation</th>
-                        <td>null</td>
-                      </tr>
-                      <tr>
-                        <td scope="row">Time of creation</th>
-                        <td>null</td>
-                      </tr>
-                      <tr>
-                        <td scope="row">FERMO version</th>
-                        <td>null</td>
-                      </tr>
+                    <tbody class="text-start">
+                    {% for row in table %}
+                        <tr>
+                            {% for cell in row %}
+                                {% if cell == '-----' %}
+                                    <td class='px-0 py-0'> <hr> </td>
+                                {% else %}
+                                    <td class="px-3 py-1"> {{ cell }} </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
                     </tbody>
-                  </table>
+                </table>
                 {% endblock %}
             </div>
         </div>

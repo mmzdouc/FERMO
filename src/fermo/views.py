@@ -1,23 +1,20 @@
 from flask import (
     Blueprint,
+    current_app,
+    flash,
+    redirect,
     render_template,
-    flash, redirect,
-    current_app,  # allows to access the config elements
     request,
-    url_for
+    url_for,
 )
-import __version__
-# import config
-from werkzeug.utils import secure_filename
-import os
+import fermo.__version__ as __version__
+from fermo.app_utils.input_testing import (
+    save_file,
+    parse_sessionfile,
+    empty_loading_table,
+)
 
 views = Blueprint(__name__, "views")
-
-
-def allowed_file(filename):
-    """ Returns boolean for valid filenames and allowed extensions"""
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in \
-        current_app.config.get('ALLOWED_EXTENSION')
 
 
 # routing
@@ -28,39 +25,94 @@ def landing(version=__version__.__version__):
 
 @views.route("/loading", methods=['GET', 'POST'])
 def loading(version=__version__.__version__):
+    ''' Handle requests on the loading page
+
+    Parameters
+    ----------
+    version: `str`
+
+    Returns
+    -------
+    `str` or `flask.wrappers.Response`
+        either the html for the initial loading page, or the response to the
+        request
+
+    Notes
+    -----
+    Displays the initial loading page, or if a session file was uploaded,
+    checks if it was transmitted via the request, then accesses the file from
+    the request-object, allowed extensions and upload folder from the config
+    and saves the file in the specified location. Then redirects to the loading
+    page that displays the file-overview table. If applicable, displays a
+    warning message for missing or (possibly) incompatible input.
+    '''
     if request.method == 'POST':
-        # check if the post request has the file part
-        if 'sessionFile' not in request.files:  # todo: how should this \situation really be handled? 
-            return redirect(request.url)
-        file = request.files['sessionFile']  # 'sessionFile' is taken from the name-attribute of the corresponding input form in the template
-        if file.filename == '':  # if the user doesn't choose a file the browser submits an emtpy file without a name
-            flash('No file was loaded. Please upload a session-file.')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            if filename.endswith('json'):
-                try:
-                    file.save(os.path.join('src/fermo/uploads/', filename))
-                except FileNotFoundError:
-                    print("file or folder didn't exist, so the uploaded file couldn't be saved")
-                return redirect(url_for('views.inspect_uploaded_file',
-                                        filename=filename))
+        if 'sessionFile' not in request.files:
+            print('Input ID was not in the request')
+        else:
+            sessionfile = request.files['sessionFile']
+            allowed_extensions = current_app.config.get('ALLOWED_EXTENSION')
+            upload_folder = current_app.config.get('UPLOAD_FOLDER')
+            feedback_or_filename, file_saved = save_file(
+                sessionfile,
+                'json',
+                allowed_extensions,
+                upload_folder,
+            )
+            if file_saved:
+                return redirect(url_for(
+                    'views.inspect_uploaded_file',
+                    filename=feedback_or_filename,
+                ))
             else:
-                flash("File must be a json-file!")
+                flash(feedback_or_filename)
                 return redirect(request.url)
-    return render_template('loading.html', version=version)
+    else:
+        return render_template(
+            'loading.html',
+            version=version,
+            table=empty_loading_table(),
+        )
 
 
-@views.route("/loading/<filename>")  # for inspecting the uploaded file before submitting it to the dashboard.
+@views.route("/loading/<filename>", methods=['GET', 'POST'])
 def inspect_uploaded_file(filename, version=__version__.__version__):
-    return render_template('loaded_file.html', version=__version__.__version__)
+    '''Display session file overview
+    (and to be implemented: redirect to dashboard page)
+    '''
+    if request.method == 'POST':
+        redirect(url_for('views.dashboard'))
+    else:
+        upload_folder = current_app.config.get('UPLOAD_FOLDER')
+        table_dict, message = parse_sessionfile(
+            filename,
+            version,
+            upload_folder,
+        )
+        if message:
+            flash(message)
+        return render_template(
+            'loaded_file.html',
+            version=version,
+            table=table_dict,
+        )
+
+
+@views.route("/processing", methods=['GET', 'POST'])
+def processing(version=__version__.__version__):
+    if request.method == 'POST':
+        filename = save_file([
+            'peaktableFile',
+            'MSMSFile',
+            'quantDataFile',
+            'MetadataFile',
+            'spectralLibraryFile',
+        ])
+        if filename:
+            pass
+    return render_template('processing.html', version=version)
 
 
 @views.route("/dashboard")
 def dashboard(version=__version__.__version__):
-    return render_template('dashboard.html', version=__version__.__version__)
-
-
-@views.route("/processing")
-def processing(version=__version__.__version__):
-    return render_template('processing.html', version=__version__.__version__)
+    return render_template('dashboard.html', version=version)
