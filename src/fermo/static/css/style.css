@@ -71,8 +71,19 @@ input[type="file"]::file-selector-button {
     color: white;
 }
 
+/* remove arrows from number fields */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+     margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+  }
 
-/* multi range slider adjusted from https://medium.com/@predragdavidovic10/native-dual-range-slider-html-css-javascript-91e778134816 */
+
+/* multi range slider 
+adjusted from https://medium.com/@predragdavidovic10/native-dual-range-slider-html-css-javascript-91e778134816 */
 .range_container {
     display: flex;
     flex-direction: column;
@@ -132,13 +143,8 @@ input[type=range]::-webkit-slider-thumb:active {
 
 .form_control_slider > .form_control_container > input[type=number] {
 /*  selector for number input fields that belong to range sliders */
-    width: 70px;
+    width: 50px;
     padding: .1rem .3rem;
-}
-
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    opacity: 1;
 }
 
 input[type="range"] {
