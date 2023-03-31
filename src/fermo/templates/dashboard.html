@@ -203,12 +203,98 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div>
-                                        <label for="adductSearch">Adduct/Isotope search</label>
-                                        <input class="form-control me-2" type="search" placeholder="Regular expression search" aria-label="Search">
-                                    </div>
-                                    <div>
-                                        <input type="submit" hidden>
+                                    <div class="d-grid gap-2 col-xl-9">
+                                        <div id="adductFilter">
+                                            <label for="adductSearch" class="mb-1">Adduct/Isotope search
+                                                <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                                target="_blank"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="Filter for features with annotations as adducts/isotopes. Filter uses regular expressions (POSIX ERE), and certain characters have special meaning. For example, to select all annotations, use expression '.+'. For more information, click the info-button to access the docs.">
+                                                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
+                                                </a>
+                                            </label>
+                                            <input id="adductSearch" class="form-control" type="search" placeholder="Regular expression search" aria-label="adducts/isotopes search">
+                                        </div>
+                                        <div id="annotationFilter">
+                                            <label for="annotationSearch" class="mb-1">Annotation search
+                                                <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                                target="_blank"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="Filter for features with annotation from library/MS2Query matching. Filter uses regular expressions (POSIX ERE), and certain characters have special meaning. For example, to select all annotations, use expression '.+'. For more information, click the info-button to access the docs.">
+                                                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
+                                                </a>
+                                            </label>
+                                            <input id="annotationSearch" class="form-control" type="search" placeholder="Regular expression search" aria-label="Annotation search">
+                                        </div>
+                                        <div id="idFilter">
+                                            <label for="featureIdSearch" class="mb-1">Feature ID search
+                                                <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                                target="_blank"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="Filter for feature ID. Filters features for a single feature ID number. For more information, click the info-button to access the docs.">
+                                                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
+                                                </a>
+                                            </label>
+                                            <input id="featureIdSearch" class="form-control" type="number" placeholder="Feature ID number" min="0" step="1" aria-label="Feature ID search">
+                                        </div>
+                                        <div id="specNetIdFilter">
+                                            <label for="specNetIdSearch" class="mb-1">Spectral network ID search
+                                                <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                                target="_blank"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="Filter for spectral similarity network ID. Filters for features in a specific spectral network (does not include blank features since they are deselected by default). For more information, click the info-button to access the docs.">
+                                                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
+                                                </a>
+                                            </label>
+                                            <input id="specNetIdSearch" class="form-control" type="number" placeholder="Network ID number" min="0" step="1" aria-label="Spectral network ID search">
+                                        </div>
+                                        <div id="groupFeaturesFilter">
+                                            <label for="groupFeatures" class="mb-1">Group filter (features)
+                                                <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                                target="_blank"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="Filter for group metadata for individual features. Filter uses regular expressions (POSIX ERE), and certain characters have special meaning. For example, to select multiple group annotations, use expression 'group1|group2'. To exclude a specific group, use expression '^((?!groupname).)*$'. For more information, click the info-button to access the docs.">
+                                                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
+                                                </a>
+                                            </label>
+                                            <input id="groupFeatures" class="form-control" type="search" placeholder="Regular expression search" aria-label="Group features search">
+                                        </div>
+                                        <div id="groupNetworkFilter">
+                                            <label for="groupNetworks" class="mb-1">Group filter (networks)
+                                                <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                                target="_blank"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="Filter for group metadata for similarity networks. Filter uses regular expressions (POSIX ERE), and certain characters have special meaning. For example, to select multiple group annotations, use expression 'group1|group2'. To exclude a specific group (e.g. BLANK), use expression '^((?!BLANK).)*$'. For more information, click the info-button to access the docs.">
+                                                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
+                                                </a>
+                                            </label>
+                                            <input id="groupFeatures" class="form-control" type="search" placeholder="Regular expression search" aria-label="Group networks search">
+                                        </div>
+                                        <div id="sampleNameFilter">
+                                            <label for="sampleNameSearch" class="mb-1">Sample name search
+                                                <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                                target="_blank"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="Filter for sample names. Filter uses regular expressions (POSIX ERE), and certain characters have special meaning. For example, to select multiple samples, use expression 'sample1|sample2'. To exclude a specific sample, use expression '^((?!sample).)*$', where 'sample' is the name of the name of the sample. For more information, click the info-button to access the docs.">
+                                                <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+                                                </a>
+                                            </label>
+                                            <input id="sampleNameSearch" class="form-control" type="search" placeholder="Regular expression search" aria-label="Sample name search">
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -234,7 +320,7 @@
                 <div class="accordion col-7">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="cytoscapeHeader">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Cytoscape" aria-expanded="true" aria-controls="Cytoscape">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cytoscape" aria-expanded="true" aria-controls="Cytoscape">
                                 Cytoscape
                             </button>
                         </h2>
