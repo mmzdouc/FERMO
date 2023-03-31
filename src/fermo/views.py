@@ -81,7 +81,6 @@ def loading(version=__version__.__version__):
 @views.route("/loading/<filename>", methods=['GET', 'POST'])
 def inspect_uploaded_file(filename, version=__version__.__version__):
     '''Display session file overview
-    (and to be implemented: redirect to dashboard page)
 
     Parameters
     ----------

@@ -62,23 +62,23 @@
                                                 <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                                             </a>
                                         </label>
-                                        <div id="feature-visualization-radio">
+                                        <div id="featureVisualizationRadio">
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="visualize-all" value="All" checked>
-                                                <label class="form-check-label" for="visualize-all">ALL</label>
+                                                <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="visualizeAll" value="All" checked>
+                                                <label class="form-check-label" for="visualizeAll">ALL</label>
                                             </div>
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="visualize-selected" value="Selected">
-                                                <label class="form-check-label" for="visualize-selected">SELECTED</label>
+                                                <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="visualizeSelected" value="Selected">
+                                                <label class="form-check-label" for="visualizeSelected">SELECTED</label>
                                             </div>
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="visualize-hidden" value="Hidden">
-                                                <label class="form-check-label" for="visualize-hidden">HIDDEN</label>
+                                                <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="visualizeHidden" value="Hidden">
+                                                <label class="form-check-label" for="visualizeHidden">HIDDEN</label>
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="blank-features">
-                                        <label for="blank-feature-radio" class="form-label">Blank associated features
+                                    <div id="blankFeatures">
+                                        <label for="blankFeatureRadio" class="form-label">Blank associated features
                                             <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
                                             target="_blank"
                                             data-bs-toggle="tooltip"
@@ -88,19 +88,19 @@
                                             <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
                                             </a>
                                         </label>
-                                        <div id="blank-feature-radio">
+                                        <div id="blankFeatureRadio">
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="BlankFeaturesOptions" id="designate-blank" value="Designate" checked>
-                                                <label class="form-check-label" for="designate-blank">DESIGNATE</label>
+                                                <input class="form-check-input" type="radio" name="BlankFeaturesOptions" id="designateBlank" value="Designate" checked>
+                                                <label class="form-check-label" for="designateBlank">DESIGNATE</label>
                                             </div>
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="not-designate-blank" value="DoNotDesignate">
-                                                <label class="form-check-label" for="not-designate-blank">DO NOT DESIGNATE</label>
+                                                <input class="form-check-input" type="radio" name="BlankFeaturesOptions" id="notDesignateBlank" value="DoNotDesignate">
+                                                <label class="form-check-label" for="notDesignateBlank">DO NOT DESIGNATE</label>
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="NoveltyScore">
-                                        <label for="Novelty-Score-Slider" class="form-label">Novelty Score
+                                    <div id="noveltyScore">
+                                        <label for="noveltyScoreSlider" class="form-label">Novelty Score
                                             <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
                                                 target="_blank"
                                                 data-bs-toggle="tooltip"
@@ -110,7 +110,7 @@
                                                 <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                                             </a>
                                         </label>
-                                        <div id="Novelty-Score-Slider" class="range_container col-md-10 col-lg-8">
+                                        <div id="noveltyScoreSlider" class="range_container col-md-10 col-lg-8">
                                             <div class="sliders_control">
                                                 <input id="fromSliderNovel" type="range" value="0" min="0" max="1" step="0.01"/>
                                                 <input id="toSliderNovel" type="range" value="1" min="0" max="1" step="0.01"/>
@@ -125,8 +125,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="relative-intensity">
-                                        <label for="relative-intensity-Slider" class="form-label">Relative intensity
+                                    <div id="relativeIntensity">
+                                        <label for="relativeIntensitySlider" class="form-label">Relative intensity
                                             <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
                                                 target="_blank"
                                                 data-bs-toggle="tooltip"
@@ -136,7 +136,7 @@
                                                 <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                                             </a>
                                         </label>
-                                        <div id="relative-intensity-Slider" class="range_container col-md-10 col-lg-8">
+                                        <div id="relativeIntensitySlider" class="range_container col-md-10 col-lg-8">
                                             <div class="sliders_control">
                                                 <input id="fromSliderRelInt" type="range" value="0" min="0" max="1" step="0.01"/>
                                                 <input id="toSliderRelInt" type="range" value="1" min="0" max="1" step="0.01"/>
@@ -151,8 +151,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="Peak-overlap">
-                                        <label for="peak-overlap-slider" class="form-label">Peak overlap (%)
+                                    <div id="peakOverlap">
+                                        <label for="peakOverlapSlider" class="form-label">Peak overlap (%)
                                             <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
                                                 target="_blank"
                                                 data-bs-toggle="tooltip"
@@ -162,7 +162,7 @@
                                                 <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                                             </a>
                                         </label>
-                                        <div id="peak-overlap-slider" class="range_container col-md-10 col-lg-8">
+                                        <div id="peakOverlapSlider" class="range_container col-md-10 col-lg-8">
                                             <div class="sliders_control">
                                                 <input id="fromSliderPeak" type="range" value="0" min="0" max="1" step="0.01"/>
                                                 <input id="toSliderPeak" type="range" value="1" min="0" max="1" step="0.01"/>
@@ -176,6 +176,39 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div id="quantDataAssociation">
+                                        <label for="quantDataAssociationRadio" class="form-label">QuantData-associated
+                                            <a href="https://github.com/mmzdouc/FERMO/wiki/Scores-page"
+                                            target="_blank"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="right"
+                                            data-bs-custom-class="custom-tooltip"
+                                            data-bs-title="Select features associated with quantitative biological data (if such data was provided). 'SPECIFICITY' selects any feature putatively associated with quantitative biological data, 'SPEC.+TREND' also considers correlation between feature intensity and quantitative biological data (if it follows the trend). Click button to access the docs.">
+                                            <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
+                                            </a>
+                                        </label>
+                                        <div id="quantDataAssociationRadio">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="notQuantDataAssociated" id="notQuantDataAssociated" value="NotAssociated" checked>
+                                                <label class="form-check-label" for="notQuantDataAssociated">OFF</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="quantDataSpecificity" id="quantDataSpecificity" value="Specificity">
+                                                <label class="form-check-label" for="quantDataSpecificity">SPECIFICITY</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="quantDataSpecTrend" id="quantDataSpecTrend" value="SpecTrend">
+                                                <label class="form-check-label" for="quantDataSpecTrend">SPEC.+TREND</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="adductSearch">Adduct/Isotope search</label>
+                                        <input class="form-control me-2" type="search" placeholder="Regular expression search" aria-label="Search">
+                                    </div>
+                                    <div>
+                                        <input type="submit" hidden>
                                     </div>
                                 </div>
                             </form>
@@ -200,12 +233,12 @@
             <div class="row gx-2 mt-1">
                 <div class="accordion col-7">
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="CytoscapeHeader">
+                        <h2 class="accordion-header" id="cytoscapeHeader">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Cytoscape" aria-expanded="true" aria-controls="Cytoscape">
                                 Cytoscape
                             </button>
                         </h2>
-                        <div class="accordion-collapse collapse" id="Cytoscape" aria-labelledby="CytoscapeHeader">
+                        <div class="accordion-collapse collapse" id="cytoscape" aria-labelledby="CytoscapeHeader">
                             <div class="accordion-body overflow-auto">
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt, nemo qui aliquam sapiente labore pariatur ipsum quidem molestiae rerum, natus nihil sunt et, incidunt cumque eius quisquam eligendi exercitationem ut libero modi iste laborum ad! Sunt earum nisi quasi? Totam dignissimos officia dolorum dolores fugiat nesciunt earum perferendis! Cupiditate, reiciendis?
                             </div> 
