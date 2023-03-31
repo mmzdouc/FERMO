@@ -1,0 +1,18 @@
+{% macro tooltip(title, link) %}
+    <a href="link"
+    target="_blank"
+    data-bs-toggle="tooltip"
+    data-bs-placement="right"
+    data-bs-custom-class="custom-tooltip"
+    data-bs-title="{{ title }}">
+    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+    </a>
+{% endmacro %}
+
+{% macro dashboard_tooltip(title)%}
+    {{ tooltip(title, 'https://github.com/mmzdouc/FERMO/wiki/Scores-page') }}
+{% endmacro %}
+
+{% macro processing_tooltip(title)%}
+    {{ tooltip(title, 'https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page') }}
+{% endmacro %}

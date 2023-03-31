@@ -46,7 +46,8 @@
                                 data-bs-placement="right"
                                 data-bs-custom-class="custom-tooltip"
                                 data-bs-title="Reads a MZmine3 style peak table with the '_quant_full.csv' suffix (exported in the FULL/ALL mode).
-                                For more information on the format, see the documentation.">
+                                For more information on the format, see the documentation."
+                                required>
                         </div>
                         <div id="spectrum" class="col-lg-9 col-xl-6">
                             <label for="msmsFile" class="form-label">Load the MS/MS file (*.mgf): </label>
@@ -54,7 +55,8 @@
                                 data-bs-toggle="tooltip"
                                 data-bs-placement="right"
                                 data-bs-custom-class="custom-tooltip"
-                                data-bs-title="Reads a MZmine3 style .mgf-file containing tandem mass (MS/MS) spectra, accompanying the peak table. Generated through MZmine3 export. For more information on the format, see the documentation.">
+                                data-bs-title="Reads a MZmine3 style .mgf-file containing tandem mass (MS/MS) spectra, accompanying the peak table. Generated through MZmine3 export. For more information on the format, see the documentation."
+                                required>
                         </div>
                         <div>
                             <label for="quantDataFormatSelector" class="form-label">Specify format of quantitative biological data:
@@ -334,7 +336,7 @@
         <div class="row">
             <div class="col my-2">
                 <div class="d-grid col-6 mx-auto mt-3">
-                    <button class="btn btn-primary btn-label" type="submit">Start FERMO</button>
+                    <button class="btn btn-primary" type="submit">Start FERMO</button>
                 </div>
             </div>
         </div>
