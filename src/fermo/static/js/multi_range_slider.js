@@ -55,16 +55,17 @@ function getParsed(currentFrom, currentTo) {
 
 /**
  * Control coloring of the slider depending on the selected range
- * @param {string} fromSlider  - HTML-ID of the slider that controls the lower bound
- * @param {string} toSlider    - HTML-ID of the slider that controls the upper bound
- * @param {string} sliderColor - Hexcode for the color of the unselected part of the slider
- * @param {string} rangeColor  - Hexcode for the color of the selected range
+* @param {string} fromSlider    - HTML-ID of the slider that controls the lower bound
+* @param {string} toSlider      - HTML-ID of the slider that controls the upper bound
+* @param {string} sliderColor   - Hexcode for the color of the unselected part of the slider
+* @param {string} rangeColor    - Hexcode for the color of the selected range
+* @param {string} controlSlider - same as toSlider but necessary to prevent background-color-on-input-field bug
  */
-function fillSlider(fromSlider, toSlider, sliderColor, rangeColor) {
+function fillSlider(fromSlider, toSlider, sliderColor, rangeColor, controlSlider) {
     const rangeDistance = (toSlider.max-toSlider.min) / toSlider.step;
     const fromPosition = (fromSlider.value - toSlider.min) / toSlider.step;
     const toPosition = (toSlider.value - toSlider.min) / toSlider.step;
-    toSlider.style.background = `linear-gradient(
+    controlSlider.style.background = `linear-gradient(
       to right,
       ${sliderColor} 0%,
       ${sliderColor} ${(fromPosition)/(rangeDistance)*100}%,
