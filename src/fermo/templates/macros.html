@@ -20,6 +20,7 @@
 
 
 {% macro display_tablebody(tablename) %}
+<!-- Create HTML code for table body -->
 <tbody class="text-start">
     {% for row in tablename %}
         <tr>
@@ -27,7 +28,7 @@
                 {% if cell == '-----' %} <!-- Check for separators-->
                     <td class='px-0 py-0'> <hr> </td>
                 {% else %}
-                    <td class="px-3 py-1"> {{ cell }} </td>
+                    <td class="px-1 py-1"> {{ cell|safe }} </td>
                 {% endif %}
             {% endfor %}
         </tr>
@@ -36,13 +37,26 @@
 {% endmacro %}
 
 {% macro display_table(tablename, columns) %}
-<!-- Create HTML code for tables -->
+<!-- Create HTML code for general tables -->
 <table class="table table-striped">
     <thead class=" align-middle">
         <tr>
             {% for column in columns %}
                 <th scope="col" class="p-1">{{ column }}</th>
             {% endfor %}
+        </tr>
+    </thead>
+    {{ display_tablebody(tablename) }}
+</table>
+{% endmacro %}
+
+{% macro display_detail_table(tablename) %}
+<!-- Create HTML code for detail tables (on loading page and dashboard page(feature overview)) -->
+<table class="table table-striped">
+    <thead class="lh-sm">
+        <tr>
+          <th scope="col" class="col col-5">Attribute</th>
+          <th scope="col">Description</th>
         </tr>
     </thead>
     {{ display_tablebody(tablename) }}

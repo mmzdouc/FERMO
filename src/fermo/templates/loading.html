@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% from "macros.html" import display_tablebody %}
+{% from "macros.html" import display_detail_table %}
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %}
 <main id=loadingPage class="container-fluid">
@@ -59,14 +59,7 @@
         <div class="col mt-3 ms-3 me-5">
             <div class="text-center">
                 {% block table %}
-                <table class="table table-striped">
-                    <thead class="lh-sm">
-                        <tr>
-                          <th scope="col" class="col col-5">Attribute</th>
-                          <th scope="col">Description</th>
-                        </tr>
-                    </thead>
-                    {{ display_tablebody(table) }}
+                    {{ display_detail_table(table) }}
                 </table>
                 {% endblock %}
             </div>

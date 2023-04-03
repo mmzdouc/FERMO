@@ -14,6 +14,7 @@ from fermo.app_utils.input_testing import (
     parse_sessionfile,
     empty_loading_table,
 )
+from fermo.app_utils.dashboard_functions import empty_feature_info_df
 
 views = Blueprint(__name__, "views")
 
@@ -147,11 +148,13 @@ def dashboard(version=__version__.__version__):
     '''Render dashboard page'''
     # load data for placeholder main chromatogram
     graphJSON = placeholder_graph()
+    feature_table = empty_feature_info_df()
 
     return render_template(
         'dashboard.html',
         version=version,
-        # sample_table=sample_table,
-        # feature_table=feature_table,
+        # general_sample_table=general_sample_table,
+        # specific_sample_table=specific_sample_table,
+        feature_table=feature_table,
         graphJSON=graphJSON,
     )

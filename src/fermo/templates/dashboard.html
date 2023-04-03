@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% from "macros.html" import dashboard_tooltip, display_table %}
+{% from "macros.html" import dashboard_tooltip, display_table, display_detail_table %}
 
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %} 
@@ -16,8 +16,8 @@
                     </h2>
                     <div id="sampleTable" class="accordion-collapse collapse" aria-labelledby="sampleTableHeader">
                         <div class="accordion-body overflow-auto">
-                            {{ display_table(sample_table, ['Nr of samples', 'Nr of features', 'Selected features', 'Selected networks', 'Non-blank', 'Blank & MS1']) }}
-                            {{ display_table(feature_table, ['Filename', 'Group', 'Selected features', 'Selected networks', 'Diversity-score', 'Spec score', 'Mean novelty score', 'Total', 'Non-blank', 'Blank & MS1']) }}
+                            {{ display_table(general_sample_table, ['Nr of samples', 'Nr of features', 'Selected features', 'Selected networks', 'Non-blank', 'Blank & MS1']) }}
+                            {{ display_table(specific_sample_table, ['Filename', 'Group', 'Selected features', 'Selected networks', 'Diversity-score', 'Spec score', 'Mean novelty score', 'Total', 'Non-blank', 'Blank & MS1']) }}
                         </div>
                     </div>
                 </div>
@@ -29,8 +29,7 @@
                     </h2>
                     <div id="featureTable" class="accordion-collapse collapse" aria-labelledby="featureTableHeader">
                         <div class="accordion-body overflow-auto">
-                            This is the feature table <br>
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Excepturi accusantium distinctio voluptas commodi optio? Tempora voluptatibus qui quae pariatur tenetur.
+                            {{ display_detail_table(feature_table) }}
                         </div>
                     </div>
                 </div>
