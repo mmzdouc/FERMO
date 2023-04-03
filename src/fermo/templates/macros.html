@@ -1,4 +1,5 @@
 {% macro tooltip(title, link) %}
+<!-- Create tooltip on questionmark image -->
     <a href="link"
     target="_blank"
     data-bs-toggle="tooltip"
@@ -15,4 +16,35 @@
 
 {% macro processing_tooltip(title)%}
     {{ tooltip(title, 'https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page') }}
+{% endmacro %}
+
+
+{% macro display_tablebody(tablename) %}
+<tbody class="text-start">
+    {% for row in tablename %}
+        <tr>
+            {% for cell in row %}
+                {% if cell == '-----' %} <!-- Check for separators-->
+                    <td class='px-0 py-0'> <hr> </td>
+                {% else %}
+                    <td class="px-3 py-1"> {{ cell }} </td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</tbody>
+{% endmacro %}
+
+{% macro display_table(tablename, columns) %}
+<!-- Create HTML code for tables -->
+<table class="table table-striped">
+    <thead class=" align-middle">
+        <tr>
+            {% for column in columns %}
+                <th scope="col" class="p-1">{{ column }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    {{ display_tablebody(tablename) }}
+</table>
 {% endmacro %}

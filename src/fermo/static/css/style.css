@@ -171,9 +171,11 @@ input[type="range"] {
 
 
 /* tables */
-th {
+thead {
     background-color: #116789 !important;
     color: white !important;
+    font-size: 14px;
+    line-height: 1.2;
 }
 
 td {

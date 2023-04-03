@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% from "macros.html" import display_tablebody %}
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %}
 <main id=loadingPage class="container-fluid">
@@ -59,25 +60,13 @@
             <div class="text-center">
                 {% block table %}
                 <table class="table table-striped">
-                    <thead>
+                    <thead class="lh-sm">
                         <tr>
                           <th scope="col" class="col col-5">Attribute</th>
                           <th scope="col">Description</th>
                         </tr>
                     </thead>
-                    <tbody class="text-start">
-                    {% for row in table %}
-                        <tr>
-                            {% for cell in row %}
-                                {% if cell == '-----' %}
-                                    <td class='px-0 py-0'> <hr> </td>
-                                {% else %}
-                                    <td class="px-3 py-1"> {{ cell }} </td>
-                                {% endif %}
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                    </tbody>
+                    {{ display_tablebody(table) }}
                 </table>
                 {% endblock %}
             </div>

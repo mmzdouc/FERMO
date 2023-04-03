@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
-{% from "macros.html" import dashboard_tooltip %}
+
+{% from "macros.html" import dashboard_tooltip, display_table %}
+
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %} 
 <main id=dashboardPage class="container-fluid flex-grow-1">
@@ -14,8 +16,8 @@
                     </h2>
                     <div id="sampleTable" class="accordion-collapse collapse" aria-labelledby="sampleTableHeader">
                         <div class="accordion-body overflow-auto">
-                            This is the sample table <br>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur alias doloremque voluptate fuga aliquam reiciendis commodi eaque aperiam asperiores. Odit culpa sed consequatur nisi deserunt.
+                            {{ display_table(sample_table, ['Nr of samples', 'Nr of features', 'Selected features', 'Selected networks', 'Non-blank', 'Blank & MS1']) }}
+                            {{ display_table(feature_table, ['Filename', 'Group', 'Selected features', 'Selected networks', 'Diversity-score', 'Spec score', 'Mean novelty score', 'Total', 'Non-blank', 'Blank & MS1']) }}
                         </div>
                     </div>
                 </div>

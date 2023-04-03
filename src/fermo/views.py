@@ -151,5 +151,7 @@ def dashboard(version=__version__.__version__):
     return render_template(
         'dashboard.html',
         version=version,
-        graphJSON=graphJSON
+        # sample_table=sample_table,
+        # feature_table=feature_table,
+        graphJSON=graphJSON,
     )
