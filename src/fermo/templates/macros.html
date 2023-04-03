@@ -19,16 +19,20 @@
 {% endmacro %}
 
 
-{% macro display_tablebody(tablename) %}
-<!-- Create HTML code for table body -->
+{% macro display_tablebody(tablename, class='p-1') %}
+<!-- Create HTML code for table body
+    parameters:
+        tablename: name of table, as passed to the template in views.py
+        class: string with classnames, used to style data rows
+-->
 <tbody class="text-start">
     {% for row in tablename %}
         <tr>
             {% for cell in row %}
                 {% if cell == '-----' %} <!-- Check for separators-->
-                    <td class='px-0 py-0'> <hr> </td>
+                    <td class='p-0'> <hr> </td>
                 {% else %}
-                    <td class="px-1 py-1"> {{ cell|safe }} </td>
+                    <td class="{{ class }}"> {{ cell|safe }} </td>
                 {% endif %}
             {% endfor %}
         </tr>
@@ -37,12 +41,16 @@
 {% endmacro %}
 
 {% macro display_table(tablename, columns) %}
-<!-- Create HTML code for general tables -->
+<!-- Create HTML code for general tables 
+    parameters:
+        tablename: name of table, as passed to the template in views.py
+        columns: list of column names
+-->
 <table class="table table-striped">
-    <thead class=" align-middle">
+    <thead class="align-middle">
         <tr>
             {% for column in columns %}
-                <th scope="col" class="p-1">{{ column }}</th>
+                <th scope="col">{{ column }}</th>
             {% endfor %}
         </tr>
     </thead>
@@ -50,8 +58,12 @@
 </table>
 {% endmacro %}
 
-{% macro display_detail_table(tablename) %}
-<!-- Create HTML code for detail tables (on loading page and dashboard page(feature overview)) -->
+{% macro display_detail_table(tablename, class='p-1') %}
+<!-- Create HTML code for detail tables (on loading page and dashboard page(feature overview)) 
+    Parameters:
+        tablename: name of table, as passed to the template in views.py
+        class: used to style data rows
+-->
 <table class="table table-striped">
     <thead class="lh-sm">
         <tr>
@@ -59,6 +71,6 @@
           <th scope="col">Description</th>
         </tr>
     </thead>
-    {{ display_tablebody(tablename) }}
+    {{ display_tablebody(tablename, class) }}
 </table>
 {% endmacro %}

@@ -22,6 +22,7 @@ body {
 
 .accordion-body{
     background: #fff;
+    max-height: 63vh;
 }
 
 .accordion-button:focus {
