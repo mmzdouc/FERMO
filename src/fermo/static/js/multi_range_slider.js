@@ -88,15 +88,15 @@ function setToggleAccessible(currentTarget) {
 }
 
 /**
- * Check if script was called from desired page and return boolean value
+ * Check if script was called from target page and return boolean value
  * 
- * @param {string} desiredPage - Name of the desired page (return true if script was called from this page)
+ * @param {string} targetPage - Name of the target page (last part of the URL)
 */
-function checkURL(desiredPage) {
+function checkURL(targetPage) {
   var pageurl = window.location.href; // get the URL of the current page
   var splitUrl = pageurl.split("/");
   var currentPage = (splitUrl[splitUrl.length - 1]); // access last element of the URL
-  if (desiredPage == currentPage) /*check whether the current page is {pagename}*/
+  if (targetPage == currentPage) // check whether the current page is {targetPage}
   {
     return true;
   } else {
@@ -121,8 +121,8 @@ function initSlider(fromSliderID, toSliderID, fromInputID, toInputID) {
 
   fromSlider.oninput = () => controlFromSlider(fromSlider, toSlider, fromInput);
   toSlider.oninput = () => controlToSlider(fromSlider, toSlider, toInput);
-  fromInput.oninput = () => controlFromInput(fromSlider, fromInput, toInput, toSlider);
-  toInput.oninput = () => controlToInput(toSlider, fromInput, toInput, toSlider);
+  fromInput.addEventListener('focusout', () => controlFromInput(fromSlider, fromInput, toInput, toSlider));
+  toInput.addEventListener('focusout', () => controlToInput(toSlider, fromInput, toInput, toSlider));
 }
 
 
