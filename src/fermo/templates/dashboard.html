@@ -290,7 +290,8 @@
                         </h2>
                         <div class="accordion-collapse collapse" id="cytoscape" aria-labelledby="CytoscapeHeader">
                             <div class="accordion-body overflow-auto">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt, nemo qui aliquam sapiente labore pariatur ipsum quidem molestiae rerum, natus nihil sunt et, incidunt cumque eius quisquam eligendi exercitationem ut libero modi iste laborum ad! Sunt earum nisi quasi? Totam dignissimos officia dolorum dolores fugiat nesciunt earum perferendis! Cupiditate, reiciendis?
+                                <h6 class="fw-bold"> Cytoscape view - spectral similarity networking</h6>
+                                <div id="cy"></div>
                             </div> 
                         </div>
                     </div>
@@ -319,6 +320,7 @@
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{url_for('static', filename='js/plotly-2.18.2.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/multi_range_slider.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cytoscape.min.js') }}"></script>
 <script>
     // activate the tooltips
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -329,5 +331,52 @@
     var graph = {{ graphJSON | safe }};
     Plotly.newPlot('mainChromatogram', graph, {});
 </script>
-
+<script>
+    // placeholder cytoscape graph
+    var cy = cytoscape({
+        container: document.getElementById('cy'), // container to render in
+        elements: [ // list of graph elements to start with
+            { // node a
+                data: { id: 'a' }
+            },
+            { // node b
+                data: { id: 'b' }
+            },
+            { // edge ab
+                data: { id: 'ab', source: 'a', target: 'b' }
+            },
+            { // node c
+                data: { id: 'c' }
+            },
+            { // node d
+                data: { id: 'd' }
+            },
+            { // edge cd
+                data: { id: 'cd', source: 'c', target: 'd' }
+            },
+            { // edge ca
+                data: { id: 'ca', source: 'c', target: 'a' }
+            },
+        ],
+        style: [ // the stylesheet for the graph
+            {
+                selector: 'node',
+                style: {
+                'background-color': '#666',
+                'label': 'data(id)'
+                }
+            },
+            {
+                selector: 'edge',
+                style: {
+                'line-color': '#ccc',
+                'target-arrow-color': '#ccc',
+                'target-arrow-shape': 'triangle',
+                'curve-style': 'bezier'
+                }
+            }
+        ],
+        layout: {name: 'grid', rows: 1}
+    });
+</script>
 {% endblock %}

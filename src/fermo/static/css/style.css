@@ -15,6 +15,7 @@ body {
     --bs-accordion-btn-padding-x: 0.5rem;
     --bs-accordion-btn-padding-y: 0.5rem;
     --bs-accordion-body-padding-x: 0.5rem;
+    --bs-accordion-body-padding-y: 0.5rem;
     --bs-accordion-active-color: #fff;
     --bs-accordion-bg: #116789;
     --bs-accordion-active-bg: #116789;
@@ -204,4 +205,9 @@ td hr {
 
 input[type=number]{
     padding: 0.2rem 0.5rem;
+}
+
+#cy {
+/* cytoscape graph */
+    height: 190px;
 }
