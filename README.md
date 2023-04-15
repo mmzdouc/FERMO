@@ -13,7 +13,7 @@ In particular, **FERMO** can be used to
 - **prioritization** of compounds likely responsible for bioactivity,
 - **detection** of fold-changes between conditions,
 - **annotation** of metabolites and their selection based on novelty,
-- **assess** of the chemical diversity of samples.
+- **assessment** of the chemical diversity of samples.
 
 For more information, see our [bioRxiv preprint](https://doi.org/10.1101/2022.12.21.521422).
 
