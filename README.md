@@ -6,15 +6,16 @@ Introduction
 ============
 
 **FERMO** is a dashboard app for processing and analysis of 
-**LC-MS(/MS)** data. In particular, **FERMO** can be used to 
+**LC-MS(/MS)** data for **Windows**, **macOS** and **Linux**. 
+In particular, **FERMO** can be used to 
 *integrate* **LC-MS(/MS)** data with 
 **quantitative biological data and other metadata**, to *facilitate*:
-- prioritization of compounds likely responsible for bioactivity,
-- detection of fold-changes between conditions,
-- annotate metabolites and prioritize based on novelty ,
-- assess the chemical diversity of samples for further investigation.
+- **prioritization** of compounds likely responsible for bioactivity,
+- **detection** of fold-changes between conditions,
+- **annotation** of metabolites and their selection based on novelty,
+- **assess** of the chemical diversity of samples.
 
-For more information, see our [**bioRxiv preprint: **](https://doi.org/10.1101/2022.12.21.521422).
+For more information, see our [bioRxiv preprint](https://doi.org/10.1101/2022.12.21.521422).
 
 <img src='https://user-images.githubusercontent.com/95709447/232235831-675d966d-5d16-4aff-a8e8-2e7c78ac9ca5.png' alt="workflow" width='600'>
 
@@ -26,8 +27,8 @@ other information, it includes:
 - Installation instructions for [Windows](https://github.com/mmzdouc/FERMO/wiki/Installation-Windows),
  [macOS](https://github.com/mmzdouc/FERMO/wiki/Installation-macOS), 
  and [Linux](https://github.com/mmzdouc/FERMO/wiki/Installation-Linux)
-- Information on [Prerequisites](https://github.com/mmzdouc/FERMO/wiki/Prerequisites)
-- A [quickstart Guide](https://github.com/mmzdouc/FERMO/wiki/Quickstart-guide)
+- Information on [prerequisites](https://github.com/mmzdouc/FERMO/wiki/Prerequisites)
+- A [quickstart guide](https://github.com/mmzdouc/FERMO/wiki/Quickstart-guide)
 
 Support
 =======
@@ -69,7 +70,7 @@ See also the list of [contributors](https://github.com/mmzdouc/FERMO/contributor
 
 ## Acknowledgments (in Alphabetical Order)
 
-- **Hannah E. Augustijn** - *design, code review, beta testing* -
+- **Augustijn, Hannah E.** - *design, code review, beta testing* -
 - Bayona Maldonado, Lina M.  - *beta testing*
 - Dell, Maria - *beta testing*
 - van der Hooft, Justin J. J. - *project supervision*
