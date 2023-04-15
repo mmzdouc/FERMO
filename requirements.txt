@@ -3,7 +3,7 @@ dash_bootstrap_components==1.3.0
 dash_cytoscape==0.3.0
 dash[diskcache]
 matchms==0.13.0
-ms2query==0.7.1
+ms2query==0.7.3.2
 networkx==3.0
 numpy==1.23.5
 pandas==1.5.2
