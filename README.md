@@ -50,7 +50,7 @@ A list of dependencies can be found in [requirements.txt](requirements.txt).
 
 ## License
 
-FERMO is licensed under the [MIT License](LICENSE.md) - see the [LICENSE.md](LICENSE.md) file for details.
+FERMO is licensed under the [MIT License](LICENSE.md).
 
 ## For Developers
 
