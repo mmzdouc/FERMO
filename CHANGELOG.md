@@ -5,13 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.8.11] - 2023-04-16
 
 ### Added 
 
+- Re-introduced support for macOS
+- Startup script for macOS
+
 ### Changed
 
-- Updated to MS2Query v 0.7.1 (by Niek de Jonge)
+- Updated to MS2Query v 0.7.3.2 (by Niek de Jonge)
 
 ## [0.8.10] - 2023-02-14
 
