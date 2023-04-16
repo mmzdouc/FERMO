@@ -98,8 +98,7 @@ def ms2query_search(
     Directly modifies the feature objects, so no return value.
     '''
     query_spectra = list()
-    zenodo_DOIs = {"positive": 6997924, "negative": 7107654}
-    
+
     rel_int = dict()
     included = set()
     excluded = set()
@@ -135,8 +134,8 @@ def ms2query_search(
                 query_spectra.append(feature_dicts[i]['ms2spectrum'])
     
     try:
-        download_zenodo_files(zenodo_DOIs['positive'], 
-            ms2query_lib_dir)
+        download_zenodo_files('positive',
+                              ms2query_lib_dir)
         download_successful = True
     except:
         download_successful = False
