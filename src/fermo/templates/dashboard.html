@@ -5,16 +5,27 @@
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %} 
 <main id=dashboardPage class="container-fluid flex-grow-1">
+    <div class="row">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <p class="text-danger">
+                    {% print(message) %}
+                </p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
     <div class="row gx-2 mb-2 mt-1">
         <div class="col col-3">
             <div class="accordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="sampleTableHeader">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sampleTable" aria-expanded="true" aria-controls="sampleTable">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#sampleTable" aria-expanded="true" aria-controls="sampleTable">
                         Sample Table
                         </button>
                     </h2>
-                    <div id="sampleTable" class="accordion-collapse collapse" aria-labelledby="sampleTableHeader">
+                    <div id="sampleTable" class="accordion-collapse collapse show" aria-labelledby="sampleTableHeader">
                         <div class="accordion-body overflow-auto">
                             {{ display_table(general_sample_table, ['Nr of samples', 'Nr of features', 'Selected features', 'Selected networks', 'Non-blank', 'Blank & MS1']) }}
                             {{ display_table(specific_sample_table, ['Filename', 'Group', 'Selected features', 'Selected networks', 'Diversity-score', 'Spec score', 'Mean novelty score', 'Total', 'Non-blank', 'Blank & MS1']) }}
@@ -324,7 +335,9 @@
 <script>
     // activate the tooltips
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    const tooltipList = [...tooltipTriggerList].map(
+        tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
+    )
 </script>
 <script>
     // plot the main chromatogram
