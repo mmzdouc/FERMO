@@ -1,3 +1,4 @@
+import json
 from flask import (
     Blueprint,
     current_app,
@@ -7,8 +8,12 @@ from flask import (
     request,
     url_for,
 )
-import fermo.__version__ as __version__
-from fermo.app_utils.dashboard_functions import placeholder_graph
+from fermo.__version__ import __version__
+from fermo.app_utils.dashboard_functions import (
+    load_example,
+    placeholder_graph,
+    get_samples_stats,
+)
 from fermo.app_utils.input_testing import (
     save_file,
     parse_sessionfile,
@@ -21,12 +26,12 @@ views = Blueprint(__name__, "views")
 
 # routing
 @views.route("/")
-def landing(version=__version__.__version__):
+def landing(version=__version__):
     return render_template('landing.html', version=version)
 
 
 @views.route("/loading", methods=['GET', 'POST'])
-def loading(version=__version__.__version__):
+def loading(version=__version__):
     ''' Handle requests on the loading page
 
     Parameters
@@ -80,7 +85,7 @@ def loading(version=__version__.__version__):
 
 
 @views.route("/loading/<filename>", methods=['GET', 'POST'])
-def inspect_uploaded_file(filename, version=__version__.__version__):
+def inspect_uploaded_file(filename, version=__version__):
     '''Display session file overview
 
     Parameters
@@ -129,7 +134,7 @@ def inspect_uploaded_file(filename, version=__version__.__version__):
 
 
 @views.route("/processing", methods=['GET', 'POST'])
-def processing(version=__version__.__version__):
+def processing(version=__version__):
     if request.method == 'POST':
         filename = save_file([
             'peaktableFile',
@@ -144,7 +149,7 @@ def processing(version=__version__.__version__):
 
 
 @views.route("/dashboard")
-def dashboard(version=__version__.__version__):
+def dashboard(version=__version__):
     '''Render dashboard page'''
     # load data for placeholder main chromatogram
     graphJSON = placeholder_graph()
@@ -153,8 +158,35 @@ def dashboard(version=__version__.__version__):
     return render_template(
         'dashboard.html',
         version=version,
-        # general_sample_table=general_sample_table,
-        # specific_sample_table=specific_sample_table,
+        general_sample_table=[[]],
+        specific_sample_table=[[]],
         feature_table=feature_table,
         graphJSON=graphJSON,
     )
+
+
+@views.route("/example")
+def example(version=__version__):
+    '''Example dashboard'''
+    data = load_example('example_data/FERMO_session.json')
+    if data:
+        general_sample_table = get_samples_stats(data)
+        specific_sample_table = [[]]
+        feature_table = empty_feature_info_df()
+
+        return render_template(
+            'dashboard.html',
+            version=version,
+            general_sample_table=general_sample_table,
+            specific_sample_table=specific_sample_table,
+            feature_table=feature_table,
+            graphJson=json.dumps(data),
+        )
+    else:
+        return render_template(
+            'dashboard.html',
+            version=version,
+            general_sample_table=[],
+            specific_sample_table=[],
+            feature_table=[],
+            )

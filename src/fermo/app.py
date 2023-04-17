@@ -10,7 +10,7 @@ from views import views
 app = Flask(__name__)
 app.config.from_file('config.toml', load=toml.load)
 app.register_blueprint(views, url_prefix="/")
-app.testing = True  # to be removed in production environment
+app.testing = True
 
 if __name__ == '__main__':
     app.run()

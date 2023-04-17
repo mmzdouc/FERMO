@@ -21,30 +21,46 @@
 
 {% macro display_tablebody(tablename, class='p-1') %}
 <!-- Create HTML code for table body
-    parameters:
-        tablename: name of table, as passed to the template in views.py
-        class: string with classnames, used to style data rows
+
+    Parameters:
+        tablename: list
+            must have the same name as passed to the template in views.py
+        class: string 
+            classnames, used to style data rows
 -->
 <tbody class="text-start">
-    {% for row in tablename %}
+    {% if tablename[0] is integer %} <!-- if true, tablename is a simple list
+        of integers instead of a list of lists (like in the general sample list
+        on the dashboard page) -->
         <tr>
-            {% for cell in row %}
-                {% if cell == '-----' %} <!-- Check for separators-->
-                    <td class='p-0'> <hr> </td>
-                {% else %}
-                    <td class="{{ class }}"> {{ cell|safe }} </td>
-                {% endif %}
+            {% for cell in tablename %}
+                <td class= "{{ class }}"> {{ cell|safe }} </td>
             {% endfor %}
         </tr>
-    {% endfor %}
+    {% else %}
+        {% for row in tablename %}
+            <tr>
+                {% for cell in row %}
+                    {% if cell == '-----' %} <!-- Check for separators-->
+                        <td class='p-0'> <hr> </td>
+                    {% else %}
+                        <td class="{{ class }}"> {{ cell|safe }} </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    {% endif %}
 </tbody>
 {% endmacro %}
 
 {% macro display_table(tablename, columns) %}
-<!-- Create HTML code for general tables 
-    parameters:
-        tablename: name of table, as passed to the template in views.py
-        columns: list of column names
+<!-- Create HTML code for general tables
+
+    Parameters:
+        tablename: list
+            must have the same name as passed to the template in views.py
+        columns: list
+            column names for the head of the table
 -->
 <table class="table table-striped">
     <thead class="align-middle">
@@ -59,10 +75,13 @@
 {% endmacro %}
 
 {% macro display_detail_table(tablename, class='p-1') %}
-<!-- Create HTML code for detail tables (on loading page and dashboard page(feature overview)) 
+<!-- Create HTML code for detail tables (on loading page and dashboard page(feature overview))
+
     Parameters:
-        tablename: name of table, as passed to the template in views.py
-        class: used to style data rows
+        tablename: list
+            must have the same name as passed to the template in views.py
+        class: string
+            used to style data rows
 -->
 <table class="table table-striped">
     <thead class="lh-sm">
