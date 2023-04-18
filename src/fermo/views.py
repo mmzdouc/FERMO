@@ -10,9 +10,11 @@ from flask import (
 )
 from fermo.__version__ import __version__
 from fermo.app_utils.dashboard_functions import (
+    access_loaded_data,
+    get_samples_overview,
+    get_samples_statistics,
     load_example,
     placeholder_graph,
-    get_samples_stats,
 )
 from fermo.app_utils.input_testing import (
     save_file,
@@ -170,15 +172,29 @@ def example(version=__version__):
     '''Example dashboard'''
     data = load_example('example_data/FERMO_session.json')
     if data:
-        general_sample_table = get_samples_stats(data)
-        specific_sample_table = [[]]
+        (sample_stats,
+         samples_json,
+         samples_dict,
+         feature_dicts
+         ) = access_loaded_data(data)
+        general_sample_table = get_samples_statistics(
+            samples_json,
+            samples_dict,
+            feature_dicts,
+        )
+        sample_overview_table = get_samples_overview(
+            sample_stats,
+            samples_json,
+            samples_dict,
+            feature_dicts,
+        )
         feature_table = empty_feature_info_df()
 
         return render_template(
             'dashboard.html',
             version=version,
             general_sample_table=general_sample_table,
-            specific_sample_table=specific_sample_table,
+            specific_sample_table=sample_overview_table,
             feature_table=feature_table,
             graphJson=json.dumps(data),
         )
