@@ -1,4 +1,7 @@
 {% extends "layout.html" %}
+
+{% from "macros.html" import dashboard_tooltip, display_table, display_detail_table %}
+
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %} 
 <main id=dashboardPage class="container-fluid flex-grow-1">
@@ -12,22 +15,9 @@
                         </button>
                     </h2>
                     <div id="sampleTable" class="accordion-collapse collapse" aria-labelledby="sampleTableHeader">
-                        <div class="accordion-body">
-                            This is the sample table <br>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur alias doloremque voluptate fuga aliquam reiciendis commodi eaque aperiam asperiores. Odit culpa sed consequatur nisi deserunt.
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="filtersHeader">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filters" aria-expanded="false" aria-controls="filters">
-                            Filters
-                        </button>
-                    </h2>
-                    <div id="filters" class="accordion-collapse collapse" aria-labelledby="filtersHeader">
-                        <div class="accordion-body">
-                            This is the filters section. <br>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, dignissimos officia vero excepturi, officiis enim, accusantium laudantium iusto asperiores aut quidem. Architecto hic magnam eaque nisi eos fugiat, natus qui molestiae, omnis, repellendus sit velit iure quidem aspernatur. Fuga a consequatur, quo repellendus hic suscipit debitis.
+                        <div class="accordion-body overflow-auto">
+                            {{ display_table(general_sample_table, ['Nr of samples', 'Nr of features', 'Selected features', 'Selected networks', 'Non-blank', 'Blank & MS1']) }}
+                            {{ display_table(specific_sample_table, ['Filename', 'Group', 'Selected features', 'Selected networks', 'Diversity-score', 'Spec score', 'Mean novelty score', 'Total', 'Non-blank', 'Blank & MS1']) }}
                         </div>
                     </div>
                 </div>
@@ -38,9 +28,240 @@
                         </button>
                     </h2>
                     <div id="featureTable" class="accordion-collapse collapse" aria-labelledby="featureTableHeader">
-                        <div class="accordion-body">
-                            This is the feature table <br>
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Excepturi accusantium distinctio voluptas commodi optio? Tempora voluptatibus qui quae pariatur tenetur.
+                        <div class="accordion-body overflow-auto">
+                            {{ display_detail_table(feature_table) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="filtersHeader">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filters" aria-expanded="false" aria-controls="filters">
+                            Filters
+                        </button>
+                    </h2>
+                    <div id="filters" class="accordion-collapse collapse" aria-labelledby="filtersHeader">
+                        <div class="accordion-body overflow-auto">
+                            <div class="col-8">
+                                <button class="btn btn-primary"
+                                name="SaveSession"
+                                value="Saved"
+                                type="button">
+                                    Save FERMO session file (JSON)
+                                </button>
+                            </div>
+                            <hr>
+                            <h6>Set filters for cutoff and press enter:</h6>
+                            <form class="d-grid gap-2 me-2">
+                                <div id="featureVisibility">
+                                    <label for="feature-visualization-radio" class="form-label">Visualize features
+                                        {{ dashboard_tooltip("Toggles visualization of features in chromatogram. 'ALL' shows all features, 'SELECTED', shows only the currently selected features and grays out the remainder. 'HIDDEN' completely masks out the non-selected features. For more information, click the info-button to access the docs.") }}
+                                    </label>
+                                    <div id="featureVisualizationRadio">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="visualizeAll" value="All" checked>
+                                            <label class="form-check-label" for="visualizeAll">ALL</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="visualizeSelected" value="Selected">
+                                            <label class="form-check-label" for="visualizeSelected">SELECTED</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="featureVisualizationOptions" id="visualizeHidden" value="Hidden">
+                                            <label class="form-check-label" for="visualizeHidden">HIDDEN</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="blankFeatures">
+                                    <label for="blankFeatureRadio" class="form-label">Blank associated features
+                                        {{ dashboard_tooltip("Toggle to allow special designation of blank-associated features. When 'DESIGNATE', such features are specifically color-coded and automatically excluded from selection. For more information, click the info-button to access the docs.") }}
+                                    </label>
+                                    <div id="blankFeatureRadio">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="BlankFeaturesOptions" id="designateBlank" value="Designate" checked>
+                                            <label class="form-check-label" for="designateBlank">DESIGNATE</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="BlankFeaturesOptions" id="notDesignateBlank" value="DoNotDesignate">
+                                            <label class="form-check-label" for="notDesignateBlank">DO NOT DESIGNATE</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="noveltyScore">
+                                    <label for="noveltyScoreSlider" class="form-label">Novelty Score
+                                        {{ dashboard_tooltip("Filter for putatively novel (unknown) features (if MS2Query was active and/or a spectral library was provided). A value of '0' would select all features, while a value of '1' would select only features that are most likely unknown. Click button to access the docs.") }}
+                                    </label>
+                                    <div id="noveltyScoreSlider" class="range_container col-md-10 col-lg-8">
+                                        <div class="sliders_control">
+                                            <input id="fromSliderNovel" type="range" value="0" min="0" max="1" step="0.01"/>
+                                            <input id="toSliderNovel" type="range" value="1" min="0" max="1" step="0.01"/>
+                                        </div>
+                                        <div class="form_control_slider">
+                                            <div class="form_control_container">
+                                                <input type="number" class="form-control" id="fromInputNovel" value="0" min="0" max="1" step="0.01"/>
+                                            </div>
+                                            <div class="form_control_container">
+                                                <input type="number" class="form-control" id="toInputNovel" value="1" min="0" max="1" step="0.01"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="relativeIntensity">
+                                    <label for="relativeIntensitySlider" class="form-label">Relative intensity
+                                        {{ dashboard_tooltip("Filter features for relative intensity. Click button to access the docs.") }}
+                                    </label>
+                                    <div id="relativeIntensitySlider" class="range_container col-md-10 col-lg-8">
+                                        <div class="sliders_control">
+                                            <input id="fromSliderRelInt" type="range" value="0" min="0" max="1" step="0.01"/>
+                                            <input id="toSliderRelInt" type="range" value="1" min="0" max="1" step="0.01"/>
+                                        </div>
+                                        <div class="form_control_slider">
+                                            <div class="form_control_container">
+                                                <input type="number" class="form-control" id="fromInputRelInt" value="0" min="0" max="1" step="0.01"/>
+                                            </div>
+                                            <div class="form_control_container">
+                                                <input type="number" class="form-control" id="toInputRelInt" value="1" min="0" max="1" step="0.01"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="peakOverlap">
+                                    <label for="peakOverlapSlider" class="form-label">Peak overlap (%)
+                                        {{ dashboard_tooltip("Filter features for peak collisions. The higher the value, the more of the peak is overlapping (colliding) with another peak. Click button to access the docs.") }}
+                                    </label>
+                                    <div id="peakOverlapSlider" class="range_container col-md-10 col-lg-8">
+                                        <div class="sliders_control">
+                                            <input id="fromSliderPeak" type="range" value="0" min="0" max="1" step="0.01"/>
+                                            <input id="toSliderPeak" type="range" value="1" min="0" max="1" step="0.01"/>
+                                        </div>
+                                        <div class="form_control_slider">
+                                            <div class="form_control_container">
+                                                <input type="number" class="form-control" id="fromInputPeak" value="0" min="0" max="1" step="0.01"/>
+                                            </div>
+                                            <div class="form_control_container">
+                                                <input type="number" class="form-control" id="toInputPeak" value="1" min="0" max="1" step="0.01"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="quantDataAssociation">
+                                    <label for="quantDataAssociationRadio" class="form-label">QuantData-associated
+                                        {{ dashboard_tooltip("Select features associated with quantitative biological data (if such data was provided). 'SPECIFICITY' selects any feature putatively associated with quantitative biological data, 'SPEC.+TREND' also considers correlation between feature intensity and quantitative biological data (if it follows the trend). Click button to access the docs.") }}
+                                    </label>
+                                    <div id="quantDataAssociationRadio">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="quantDataAssociation" id="notQuantDataAssociated" value="NotAssociated" checked>
+                                            <label class="form-check-label" for="notQuantDataAssociated">OFF</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="quantDataAssociation" id="quantDataSpecificity" value="Specificity">
+                                            <label class="form-check-label" for="quantDataSpecificity">SPECIFICITY</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="quantDataAssociation" id="quantDataSpecTrend" value="SpecTrend">
+                                            <label class="form-check-label" for="quantDataSpecTrend">SPEC.+TREND</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-grid gap-2 col-xl-10">
+                                    <div id="adductFilter">
+                                        <label for="adductSearch" class="mb-1">Adduct/Isotope search
+                                            {{ dashboard_tooltip("Filter for features with annotations as adducts/isotopes. Filter uses regular expressions (POSIX ERE), and certain characters have special meaning. For example, to select all annotations, use expression '.+'. For more information, click the info-button to access the docs.") }}
+                                        </label>
+                                        <input id="adductSearch" class="form-control" type="search" placeholder="Regular expression search" aria-label="adducts/isotopes search">
+                                    </div>
+                                    <div id="annotationFilter">
+                                        <label for="annotationSearch" class="mb-1">Annotation search
+                                            {{ dashboard_tooltip("Filter for features with annotation from library/MS2Query matching. Filter uses regular expressions (POSIX ERE), and certain characters have special meaning. For example, to select all annotations, use expression '.+'. For more information, click the info-button to access the docs.") }}
+                                        </label>
+                                        <input id="annotationSearch" class="form-control" type="search" placeholder="Regular expression search" aria-label="Annotation search">
+                                    </div>
+                                    <div id="idFilter">
+                                        <label for="featureIdSearch" class="mb-1">Feature ID search
+                                            {{ dashboard_tooltip("Filter for feature ID. Filters features for a single feature ID number. For more information, click the info-button to access the docs.") }}
+                                        </label>
+                                        <input id="featureIdSearch" class="form-control" type="number" placeholder="Feature ID number" min="0" step="1" aria-label="Feature ID search">
+                                    </div>
+                                    <div id="specNetIdFilter">
+                                        <label for="specNetIdSearch" class="mb-1">Spectral network ID search
+                                            {{ dashboard_tooltip("Filter for spectral similarity network ID. Filters for features in a specific spectral network (does not include blank features since they are deselected by default). For more information, click the info-button to access the docs.") }}
+                                        </label>
+                                        <input id="specNetIdSearch" class="form-control" type="number" placeholder="Network ID number" min="0" step="1" aria-label="Spectral network ID search">
+                                    </div>
+                                    <div id="groupFeaturesFilter">
+                                        <label for="groupFeatures" class="mb-1">Group filter (features)
+                                            {{ dashboard_tooltip("Filter for group metadata for individual features. Filter uses regular expressions (POSIX ERE), and certain characters have special meaning. For example, to select multiple group annotations, use expression 'group1|group2'. To exclude a specific group, use expression '^((?!groupname).)*$'. For more information, click the info-button to access the docs.") }}
+                                        </label>
+                                        <input id="groupFeatures" class="form-control" type="search" placeholder="Regular expression search" aria-label="Group features search">
+                                    </div>
+                                    <div id="groupNetworkFilter">
+                                        <label for="groupNetworks" class="mb-1">Group filter (networks)
+                                            {{ dashboard_tooltip("Filter for group metadata for similarity networks. Filter uses regular expressions (POSIX ERE), and certain characters have special meaning. For example, to select multiple group annotations, use expression 'group1|group2'. To exclude a specific group (e.g. BLANK), use expression '^((?!BLANK).)*$'. For more information, click the info-button to access the docs.") }}
+                                        </label>
+                                        <input id="groupFeatures" class="form-control" type="search" placeholder="Regular expression search" aria-label="Group networks search">
+                                    </div>
+                                    <div id="sampleNameFilter">
+                                        <label for="sampleNameSearch" class="mb-1">Sample name search
+                                            {{ dashboard_tooltip("Filter for sample names. Filter uses regular expressions (POSIX ERE), and certain characters have special meaning. For example, to select multiple samples, use expression 'sample1|sample2'. To exclude a specific sample, use expression '^((?!sample).)*$', where 'sample' is the name of the name of the sample. For more information, click the info-button to access the docs.") }}
+                                        </label>
+                                        <input id="sampleNameSearch" class="form-control" type="search" placeholder="Regular expression search" aria-label="Sample name search">
+                                    </div>
+                                    <div id="numberSamplesFilter">
+                                        <label for="numberSamples" class="mb-1">Number samples filter
+                                            {{ dashboard_tooltip('Filter for the number of samples that contribute to a feature. Can be used to only select features that have been observed in (all) replicate samples. For more information, click the info-button to access the docs.') }}
+                                        </label>
+                                        <div id="numberSamples" class="input-group">
+                                            <input class="form-control" id="minSamples" type="number" placeholder="min" min="0" step="1"/>
+                                            <input class="form-control" id="maxSamples" type="number" placeholder="max" min="0" step="1"/>
+                                        </div>
+                                    </div>
+                                    <div id="precursorMassFilter">
+                                        <label for="numberSamples" class="mb-1">Precursor m/z filter
+                                            {{dashboard_tooltip('Filter for feature precursor m/z. Filters features for a range of values. For more information, click the info-button to access the docs.') }}
+                                        </label>
+                                        <div id="precursorMass" class="input-group">
+                                            <input class="form-control" id="minMass" type="number" value="0" min="0" step="1"/>
+                                            <input class="form-control" id="maxMass" type="number" placeholder="max" min="0" step="1"/>
+                                        </div>
+                                    </div>
+                                    <hr class="my-1">
+                                    <div id="fcIncludeFilter">
+                                        <label for="fcInclude" class="mb-1">Fold-changes filter: INCLUDE
+                                            {{dashboard_tooltip('Filter to include features with certain fold-changes between groups (calculated by pairwise division of average intensity between groups). Left field allows to filter for the desired fold change. Right field allows to filter for specific groups, using regular expressions. Only applicable if group metadata was provided. For more information, click the info-button to access the docs.') }}
+                                        </label>
+                                        <div id="fcInclude" class="input-group">
+                                            <input class="form-control" id="fcIncludeNumber" type="number" placeholder="≥ n-fold" min="0" step="1"/>
+                                            <input class="form-control" id="fcIncludeGroup" type="search" placeholder="group1/group2" min="0" step="1"/>
+                                        </div>
+                                    </div>
+                                    <div id="fcExcludeFilter">
+                                        <label for="fcExclude" class="mb-1" style="overflow: visible">Fold-changes filter: EXCLUDE
+                                            {{dashboard_tooltip('Filter to exclude features with certain fold-changes between groups (calculated by pairwise division of average intensity between groups). Left field allows to filter for the desired fold change. Right field allows to filter for specific groups, using regular expressions. Only applicable if group metadata was provided. For more information, click the info-button to access the docs.') }}
+                                        </label>
+                                        <div id="fcExclude" class="input-group">
+                                            <input class="form-control" id="fcExcludeNumber" type="number" placeholder="≥ n-fold" min="0" step="1"/>
+                                            <input class="form-control" id="fcExcludeGroup" type="search" placeholder="group1/group2" min="0" step="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="submit" hidden>
+                            </form>
+                            <div class="col-xl-11">
+                                <hr>
+                                <p>Export features as tables (.csv): </p>
+                                <hr>
+                                <form class="d-grid gap-2">
+                                    <select id="exportFileSelector" class="form-select" aria-label="Export features as table">
+                                        <option selected hidden>Select...</option>
+                                        <option value="peak_sel_sam_sel_feat">Peak table | selected sample, selected features</option>
+                                        <option value="peak_sel_sam_all_feat">Peak table | selected sample, all features</option>
+                                        <option value="peak_all_sam_sel_feat">Peak table | all samples, selected features</option>
+                                        <option value="peak_all_sam_all_feat">Peak table | all samples, all features</option>
+                                        <option value="feature_sel"> Feature table | selected features</option>
+                                        <option value="feature_all"> Feature table | all features</option>
+                                    </select>
+                                    <button class="btn btn-primary" type="submit">Export table</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -51,11 +272,10 @@
                 <div class="col"> 
                     <div class="card"> 
                         <div class="card-header">
-                            Dashboard <br>
+                            Main Chromatogram <br>
                         </div>
-                        <div class="card-body">
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis dolor quidem, ipsam ea eveniet autem. <br> Commodi dicta laboriosam sunt hic tempore! Ipsum magni alias officiis eum eligendi tenetur maxime culpa totam fugit assumenda necessitatibus sequi nihil perspiciatis commodi quod ad at aliquam cumque quos quisquam, <br> tempore nemo! Inventore ipsam adipisci accusamus quam amet fuga ex laborum error. Corrupti esse nam, magni distinctio eum maxime quos ipsam dicta, sunt modi placeat magnam iure fugiat id? <br> Maiores harum, aspernatur temporibus corporis, omnis asperiores recusandae sit corrupti rerum quidem quod sunt enim nulla iure quae dolor nobis nihil a numquam quam explicabo! Ipsum!
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis dolor quidem, ipsam ea eveniet autem. <br> Commodi dicta laboriosam sunt hic tempore! Ipsum magni alias officiis eum eligendi tenetur maxime culpa totam fugit assumenda necessitatibus sequi nihil perspiciatis commodi quod ad at aliquam cumque quos quisquam, <br> tempore nemo! Inventore ipsam adipisci accusamus quam amet fuga ex laborum error. Corrupti esse nam, magni distinctio eum maxime quos ipsam dicta, sunt modi placeat magnam iure fugiat id? <br> Maiores harum, aspernatur temporibus corporis, omnis asperiores recusandae sit corrupti rerum quidem quod sunt enim nulla iure quae dolor nobis nihil a numquam quam explicabo! Ipsum!
+                        <div class="card-body overflow-auto">
+                            <div id="mainChromatogram"></div>
                         </div>
                     </div>
                 </div>
@@ -63,14 +283,15 @@
             <div class="row gx-2 mt-1">
                 <div class="accordion col-7">
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="CytoscapeHeader">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Cytoscape" aria-expanded="true" aria-controls="Cytoscape">
+                        <h2 class="accordion-header" id="cytoscapeHeader">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cytoscape" aria-expanded="true" aria-controls="Cytoscape">
                                 Cytoscape
                             </button>
                         </h2>
-                        <div class="accordion-collapse collapse" id="Cytoscape" aria-labelledby="CytoscapeHeader">
-                            <div class="accordion-body">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        <div class="accordion-collapse collapse" id="cytoscape" aria-labelledby="CytoscapeHeader">
+                            <div class="accordion-body overflow-auto">
+                                <h6 class="fw-bold"> Cytoscape view - spectral similarity networking</h6>
+                                <div id="cy"></div>
                             </div> 
                         </div>
                     </div>
@@ -83,7 +304,7 @@
                             </button>
                         </h2>
                         <div class="accordion-collapse collapse" id="sampleChromatograms" aria-labelledby="sampleChromatogramsHeader">
-                            <div class="accordion-body">
+                            <div class="accordion-body overflow-auto">
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, dignissimos officia vero excepturi, officiis enim, accusantium laudantium iusto asperiores aut quidem.
                             </div>
                         </div>
@@ -93,4 +314,69 @@
         </div>
     </div>
 </main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{url_for('static', filename='js/plotly-2.18.2.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/multi_range_slider.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cytoscape.min.js') }}"></script>
+<script>
+    // activate the tooltips
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+<script>
+    // plot the main chromatogram
+    var graph = {{ graphJSON | safe }};
+    Plotly.newPlot('mainChromatogram', graph, {});
+</script>
+<script>
+    // placeholder cytoscape graph
+    var cy = cytoscape({
+        container: document.getElementById('cy'), // container to render in
+        elements: [ // list of graph elements to start with
+            { // node a
+                data: { id: 'a' }
+            },
+            { // node b
+                data: { id: 'b' }
+            },
+            { // edge ab
+                data: { id: 'ab', source: 'a', target: 'b' }
+            },
+            { // node c
+                data: { id: 'c' }
+            },
+            { // node d
+                data: { id: 'd' }
+            },
+            { // edge cd
+                data: { id: 'cd', source: 'c', target: 'd' }
+            },
+            { // edge ca
+                data: { id: 'ca', source: 'c', target: 'a' }
+            },
+        ],
+        style: [ // the stylesheet for the graph
+            {
+                selector: 'node',
+                style: {
+                'background-color': '#666',
+                'label': 'data(id)'
+                }
+            },
+            {
+                selector: 'edge',
+                style: {
+                'line-color': '#ccc',
+                'target-arrow-color': '#ccc',
+                'target-arrow-shape': 'triangle',
+                'curve-style': 'bezier'
+                }
+            }
+        ],
+        layout: {name: 'grid', rows: 1}
+    });
+</script>
 {% endblock %}

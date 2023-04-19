@@ -11,7 +11,7 @@
                         On this page, you can process your data with FERMO. The minimum requirements are:
                         <ul>
                             <li>a <strong>peak table</strong> containing general data on feature
-                                (in the <strong>'_quant_full.scv'</strong> format created by </li>
+                                (in the <strong>'_quant_full.scv'</strong> format created by <strong>MZmine3</strong>) </li>
                             <li>a <strong>.mgf-file</strong> containing <strong>MS²</strong> data (created together with peak table by <strong>MZmine3</strong>) </li>
                         </ul>
                     </p>
@@ -36,7 +36,7 @@
                         You can start the analysis by clicking the <strong>'Start FERMO'</strong> button at the bottom of the page.
                     </p>
                 </div>
-                <div class="container-fluid " id="input_buttons">
+                <div class="container-fluid " id="inputButtons">
                     <hr class="mt-5"/>
                     <div class="d-grid gap-3 ms-0 my-2">
                         <div id="peaktable" class="col-lg-9 col-xl-6">
@@ -46,15 +46,17 @@
                                 data-bs-placement="right"
                                 data-bs-custom-class="custom-tooltip"
                                 data-bs-title="Reads a MZmine3 style peak table with the '_quant_full.csv' suffix (exported in the FULL/ALL mode).
-                                For more information on the format, see the documentation.">
+                                For more information on the format, see the documentation."
+                                required>
                         </div>
                         <div id="spectrum" class="col-lg-9 col-xl-6">
-                            <label for="MSMSFile" class="form-label">Load the MS/MS file (*.mgf): </label>
-                            <input class="form-control" type="file" id="MSMSFile" name="MSMSFile"
+                            <label for="msmsFile" class="form-label">Load the MS/MS file (*.mgf): </label>
+                            <input class="form-control" type="file" id="msmsFile" name="msmsFile"
                                 data-bs-toggle="tooltip"
                                 data-bs-placement="right"
                                 data-bs-custom-class="custom-tooltip"
-                                data-bs-title="Reads a MZmine3 style .mgf-file containing tandem mass (MS/MS) spectra, accompanying the peak table. Generated through MZmine3 export. For more information on the format, see the documentation.">
+                                data-bs-title="Reads a MZmine3 style .mgf-file containing tandem mass (MS/MS) spectra, accompanying the peak table. Generated through MZmine3 export. For more information on the format, see the documentation."
+                                required>
                         </div>
                         <div>
                             <label for="quantDataFormatSelector" class="form-label">Specify format of quantitative biological data:
@@ -83,9 +85,9 @@
                                 data-bs-custom-class="custom-tooltip"
                                 data-bs-title="Quantitative biological data file in the .csv format. For more information on the format, see the documentation.">
                         </div>
-                        <div id="Metadata" class="col-lg-9 col-xl-6">
-                            <label for="MetadataFile" class="form-label">Load group metadata table (*.csv): </label>
-                            <input class="form-control" type="file" id="MetadataFile" name="MetadataFile"
+                        <div id="metadata" class="col-lg-9 col-xl-6">
+                            <label for="metadataFile" class="form-label">Load group metadata table (*.csv): </label>
+                            <input class="form-control" type="file" id="metadataFile" name="metadataFile"
                                 data-bs-toggle="tooltip"
                                 data-bs-placement="right"
                                 data-bs-custom-class="custom-tooltip"
@@ -106,7 +108,7 @@
                 <h4 class="fw-bold my-3">General parameters</h4>
                 <div class="d-grid gap-3">
                     <div>
-                        <label for="mass-deviation" class="form-label">Mass deviation:
+                        <label for="massDeviation" class="form-label">Mass deviation:
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                                 target="_blank"
                                 data-bs-toggle="tooltip"
@@ -117,11 +119,11 @@
                             </a>
                         </label>
                         <div class="col-sm-6 col-md-5 col-lg-4">
-                            <input type="number" class="form-control" id="mass-deviation" min="0" step="1" value="20">
+                            <input type="number" class="form-control" id="massDeviation" min="0" step="1" value="20">
                         </div>
                     </div>
                     <div>
-                        <label for="minimum-fragments" class="form-label">Min fragments per MS² spectrum:
+                        <label for="minimumFragments" class="form-label">Min fragments per MS² spectrum:
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                                 target="_blank"
                                 data-bs-toggle="tooltip"
@@ -132,11 +134,11 @@
                             </a>
                         </label>
                         <div class="col-sm-6 col-md-5 col-lg-4">
-                            <input type="number" class="form-control" id="minimum-fragments" min="0" step="1" value="8">
+                            <input type="number" class="form-control" id="minimumFragments" min="0" step="1" value="8">
                         </div>
                     </div>
                     <div>
-                        <label for="quant-data-factor" class="form-label">QuantData factor:
+                        <label for="quantDataFactor" class="form-label">QuantData factor:
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                                 target="_blank"
                                 data-bs-toggle="tooltip"
@@ -147,11 +149,11 @@
                             </a>
                         </label>
                         <div class="col-sm-6 col-md-5 col-lg-4">
-                            <input type="number" class="form-control" id="quant-data-factor" min="0" step="1" value="10">
+                            <input type="number" class="form-control" id="quantDataFactor" min="0" step="1" value="10">
                         </div>
                     </div>
                     <div>
-                        <label for="blank-factor" class="form-label">Blank factor:
+                        <label for="blankFactor" class="form-label">Blank factor:
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                                 target="_blank"
                                 data-bs-toggle="tooltip"
@@ -162,11 +164,11 @@
                             </a>
                         </label>
                         <div class="col-sm-6 col-md-5 col-lg-4">
-                            <input type="number" class="form-control" id="blank-factor" min="0" step="1" value="10">
+                            <input type="number" class="form-control" id="blankFactor" min="0" step="1" value="10">
                         </div>
                     </div>
                     <div>
-                        <label for="intensity-filter" class="form-label">Relative intensity filter:
+                        <label for="intensityFilter" class="form-label">Relative intensity filter:
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                                 target="_blank"
                                 data-bs-toggle="tooltip"
@@ -183,11 +185,9 @@
                             </div>
                             <div class="form_control_slider">
                                 <div class="form_control_container">
-                                    <div>Min</div>
                                     <input type="number" class="form-control" id="fromInput" value="0" min="0" max="1" step="0.01"/>
                                 </div>
                                 <div class="form_control_container">
-                                    <div>Max</div>
                                     <input type="number" class="form-control" id="toInput" value="1" min="0" max="1" step="0.01"/>
                                 </div>
                             </div>
@@ -197,8 +197,8 @@
                 <h4 class="fw-bold mt-5">Networking and annotation parameters</h4>
                 <div class="d-grid gap-3 mt-3">
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="MS2Query-switch">
-                        <label class="form-check-label" for="MS2Query-switch">Enable MS2Query annotation
+                        <input class="form-check-input" type="checkbox" role="switch" id="ms2QuerySwitch">
+                        <label class="form-check-label" for="ms2QuerySwitch">Enable MS2Query annotation
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                             target="_blank"
                             data-bs-toggle="tooltip"
@@ -210,7 +210,7 @@
                         </label>
                     </div>
                     <div>
-                        <label for="MS2Query-filter" class="form-label">MS2Query relative intensity filter:
+                        <label for="ms2Query-filter" class="form-label">MS2Query relative intensity filter:
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                             target="_blank"
                             data-bs-toggle="tooltip"
@@ -227,19 +227,17 @@
                             </div>
                             <div class="form_control_slider">
                                 <div class="form_control_container">
-                                    <div>Min</div>
                                     <input type="number" class="form-control" id="fromInputMS2Q" value="0" min="0" max="1" step="0.01"/>
                                 </div>
                                 <div class="form_control_container">
-                                    <div>Max</div>
                                     <input type="number" class="form-control" id="toInputMS2Q" value="1" min="0" max="1" step="0.01"/>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="MS2Query-blank-annotation">
-                        <label class="form-check-label" for="MS2Query-blank-annotation">Enable MS2Query blank annotation
+                        <input class="form-check-input" type="checkbox" role="switch" id="ms2QueryBlankAnnotation">
+                        <label class="form-check-label" for="ms2QueryBlankAnnotation">Enable MS2Query blank annotation
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                             target="_blank"
                             data-bs-toggle="tooltip"
@@ -251,7 +249,7 @@
                         </label>
                     </div>
                     <div>
-                        <label for="algorithm-radio" class="form-label">Spectral similarity networking algorithm:
+                        <label for="algorithmRadio" class="form-label">Spectral similarity networking algorithm:
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                             target="_blank"
                             data-bs-toggle="tooltip"
@@ -261,19 +259,19 @@
                             <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;" >
                             </a>
                         </label>
-                        <div id="algorithm-radio">
+                        <div id="algorithmRadio">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked>
-                                <label class="form-check-label" for="inlineRadio1">Modified Cosine</label>
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="modifiedCosine" value="modifiedCosine" checked>
+                                <label class="form-check-label" for="modifiedCosine">Modified Cosine</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                                <label class="form-check-label" for="inlineRadio2">MS2DeepScore</label>
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="ms2DeepScore" value="ms2DeepScore">
+                                <label class="form-check-label" for="ms2DeepScore">MS2DeepScore</label>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <label for="fragment-similarity" class="form-label">Fragment similarity tolerance:
+                        <label for="fragmenSimilarity" class="form-label">Fragment similarity tolerance:
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                             target="_blank"
                             data-bs-toggle="tooltip"
@@ -284,11 +282,11 @@
                             </a>
                         </label>
                         <div class="col-sm-6 col-md-5 col-lg-4">
-                            <input type="number" class="form-control" id="fragment-similarity" min="0" step="0.01" value="0.1">
+                            <input type="number" class="form-control" id="fragmentSimilarity" min="0" step="0.01" value="0.1">
                         </div>
                     </div>
                     <div>
-                        <label for="spectrum-similarity" class="form-label">Spectrum similarity score cutoff:
+                        <label for="spectrumSimilarity" class="form-label">Spectrum similarity score cutoff:
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                             target="_blank"
                             data-bs-toggle="tooltip"
@@ -299,11 +297,11 @@
                             </a>
                         </label>
                         <div class="col-sm-6 col-md-5 col-lg-4">
-                            <input type="number" class="form-control" id="spectrum-similarity" min="0" step="0.01" value="0.8">
+                            <input type="number" class="form-control" id="spectrumSimilarity" min="0" step="0.01" value="0.8">
                         </div>
                     </div>
                     <div>
-                        <label for="max-spectral-links" class="form-label">Maximum spectral links:
+                        <label for="maxSpectralLinks" class="form-label">Maximum spectral links:
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                             target="_blank"
                             data-bs-toggle="tooltip"
@@ -314,22 +312,22 @@
                             </a>
                         </label>
                         <div class="col-sm-6 col-md-5 col-lg-4">
-                            <input type="number" class="form-control" id="max-spectral-links" min="0" max="10" step="1" value="10">
+                            <input type="number" class="form-control" id="maxSpectralLinks" min="0" max="10" step="1" value="10">
                         </div>
                     </div>
                     <div>
-                        <label for="min-matched-peaks" class="form-label">Minimum matched peaks:
+                        <label for="minMatchedPeaks" class="form-label">Minimum matched peaks:
                             <a href="https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page"
                             target="_blank"
                             data-bs-toggle="tooltip"
                             data-bs-placement="right"
                             data-bs-custom-class="custom-tooltip"
-                            data-bs-title="In spectrum similarity matching, the minimum number of peaks that have to be matched between two spectra to be considered a match. For more information, click this info-button."></a>
+                            data-bs-title="In spectrum similarity matching, the minimum number of peaks that have to be matched between two spectra to be considered a match. For more information, click this info-button.">
                                 <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
                             </a>
                         </label>
                         <div class="col-sm-6 col-md-5 col-lg-4">
-                            <input type="number" class="form-control" id="min-matched-peaks" min="0" step="1" value="8">
+                            <input type="number" class="form-control" id="minMatchedPeaks" min="0" step="1" value="8">
                         </div>
                     </div>
                 </div>
@@ -338,7 +336,7 @@
         <div class="row">
             <div class="col my-2">
                 <div class="d-grid col-6 mx-auto mt-3">
-                    <button class="btn btn-primary btn-label" type="submit">Start FERMO</button>
+                    <button class="btn btn-primary" type="submit">Start FERMO</button>
                 </div>
             </div>
         </div>
@@ -348,7 +346,7 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-<script>
+<script> // activate the tooltips
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 </script>

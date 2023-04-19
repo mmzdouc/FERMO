@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% from "macros.html" import display_detail_table %}
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %}
 <main id=loadingPage class="container-fluid">
@@ -32,10 +33,10 @@
             </div>
             <div class="container-fluid " id="loading-button">
                 <hr/>
-                <form id="loading_file" action="/loading" method = "post" enctype = "multipart/form-data">
+                <form id="loadingFile" method="post" enctype="multipart/form-data">
                     <div class=" mb-1 col-xl-8">
                         <label for="sessionFile" class="form-label">Load FERMO session File (*.json)</label>
-                        <input class="form-control" type="file" id="sessionFile" name="sessionFile">
+                        <input class="form-control" type="file" id="sessionFile" name="sessionFile" onchange="this.form.submit();">
                     </div>
                     {% with messages = get_flashed_messages() %}
                         {% if messages %}
@@ -58,27 +59,7 @@
         <div class="col mt-3 ms-3 me-5">
             <div class="text-center">
                 {% block table %}
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                          <th scope="col" class="col col-5">Attribute</th>
-                          <th scope="col">Description</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-start">
-                    {% for row in table %}
-                        <tr>
-                            {% for cell in row %}
-                                {% if cell == '-----' %}
-                                    <td class='px-0 py-0'> <hr> </td>
-                                {% else %}
-                                    <td class="px-3 py-1"> {{ cell }} </td>
-                                {% endif %}
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                    {{ display_detail_table(table, 'px-3 py-1') }}
                 {% endblock %}
             </div>
         </div>
@@ -86,7 +67,14 @@
     <div class="row">
         <div class="col my-2">
             <div class="d-grid gap-2 col-6 mx-auto">
-                <button class="btn btn-primary btn-label" type="submit" form="loading_file">Start FERMO Dashboard</button>
+                <button 
+                class="btn btn-primary" 
+                type="submit"
+                form="loadingFile"
+                name="Start_FERMO_Dashboard"
+                value="Start_dashboard">
+                    Start FERMO Dashboard
+                </button>
             </div>
         </div>
     </div>

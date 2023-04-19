@@ -1,0 +1,76 @@
+{% macro tooltip(title, link) %}
+<!-- Create tooltip on questionmark image -->
+    <a href="link"
+    target="_blank"
+    data-bs-toggle="tooltip"
+    data-bs-placement="right"
+    data-bs-custom-class="custom-tooltip"
+    data-bs-title="{{ title }}">
+    <img src="{{ url_for('static', filename='images/question-circle-fill.SVG')}}" width="40" alt="?" style="color: 17,103,137;">
+    </a>
+{% endmacro %}
+
+{% macro dashboard_tooltip(title)%}
+    {{ tooltip(title, 'https://github.com/mmzdouc/FERMO/wiki/Scores-page') }}
+{% endmacro %}
+
+{% macro processing_tooltip(title)%}
+    {{ tooltip(title, 'https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page') }}
+{% endmacro %}
+
+
+{% macro display_tablebody(tablename, class='p-1') %}
+<!-- Create HTML code for table body
+    parameters:
+        tablename: name of table, as passed to the template in views.py
+        class: string with classnames, used to style data rows
+-->
+<tbody class="text-start">
+    {% for row in tablename %}
+        <tr>
+            {% for cell in row %}
+                {% if cell == '-----' %} <!-- Check for separators-->
+                    <td class='p-0'> <hr> </td>
+                {% else %}
+                    <td class="{{ class }}"> {{ cell|safe }} </td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</tbody>
+{% endmacro %}
+
+{% macro display_table(tablename, columns) %}
+<!-- Create HTML code for general tables 
+    parameters:
+        tablename: name of table, as passed to the template in views.py
+        columns: list of column names
+-->
+<table class="table table-striped">
+    <thead class="align-middle">
+        <tr>
+            {% for column in columns %}
+                <th scope="col">{{ column }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    {{ display_tablebody(tablename) }}
+</table>
+{% endmacro %}
+
+{% macro display_detail_table(tablename, class='p-1') %}
+<!-- Create HTML code for detail tables (on loading page and dashboard page(feature overview)) 
+    Parameters:
+        tablename: name of table, as passed to the template in views.py
+        class: used to style data rows
+-->
+<table class="table table-striped">
+    <thead class="lh-sm">
+        <tr>
+          <th scope="col" class="col col-5">Attribute</th>
+          <th scope="col">Description</th>
+        </tr>
+    </thead>
+    {{ display_tablebody(tablename, class) }}
+</table>
+{% endmacro %}
