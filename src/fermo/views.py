@@ -175,7 +175,7 @@ def example(version=__version__):
         (sample_stats,
          samples_json,
          samples_dict,
-         feature_dicts
+         feature_dicts,
          ) = access_loaded_data(data)
         general_sample_table = get_samples_statistics(
             samples_json,
@@ -205,4 +205,4 @@ def example(version=__version__):
             general_sample_table=[],
             specific_sample_table=[],
             feature_table=[],
-            )
+        )

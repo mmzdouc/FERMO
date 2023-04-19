@@ -1,6 +1,7 @@
 import copy
 from pathlib import Path
 import re
+from statistics import StatisticsError, mean
 from flask import flash
 import pandas as pd
 import plotly
@@ -238,77 +239,191 @@ def get_samples_overview(
     filtered_samples = {}
     samples_json_dict = {}
 
-    diversity_scores = calc_diversity_score(sample_stats, samples_dict)
-
     for sample in samples_dict:
         samples_json_dict[sample] = pd.read_json(
             samples_json[sample], orient='split')
-
-        sample_row = [sample]
-        group = samples_dict[sample]
         filtered_samples[sample] = generate_subsets(
             samples_json_dict,
             sample,
             default_filters(),
             feature_dicts
         )
+        sample_row = [sample]
+
+        # access/create values for sample overview table
+        group = samples_dict[sample]
         n_selected_features = len(
             filtered_samples[sample]['all_select_no_blank']
         )
-        # get selected cliques of one sample
-        sample_selected_cliques = set()
-        for ID in filtered_samples[sample]['all_select_no_blank']:
-            if feature_dicts[str(ID)]['similarity_clique']:
-                sample_selected_cliques.add(
-                    feature_dicts[str(ID)]['similarity_clique_number']
-                )
-        # get div scores per sample and append to sample row
-        div_score = diversity_scores[sample]
+        n_selected_networks = len(calc_selected_networks(
+            sample,
+            filtered_samples,
+            feature_dicts,
+        ))
+        div_score = calc_diversity_score(sample, sample_stats)
+        spec_score = calc_specificity_score(
+            sample,
+            sample_stats,
+            filtered_samples,
+            feature_dicts,
+        )
+        nov_score = calc_sample_mean_novelty(
+            sample,
+            feature_dicts,
+            filtered_samples,
+        )
+        n_all_selected_features = len(filtered_samples[sample]['all_features'])
+        n_non_blank = len(filtered_samples[sample]['all_nonblank'])
+        n_blank = len(filtered_samples[sample]['blank_ms1'])
 
         # append results to sample row
         sample_row.append(group)
         sample_row.append(n_selected_features)
-        sample_row.append(len(sample_selected_cliques))
+        sample_row.append(n_selected_networks)
         sample_row.append(div_score)
+        sample_row.append(spec_score)
+        sample_row.append(nov_score)
+        sample_row.append(n_all_selected_features)
+        sample_row.append(n_non_blank)
+        sample_row.append(n_blank)
 
+        # append sample row to samples table before moving on to next sample
         samples_table.append(sample_row)
     return samples_table
 
 
+def calc_selected_networks(
+    sample: str,
+    filtered_samples: dict,
+    feature_dicts: dict,
+) -> list:
+    '''Calculate selected cliques for given sample
+
+    Parameters
+    ----------
+    sample: `str`
+    filtered_samples: `dict`
+    feature_dicts: `dict`
+
+    Returns
+    -------
+    sample_selected_cliques: `list`
+    '''
+    sample_selected_cliques = []
+    for ID in filtered_samples[sample]['all_select_no_blank']:
+        if feature_dicts[str(ID)]['similarity_clique']:
+            sample_selected_cliques.append(
+                feature_dicts[str(ID)]['similarity_clique_number']
+            )
+    return sample_selected_cliques
+
+
 # functions from dash-Fermo
 def calc_diversity_score(
+    sample: str,
     sample_stats: dict,
-    samples: dict,
-) -> dict:
+) -> int:
     '''Calculate diversity scores for each sample
 
     Parameters
     ----------
     sample_stats: `dict`
-    samples: `dict`
-        Keys must be the sample names
+    sample: `str`
 
     Returns
     -------
-    list_div_scores: `dict`
-
+    div_scores: `int`
     '''
-    div_scores = {}
-    for sample in samples:
-        try:
-            div_scores[sample] = round((len(set(
-                sample_stats["cliques_per_sample"][sample]
-            ).difference(
-                set(sample_stats["set_blank_cliques"]))
-            )/len(
-                set(sample_stats["set_all_cliques"]).difference(
-                    set(sample_stats["set_blank_cliques"])
-                )
+    try:
+        div_score = round((len(set(
+            sample_stats["cliques_per_sample"][sample]
+        ).difference(
+            set(sample_stats["set_blank_cliques"]))
+        )/len(
+            set(sample_stats["set_all_cliques"]).difference(
+                set(sample_stats["set_blank_cliques"])
             )
-            ), 2)
-        except:
-            div_scores[sample] = 0
-    return div_scores
+        )
+        ), 2)
+    except (ZeroDivisionError, StatisticsError):
+        div_score = 0
+    return div_score
+
+
+def calc_specificity_score(
+    sample: str,
+    sample_stats: dict,
+    filtered_samples: dict,
+    feature_dicts: dict,
+) -> int:
+    '''Calculate specificity scores for a sample
+
+    Parameters
+    ----------
+    sample: `str`
+    sample_stats: `dict`
+    filtered_samples: `dict`
+    feature_dicts: `dict`
+
+    Returns
+    -------
+    spec_score : `int`
+    '''
+    unique_cliques = set()
+    for ID in filtered_samples[sample]['all_nonblank']:
+        if ((
+            len(feature_dicts[str(ID)]['set_groups_clique']) == 1
+        ) and (
+            sample in feature_dicts[str(ID)]['presence_samples']
+        )):
+            unique_cliques.add(
+                feature_dicts[str(ID)]['similarity_clique_number']
+            )
+    try:
+        spec_score = round(((len(
+            unique_cliques
+        ))/len(set(
+            sample_stats["cliques_per_sample"][sample]
+        ).difference(
+            set(sample_stats["set_blank_cliques"])
+        ))), 2)
+    except ZeroDivisionError:
+        spec_score = 0
+    return spec_score
+
+
+def calc_sample_mean_novelty(
+    sample: str,
+    feature_dicts: dict,
+    filtered_samples: dict,
+) -> int:
+    '''Calculate unique cliques per sample
+
+    Parameters
+    ----------
+    sample: `str`
+    feature_dicts: `dict`
+    filtered_samples: `dict`
+
+    Returns
+    -------
+    sample_mean_novelty: `int`
+
+    Notes
+    -----
+    statistics.mean() throws error if any None in list
+    '''
+    list_novelty_scores = []
+    for ID in filtered_samples[sample]['all_nonblank']:
+        nov_score = feature_dicts[str(ID)]['novelty_score']
+        if isinstance(nov_score, int) or isinstance(nov_score, float):
+            list_novelty_scores.append(nov_score)
+    try:
+        sample_mean_novelty = round(mean(list_novelty_scores), 2)
+    except StatisticsError:
+        sample_mean_novelty = 0
+
+    return sample_mean_novelty
 
 
 def filter_str_regex(query: str, annot_str: str,) -> bool:
