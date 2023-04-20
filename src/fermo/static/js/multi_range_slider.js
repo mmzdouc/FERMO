@@ -137,7 +137,7 @@ if(checkURL("processing")){
   // Slider for MS2Query relative intensity filter (processing page)
   initSlider('#fromSliderMS2Q', '#toSliderMS2Q', '#fromInputMS2Q', '#toInputMS2Q');
 
-} else if (checkURL("dashboard")){
+} else if (checkURL("dashboard") || checkURL("example")){
 
   // Slider for Novelty Score (dashboard page)
   initSlider('#fromSliderNovel', '#toSliderNovel', '#fromInputNovel', '#toInputNovel');
