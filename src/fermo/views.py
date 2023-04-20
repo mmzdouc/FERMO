@@ -9,19 +9,25 @@ from flask import (
     url_for,
 )
 from fermo.__version__ import __version__
-from fermo.app_utils.dashboard_functions import (
-    access_loaded_data,
-    get_samples_overview,
-    get_samples_statistics,
-    load_example,
-    placeholder_graph,
-)
 from fermo.app_utils.input_testing import (
     save_file,
     parse_sessionfile,
     empty_loading_table,
 )
-from fermo.app_utils.dashboard_functions import empty_feature_info_df
+from fermo.app_utils.dashboard.dashboard_functions import (
+    access_loaded_data,
+    load_example,
+)
+from fermo.app_utils.dashboard.chromatogram import (
+    placeholder_graph,
+)
+from fermo.app_utils.dashboard.feature_table import (
+    empty_feature_info_df,
+)
+from fermo.app_utils.dashboard.sample_table import (
+    get_samples_overview,
+    get_samples_statistics,
+)
 
 views = Blueprint(__name__, "views")
 

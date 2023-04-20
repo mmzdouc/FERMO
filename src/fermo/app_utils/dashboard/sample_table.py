@@ -1,153 +1,7 @@
 import copy
-from pathlib import Path
 import re
 from statistics import StatisticsError, mean
-from flask import flash
 import pandas as pd
-import plotly
-import plotly.express as px
-import json
-from json.decoder import JSONDecodeError
-
-
-def placeholder_graph():
-    '''Load data from plotly express package and create simple graph'''
-    df = px.data.gapminder().query("continent=='Oceania'")
-    fig = px.line(
-        df,
-        x='year',
-        y='lifeExp',
-        color='country',
-        title="Placeholder for main Chromatogram"
-    )
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    return graphJSON
-
-
-def empty_feature_info_df() -> list:
-    '''Generate placeholder table for feature info
-
-    Returns
-    -------
-    `list`
-        List of lists: empty feature info table
-    '''
-    data = [
-        ['Feature ID', None],
-        ['Precursor <i>m/z</i>', None],
-        ['Retention time (min)', None],
-        ['Feature intensity (absolute)', None],
-        ['Feature intensity (relative)', None],
-        ['-----', '-----'],
-        ['Blank-associated', None],
-        ['Novelty score', None],
-        ['QuantData-associated', None],
-        ['QuantData-trend', None],
-        ['Peak overlap (%)', None],
-        ['-----', '-----'],
-        ['Spectral library: best match', None],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
-         MS2Query</a>: best match/analog''', None],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
-         MS2Query</a>: <i>m/z</i> difference to best match/analog''', None],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
-         MS2Query</a>: predicted class of best match/analog''', None],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
-         MS2Query</a>:predicted superclass of best match/analog''', None],
-        ['-----', '-----'],
-        ['Feature found in groups', None],
-        ['Fold-differences across groups', None],
-        ['Intensity per sample (highest to lowest)', None],
-        ['QuantData per sample (highest to lowest)', None],
-        ['Original QuantData (highest to lowest)', None],
-        ['Putative adducts', None],
-        ['-----', '-----'],
-        ['Spectral similarity network ID', None],
-        ['Groups in network', None],
-        ['Number of features in network', None],
-        ['IDs of features in network', None],
-    ]
-    return data
-
-
-def default_filters() -> dict:
-    ''' Generate a dictionary with default filter (threshhold) values
-
-    Returns
-    -------
-    `dict`
-    '''
-    return {
-        'rel_intensity_threshold': [0, 1],
-        'filter_adduct_isotopes': '',
-        'quant_biological_value': 'OFF',
-        'novelty_threshold': [0, 1],
-        'filter_annotation': '',
-        'filter_feature_id': '',
-        'filter_precursor_min': 0,
-        'filter_precursor_max': '',
-        'filter_spectral_sim_netw': '',
-        'filter_group': '',
-        'filter_group_cliques': '',
-        'peak_overlap_threshold': [0, 1],
-        'filter_samplename': '',
-        'filter_samplenumber_min': '',
-        'filter_samplenumber_max': '',
-        'blank_designation_toggle': 'DESIGNATE',
-        'filter_fold_greater_int': '',
-        'filter_fold_greater_regex': '',
-        'filter_fold_greater_exclude_int': '',
-        'filter_fold_greater_exclude_regex': '',
-    }
-
-
-def load_example(path: str) -> dict:
-    '''Load example session file
-
-    Parameters
-    ----------
-    path: `str`
-        Path to the example session file
-
-    Returns
-    -------
-    return_value: `dict`
-        If loading was successfull return the loaded data, otherwise return
-        empty dictionary
-    '''
-    try:
-        with open(Path.cwd() / path) as f:
-            data_dict = json.load(f)
-    except (FileNotFoundError, JSONDecodeError) as e:
-        print(e)
-        return_value = {}
-        flash(f'Example data could not be loaded: {e}')
-    else:
-        return_value = data_dict
-    finally:
-        return return_value
-
-
-def access_loaded_data(loaded_data: dict):
-    '''Access elements of loaded data
-
-    Parameters
-    ----------
-    loaded_data: `dict`
-
-    Returns
-    -------
-    sample_stats: `dict`
-    samples_json: `dict`
-    samples_dict: `dict`
-    feature_dicts: `dict`
-    '''
-    sample_stats = loaded_data['sample_stats']
-    samples_json = loaded_data['samples_JSON']
-    samples_dict = sample_stats['samples_dict']
-    feature_dicts = loaded_data['feature_dicts']
-
-    return sample_stats, samples_json, samples_dict, feature_dicts
 
 
 def get_samples_statistics(
@@ -292,163 +146,6 @@ def get_samples_overview(
     return samples_table
 
 
-def calc_selected_networks(
-    sample: str,
-    filtered_samples: dict,
-    feature_dicts: dict,
-) -> list:
-    '''Calculate selected cliques for given sample
-
-    Parameters
-    ----------
-    sample: `str`
-    filtered_samples: `dict`
-    feature_dicts: `dict`
-
-    Returns
-    -------
-    sample_selected_cliques: `list`
-    '''
-    sample_selected_cliques = []
-    for ID in filtered_samples[sample]['all_select_no_blank']:
-        if feature_dicts[str(ID)]['similarity_clique']:
-            sample_selected_cliques.append(
-                feature_dicts[str(ID)]['similarity_clique_number']
-            )
-    return sample_selected_cliques
-
-
-# functions from dash-Fermo
-def calc_diversity_score(
-    sample: str,
-    sample_stats: dict,
-) -> int:
-    '''Calculate diversity scores for each sample
-
-    Parameters
-    ----------
-    sample_stats: `dict`
-    sample: `str`
-
-    Returns
-    -------
-    div_scores: `int`
-    '''
-    try:
-        div_score = round((len(set(
-            sample_stats["cliques_per_sample"][sample]
-        ).difference(
-            set(sample_stats["set_blank_cliques"]))
-        )/len(
-            set(sample_stats["set_all_cliques"]).difference(
-                set(sample_stats["set_blank_cliques"])
-            )
-        )
-        ), 2)
-    except (ZeroDivisionError, StatisticsError):
-        div_score = 0
-    return div_score
-
-
-def calc_specificity_score(
-    sample: str,
-    sample_stats: dict,
-    filtered_samples: dict,
-    feature_dicts: dict,
-) -> int:
-    '''Calculate specificity scores for a sample
-
-    Parameters
-    ----------
-    sample: `str`
-    sample_stats: `dict`
-    filtered_samples: `dict`
-    feature_dicts: `dict`
-
-    Returns
-    -------
-    spec_score : `int`
-    '''
-    unique_cliques = set()
-    for ID in filtered_samples[sample]['all_nonblank']:
-        if ((
-            len(feature_dicts[str(ID)]['set_groups_clique']) == 1
-        ) and (
-            sample in feature_dicts[str(ID)]['presence_samples']
-        )):
-            unique_cliques.add(
-                feature_dicts[str(ID)]['similarity_clique_number']
-            )
-    try:
-        spec_score = round(((len(
-            unique_cliques
-        ))/len(set(
-            sample_stats["cliques_per_sample"][sample]
-        ).difference(
-            set(sample_stats["set_blank_cliques"])
-        ))), 2)
-    except ZeroDivisionError:
-        spec_score = 0
-    return spec_score
-
-
-def calc_sample_mean_novelty(
-    sample: str,
-    feature_dicts: dict,
-    filtered_samples: dict,
-) -> int:
-    '''Calculate unique cliques per sample
-
-    Parameters
-    ----------
-    sample: `str`
-    feature_dicts: `dict`
-    filtered_samples: `dict`
-
-    Returns
-    -------
-    sample_mean_novelty: `int`
-
-    Notes
-    -----
-    statistics.mean() throws error if any None in list
-    '''
-    list_novelty_scores = []
-    for ID in filtered_samples[sample]['all_nonblank']:
-        nov_score = feature_dicts[str(ID)]['novelty_score']
-        if isinstance(nov_score, int) or isinstance(nov_score, float):
-            list_novelty_scores.append(nov_score)
-    try:
-        sample_mean_novelty = round(mean(list_novelty_scores), 2)
-    except StatisticsError:
-        sample_mean_novelty = 0
-
-    return sample_mean_novelty
-
-
-def filter_str_regex(query: str, annot_str: str,) -> bool:
-    '''Check if query matches annot_str
-
-    Parameters
-    ----------
-    query: `str`
-    annot_str: `str`
-
-    Returns
-    -------
-    `bool`
-    '''
-    try:
-        match = bool(re.search(query, annot_str, re.IGNORECASE))
-    except:
-        return False
-    else:
-        if match:
-            return True
-        else:
-            return False
-
-
 def generate_subsets(
     samples: dict,
     sample: str,
@@ -507,17 +204,17 @@ def generate_subsets(
          & (
             samples[sample]['rel_intensity_score']
             <= thresholds['rel_intensity_threshold'][1]
-        ))
-        & ((samples[sample]['novelty_score'] 
+        )) &
+        ((samples[sample]['novelty_score']
             >= thresholds['novelty_threshold'][0])
-            & (samples[sample]['novelty_score']
+         & (samples[sample]['novelty_score']
             <= thresholds['novelty_threshold'][1])
-        )
-        & (
-            (samples[sample]['convolutedness_score'] >= thresholds['peak_overlap_threshold'][0])
-            &
-            (samples[sample]['convolutedness_score'] <= thresholds['peak_overlap_threshold'][1])
-        )
+         ) &
+        ((samples[sample]['convolutedness_score']
+            >= thresholds['peak_overlap_threshold'][0])
+         & (samples[sample]['convolutedness_score']
+            <= thresholds['peak_overlap_threshold'][1])
+         )
     ]
     filtered_thrsh_set = set(filt_df['feature_ID'])
 
@@ -854,3 +551,190 @@ def generate_subsets(
         'nonselect_group_spec': list(nonselect_group_spec),
         'nonselect_remainder': list(nonselect_remainder),
     }
+
+
+def default_filters() -> dict:
+    ''' Generate a dictionary with default filter (threshhold) values
+
+    Returns
+    -------
+    `dict`
+    '''
+    return {
+        'rel_intensity_threshold': [0, 1],
+        'filter_adduct_isotopes': '',
+        'quant_biological_value': 'OFF',
+        'novelty_threshold': [0, 1],
+        'filter_annotation': '',
+        'filter_feature_id': '',
+        'filter_precursor_min': 0,
+        'filter_precursor_max': '',
+        'filter_spectral_sim_netw': '',
+        'filter_group': '',
+        'filter_group_cliques': '',
+        'peak_overlap_threshold': [0, 1],
+        'filter_samplename': '',
+        'filter_samplenumber_min': '',
+        'filter_samplenumber_max': '',
+        'blank_designation_toggle': 'DESIGNATE',
+        'filter_fold_greater_int': '',
+        'filter_fold_greater_regex': '',
+        'filter_fold_greater_exclude_int': '',
+        'filter_fold_greater_exclude_regex': '',
+    }
+
+
+def calc_selected_networks(
+    sample: str,
+    filtered_samples: dict,
+    feature_dicts: dict,
+) -> list:
+    '''Calculate selected cliques for given sample
+
+    Parameters
+    ----------
+    sample: `str`
+    filtered_samples: `dict`
+    feature_dicts: `dict`
+
+    Returns
+    -------
+    sample_selected_cliques: `list`
+    '''
+    sample_selected_cliques = []
+    for ID in filtered_samples[sample]['all_select_no_blank']:
+        if feature_dicts[str(ID)]['similarity_clique']:
+            sample_selected_cliques.append(
+                feature_dicts[str(ID)]['similarity_clique_number']
+            )
+    return sample_selected_cliques
+
+
+def calc_diversity_score(
+    sample: str,
+    sample_stats: dict,
+) -> int:
+    '''Calculate diversity scores for each sample
+
+    Parameters
+    ----------
+    sample_stats: `dict`
+    sample: `str`
+
+    Returns
+    -------
+    div_scores: `int`
+    '''
+    try:
+        div_score = round((len(set(
+            sample_stats["cliques_per_sample"][sample]
+        ).difference(
+            set(sample_stats["set_blank_cliques"]))
+        )/len(
+            set(sample_stats["set_all_cliques"]).difference(
+                set(sample_stats["set_blank_cliques"])
+            )
+        )
+        ), 2)
+    except (ZeroDivisionError, StatisticsError):
+        div_score = 0
+    return div_score
+
+
+def calc_specificity_score(
+    sample: str,
+    sample_stats: dict,
+    filtered_samples: dict,
+    feature_dicts: dict,
+) -> int:
+    '''Calculate specificity scores for a sample
+
+    Parameters
+    ----------
+    sample: `str`
+    sample_stats: `dict`
+    filtered_samples: `dict`
+    feature_dicts: `dict`
+
+    Returns
+    -------
+    spec_score : `int`
+    '''
+    unique_cliques = set()
+    for ID in filtered_samples[sample]['all_nonblank']:
+        if ((
+            len(feature_dicts[str(ID)]['set_groups_clique']) == 1
+        ) and (
+            sample in feature_dicts[str(ID)]['presence_samples']
+        )):
+            unique_cliques.add(
+                feature_dicts[str(ID)]['similarity_clique_number']
+            )
+    try:
+        spec_score = round(((len(
+            unique_cliques
+        ))/len(set(
+            sample_stats["cliques_per_sample"][sample]
+        ).difference(
+            set(sample_stats["set_blank_cliques"])
+        ))), 2)
+    except ZeroDivisionError:
+        spec_score = 0
+    return spec_score
+
+
+def calc_sample_mean_novelty(
+    sample: str,
+    feature_dicts: dict,
+    filtered_samples: dict,
+) -> int:
+    '''Calculate unique cliques per sample
+
+    Parameters
+    ----------
+    sample: `str`
+    feature_dicts: `dict`
+    filtered_samples: `dict`
+
+    Returns
+    -------
+    sample_mean_novelty: `int`
+
+    Notes
+    -----
+    statistics.mean() throws error if any None in list
+    '''
+    list_novelty_scores = []
+    for ID in filtered_samples[sample]['all_nonblank']:
+        nov_score = feature_dicts[str(ID)]['novelty_score']
+        if isinstance(nov_score, int) or isinstance(nov_score, float):
+            list_novelty_scores.append(nov_score)
+    try:
+        sample_mean_novelty = round(mean(list_novelty_scores), 2)
+    except StatisticsError:
+        sample_mean_novelty = 0
+
+    return sample_mean_novelty
+
+
+def filter_str_regex(query: str, annot_str: str,) -> bool:
+    '''Check if query matches annot_str
+
+    Parameters
+    ----------
+    query: `str`
+    annot_str: `str`
+
+    Returns
+    -------
+    `bool`
+    '''
+    try:
+        match = bool(re.search(query, annot_str, re.IGNORECASE))
+    except:
+        return False
+    else:
+        if match:
+            return True
+        else:
+            return False
