@@ -1,4 +1,3 @@
-import json
 from flask import (
     Blueprint,
     current_app,
@@ -20,6 +19,7 @@ from fermo.app_utils.dashboard.dashboard_functions import (
 )
 from fermo.app_utils.dashboard.chromatogram import (
     placeholder_graph,
+    plot_central_chrom,
 )
 from fermo.app_utils.dashboard.feature_table import (
     empty_feature_info_df,
@@ -180,18 +180,18 @@ def example(version=__version__):
     data = load_example('example_data/FERMO_session.json')
     if data:
         (sample_stats,
-         samples_json,
+         samples_json_dict,
          samples_dict,
-         feature_dicts,
-         ) = access_loaded_data(data)
+         feature_dicts,) = access_loaded_data(data)
+
         general_sample_table = get_samples_statistics(
-            samples_json,
+            samples_json_dict,
             samples_dict,
             feature_dicts,
         )
         sample_overview_table = get_samples_overview(
             sample_stats,
-            samples_json,
+            samples_json_dict,
             samples_dict,
             feature_dicts,
         )
@@ -200,6 +200,14 @@ def example(version=__version__):
             data,                       # just as an example
             feature_index=28  # for session_file.json feature with ID 1 is
         )                         # at index 28
+        graph = plot_central_chrom(
+            list(samples_dict)[0],  # hardcoded now, should accept user input eventually
+            None,  # hardcoded now, should accept user input eventually
+            sample_stats,
+            samples_json_dict,
+            feature_dicts,
+            "ALL",  # hardcoded now, should accept user input eventually
+        )
 
         return render_template(
             'dashboard.html',
@@ -207,7 +215,7 @@ def example(version=__version__):
             general_sample_table=general_sample_table,
             specific_sample_table=sample_overview_table,
             feature_table=feature_table,
-            graphJson=json.dumps(data),
+            graphJSON=graph,
         )
     else:
         return render_template(
