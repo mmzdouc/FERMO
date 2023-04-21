@@ -74,7 +74,6 @@ def collect_feature_info(
     int_sample = ''.join(
         [str(samples[smpl].at[index, 'intensity']), ' (', smpl, ')',]
     )
-    print('int_sample', int_sample)
 
     # best cosine match
     cosine_annotation = None
