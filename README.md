@@ -65,7 +65,7 @@ We use [Semantic Versioning](http://semver.org/) for versioning.
 ## Authors
 
 - **Mitja M. Zdouc** - *lead developer* -
-- **Augustijn, Hannah E.** - *interface design* -
+- **Hannah E. Augustijn** - *interface design* -
 
 See also the list of [contributors](https://github.com/mmzdouc/FERMO/contributors) who participated in this project.
 
