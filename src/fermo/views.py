@@ -23,6 +23,7 @@ from fermo.app_utils.dashboard.chromatogram import (
 )
 from fermo.app_utils.dashboard.feature_table import (
     empty_feature_info_df,
+    update_feature_table,
 )
 from fermo.app_utils.dashboard.sample_table import (
     get_samples_overview,
@@ -194,7 +195,11 @@ def example(version=__version__):
             samples_dict,
             feature_dicts,
         )
-        feature_table = empty_feature_info_df()
+        feature_table = update_feature_table(
+            list(samples_dict)[0],  # sample = first sample of all samples
+            data,                       # just as an example
+            feature_index=28  # for session_file.json feature with ID 1 is
+        )                         # at index 28
 
         return render_template(
             'dashboard.html',
