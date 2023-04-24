@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 
-{% from "macros.html" import dashboard_tooltip, display_table, display_detail_table %}
+{% from "macros.html" import dashboard_tooltip,
+    display_table,
+    display_detail_table,
+    legend
+%}
 
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %} 
@@ -286,7 +290,21 @@
                             Main Chromatogram <br>
                         </div>
                         <div class="card-body overflow-auto">
-                            <div id="mainChromatogram"></div>
+                            <div class="row">
+                                Click any row in the left-hand table to visualize the sample
+                            </div>
+                            <div class="d-flex">
+                                <div id="mainChromatogram" class="flex-grow-1"></div>
+                                <div class="flex-shrink-0">
+                                    {{ legend('rgba(34, 136, 51, 0.6)', 'rgb(34, 136, 51)', 'Selected') }}
+                                    {{ legend('rgba(102, 204, 238, 0.6)', 'rgb(102, 204, 238)', 'Not selected') }}
+                                    {{ legend('white', 'rgb(170, 51, 119)', 'Unique to sample') }}
+                                    {{ legend('white', 'black', 'Unique to group') }}
+                                    {{ legend('rgba(204, 187, 68, 0.6)', 'rgb(204, 187, 68)', 'Blank + MS1') }}
+                                </div>
+                            </div>
+                            
+                            
                         </div>
                     </div>
                 </div>

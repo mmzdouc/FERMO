@@ -276,19 +276,16 @@ def append_scatter_text(
         cosine_ann = ''.join([
             feat_dicts[ID]['cosine_annotation_list'][0]['name'],
             ])
-    cosine_ann = (cosine_ann[:75] + '...') if len(cosine_ann) > 75 else cosine_ann
-    # if len(cosine_ann) > 75:
-    #     cosine_ann = (cosine_ann[:75] + '...')  # limit long annotations
+    if len(cosine_ann) > 75:
+        cosine_ann = (cosine_ann[:75] + '...')  # limit long annotations
 
     ms2query_ann = "None"
     if feat_dicts[ID]['ms2query']:
         ms2query_ann = ''.join([
             feat_dicts[ID]['ms2query_results'][0]['analog_compound_name'],
             ])
-
-    ms2query_ann = (ms2query_ann[:75] + '...') if len(ms2query_ann) > 75 else ms2query_ann
-    # if len(ms2query_ann) > 75:
-    #     ms2query_ann = (ms2query_ann[:75] + '...')  # limit long annotations
+    if len(ms2query_ann) > 75:
+        ms2query_ann = (ms2query_ann[:75] + '...')  # limit long annotations
 
     text = (
         f'Feature ID <b>{row["feature_ID"]}</b>' +
@@ -326,7 +323,7 @@ def append_scatter_text(
 def append_invis_trace(
     row: pd.Series,
 ) -> go.Scatter:
-    '''Create incisible scatter trace to keep track of peaks
+    '''Create invisible scatter trace to keep track of peaks
 
     Parameters
     ----------
@@ -340,7 +337,7 @@ def append_invis_trace(
         x=np.array([
             row['pseudo_chrom_trace'][0][0],
             row['pseudo_chrom_trace'][0][6],
-            ]),
+        ]),
         y=np.array([0, 0]),
         fill='toself',
         fillcolor='rgba(0,0,0,0)',

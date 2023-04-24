@@ -93,3 +93,20 @@
     {{ display_tablebody(tablename, class) }}
 </table>
 {% endmacro %}
+
+
+{% macro legend(background_color, border_color, text) %}
+<!-- Create HTML code for legend rectangle
+
+    Parameters:
+        background_color: string
+        border_color: string
+        text: string
+-->
+<div>
+    <span class="legend_rect"
+    style="background-color: {{ background_color }};
+    border-color: {{ border_color}}"></span>
+    <span> {{ text }} </span>
+</div>
+{% endmacro %}
