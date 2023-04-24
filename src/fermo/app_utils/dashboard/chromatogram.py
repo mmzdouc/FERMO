@@ -9,7 +9,7 @@ from fermo.app_utils.dashboard.dashboard_functions import (
     generate_subsets,
 )
 
-from fermo.app_utils.variables import color_dict
+from fermo.app_utils.dashboard.dashboard_functions import color_dict
 
 
 def placeholder_graph():
@@ -50,6 +50,7 @@ def plot_central_chrom(
     graphJSON: `str`
         stringified JSON object of plotly graph
     '''
+    colors = color_dict()
     fig = go.Figure()
     fig.update_layout(
         margin=dict(t=0, b=0, r=0),
@@ -88,10 +89,10 @@ def plot_central_chrom(
             fig.add_trace(
                 append_scatter_text(
                     row,
-                    color_dict['light_yellow'],
-                    color_dict['yellow'],
+                    colors['light_yellow'],
+                    colors['yellow'],
                     4,
-                    color_dict['black'],
+                    colors['black'],
                     feature_dicts,
                 )
             )
@@ -107,10 +108,10 @@ def plot_central_chrom(
             fig.add_trace(
                 append_scatter_text(
                     row,
-                    color_dict['light_green'],
-                    color_dict['purple'],
+                    colors['light_green'],
+                    colors['purple'],
                     4,
-                    color_dict['black'],
+                    colors['black'],
                     feature_dicts,
                 )
             )
@@ -120,10 +121,10 @@ def plot_central_chrom(
             fig.add_trace(
                 append_scatter_text(
                     row,
-                    color_dict['light_green'],
-                    color_dict['black'],
+                    colors['light_green'],
+                    colors['black'],
                     4,
-                    color_dict['black'],
+                    colors['black'],
                     feature_dicts,
                 )
             )
@@ -133,10 +134,10 @@ def plot_central_chrom(
             fig.add_trace(
                 append_scatter_text(
                     row,
-                    color_dict['light_green'],
-                    color_dict['green'],
+                    colors['light_green'],
+                    colors['green'],
                     4,
-                    color_dict['black'],
+                    colors['black'],
                     feature_dicts,
                 )
             )
@@ -149,10 +150,10 @@ def plot_central_chrom(
             fig.add_trace(
                 append_scatter_text(
                     row,
-                    color_dict['light_cyan'],
-                    color_dict['purple'],
+                    colors['light_cyan'],
+                    colors['purple'],
                     4,
-                    color_dict['black'],
+                    colors['black'],
                     feature_dicts,
                 )
             )
@@ -173,10 +174,10 @@ def plot_central_chrom(
             fig.add_trace(
                 append_scatter_text(
                     row,
-                    color_dict['light_cyan'],
-                    color_dict['black'],
+                    colors['light_cyan'],
+                    colors['black'],
                     4,
-                    color_dict['black'],
+                    colors['black'],
                     feature_dicts,
                 )
             )
@@ -196,10 +197,10 @@ def plot_central_chrom(
             fig.add_trace(
                 append_scatter_text(
                     row,
-                    color_dict['light_cyan'],
-                    color_dict['cyan'],
+                    colors['light_cyan'],
+                    colors['cyan'],
                     4,
-                    color_dict['black'],
+                    colors['black'],
                     feature_dicts,
                 )
             )
@@ -214,10 +215,10 @@ def plot_central_chrom(
             fig.add_trace(
                 append_scatter_text(
                     row,
-                    color_dict['very_light_grey'],
-                    color_dict['very_light_grey'],
+                    colors['very_light_grey'],
+                    colors['very_light_grey'],
                     4,
-                    color_dict['black'],
+                    colors['black'],
                     feature_dicts,
                 )
             )
@@ -235,7 +236,7 @@ def plot_central_chrom(
             y1=(samples_json_dict[sel_sample].at[
                 active_feature_index, 'norm_intensity'] * 1),
             line={
-                'color': color_dict['blue'],
+                'color': colors['blue'],
                 'width': 5,
                 'dash': 'dash',
             }

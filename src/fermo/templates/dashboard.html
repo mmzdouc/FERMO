@@ -320,7 +320,17 @@
                         <div class="accordion-collapse collapse" id="cytoscape" aria-labelledby="CytoscapeHeader">
                             <div class="accordion-body overflow-auto">
                                 <h6 class="fw-bold"> Cytoscape view - spectral similarity networking</h6>
+                                {% if cytoscape_message %}
+                                    <p class="text-danger">{{ cytoscape_message }}</p>
+                                {% endif %}
                                 <div id="cy"></div>
+                                <div class="d-inline-flex mt-1">
+                                    {{ legend('rgb(68, 119, 170)', 'rgb(68, 119, 170)', 'Focused feature', 'me-2') }}
+                                    {{ legend('rgb(238, 102, 119)', 'rgb(238, 102, 119)', 'Present in sample', 'me-2') }}
+                                    {{ legend('rgb(187, 187, 187)', 'rgb(187, 187, 187)', 'Other samples', 'me-2') }}
+                                    {{ legend('white', 'rgb(170, 51, 119)', 'Unique to sample', 'me-2') }}
+                                    {{ legend('white', 'black', 'Unique to group', 'me-2') }}
+                                </div>
                             </div> 
                         </div>
                     </div>
@@ -364,50 +374,14 @@
 </script>
 <script>
     // placeholder cytoscape graph
+    network = {{ networkJSON | safe }};
+    stylesheet = {{ cyto_stylesheetJSON | safe }};
     var cy = cytoscape({
-        container: document.getElementById('cy'), // container to render in
-        elements: [ // list of graph elements to start with
-            { // node a
-                data: { id: 'a' }
-            },
-            { // node b
-                data: { id: 'b' }
-            },
-            { // edge ab
-                data: { id: 'ab', source: 'a', target: 'b' }
-            },
-            { // node c
-                data: { id: 'c' }
-            },
-            { // node d
-                data: { id: 'd' }
-            },
-            { // edge cd
-                data: { id: 'cd', source: 'c', target: 'd' }
-            },
-            { // edge ca
-                data: { id: 'ca', source: 'c', target: 'a' }
-            },
-        ],
-        style: [ // the stylesheet for the graph
-            {
-                selector: 'node',
-                style: {
-                'background-color': '#666',
-                'label': 'data(id)'
-                }
-            },
-            {
-                selector: 'edge',
-                style: {
-                'line-color': '#ccc',
-                'target-arrow-color': '#ccc',
-                'target-arrow-shape': 'triangle',
-                'curve-style': 'bezier'
-                }
-            }
-        ],
-        layout: {name: 'grid', rows: 1}
+        container: document.getElementById('cy'), // container to display graph
+        elements: network, // list of graph elements
+        style: stylesheet, // the stylesheet for the graph
+        layout: {name: 'cose', rows: 1},
+        zoom: 0.75
     });
 </script>
 {% endblock %}

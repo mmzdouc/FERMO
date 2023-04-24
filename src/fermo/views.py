@@ -8,6 +8,7 @@ from flask import (
     url_for,
 )
 from fermo.__version__ import __version__
+from fermo.app_utils.dashboard.networking_graph import generate_cyto_elements
 from fermo.app_utils.input_testing import (
     save_file,
     parse_sessionfile,
@@ -29,6 +30,7 @@ from fermo.app_utils.dashboard.sample_table import (
     get_samples_overview,
     get_samples_statistics,
 )
+from fermo.app_utils.dashboard.networking_graph import stylesheet_cytoscape
 
 views = Blueprint(__name__, "views")
 
@@ -200,7 +202,7 @@ def example(version=__version__):
             data,                       # just as an example
             feature_index=28  # for session_file.json feature with ID 1 is
         )                         # at index 28
-        graph = plot_central_chrom(
+        chromatogram = plot_central_chrom(
             list(samples_dict)[0],  # hardcoded now, should accept user input eventually
             None,  # hardcoded now, should accept user input eventually
             sample_stats,
@@ -208,6 +210,13 @@ def example(version=__version__):
             feature_dicts,
             "ALL",  # hardcoded now, should accept user input eventually
         )
+        network, cytoscape_message = generate_cyto_elements(
+            list(samples_dict)[0],
+            31,
+            feature_dicts,
+            sample_stats,
+        )
+        cyto_stylesheet = stylesheet_cytoscape()
 
         return render_template(
             'dashboard.html',
@@ -215,7 +224,10 @@ def example(version=__version__):
             general_sample_table=general_sample_table,
             specific_sample_table=sample_overview_table,
             feature_table=feature_table,
-            graphJSON=graph,
+            graphJSON=chromatogram,
+            networkJSON=network,
+            cytoscape_message=cytoscape_message,
+            cyto_stylesheetJSON=cyto_stylesheet,
         )
     else:
         return render_template(

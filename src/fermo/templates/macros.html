@@ -95,7 +95,7 @@
 {% endmacro %}
 
 
-{% macro legend(background_color, border_color, text) %}
+{% macro legend(background_color='', border_color='', text='', class='') %}
 <!-- Create HTML code for legend rectangle
 
     Parameters:
@@ -103,10 +103,10 @@
         border_color: string
         text: string
 -->
-<div>
+<div class = "{{ class }}">
     <span class="legend_rect"
     style="background-color: {{ background_color }};
-    border-color: {{ border_color}}"></span>
+    border-color: {{ border_color }}"></span>
     <span> {{ text }} </span>
 </div>
 {% endmacro %}
