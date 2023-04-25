@@ -186,6 +186,8 @@ def example(version=__version__):
          samples_dict,
          feature_dicts,) = access_loaded_data(data)
 
+        samplename = list(samples_dict)[0]
+
         general_sample_table = get_samples_statistics(
             samples_json_dict,
             samples_dict,
@@ -198,12 +200,12 @@ def example(version=__version__):
             feature_dicts,
         )
         feature_table = update_feature_table(
-            list(samples_dict)[0],  # sample = first sample of all samples
+            samplename,  # sample = first sample of all samples
             data,                       # just as an example
             feature_index=28  # for session_file.json feature with ID 1 is
         )                         # at index 28
         chromatogram = plot_central_chrom(
-            list(samples_dict)[0],  # hardcoded now, should accept user input eventually
+            samplename,  # hardcoded now, should accept user input eventually
             1,  # hardcoded now, should accept user input eventually
             sample_stats,
             samples_json_dict,
@@ -211,7 +213,7 @@ def example(version=__version__):
             "ALL",  # hardcoded now, should accept user input eventually
         )
         network, cytoscape_message = generate_cyto_elements(
-            list(samples_dict)[0],
+            samplename,
             31,  # example; not ID=1 because that feature only has one node
             feature_dicts,
             sample_stats,
@@ -242,6 +244,7 @@ def example(version=__version__):
             cyto_stylesheetJSON=cyto_stylesheet,
             node_table=node_table,
             edge_table=edge_table,
+            samplename=samplename
         )
     else:
         return render_template(
