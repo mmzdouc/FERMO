@@ -42,8 +42,13 @@ def generate_cyto_elements(
     '''
     ID = str(active_feature_id)
 
+    if not active_feature_id:
+        networkJSON = []
+        message = '''No network selected - click any feature in the
+        chromatogram overview.'''
+
     # tests if currently selected feature is in a similarity clique
-    if feat_dicts[ID]['similarity_clique']:
+    elif feat_dicts[ID]['similarity_clique']:
 
         node_list = list(
             sample_stats['cliques'][
@@ -204,6 +209,95 @@ def generate_cyto_elements(
             network - MS1 only.'''
 
     return (networkJSON, message)
+
+
+def collect_nodedata(
+    nodedata: dict,
+    feat_dicts: dict,
+) -> list:
+    '''Collect info of selected node for display in table
+
+    Parameters
+    ----------
+    nodedata : `dict`
+        Should look something like this: {'id': '9', 'label': '364.1614 m/z'}
+    feature_dicts : `dict`
+
+    Returns
+    -------
+    `list`
+        List of lists
+    '''
+    feature_info = feat_dicts[str(nodedata['id'])]
+    annotation = ''.join([
+        (feature_info['cosine_annotation_list'][0]['name']
+            if feature_info['cosine_annotation'] else 'None '),
+        '<b>(user-library)</b>, <br>',
+        (feature_info['ms2query_results'][0]['analog_compound_name']
+            if feature_info['ms2query'] else "None "),
+        '<b>(MS2Query)</b>',
+    ])
+
+    superclass_ms2query = ''.join([
+        (str(feature_info['ms2query_results'][0]['npc_superclass_results']
+             if feature_info['ms2query'] else "None ")),
+        '<b>(NPC superclass)</b>, <br>',
+        (str(feature_info['ms2query_results'][0]['cf_superclass']
+             if feature_info['ms2query'] else "None ")),
+        '<b>(CF superclass)</b>',
+    ])
+
+    combined_list_int = []
+    for i in range(len(feature_info['presence_samples'])):
+        combined_list_int.append(''.join([
+            str(feature_info['presence_samples'][i]),
+            '<br>',
+        ]))
+
+    content = [
+        ['Feature ID', nodedata['id']],
+        ['Precursor <i>m/z</i>', feature_info['precursor_mz']],
+        ['Retention time (avg)', feature_info['average_retention_time']],
+        ['Annotation', annotation],
+        ['MS2Query class pred', superclass_ms2query],
+        ['Detected in samples', ("".join(str(i) for i in combined_list_int))],
+    ]
+
+    return content
+
+
+def collect_edgedata(
+    edgedata: dict,
+) -> list:
+    '''Append edge data to df
+
+    Parameters
+    ----------
+    edgedata : `dict`
+        Should look something like this: {
+            'source': '93',
+            'target': '12',
+            'weight': 0.93,
+            'mass_diff': 15.994,
+            'id': '48ef5707-0580-424e-8e7d-1659c0885856'
+        }
+
+    Returns
+    -------
+    `list`
+        List of lists
+    '''
+    content = [
+        ['Connected nodes (IDs)', ''.join([
+            edgedata['source'],
+            '--',
+            edgedata['target']
+        ])],
+        ['Weight of edge', edgedata['weight']],
+        ['<i>m/z</i> difference between nodes', edgedata['mass_diff']],
+    ]
+
+    return content
 
 
 def stylesheet_cytoscape() -> str:

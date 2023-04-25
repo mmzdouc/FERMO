@@ -74,7 +74,7 @@
 </table>
 {% endmacro %}
 
-{% macro display_detail_table(tablename, class='p-1') %}
+{% macro display_detail_table(tablename, class='p-1', col1='Attribute') %}
 <!-- Create HTML code for detail tables (on loading page and dashboard page(feature overview))
 
     Parameters:
@@ -86,7 +86,7 @@
 <table class="table table-striped">
     <thead class="lh-sm">
         <tr>
-          <th scope="col" class="col col-5">Attribute</th>
+          <th scope="col" class="col col-5"> {{ col1 }} </th>
           <th scope="col">Description</th>
         </tr>
     </thead>
