@@ -8,7 +8,7 @@ from flask import (
     url_for,
 )
 from fermo.__version__ import __version__
-from fermo.app_utils.dashboard.networking_graph import generate_cyto_elements
+from fermo.app_utils.dashboard.networking_graph import collect_edgedata, collect_nodedata, generate_cyto_elements
 from fermo.app_utils.input_testing import (
     save_file,
     parse_sessionfile,
@@ -204,7 +204,7 @@ def example(version=__version__):
         )                         # at index 28
         chromatogram = plot_central_chrom(
             list(samples_dict)[0],  # hardcoded now, should accept user input eventually
-            None,  # hardcoded now, should accept user input eventually
+            1,  # hardcoded now, should accept user input eventually
             sample_stats,
             samples_json_dict,
             feature_dicts,
@@ -212,11 +212,23 @@ def example(version=__version__):
         )
         network, cytoscape_message = generate_cyto_elements(
             list(samples_dict)[0],
-            31,
+            31,  # example; not ID=1 because that feature only has one node
             feature_dicts,
             sample_stats,
         )
         cyto_stylesheet = stylesheet_cytoscape()
+
+        node_table = collect_nodedata(
+            {'id': '9', 'label': '364.1614 m/z'},  # must be extracted from JS eventually
+            feature_dicts,
+        )
+        edge_table = collect_edgedata({  # must be extracted from JS eventually
+            'source': '93',
+            'target': '12',
+            'weight': 0.93,
+            'mass_diff': 15.994,
+            'id': '48ef5707-0580-424e-8e7d-1659c0885856'
+        })
 
         return render_template(
             'dashboard.html',
@@ -228,6 +240,8 @@ def example(version=__version__):
             networkJSON=network,
             cytoscape_message=cytoscape_message,
             cyto_stylesheetJSON=cyto_stylesheet,
+            node_table=node_table,
+            edge_table=edge_table,
         )
     else:
         return render_template(
