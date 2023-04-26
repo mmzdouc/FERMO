@@ -52,9 +52,9 @@ def session_file():
     ('sessionfile.json', '.json'),
     ('MSMS.mgf', '.mgf'),
 ])
-def test_check_file_format_valid(filename, file_format, allowed_extensions):
+def test_check_file_format_valid(filename, file_format):
     '''Test valid input for check_file_format()'''
-    assert not check_file_format(filename, file_format, allowed_extensions)
+    assert not check_file_format(filename, file_format)
 
 
 @pytest.mark.parametrize('filename, file_format', [
@@ -63,20 +63,18 @@ def test_check_file_format_valid(filename, file_format, allowed_extensions):
     ('MSMS.txt', '.mgf'),
     ('metadata.csv.txt', '.csv'),
 ])
-def test_check_file_format_invalid(filename, file_format, allowed_extensions):
+def test_check_file_format_invalid(filename, file_format):
     '''Test invalid input for check_file_format()'''
-    assert check_file_format(filename, file_format, allowed_extensions)
+    assert check_file_format(filename, file_format)
 
 
 def test_save_file_successfully(
-    allowed_extensions,
     session_file,
     upload_folder,
 ):
     filename, success = save_file(
         session_file,
         '.json',
-        allowed_extensions,
         upload_folder,
         )
     assert success
@@ -84,12 +82,11 @@ def test_save_file_successfully(
     os.remove(os.path.join(upload_folder, filename))
 
 
-def test_save_file_nofilename(allowed_extensions, upload_folder):
+def test_save_file_nofilename(upload_folder):
     '''Test outcome when the filename is empty (user did not upload a file)'''
     message, filename = save_file(
         FileStorage(filename=''),
         '.json',
-        allowed_extensions,
         upload_folder,
     )
     expected_message = 'No file was loaded. Please upload a session-file.'
