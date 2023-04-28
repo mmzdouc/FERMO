@@ -32,7 +32,7 @@
                     <div id="sampleTable" class="accordion-collapse collapse show" aria-labelledby="sampleTableHeader">
                         <div class="accordion-body overflow-auto">
                             {{ display_table(general_sample_table, ['Nr of samples', 'Nr of features', 'Selected features', 'Selected networks', 'Non-blank', 'Blank & MS1']) }}
-                            {{ display_table(specific_sample_table, ['Filename', 'Group', 'Selected features', 'Selected networks', 'Diversity-score', 'Spec score', 'Mean novelty score', 'Total', 'Non-blank', 'Blank & MS1']) }}
+                            {{ display_table(specific_sample_table, ['Filename', 'Group', 'Selected features', 'Selected networks', 'Diversity-score', 'Spec score', 'Mean novelty score', 'Total', 'Non-blank', 'Blank & MS1'], 'selectSample') }}
                         </div>
                     </div>
                 </div>
@@ -371,6 +371,7 @@
 <script src="{{url_for('static', filename='js/plotly-2.18.2.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/multi_range_slider.js') }}"></script>
 <script src="{{ url_for('static', filename='js/cytoscape.min.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/dashboard/index.js')}}"></script>
 <script>
     // activate the tooltips
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -384,15 +385,8 @@
     Plotly.newPlot('mainChromatogram', graph, {});
 </script>
 <script>
-    // placeholder cytoscape graph
-    network = {{ networkJSON | safe }};
+    // load data
+    network = {{ networkJSON | safe }}; 
     stylesheet = {{ cyto_stylesheetJSON | safe }};
-    var cy = cytoscape({
-        container: document.getElementById('cy'), // container to display graph
-        elements: network, // list of graph elements
-        style: stylesheet, // the stylesheet for the graph
-        layout: {name: 'cose', rows: 1},
-        zoom: 0.75
-    });
 </script>
 {% endblock %}

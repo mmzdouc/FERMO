@@ -269,7 +269,7 @@ def collect_nodedata(
 def collect_edgedata(
     edgedata: dict,
 ) -> list:
-    '''Append edge data to df
+    '''Collect info of selected edge for display in table
 
     Parameters
     ----------
