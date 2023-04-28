@@ -1,20 +1,35 @@
 {% extends "layout.html" %}
 
-{% from "macros.html" import dashboard_tooltip, display_table, display_detail_table %}
+{% from "macros.html" import dashboard_tooltip,
+    display_table,
+    display_detail_table,
+    legend
+%}
 
 {% block title %}Flask-FERMO{% endblock %}
 {% block content %} 
 <main id=dashboardPage class="container-fluid flex-grow-1">
+    <div class="row">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <p class="text-danger">
+                    {% print(message) %}
+                </p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
     <div class="row gx-2 mb-2 mt-1">
         <div class="col col-3">
             <div class="accordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="sampleTableHeader">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sampleTable" aria-expanded="true" aria-controls="sampleTable">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#sampleTable" aria-expanded="true" aria-controls="sampleTable">
                         Sample Table
                         </button>
                     </h2>
-                    <div id="sampleTable" class="accordion-collapse collapse" aria-labelledby="sampleTableHeader">
+                    <div id="sampleTable" class="accordion-collapse collapse show" aria-labelledby="sampleTableHeader">
                         <div class="accordion-body overflow-auto">
                             {{ display_table(general_sample_table, ['Nr of samples', 'Nr of features', 'Selected features', 'Selected networks', 'Non-blank', 'Blank & MS1']) }}
                             {{ display_table(specific_sample_table, ['Filename', 'Group', 'Selected features', 'Selected networks', 'Diversity-score', 'Spec score', 'Mean novelty score', 'Total', 'Non-blank', 'Blank & MS1']) }}
@@ -275,7 +290,24 @@
                             Main Chromatogram <br>
                         </div>
                         <div class="card-body overflow-auto">
-                            <div id="mainChromatogram"></div>
+                            <h6 class="fw-bold row">
+                                Sample Chromatogram overview: {{ samplename }}
+                            </h6>
+                            <div class="row">
+                                Click any row in the left-hand table to visualize the sample
+                            </div>
+                            <div class="d-flex">
+                                <div id="mainChromatogram" class="flex-grow-1"></div>
+                                <div class="flex-shrink-0">
+                                    {{ legend('rgba(34, 136, 51, 0.6)', 'rgb(34, 136, 51)', 'Selected') }}
+                                    {{ legend('rgba(102, 204, 238, 0.6)', 'rgb(102, 204, 238)', 'Not selected') }}
+                                    {{ legend('white', 'rgb(170, 51, 119)', 'Unique to sample') }}
+                                    {{ legend('white', 'black', 'Unique to group') }}
+                                    {{ legend('rgba(204, 187, 68, 0.6)', 'rgb(204, 187, 68)', 'Blank + MS1') }}
+                                </div>
+                            </div>
+                            
+                            
                         </div>
                     </div>
                 </div>
@@ -291,7 +323,25 @@
                         <div class="accordion-collapse collapse" id="cytoscape" aria-labelledby="CytoscapeHeader">
                             <div class="accordion-body overflow-auto">
                                 <h6 class="fw-bold"> Cytoscape view - spectral similarity networking</h6>
+                                {% if cytoscape_message %}
+                                    <p class="text-danger">{{ cytoscape_message }}</p>
+                                {% endif %}
                                 <div id="cy"></div>
+                                <div class="d-inline-flex mt-1">
+                                    {{ legend('rgb(68, 119, 170)', 'rgb(68, 119, 170)', 'Focused feature', 'me-2') }}
+                                    {{ legend('rgb(238, 102, 119)', 'rgb(238, 102, 119)', 'Present in sample', 'me-2') }}
+                                    {{ legend('rgb(187, 187, 187)', 'rgb(187, 187, 187)', 'Other samples', 'me-2') }}
+                                    {{ legend('white', 'rgb(170, 51, 119)', 'Unique to sample', 'me-2') }}
+                                    {{ legend('white', 'black', 'Unique to group', 'me-2') }}
+                                </div>
+                                <div class = 'row mt-3'>
+                                    <div class="col">
+                                        {{ display_detail_table(node_table, class='p-1', col1='Node info') }}
+                                    </div>
+                                    <div class="col">
+                                        {{ display_detail_table(edge_table, class='p-1', col1='Edge info') }}
+                                    </div>
+                                </div>
                             </div> 
                         </div>
                     </div>
@@ -324,7 +374,9 @@
 <script>
     // activate the tooltips
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    const tooltipList = [...tooltipTriggerList].map(
+        tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
+    )
 </script>
 <script>
     // plot the main chromatogram
@@ -333,50 +385,14 @@
 </script>
 <script>
     // placeholder cytoscape graph
+    network = {{ networkJSON | safe }};
+    stylesheet = {{ cyto_stylesheetJSON | safe }};
     var cy = cytoscape({
-        container: document.getElementById('cy'), // container to render in
-        elements: [ // list of graph elements to start with
-            { // node a
-                data: { id: 'a' }
-            },
-            { // node b
-                data: { id: 'b' }
-            },
-            { // edge ab
-                data: { id: 'ab', source: 'a', target: 'b' }
-            },
-            { // node c
-                data: { id: 'c' }
-            },
-            { // node d
-                data: { id: 'd' }
-            },
-            { // edge cd
-                data: { id: 'cd', source: 'c', target: 'd' }
-            },
-            { // edge ca
-                data: { id: 'ca', source: 'c', target: 'a' }
-            },
-        ],
-        style: [ // the stylesheet for the graph
-            {
-                selector: 'node',
-                style: {
-                'background-color': '#666',
-                'label': 'data(id)'
-                }
-            },
-            {
-                selector: 'edge',
-                style: {
-                'line-color': '#ccc',
-                'target-arrow-color': '#ccc',
-                'target-arrow-shape': 'triangle',
-                'curve-style': 'bezier'
-                }
-            }
-        ],
-        layout: {name: 'grid', rows: 1}
+        container: document.getElementById('cy'), // container to display graph
+        elements: network, // list of graph elements
+        style: stylesheet, // the stylesheet for the graph
+        layout: {name: 'cose', rows: 1},
+        zoom: 0.75
     });
 </script>
 {% endblock %}

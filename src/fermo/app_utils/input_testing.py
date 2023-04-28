@@ -178,11 +178,11 @@ def create_session_table(
 
     Parameters
     ----------
-    params : `dict`
-    files : `dict`
-    metadata : `dict`
-    version : `dict`
-    logging : `dict`
+    params: `dict`
+    files: `dict`
+    metadata: `dict`
+    version: `dict`
+    logging: `dict`
 
     Returns
     -------

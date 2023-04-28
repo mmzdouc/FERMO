@@ -59,6 +59,14 @@ body {
     font-size: 14px;
 }
 
+.legend_rect {
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    border-style: solid;
+    border-width: 4px;
+}
+
 
 /* input forms */
 .btn-primary {
@@ -67,10 +75,6 @@ body {
     --bs-btn-hover-bg: #0e526e;
     --bs-btn-hover-border-color: #0e526e;
     font-weight: bold;
-}
-
-.btn-label {
-     /* only keep if more button-label specific styles are added, otherwise use fw-bold*/
 }
 
 input[type="file"]::file-selector-button {
@@ -209,5 +213,6 @@ input[type=number]{
 
 #cy {
 /* cytoscape graph */
-    height: 190px;
+    min-height: 250px;
+    border: rgb(187, 187, 187) solid 2px;
 }

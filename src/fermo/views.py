@@ -7,26 +7,42 @@ from flask import (
     request,
     url_for,
 )
-import fermo.__version__ as __version__
-from fermo.app_utils.dashboard_functions import placeholder_graph
+from fermo.__version__ import __version__
+from fermo.app_utils.dashboard.networking_graph import collect_edgedata, collect_nodedata, generate_cyto_elements
 from fermo.app_utils.input_testing import (
     save_file,
     parse_sessionfile,
     empty_loading_table,
 )
-from fermo.app_utils.dashboard_functions import empty_feature_info_df
+from fermo.app_utils.dashboard.dashboard_functions import (
+    access_loaded_data,
+    load_example,
+)
+from fermo.app_utils.dashboard.chromatogram import (
+    placeholder_graph,
+    plot_central_chrom,
+)
+from fermo.app_utils.dashboard.feature_table import (
+    empty_feature_info_df,
+    update_feature_table,
+)
+from fermo.app_utils.dashboard.sample_table import (
+    get_samples_overview,
+    get_samples_statistics,
+)
+from fermo.app_utils.dashboard.networking_graph import stylesheet_cytoscape
 
 views = Blueprint(__name__, "views")
 
 
 # routing
 @views.route("/")
-def landing(version=__version__.__version__):
+def landing(version=__version__):
     return render_template('landing.html', version=version)
 
 
 @views.route("/loading", methods=['GET', 'POST'])
-def loading(version=__version__.__version__):
+def loading(version=__version__):
     ''' Handle requests on the loading page
 
     Parameters
@@ -80,7 +96,7 @@ def loading(version=__version__.__version__):
 
 
 @views.route("/loading/<filename>", methods=['GET', 'POST'])
-def inspect_uploaded_file(filename, version=__version__.__version__):
+def inspect_uploaded_file(filename, version=__version__):
     '''Display session file overview
 
     Parameters
@@ -129,7 +145,7 @@ def inspect_uploaded_file(filename, version=__version__.__version__):
 
 
 @views.route("/processing", methods=['GET', 'POST'])
-def processing(version=__version__.__version__):
+def processing(version=__version__):
     if request.method == 'POST':
         filename = save_file([
             'peaktableFile',
@@ -144,7 +160,7 @@ def processing(version=__version__.__version__):
 
 
 @views.route("/dashboard")
-def dashboard(version=__version__.__version__):
+def dashboard(version=__version__):
     '''Render dashboard page'''
     # load data for placeholder main chromatogram
     graphJSON = placeholder_graph()
@@ -153,8 +169,88 @@ def dashboard(version=__version__.__version__):
     return render_template(
         'dashboard.html',
         version=version,
-        # general_sample_table=general_sample_table,
-        # specific_sample_table=specific_sample_table,
+        general_sample_table=[[]],
+        specific_sample_table=[[]],
         feature_table=feature_table,
         graphJSON=graphJSON,
     )
+
+
+@views.route("/example")
+def example(version=__version__):
+    '''Example dashboard'''
+    data = load_example('example_data/FERMO_session.json')
+    if data:
+        (sample_stats,
+         samples_json_dict,
+         samples_dict,
+         feature_dicts,) = access_loaded_data(data)
+
+        samplename = list(samples_dict)[0]
+
+        general_sample_table = get_samples_statistics(
+            samples_json_dict,
+            samples_dict,
+            feature_dicts,
+        )
+        sample_overview_table = get_samples_overview(
+            sample_stats,
+            samples_json_dict,
+            samples_dict,
+            feature_dicts,
+        )
+        feature_table = update_feature_table(
+            samplename,  # sample = first sample of all samples
+            data,                       # just as an example
+            feature_index=28  # for session_file.json feature with ID 1 is
+        )                         # at index 28
+        chromatogram = plot_central_chrom(
+            samplename,  # hardcoded now, should accept user input eventually
+            1,  # hardcoded now, should accept user input eventually
+            sample_stats,
+            samples_json_dict,
+            feature_dicts,
+            "ALL",  # hardcoded now, should accept user input eventually
+        )
+        network, cytoscape_message = generate_cyto_elements(
+            samplename,
+            31,  # example; not ID=1 because that feature only has one node
+            feature_dicts,
+            sample_stats,
+        )
+        cyto_stylesheet = stylesheet_cytoscape()
+
+        node_table = collect_nodedata(
+            {'id': '9', 'label': '364.1614 m/z'},  # must be extracted from JS eventually
+            feature_dicts,
+        )
+        edge_table = collect_edgedata({  # must be extracted from JS eventually
+            'source': '93',
+            'target': '12',
+            'weight': 0.93,
+            'mass_diff': 15.994,
+            'id': '48ef5707-0580-424e-8e7d-1659c0885856'
+        })
+
+        return render_template(
+            'dashboard.html',
+            version=version,
+            general_sample_table=general_sample_table,
+            specific_sample_table=sample_overview_table,
+            feature_table=feature_table,
+            graphJSON=chromatogram,
+            networkJSON=network,
+            cytoscape_message=cytoscape_message,
+            cyto_stylesheetJSON=cyto_stylesheet,
+            node_table=node_table,
+            edge_table=edge_table,
+            samplename=samplename
+        )
+    else:
+        return render_template(
+            'dashboard.html',
+            version=version,
+            general_sample_table=[],
+            specific_sample_table=[],
+            feature_table=[],
+        )
