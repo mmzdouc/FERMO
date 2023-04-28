@@ -6,9 +6,15 @@ from flask import (
     render_template,
     request,
     url_for,
+    jsonify,
+    make_response
 )
 from fermo.__version__ import __version__
-from fermo.app_utils.dashboard.networking_graph import collect_edgedata, collect_nodedata, generate_cyto_elements
+from fermo.app_utils.dashboard.networking_graph import (
+    collect_edgedata,
+    collect_nodedata,
+    generate_cyto_elements,
+)
 from fermo.app_utils.input_testing import (
     save_file,
     parse_sessionfile,
@@ -176,17 +182,45 @@ def dashboard(version=__version__):
     )
 
 
-@views.route("/example")
+@views.route("/example", methods=['GET', 'POST'])
 def example(version=__version__):
     '''Example dashboard'''
     data = load_example('example_data/FERMO_session.json')
     if data:
         (sample_stats,
-         samples_json_dict,
-         samples_dict,
-         feature_dicts,) = access_loaded_data(data)
+            samples_json_dict,
+            samples_dict,
+            feature_dicts,) = access_loaded_data(data)
 
-        samplename = list(samples_dict)[0]
+        if request.method == 'GET':
+            # hardcode some variables to display as default
+            samplename = list(samples_dict)[0]
+            active_feature_index = 28
+            active_feature_id = 31
+            nodedata = {'id': '9', 'label': '364.1614 m/z'},
+            edgedata = {
+                'source': '93',
+                'target': '12',
+                'weight': 0.93,
+                'mass_diff': 15.994,
+                'id': '48ef5707-0580-424e-8e7d-1659c0885856'
+            }
+        else:  # method == 'POST'
+            req = request.get_json()
+            print('request object:', req)
+            samplename = req['sample']
+            print('samplename', samplename)
+            active_feature_index = 1
+            active_feature_id = 31
+            nodedata = {'id': '9', 'label': '364.1614 m/z'}
+            edgedata = {
+                'source': '93',
+                'target': '12',
+                'weight': 0.93,
+                'mass_diff': 15.994,
+                'id': '48ef5707-0580-424e-8e7d-1659c0885856'
+            }
+
 
         general_sample_table = get_samples_statistics(
             samples_json_dict,
@@ -199,38 +233,33 @@ def example(version=__version__):
             samples_dict,
             feature_dicts,
         )
-        feature_table = update_feature_table(
-            samplename,  # sample = first sample of all samples
-            data,                       # just as an example
-            feature_index=28  # for session_file.json feature with ID 1 is
-        )                         # at index 28
         chromatogram = plot_central_chrom(
-            samplename,  # hardcoded now, should accept user input eventually
-            1,  # hardcoded now, should accept user input eventually
+            samplename,
+            active_feature_index,
             sample_stats,
             samples_json_dict,
             feature_dicts,
-            "ALL",  # hardcoded now, should accept user input eventually
+            "ALL",
+        )
+        feature_table = update_feature_table(
+            samplename,
+            data,
+            active_feature_id,
+            active_feature_index
         )
         network, cytoscape_message = generate_cyto_elements(
             samplename,
-            31,  # example; not ID=1 because that feature only has one node
+            active_feature_id,
             feature_dicts,
             sample_stats,
         )
         cyto_stylesheet = stylesheet_cytoscape()
 
         node_table = collect_nodedata(
-            {'id': '9', 'label': '364.1614 m/z'},  # must be extracted from JS eventually
+            {'id': '9', 'label': '364.1614 m/z'},  # BUG: should accept variable 'nodedata' but somehow that throws an typeError 'tuple indices must be integers or slices'
             feature_dicts,
         )
-        edge_table = collect_edgedata({  # must be extracted from JS eventually
-            'source': '93',
-            'target': '12',
-            'weight': 0.93,
-            'mass_diff': 15.994,
-            'id': '48ef5707-0580-424e-8e7d-1659c0885856'
-        })
+        edge_table = collect_edgedata(edgedata)
 
         return render_template(
             'dashboard.html',
@@ -246,7 +275,8 @@ def example(version=__version__):
             edge_table=edge_table,
             samplename=samplename
         )
-    else:
+    else:  # data could not be loaded
+        flash('Example data could not be loaded')
         return render_template(
             'dashboard.html',
             version=version,

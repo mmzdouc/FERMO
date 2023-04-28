@@ -243,7 +243,6 @@ def plot_central_chrom(
         )
 
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    print('type', type(graphJSON))
     return graphJSON
 
 
