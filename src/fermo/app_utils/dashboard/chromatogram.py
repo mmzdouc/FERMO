@@ -38,11 +38,11 @@ def plot_central_chrom(
 
     Parameters
     ----------
-    sel_sample: `str`
-    active_feature_index: `int`
-    sample_stats: `dict`
-    samples: `dict`
-    feature_dicts: `dict`
+    sel_sample: `str`\n
+    active_feature_index: `int`\n
+    sample_stats: `dict`\n
+    samples_json_dict: `dict`\n
+    feature_dicts: `dict`\n
     sel_all_vis: `str`
 
     Returns
@@ -258,11 +258,11 @@ def append_scatter_text(
 
     Parameters
     ----------
-    row : `Pandas.Series`
-    fill : `str`
-    line : `str`
-    width : `int`
-    bordercolor : `str`
+    row : `Pandas.Series`\n
+    fill : `str`\n
+    line : `str`\n
+    width : `int`\n
+    bordercolor : `str`\n
     feat_dicts : `dict`
 
     Returns

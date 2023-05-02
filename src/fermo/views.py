@@ -6,8 +6,6 @@ from flask import (
     render_template,
     request,
     url_for,
-    jsonify,
-    make_response
 )
 from fermo.__version__ import __version__
 from fermo.app_utils.dashboard.networking_graph import (
@@ -75,12 +73,10 @@ def loading(version=__version__):
             print('Input ID was not in the request')
         else:
             sessionfile = request.files['sessionFile']
-            allowed_extensions = current_app.config.get('ALLOWED_EXTENSION')
             upload_folder = current_app.config.get('UPLOAD_FOLDER')
             feedback_or_filename, file_saved = save_file(
                 sessionfile,
                 'json',
-                allowed_extensions,
                 upload_folder,
             )
             if file_saved:
@@ -179,6 +175,12 @@ def dashboard(version=__version__):
         specific_sample_table=[[]],
         feature_table=feature_table,
         graphJSON=graphJSON,
+        networkJSON=None,
+        cytoscape_message=None,
+        cyto_stylesheetJSON=None,
+        node_table=[[]],
+        edge_table=[[]],
+        samplename=None,
     )
 
 
@@ -257,8 +259,11 @@ def example(version=__version__):
 
         else:  # method == 'POST'
             req = request.get_json()
-            samplename = req['sample']
-            active_feature_index = None
+            # parse the response
+            samplename = req['sample'] if req['sample'] else None # may have to be list(samples_dict)[0] or so
+            active_feature_index = req['featureIndex'] if (
+                req['featureIndex']
+            ) else None
             active_feature_id = None
             nodedata = {}
             edgedata = {}

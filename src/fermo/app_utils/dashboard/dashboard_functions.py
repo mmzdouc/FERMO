@@ -44,11 +44,11 @@ def access_loaded_data(loaded_data: dict):
 
     Returns
     -------
-    sample_stats: `dict`
+    sample_stats: `dict`\n
     samples_json_dict: `dict`
         Dictionary with samples as first keys and all other information as
-        (nested) values
-    samples_dict: `dict`
+        (nested) values\n
+    samples_dict: `dict`\n
     feature_dicts: `dict`
     '''
     sample_stats = loaded_data['sample_stats']
@@ -78,9 +78,9 @@ def generate_subsets(
     ----------
     samples_json_dict: `dict`
         dictionary with loaded 'json' information e.g. output from
-        access_loaded_data()
-    sample: `str`
-    thresholds: `dict`
+        access_loaded_data()\n
+    sample: `str`\n
+    thresholds: `dict`\n
     feature_dicts: `dict`
 
     Returns
@@ -509,7 +509,7 @@ def filter_str_regex(query: str, annot_str: str,) -> bool:
 
     Parameters
     ----------
-    query: `str`
+    query: `str`\n
     annot_str: `str`
 
     Returns

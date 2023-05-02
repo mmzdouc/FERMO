@@ -15,7 +15,7 @@ def get_samples_statistics(
 
     Parameters
     ----------
-    samples_json: `dict`
+    samples_json_dict: `dict`
     samples_dict: `dict`
     feature_dicts: `dict`
 
@@ -79,7 +79,7 @@ def get_samples_overview(
     Parameters
     ----------
     sample_stats: `dict`
-    samples_json: `dict`
+    samples_json_dict: `dict`
     samples_dict: `dict`
     feature_dicts: `dict`
 
@@ -175,8 +175,8 @@ def calc_diversity_score(
 
     Parameters
     ----------
-    sample_stats: `dict`
     sample: `str`
+    sample_stats: `dict`
 
     Returns
     -------
@@ -208,9 +208,9 @@ def calc_specificity_score(
 
     Parameters
     ----------
-    sample: `str`
-    sample_stats: `dict`
-    filtered_samples: `dict`
+    sample: `str`\n
+    sample_stats: `dict`\n
+    filtered_samples: `dict`\n
     feature_dicts: `dict`
 
     Returns
@@ -249,8 +249,8 @@ def calc_sample_mean_novelty(
 
     Parameters
     ----------
-    sample: `str`
-    feature_dicts: `dict`
+    sample: `str`\n
+    feature_dicts: `dict`\n
     filtered_samples: `dict`
 
     Returns
