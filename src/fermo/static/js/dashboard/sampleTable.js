@@ -1,5 +1,8 @@
+import { plotChromatogram } from './chromatogram.js';
+
 /**
- * Make rows selectable and change pointer to hand when hovering
+ * Make rows selectable and change pointer to hand when hovering over a row.
+ * Call plotChromatogram() when a row is clicked.
  */
 export function selectRows(){
     const allRows = document.querySelectorAll('#selectSample tr')
@@ -15,16 +18,34 @@ export function selectRows(){
         allRows[i].addEventListener('click', function(e){
             const sampleName = this.getAttribute('data-value')
             console.log('data-value:', sampleName)
-            console.log('window.location:', window.location.href)
-            fetch(window.location.href, { // send POST request to current URL
+
+            // send POST request to current URL
+            fetch(window.location.href, {
                 method: 'POST',
                 body: JSON.stringify({sample: sampleName}),
                 headers: new Headers({
                     'Content-Type': 'application/json'
                 })
             })
+            // define what to do with the response
+            .then(function (response) {
+                if (response.ok) {
+                    response.json()
+                    .then(function (data) {
+                        const chromatogram = JSON.parse(data.chromatogram)
+                        return plotChromatogram(chromatogram, sampleName)
+                    })
+                }
+                else {
+                    console.log(
+                        'fetch was not successfull:',
+                        $(response.status)
+                    );
+                    return ;
+                }
+            })
         })
-
+        
         // change mouse pointer to a hand when hovering over a row
         allRows[i].addEventListener('mouseover', function(e){
             this.style.cursor='pointer'

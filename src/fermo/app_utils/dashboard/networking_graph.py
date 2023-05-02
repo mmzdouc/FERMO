@@ -228,6 +228,9 @@ def collect_nodedata(
     `list`
         List of lists
     '''
+    if not nodedata:
+        return [[]]
+
     feature_info = feat_dicts[str(nodedata['id'])]
     annotation = ''.join([
         (feature_info['cosine_annotation_list'][0]['name']
@@ -287,6 +290,9 @@ def collect_edgedata(
     `list`
         List of lists
     '''
+    if not edgedata:
+        return [[]]
+
     content = [
         ['Connected nodes (IDs)', ''.join([
             edgedata['source'],

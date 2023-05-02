@@ -188,93 +188,109 @@ def example(version=__version__):
     data = load_example('example_data/FERMO_session.json')
     if data:
         (sample_stats,
-            samples_json_dict,
-            samples_dict,
-            feature_dicts,) = access_loaded_data(data)
+         samples_json_dict,
+         samples_dict,
+         feature_dicts,
+         ) = access_loaded_data(data)
+        cyto_stylesheet = stylesheet_cytoscape()
 
         if request.method == 'GET':
             # hardcode some variables to display as default
             samplename = list(samples_dict)[0]
-            active_feature_index = 28
-            active_feature_id = 31
-            nodedata = {'id': '9', 'label': '364.1614 m/z'},
-            edgedata = {
-                'source': '93',
-                'target': '12',
-                'weight': 0.93,
-                'mass_diff': 15.994,
-                'id': '48ef5707-0580-424e-8e7d-1659c0885856'
-            }
+            active_feature_index = None
+            active_feature_id = None
+            nodedata = {}
+            edgedata = {}
+
+            general_sample_table = get_samples_statistics(
+                samples_json_dict,
+                samples_dict,
+                feature_dicts,
+            )
+            sample_overview_table = get_samples_overview(
+                sample_stats,
+                samples_json_dict,
+                samples_dict,
+                feature_dicts,
+            )
+            chromatogram = plot_central_chrom(
+                samplename,
+                active_feature_index,
+                sample_stats,
+                samples_json_dict,
+                feature_dicts,
+                "ALL",
+            )
+            feature_table = update_feature_table(
+                samplename,
+                data,
+                active_feature_id,
+                active_feature_index
+            )
+            network, cytoscape_message = generate_cyto_elements(
+                samplename,
+                active_feature_id, # e.g. 31
+                feature_dicts,
+                sample_stats,
+            )
+
+            node_table = collect_nodedata(
+                nodedata,  # BUG: should accept variable 'nodedata' but somehow that throws an typeError 'tuple indices must be integers or slices'
+                feature_dicts,
+            )
+            edge_table = collect_edgedata(edgedata)
+
+            return render_template(
+                'dashboard.html',
+                version=version,
+                general_sample_table=general_sample_table,
+                specific_sample_table=sample_overview_table,
+                feature_table=feature_table,
+                graphJSON=chromatogram,
+                networkJSON=network,
+                cytoscape_message=cytoscape_message,
+                cyto_stylesheetJSON=cyto_stylesheet,
+                node_table=node_table,
+                edge_table=edge_table,
+                samplename=samplename
+            )
+
         else:  # method == 'POST'
             req = request.get_json()
-            print('request object:', req)
             samplename = req['sample']
-            print('samplename', samplename)
-            active_feature_index = 1
-            active_feature_id = 31
-            nodedata = {'id': '9', 'label': '364.1614 m/z'}
-            edgedata = {
-                'source': '93',
-                'target': '12',
-                'weight': 0.93,
-                'mass_diff': 15.994,
-                'id': '48ef5707-0580-424e-8e7d-1659c0885856'
+            active_feature_index = None
+            active_feature_id = None
+            nodedata = {}
+            edgedata = {}
+            chromatogram = plot_central_chrom(
+                samplename,
+                active_feature_index,
+                sample_stats,
+                samples_json_dict,
+                feature_dicts,
+                "ALL",
+            )
+            network, cytoscape_message = generate_cyto_elements(
+                samplename,
+                active_feature_id,
+                feature_dicts,
+                sample_stats,
+            )
+            node_table = collect_nodedata(
+                nodedata,
+                feature_dicts,
+            )
+            edge_table = collect_edgedata(edgedata)
+
+            response = {
+                "chromatogram": chromatogram,
+                "network": network,
+                "cytoscapeMessage": cytoscape_message,
+                "nodeTable": node_table,
+                "edgeTable": edge_table
             }
+            return response
 
-
-        general_sample_table = get_samples_statistics(
-            samples_json_dict,
-            samples_dict,
-            feature_dicts,
-        )
-        sample_overview_table = get_samples_overview(
-            sample_stats,
-            samples_json_dict,
-            samples_dict,
-            feature_dicts,
-        )
-        chromatogram = plot_central_chrom(
-            samplename,
-            active_feature_index,
-            sample_stats,
-            samples_json_dict,
-            feature_dicts,
-            "ALL",
-        )
-        feature_table = update_feature_table(
-            samplename,
-            data,
-            active_feature_id,
-            active_feature_index
-        )
-        network, cytoscape_message = generate_cyto_elements(
-            samplename,
-            active_feature_id,
-            feature_dicts,
-            sample_stats,
-        )
-        cyto_stylesheet = stylesheet_cytoscape()
-
-        node_table = collect_nodedata(
-            {'id': '9', 'label': '364.1614 m/z'},  # BUG: should accept variable 'nodedata' but somehow that throws an typeError 'tuple indices must be integers or slices'
-            feature_dicts,
-        )
-        edge_table = collect_edgedata(edgedata)
-
-        return render_template(
-            'dashboard.html',
-            version=version,
-            general_sample_table=general_sample_table,
-            specific_sample_table=sample_overview_table,
-            feature_table=feature_table,
-            graphJSON=chromatogram,
-            networkJSON=network,
-            cytoscape_message=cytoscape_message,
-            cyto_stylesheetJSON=cyto_stylesheet,
-            node_table=node_table,
-            edge_table=edge_table,
-            samplename=samplename
-        )
     else:  # data could not be loaded
         flash('Example data could not be loaded')
         return render_template(

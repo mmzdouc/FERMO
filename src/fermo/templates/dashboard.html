@@ -290,11 +290,11 @@
                             Main Chromatogram <br>
                         </div>
                         <div class="card-body overflow-auto">
-                            <h6 class="fw-bold row">
+                            <h6 id = chromHeading class="fw-bold row">
                                 Sample Chromatogram overview: {{ samplename }}
                             </h6>
                             <div class="row">
-                                Click any row in the left-hand table to visualize the sample
+                                Click any row in the sample table to visualize the sample
                             </div>
                             <div class="d-flex">
                                 <div id="mainChromatogram" class="flex-grow-1"></div>
@@ -379,14 +379,11 @@
         tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
     )
 </script>
-<script>
-    // plot the main chromatogram
-    var graph = {{ graphJSON | safe }};
-    Plotly.newPlot('mainChromatogram', graph, {});
-</script>
+
 <script>
     // load data
-    network = {{ networkJSON | safe }}; 
-    stylesheet = {{ cyto_stylesheetJSON | safe }};
+    graph = {{ graphJSON | safe }};  // chromatogram
+    network = {{ networkJSON | safe }};  // cytoscape network
+    stylesheet = {{ cyto_stylesheetJSON | safe }};  // cytoscape stylesheet
 </script>
 {% endblock %}
