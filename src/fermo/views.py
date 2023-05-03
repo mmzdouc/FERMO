@@ -226,7 +226,9 @@ def example(version=__version__):
             )
             feature_table = update_feature_table(
                 samplename,
-                data,
+                feature_dicts,
+                samples_json_dict,
+                sample_stats,
                 active_feature_id,
                 active_feature_index
             )

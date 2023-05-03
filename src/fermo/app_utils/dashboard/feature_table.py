@@ -3,7 +3,9 @@ import pandas as pd
 
 def update_feature_table(
     selected_sample: str,
-    loaded_data: dict,
+    feature_dicts: dict,
+    samples_json_dict: dict,
+    sample_stats,
     feature_id: int = 1,
     feature_index: int = 0,
 ) -> dict:
@@ -20,23 +22,13 @@ def update_feature_table(
     -------
     `dict`
     '''
-    feature_dicts = loaded_data['feature_dicts']
-    samples_JSON = loaded_data['samples_JSON']
-    sample_stats = loaded_data['sample_stats']
-
-    samples = dict()
-    for sample in samples_JSON:
-        samples[sample] = pd.read_json(
-            samples_JSON[sample], orient='split'
-        )
-
     if isinstance(feature_index, int):
         return collect_feature_info(
             selected_sample,
             feature_id,
             feature_index,
             feature_dicts,
-            samples,
+            samples_json_dict,
             sample_stats,
         )
     else:
