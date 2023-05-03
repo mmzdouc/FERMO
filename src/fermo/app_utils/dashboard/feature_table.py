@@ -1,5 +1,3 @@
-import pandas as pd
-
 
 def update_feature_table(
     selected_sample: str,
