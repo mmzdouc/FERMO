@@ -16,13 +16,14 @@ export function selectRows(){
 
         // add clickEvent listener to each row
         allRows[i].addEventListener('click', function(e){
-            const sampleName = this.getAttribute('data-value')
-            console.log('data-value:', sampleName)
-
+            window.sampleName = this.getAttribute('data-value')
             // send POST request to current URL
             fetch(window.location.href, {
                 method: 'POST',
-                body: JSON.stringify({sample: sampleName}),
+                body: JSON.stringify({
+                    sample: [true, window.sampleName],  // set first element to true to indicate that a sample was selected
+                    featIndex: [false, window.featureIndex] // set first element to false to indicate that no feature is active
+                }),
                 headers: new Headers({
                     'Content-Type': 'application/json'
                 })
@@ -38,14 +39,13 @@ export function selectRows(){
                 }
                 else {
                     console.log(
-                        'fetch was not successfull:',
-                        $(response.status)
+                        `fetch was not successfull: ${response.status}`
                     );
                     return ;
                 }
             })
         })
-        
+
         // change mouse pointer to a hand when hovering over a row
         allRows[i].addEventListener('mouseover', function(e){
             this.style.cursor='pointer'

@@ -382,6 +382,7 @@
 
 <script>
     // load data
+    sampleName = {{ samplename | tojson | safe }};  // sample name
     graph = {{ graphJSON | safe }};  // chromatogram
     network = {{ networkJSON | safe }};  // cytoscape network
     stylesheet = {{ cyto_stylesheetJSON | safe }};  // cytoscape stylesheet

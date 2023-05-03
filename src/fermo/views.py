@@ -231,13 +231,13 @@ def example(version=__version__):
             )
             network, cytoscape_message = generate_cyto_elements(
                 samplename,
-                active_feature_id, # e.g. 31
+                active_feature_id,  # e.g. 31
                 feature_dicts,
                 sample_stats,
             )
 
             node_table = collect_nodedata(
-                nodedata,  # BUG: should accept variable 'nodedata' but somehow that throws an typeError 'tuple indices must be integers or slices'
+                nodedata,
                 feature_dicts,
             )
             edge_table = collect_edgedata(edgedata)
@@ -259,41 +259,56 @@ def example(version=__version__):
 
         else:  # method == 'POST'
             req = request.get_json()
-            # parse the response
-            samplename = req['sample'] if req['sample'] else None # may have to be list(samples_dict)[0] or so
-            active_feature_index = req['featureIndex'] if (
-                req['featureIndex']
-            ) else None
-            active_feature_id = None
-            nodedata = {}
-            edgedata = {}
-            chromatogram = plot_central_chrom(
-                samplename,
-                active_feature_index,
-                sample_stats,
-                samples_json_dict,
-                feature_dicts,
-                "ALL",
-            )
-            network, cytoscape_message = generate_cyto_elements(
-                samplename,
-                active_feature_id,
-                feature_dicts,
-                sample_stats,
-            )
-            node_table = collect_nodedata(
-                nodedata,
-                feature_dicts,
-            )
-            edge_table = collect_edgedata(edgedata)
+            # parse the request
+            print('req', req)
+            if req['sample'][0]:  # i.e. if sample has changed
+                samplename = req['sample'][1]
+                feature_index = None
+                chromatogram = plot_central_chrom(
+                    samplename,
+                    feature_index,
+                    sample_stats,
+                    samples_json_dict,
+                    feature_dicts,
+                    "ALL",
+                )
+                response = {"chromatogram": chromatogram}
 
-            response = {
-                "chromatogram": chromatogram,
-                "network": network,
-                "cytoscapeMessage": cytoscape_message,
-                "nodeTable": node_table,
-                "edgeTable": edge_table
-            }
+            elif req['featIndex'][0]:  # i.e. there is an active feature
+                samplename = req['sample'][1]
+                feature_index = int(req['featIndex'][1])
+                feature_id = samples_json_dict[samplename]['feature_ID'][feature_index]
+                nodedata = {}
+                edgedata = {}
+
+                chromatogram = plot_central_chrom(
+                    samplename,
+                    feature_index,
+                    sample_stats,
+                    samples_json_dict,
+                    feature_dicts,
+                    "ALL",
+                )
+                network, cytoscape_message = generate_cyto_elements(
+                    samplename,
+                    feature_id,
+                    feature_dicts,
+                    sample_stats,
+                )
+                node_table = collect_nodedata(
+                    nodedata,
+                    feature_dicts,
+                )
+                edge_table = collect_edgedata(edgedata)
+
+                response = {
+                    "chromatogram": chromatogram,
+                    # "featTable": feature_table,
+                    "network": network,
+                    "cytoscapeMessage": cytoscape_message,
+                    "nodeTable": node_table,
+                    "edgeTable": edge_table
+                }
             return response
 
     else:  # data could not be loaded
