@@ -35,6 +35,7 @@ from fermo.app_utils.dashboard.sample_table import (
     get_samples_statistics,
 )
 from fermo.app_utils.dashboard.networking_graph import stylesheet_cytoscape
+from fermo.app_utils.route_utils.route_dashboard import sample_changed
 
 views = Blueprint(__name__, "views")
 
@@ -231,7 +232,7 @@ def example(version=__version__):
             )
             network, cytoscape_message = generate_cyto_elements(
                 samplename,
-                active_feature_id,  # e.g. 31
+                31,  # the variable active_feature_id or 31
                 feature_dicts,
                 sample_stats,
             )
@@ -259,20 +260,19 @@ def example(version=__version__):
 
         else:  # method == 'POST'
             req = request.get_json()
-            # parse the request
             print('req', req)
+            vis_features = "ALL"  # should be taken from response: User
+            # selection from filter panel "Visualize features" radio buttons
+
+            # parse the request
             if req['sample'][0]:  # i.e. if sample has changed
-                samplename = req['sample'][1]
-                feature_index = None
-                chromatogram = plot_central_chrom(
-                    samplename,
-                    feature_index,
+                response = sample_changed(
+                    req,
                     sample_stats,
                     samples_json_dict,
                     feature_dicts,
-                    "ALL",
+                    vis_features,
                 )
-                response = {"chromatogram": chromatogram}
 
             elif req['featIndex'][0]:  # i.e. there is an active feature
                 samplename = req['sample'][1]
