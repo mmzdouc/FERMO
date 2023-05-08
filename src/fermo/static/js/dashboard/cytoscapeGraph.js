@@ -1,18 +1,22 @@
 
 /**
- * Remove or create message to user when necessary and update the cytoscape graph
+ * Remove or create message for user when necessary and update the cytoscape graph
  * @param {string} cytoMessage 
  */
 export function updateCytoscape(cytoMessage){
 
     const cytoMessageP = document.querySelector('.text-danger')
-    if (!cytoMessage && cytoMessageP) {
+    if (cytoMessageP) { // if a message already exists, remove it
         cytoMessageP.remove()
     }
-    else if (cytoMessage) {
+    if (cytoMessage){ // if a message is given, display it to the user
+        const cytoGraph = document.getElementById('cy')
+        const parent = cytoGraph.parentNode // the element containing the cytoscape graph
+
         const cytoMessageP = document.createElement('p')
         cytoMessageP.classList.add('text-danger')
         cytoMessageP.textContent = cytoMessage
+        parent.insertBefore(cytoMessageP, cytoGraph)
     }
     createCytoGraph(window.network, window.stylesheet)
 }

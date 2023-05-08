@@ -1,4 +1,5 @@
 import { plotChromatogram } from './chromatogram.js';
+import { updateCytoscape } from './cytoscapeGraph.js';
 import { updateFeatureTable } from './featureTable.js';
 
 /**
@@ -37,12 +38,13 @@ export function selectRows(){
                         // get the components of the response
                         const chromatogram = JSON.parse(data.chromatogram)
                         const featureTable = JSON.parse(data.featTable)
-                        // window.network = JSON.parse(data.network)
-                        // const cytoMessage = JSON.parse(data.cytoscapeMessage)
+                        window.network = data.network
+                        const cytoMessage = JSON.parse(data.cytoscapeMessage)
                         // const nodedata - JSON.parse(data.nodedata) but nodedata should prob be given to the network so that cytoscape can display hover information
-                        
+
                         plotChromatogram(chromatogram, sampleName)
                         updateFeatureTable(featureTable)
+                        updateCytoscape(cytoMessage)
                     })
                 }
                 else {
