@@ -215,15 +215,15 @@ def collect_feature_info(
         )],
         [separator, separator],
         ['Spectral library: best match', cosine_annotation],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: best match/analog''', ann_ms2query],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: <i>m/z</i> difference to best match/analog''',
          mass_diff_ms2query],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: predicted class of best match/analog''',
          class_ms2query],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: predicted superclass of best match/analog''',
          superclass_ms2query],
         [separator, separator],
@@ -275,14 +275,14 @@ def empty_feature_info_df() -> list:
         ['Peak overlap (%)', None],
         ['-----', '-----'],
         ['Spectral library: best match', None],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: best match/analog''', None],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: <i>m/z</i> difference to best match/analog''', None],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: predicted class of best match/analog''', None],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
-         MS2Query</a>:predicted superclass of best match/analog''', None],
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
+         MS2Query</a>: predicted superclass of best match/analog''', None],
         ['-----', '-----'],
         ['Feature found in groups', None],
         ['Fold-differences across groups', None],

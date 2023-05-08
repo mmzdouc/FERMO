@@ -1,4 +1,5 @@
 import { plotChromatogram } from './chromatogram.js';
+import { updateFeatureTable } from './featureTable.js';
 
 /**
  * Make rows selectable and change pointer to hand when hovering over a row.
@@ -33,8 +34,15 @@ export function selectRows(){
                 if (response.ok) {
                     response.json()
                     .then(function (data) {
+                        // get the components of the response
                         const chromatogram = JSON.parse(data.chromatogram)
-                        return plotChromatogram(chromatogram, sampleName)
+                        const featureTable = JSON.parse(data.featTable)
+                        // window.network = JSON.parse(data.network)
+                        // const cytoMessage = JSON.parse(data.cytoscapeMessage)
+                        // const nodedata - JSON.parse(data.nodedata) but nodedata should prob be given to the network so that cytoscape can display hover information
+                        
+                        plotChromatogram(chromatogram, sampleName)
+                        updateFeatureTable(featureTable)
                     })
                 }
                 else {
