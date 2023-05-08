@@ -25,6 +25,7 @@ from fermo.app_utils.dashboard.dashboard_functions import (
 from fermo.app_utils.dashboard.chromatogram import (
     placeholder_graph,
     plot_central_chrom,
+    plot_clique_chrom,
 )
 from fermo.app_utils.dashboard.feature_table import (
     empty_feature_info_df,
@@ -224,6 +225,14 @@ def example(version=__version__):
                 feature_dicts,
                 "ALL",
             )
+            clique_chromatogram = plot_clique_chrom(
+                samplename,
+                active_feature_index,
+                active_feature_index,
+                sample_stats,
+                samples_json_dict,
+                feature_dicts,
+            )
             feature_table = update_feature_table(
                 samplename,
                 feature_dicts,
@@ -252,6 +261,7 @@ def example(version=__version__):
                 specific_sample_table=sample_overview_table,
                 feature_table=feature_table,
                 graphJSON=chromatogram,
+                cliqueChromJSON=clique_chromatogram,
                 networkJSON=network,
                 cytoscape_message=cytoscape_message,
                 cyto_stylesheetJSON=cyto_stylesheet,
@@ -262,7 +272,6 @@ def example(version=__version__):
 
         else:  # method == 'POST'
             req = request.get_json()
-            print('req', req)
             vis_features = "ALL"  # should be taken from response: User
             # selection from filter panel "Visualize features" radio buttons
 

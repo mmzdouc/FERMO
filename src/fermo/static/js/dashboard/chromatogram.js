@@ -7,7 +7,7 @@ import { updateFeatureTable } from './featureTable.js';
  * @param {JSON} chromatogram - JSON object containing the data for the chromatogram
  * @param {string} sampleName - selected sample
  */
-export function plotChromatogram(chromatogram, sampleName=''){
+export function plotMainChromatogram(chromatogram, sampleName=''){
     const chromHeading = document.getElementById('chromHeading')
     if (sampleName) {
         chromHeading.textContent = `Sample Chromatogram overview: ${sampleName}`
@@ -45,12 +45,14 @@ export function selectFeatures(chromID){
                 .then(function (data) {
                     // get the components of the response
                     const chromatogram = JSON.parse(data.chromatogram)
+                    const cliqueChrom = JSON.parse(data.cliqueChrom)
                     const featureTable = JSON.parse(data.featTable)
                     window.network = JSON.parse(data.network)
                     const cytoMessage = JSON.parse(data.cytoscapeMessage)
                     
                     // call respective functions
-                    plotChromatogram(chromatogram)
+                    plotMainChromatogram(chromatogram)
+                    plotCliqueChrom(cliqueChrom)
                     updateFeatureTable(featureTable)
                     updateCytoscape(cytoMessage)
                 })
@@ -63,4 +65,17 @@ export function selectFeatures(chromID){
             }
         })
     })
+}
+
+/**
+ * plot the clique chromatogram of the selected feature
+ * @param {JSON} cliqueChrom - JSON object containing the data for the clique chromatogram
+ */
+export function plotCliqueChrom(cliqueChrom) {
+    if (cliqueChrom){
+        const chromID = 'cliqueChromatogram'
+        const cliqueChromDiv = document.getElementById(chromID)
+        cliqueChromDiv.textContent = ''
+        Plotly.newPlot(chromID, cliqueChrom, {})
+    }
 }

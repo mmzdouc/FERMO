@@ -1,5 +1,8 @@
 import json
-from fermo.app_utils.dashboard.chromatogram import plot_central_chrom
+from fermo.app_utils.dashboard.chromatogram import (
+    plot_central_chrom,
+    plot_clique_chrom,
+)
 from fermo.app_utils.dashboard.feature_table import update_feature_table
 from fermo.app_utils.dashboard.networking_graph import (
     collect_edgedata,
@@ -43,6 +46,14 @@ def sample_changed(
         feature_dicts,
         vis_features,
     )
+    clique_chrom = plot_clique_chrom(
+        samplename,
+        feature_index,
+        feature_id,
+        sample_stats,
+        samples_json_dict,
+        feature_dicts,
+    )
     feature_table = json.dumps(update_feature_table(
         samplename,
         feature_dicts,
@@ -64,6 +75,7 @@ def sample_changed(
     edge_table = collect_edgedata(edgedata)
     response = {
         "chromatogram": chromatogram,
+        "cliqueChrom": clique_chrom,
         "featTable": json.dumps(feature_table),
         "network": network,
         "cytoscapeMessage": json.dumps(cytoscape_message),
@@ -107,6 +119,14 @@ def feature_changed(
         feature_dicts,
         vis_features,
     )
+    clique_chrom = plot_clique_chrom(
+        samplename,
+        feature_index,
+        feature_id,
+        sample_stats,
+        samples_json_dict,
+        feature_dicts,
+    )
     feature_table = update_feature_table(
         samplename,
         feature_dicts,
@@ -123,6 +143,7 @@ def feature_changed(
     )
     response = {
         "chromatogram": chromatogram,
+        "cliqueChrom": clique_chrom,
         "featTable": json.dumps(feature_table),
         "network": network,
         "cytoscapeMessage": json.dumps(cytoscape_message),

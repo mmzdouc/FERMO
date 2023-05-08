@@ -296,9 +296,9 @@
                             <div class="row">
                                 Click any row in the sample table to visualize the sample
                             </div>
-                            <div class="d-flex">
-                                <div id="mainChromatogram" class="flex-grow-1"></div>
-                                <div class="flex-shrink-0">
+                            <div class="row">
+                                <div id="mainChromatogram" class="col-10"></div>
+                                <div class="col">
                                     {{ legend('rgba(34, 136, 51, 0.6)', 'rgb(34, 136, 51)', 'Selected') }}
                                     {{ legend('rgba(102, 204, 238, 0.6)', 'rgb(102, 204, 238)', 'Not selected') }}
                                     {{ legend('white', 'rgb(170, 51, 119)', 'Unique to sample') }}
@@ -306,8 +306,13 @@
                                     {{ legend('rgba(204, 187, 68, 0.6)', 'rgb(204, 187, 68)', 'Blank + MS1') }}
                                 </div>
                             </div>
-                            
-                            
+                            <div class="row">
+                                <div id="cliqueChromatogram" class="col-10">Click on a feature to display the feature-network chromatogram</div>
+                                <div class="col">
+                                    {{ legend('rgba(68,119,170,0.6)', 'rgba(68,119,170,1)', 'Focused feature') }}
+                                    {{ legend('rgba(238,102,119,0.6)', 'rgba(238,102,119,1)', 'Related (same network)')}}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -370,6 +375,7 @@
     // load data
     sampleName = {{ samplename | tojson | safe }};  // sample name
     graph = {{ graphJSON | safe }};  // chromatogram
+    cliqueChrom = {{ cliqueChromJSON | safe }};  // clique chromatogram
     network = {{ networkJSON | safe }};  // cytoscape network
     stylesheet = {{ cyto_stylesheetJSON | safe }};  // cytoscape stylesheet
 </script>
