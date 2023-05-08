@@ -1,3 +1,6 @@
+import { updateCytoscape } from './cytoscapeGraph.js';
+import { updateFeatureTable } from './featureTable.js';
+
 /**
  * Plot the chromatogram of the selected sample
  *
@@ -10,14 +13,15 @@ export function plotChromatogram(chromatogram, sampleName=''){
         chromHeading.textContent = `Sample Chromatogram overview: ${sampleName}`
     }
     const chromID = 'mainChromatogram'
-    Plotly.newPlot(chromID, chromatogram, {});
+    Plotly.newPlot(chromID, chromatogram, {})
     selectFeatures(chromID)
     return
 }
 
 
 /**
- * Make features in the chromatogram selectable and handle the event.
+ * Make features in the chromatogram selectable and handle the event
+ * -> update the chromatogram itself, the feature table and the cytoscape graph
  * 
  * @param {string} chromID - id of the div containing the chromatogram
  */
@@ -39,14 +43,22 @@ export function selectFeatures(chromID){
             if (response.ok) {
                 response.json()
                 .then(function (data) {
+                    // get the components of the response
                     const chromatogram = JSON.parse(data.chromatogram)
+                    const featureTable = JSON.parse(data.featTable)
+                    window.network = JSON.parse(data.network)
+                    const cytoMessage = JSON.parse(data.cytoscapeMessage)
+                    
+                    // call respective functions
                     plotChromatogram(chromatogram)
+                    updateFeatureTable(featureTable)
+                    updateCytoscape(cytoMessage)
                 })
             }
             else {
                 console.log(
                     `fetch was not successfull: ${response.status}`
-                );
+                )
                 return ;
             }
         })

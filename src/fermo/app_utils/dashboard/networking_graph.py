@@ -14,14 +14,14 @@ def generate_cyto_elements(
 
     Parameters
     ----------
-    sel_sample : `str`
-    active_feature_id : `int`
-    feature_dicts : `dict`
-    sample_stats : `dict`
+    sel_sample : `str`\n
+    active_feature_id : `int`\n
+    feature_dicts : `dict`\n
+    sample_stats : `dict`\n
 
     Returns
     -------
-    networkJSON: `str`
+    networkJSON: `list`
         stringified JSON object of the list of nodes and edges (both
         represented as dictionaries)
     error_message: `str`

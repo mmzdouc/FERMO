@@ -5,7 +5,12 @@
  * @param {string} featureTable 
  */
 export function updateFeatureTable(featureTable){
-    let featureArray = tableStringToArray(featureTable)
+    let featureArray = []
+    if (typeof(featureTable) == 'string'){
+        featureArray = tableStringToArray(featureTable)
+    } else {
+        featureArray = featureTable
+    }
     let tableBody = document.querySelector('#featureTable tbody')
     // remove old table
     tableBody.replaceChildren()
@@ -36,11 +41,10 @@ export function updateFeatureTable(featureTable){
  * @returns {Array}
  */
 function tableStringToArray(featureTable){
-    console.log('featureTable before Array:', featureTable)
     // remove first and last two characters of the 'string'
     featureTable = featureTable.slice(2, -2)
     // split to separate the 'rows'
-    let featureArr = featureTable.split('], [') 
+    let featureArr = featureTable.split('], [')
     let featureArray = []
     for (let row of featureArr){
         // split to separate the 'cells'
@@ -57,6 +61,5 @@ function tableStringToArray(featureTable){
         }
         featureArray.push(row)
     }
-    console.log('featureArray:', featureArray)
     return featureArray
 }

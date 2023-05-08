@@ -35,7 +35,7 @@ from fermo.app_utils.dashboard.sample_table import (
     get_samples_statistics,
 )
 from fermo.app_utils.dashboard.networking_graph import stylesheet_cytoscape
-from fermo.app_utils.route_utils.route_dashboard import sample_changed
+from fermo.app_utils.route_utils.route_dashboard import feature_changed, sample_changed
 
 views = Blueprint(__name__, "views")
 
@@ -234,7 +234,7 @@ def example(version=__version__):
             )
             network, cytoscape_message = generate_cyto_elements(
                 samplename,
-                31,  # the variable active_feature_id or 31
+                active_feature_id,
                 feature_dicts,
                 sample_stats,
             )
@@ -277,40 +277,13 @@ def example(version=__version__):
                 )
 
             elif req['featIndex'][0]:  # i.e. there is an active feature
-                samplename = req['sample'][1]
-                feature_index = int(req['featIndex'][1])
-                feature_id = samples_json_dict[samplename]['feature_ID'][feature_index]
-                nodedata = {}
-                edgedata = {}
-
-                chromatogram = plot_central_chrom(
-                    samplename,
-                    feature_index,
-                    sample_stats,
+                response = feature_changed(
+                    req,
+                    feature_dicts,
                     samples_json_dict,
-                    feature_dicts,
-                    "ALL",
-                )
-                network, cytoscape_message = generate_cyto_elements(
-                    samplename,
-                    feature_id,
-                    feature_dicts,
                     sample_stats,
+                    vis_features,
                 )
-                node_table = collect_nodedata(
-                    nodedata,
-                    feature_dicts,
-                )
-                edge_table = collect_edgedata(edgedata)
-
-                response = {
-                    "chromatogram": chromatogram,
-                    # "featTable": feature_table,
-                    "network": network,
-                    "cytoscapeMessage": cytoscape_message,
-                    "nodeTable": node_table,
-                    "edgeTable": edge_table
-                }
             return response
 
     else:  # data could not be loaded
