@@ -33,7 +33,8 @@ export function selectFeatures(chromID){
             method: 'POST',
             body: JSON.stringify({
                 sample: [false, window.sampleName],  // set first element to false to indicate that the sample did not change
-                featIndex: [true, window.featureIndex]  // set first element to true to indicate that a feature was selected
+                featChanged: true,
+                featIndex: window.featureIndex
             }),
             headers: new Headers({
                 'Content-Type': 'application/json'
@@ -46,7 +47,8 @@ export function selectFeatures(chromID){
                     // get the components of the response
                     const chromatogram = JSON.parse(data.chromatogram)
                     const cliqueChrom = JSON.parse(data.cliqueChrom)
-                    const featureTable = JSON.parse(data.featTable)
+                    console.log('data.featTable:', data.featTable)
+                    const featureTable = data.featTable
                     window.network = JSON.parse(data.network)
                     const cytoMessage = JSON.parse(data.cytoscapeMessage)
                     

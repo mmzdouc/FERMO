@@ -24,7 +24,8 @@ export function selectRows(){
                 method: 'POST',
                 body: JSON.stringify({
                     sample: [true, window.sampleName],  // set first element to true to indicate that a sample was selected
-                    featIndex: [false, window.featureIndex] // set first element to false to indicate that no feature is active
+                    featChanged: false,
+                    featIndex: window.featureIndex
                 }),
                 headers: new Headers({
                     'Content-Type': 'application/json'

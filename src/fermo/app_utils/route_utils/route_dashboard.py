@@ -106,11 +106,39 @@ def feature_changed(
     Returns
     -------
     response: `dict`
+
+    Notes
+    -----
+    If featID is in the response, the feature was selected in the
+    cytoscape graph. This graph then does not need to be updated, therefore
+    generate_cyto_elements() is not called.
     """
     samplename = req['sample'][1]
-    feature_index = int(req['featIndex'][1])
-    feature_id = samples_json_dict[samplename]['feature_ID'][feature_index]
+    response = {}
+    if 'featIndex' in req:  # feature was selected in the chromatogram
+        feature_index = int(req['featIndex'])
+        feature_id = samples_json_dict[samplename]['feature_ID'][feature_index]
+        network, cytoscape_message = generate_cyto_elements(
+            samplename,
+            feature_id,
+            feature_dicts,
+            sample_stats,
+        )
+        response.update({
+            "network": network,
+            "cytoscapeMessage": json.dumps(cytoscape_message),
+        })
 
+    else:  # feature was selected in the cytoscape graph
+        feature_id = int(req['featID'])
+        samples_df = samples_json_dict[samplename]
+        try:
+            feature_index = int(samples_df.index[
+                samples_df.feature_ID == feature_id
+            ][0])
+        except IndexError:  # selected feature is not in the active sample
+            response.update({})
+            return response
     chromatogram = plot_central_chrom(
         samplename,
         feature_index,
@@ -133,20 +161,12 @@ def feature_changed(
         samples_json_dict,
         sample_stats,
         feature_id,
-        feature_index
+        feature_index,
     )
-    network, cytoscape_message = generate_cyto_elements(
-        samplename,
-        feature_id,
-        feature_dicts,
-        sample_stats,
-    )
-    response = {
+    response.update({
         "chromatogram": chromatogram,
         "cliqueChrom": clique_chrom,
-        "featTable": json.dumps(feature_table),
-        "network": network,
-        "cytoscapeMessage": json.dumps(cytoscape_message),
-    }
+        "featTable": feature_table,
+    })
 
     return response

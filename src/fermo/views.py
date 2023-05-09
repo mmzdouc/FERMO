@@ -285,7 +285,7 @@ def example(version=__version__):
                     vis_features,
                 )
 
-            elif req['featIndex'][0]:  # i.e. there is an active feature
+            elif req['featChanged']:  # i.e. there is an active feature
                 response = feature_changed(
                     req,
                     feature_dicts,

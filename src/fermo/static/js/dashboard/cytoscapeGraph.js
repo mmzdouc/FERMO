@@ -1,6 +1,9 @@
+import { updateFeatureTable } from './featureTable.js';
+import { plotMainChromatogram, plotCliqueChrom } from './chromatogram.js';
 
 /**
- * Remove or create message for user when necessary and update the cytoscape graph
+ * Remove or create message for user when necessary and plot the cytoscape graph
+ * 
  * @param {string} cytoMessage 
  */
 export function updateCytoscape(cytoMessage){
@@ -18,20 +21,68 @@ export function updateCytoscape(cytoMessage){
         cytoMessageP.textContent = cytoMessage
         parent.insertBefore(cytoMessageP, cytoGraph)
     }
-    createCytoGraph(window.network, window.stylesheet)
+    const cy = createCytoGraph(window.network, window.stylesheet)
+    selectNode(cy)
 }
 
 
 /**
  * Create the cytoscape graph
+ * 
  * @param {json} network - json object containing the nodes and edges of the graph
  * @param {json} stylesheet - json object containing the style of the graph
  */
-export function createCytoGraph(network, stylesheet) {
+function createCytoGraph(network, stylesheet) {
     return cytoscape({
         container: document.getElementById('cy'), // container to display graph
         elements: network, // list of graph elements
         style: stylesheet, // the stylesheet for the graph
         layout: {name: 'cose', rows: 1},
+    })
+}
+
+/**
+ * Add click event listener to nodes
+ * 
+ * @param {Object} cytoGraph the Cytoscape Object as give by cytoscape()
+ */
+function selectNode(cytoGraph) {
+    cytoGraph.on('click', 'node', function(evt){
+        window.featureID = evt.target.id()
+        fetch(window.location.href, {
+            method: 'POST',
+            body: JSON.stringify({
+                sample: [false, window.sampleName],
+                featChanged: true,
+                featID: window.featureID
+            }),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        })
+        .then(function (response) {
+            if (response.ok) {
+                response.json()
+                .then(function (data){
+                    if (Object.keys(data).length !== 0) { // if the response is not empty
+                        // get the components of the response
+                        const chromatogram = JSON.parse(data.chromatogram)
+                        const featureTable = data.featTable
+                        const cliqueChrom = JSON.parse(data.cliqueChrom)
+
+                        // call respective functions
+                        plotMainChromatogram(chromatogram)
+                        plotCliqueChrom(cliqueChrom)
+                        updateFeatureTable(featureTable)
+                    }
+                })
+            }
+            else {  // response was not ok
+                console.log(
+                    `fetch was not successfull: ${response.status}`
+                )
+                return ;
+            }
+        })
     })
 }
