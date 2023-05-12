@@ -2,6 +2,7 @@
 /**
  * Update the feature table: remove the old table and loop over the content of
  * the new featureTable to create the new one with correct formatting.
+ *
  * @param {string} featureTable 
  */
 export function updateFeatureTable(featureTable){
@@ -41,19 +42,22 @@ export function updateFeatureTable(featureTable){
  * @returns {Array}
  */
 function tableStringToArray(featureTable){
-    // remove first and last two characters of the 'string'
+    // remove outer brackets
     featureTable = featureTable.slice(2, -2)
     // split to separate the 'rows'
     let featureArr = featureTable.split('], [')
     let featureArray = []
     for (let row of featureArr){
-        // split to separate the 'cells'
-        row = row.split(', ')
+        /* split to separate the 'cells' (string.split() does not work because
+           there is no unambiguous separator) */
+        row = [row.substring(0, row.indexOf(", ")), row.substring(row.indexOf(", ")+2)]
         for (let i=0; i<row.length; i++){
-            if (row[i].startsWith('"')){
+            if (row[i].startsWith('"') || row[i].startsWith("'")){
                 // remove quotes
                 row[i] = row[i].slice(1, -1)
-                // remove newline characters if present
+                /* remove newline characters if present; 'blank' is an 
+                   indicator because it occurs in those lines where the
+                   html-'a'-tag was used */
                 if (row[i].includes('blank')){
                     row[i] = row[i].slice(0, 61) + row[i].slice(63)
                 }

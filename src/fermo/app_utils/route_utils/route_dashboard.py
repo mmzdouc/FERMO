@@ -54,14 +54,14 @@ def sample_changed(
         samples_json_dict,
         feature_dicts,
     )
-    feature_table = json.dumps(update_feature_table(
+    feature_table = update_feature_table(
         samplename,
         feature_dicts,
         samples_json_dict,
         sample_stats,
         feature_id,
         feature_index
-    ))
+    )
     network, cytoscape_message = generate_cyto_elements(
         samplename,
         feature_id,
@@ -73,10 +73,11 @@ def sample_changed(
         feature_dicts,
     )
     edge_table = collect_edgedata(edgedata)
+    print('in sample_changed: type of featTable: ', (type(feature_table)))
     response = {
         "chromatogram": chromatogram,
         "cliqueChrom": clique_chrom,
-        "featTable": json.dumps(feature_table),
+        "featTable": str(feature_table),
         "network": network,
         "cytoscapeMessage": json.dumps(cytoscape_message),
         "nodeTable": json.dumps(node_table),
@@ -114,7 +115,7 @@ def feature_changed(
     generate_cyto_elements() is not called.
     """
     samplename = req['sample'][1]
-    response = {}
+    resp = {}
     if 'featIndex' in req:  # feature was selected in the chromatogram
         feature_index = int(req['featIndex'])
         feature_id = samples_json_dict[samplename]['feature_ID'][feature_index]
@@ -124,7 +125,7 @@ def feature_changed(
             feature_dicts,
             sample_stats,
         )
-        response.update({
+        resp.update({
             "network": network,
             "cytoscapeMessage": json.dumps(cytoscape_message),
         })
@@ -137,8 +138,8 @@ def feature_changed(
                 samples_df.feature_ID == feature_id
             ][0])
         except IndexError:  # selected feature is not in the active sample
-            response.update({})
-            return response
+            resp.update({})
+            return resp
     chromatogram = plot_central_chrom(
         samplename,
         feature_index,
@@ -155,7 +156,7 @@ def feature_changed(
         samples_json_dict,
         feature_dicts,
     )
-    feature_table = update_feature_table(
+    feature_table = update_feature_table(  # convert to string to avoid bug
         samplename,
         feature_dicts,
         samples_json_dict,
@@ -163,10 +164,11 @@ def feature_changed(
         feature_id,
         feature_index,
     )
-    response.update({
+    print('in feature_changed: type of featTable: ', (type(feature_table)))
+
+    resp.update({
         "chromatogram": chromatogram,
         "cliqueChrom": clique_chrom,
-        "featTable": feature_table,
+        "featTable": str(feature_table),
     })
-
-    return response
+    return resp

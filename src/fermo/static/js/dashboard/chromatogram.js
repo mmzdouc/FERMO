@@ -47,11 +47,14 @@ export function selectFeatures(chromID){
                     // get the components of the response
                     const chromatogram = JSON.parse(data.chromatogram)
                     const cliqueChrom = JSON.parse(data.cliqueChrom)
-                    console.log('data.featTable:', data.featTable)
                     const featureTable = data.featTable
-                    window.network = JSON.parse(data.network)
+                    try {
+                        window.network = JSON.parse(data.network)
+                    } catch (SyntaxError) {
+                        window.network = []
+                    }
                     const cytoMessage = JSON.parse(data.cytoscapeMessage)
-                    
+
                     // call respective functions
                     plotMainChromatogram(chromatogram)
                     plotCliqueChrom(cliqueChrom)

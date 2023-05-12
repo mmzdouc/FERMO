@@ -6,7 +6,7 @@ def update_feature_table(
     sample_stats,
     feature_id: int = 1,
     feature_index: int = 0,
-) -> dict:
+) -> list:
     '''Return feature table for selected feature
 
     Parameters
@@ -18,7 +18,8 @@ def update_feature_table(
 
     Returns
     -------
-    `dict`
+    `list`
+        List of lists
     '''
     if isinstance(feature_index, int):
         return collect_feature_info(

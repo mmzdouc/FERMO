@@ -39,7 +39,7 @@ export function selectRows(){
                         // get the components of the response
                         const chromatogram = JSON.parse(data.chromatogram)
                         const cliqueChrom = JSON.parse(data.cliqueChrom)
-                        const featureTable = JSON.parse(data.featTable)
+                        const featureTable = data.featTable
                         window.network = data.network
                         const cytoMessage = JSON.parse(data.cytoscapeMessage)
                         // const nodedata - JSON.parse(data.nodedata) but nodedata should prob be given to the network so that cytoscape can display hover information

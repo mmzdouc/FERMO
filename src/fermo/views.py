@@ -36,7 +36,10 @@ from fermo.app_utils.dashboard.sample_table import (
     get_samples_statistics,
 )
 from fermo.app_utils.dashboard.networking_graph import stylesheet_cytoscape
-from fermo.app_utils.route_utils.route_dashboard import feature_changed, sample_changed
+from fermo.app_utils.route_utils.route_dashboard import (
+    feature_changed,
+    sample_changed,
+)
 
 views = Blueprint(__name__, "views")
 
@@ -277,7 +280,7 @@ def example(version=__version__):
 
             # parse the request
             if req['sample'][0]:  # i.e. if sample has changed
-                response = sample_changed(
+                resp = sample_changed(
                     req,
                     sample_stats,
                     samples_json_dict,
@@ -286,14 +289,15 @@ def example(version=__version__):
                 )
 
             elif req['featChanged']:  # i.e. there is an active feature
-                response = feature_changed(
+                resp = feature_changed(
                     req,
                     feature_dicts,
                     samples_json_dict,
                     sample_stats,
                     vis_features,
                 )
-            return response
+                # resp = json.dumps(resp)
+            return resp
 
     else:  # data could not be loaded
         flash('Example data could not be loaded')
