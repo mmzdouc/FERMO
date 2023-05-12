@@ -8,7 +8,7 @@ from flask import (
     url_for,
 )
 from fermo.__version__ import __version__
-from fermo.app_utils.dashboard.networking_graph import (
+from fermo.app_utils.dashboard.cytoscape_graph import (
     collect_edgedata,
     collect_nodedata,
     generate_cyto_elements,
@@ -35,7 +35,7 @@ from fermo.app_utils.dashboard.sample_table import (
     get_samples_overview,
     get_samples_statistics,
 )
-from fermo.app_utils.dashboard.networking_graph import stylesheet_cytoscape
+from fermo.app_utils.dashboard.cytoscape_graph import stylesheet_cytoscape
 from fermo.app_utils.route_utils.route_dashboard import (
     feature_changed,
     sample_changed,

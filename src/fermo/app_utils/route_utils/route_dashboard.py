@@ -4,7 +4,7 @@ from fermo.app_utils.dashboard.chromatogram import (
     plot_clique_chrom,
 )
 from fermo.app_utils.dashboard.feature_table import update_feature_table
-from fermo.app_utils.dashboard.networking_graph import (
+from fermo.app_utils.dashboard.cytoscape_graph import (
     collect_edgedata,
     collect_nodedata,
     generate_cyto_elements,
