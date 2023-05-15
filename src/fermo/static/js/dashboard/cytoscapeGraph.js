@@ -97,45 +97,63 @@ function selectNode(cytoGraph) {
 function addHoverEvent(cytoGraph){
     cytoGraph.on('mouseover', 'node', function(evt){
         const nodeData = evt.target['_private'].data
-        // to be continued
+        fetch(window.location.href, {
+            method: 'POST',
+            body: JSON.stringify({
+                sample: [false, window.sampleName],
+                featChanged: false,
+                nodeData: nodeData,
+            }),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        })
+        .then(handleResponse)
+        console.log('node should have been displayed now: ', nodeData)
     })
     cytoGraph.on('mouseover', 'edge', function(evt){
         const edgeData = evt.target['_private'].data
         fetch(window.location.href, {
-                method: 'POST',
-                body: JSON.stringify({
-                    sample: [false, window.sampleName],
-                    featChanged: false,
-                    edgeData: edgeData,
-                }),
-                headers: new Headers({
-                    'Content-Type': 'application/json'
-                })
+            method: 'POST',
+            body: JSON.stringify({
+                sample: [false, window.sampleName],
+                featChanged: false,
+                edgeData: edgeData,
+            }),
+            headers: new Headers({
+                'Content-Type': 'application/json'
             })
-        .then(function (response) {
-            if (response.ok) {
-                response.json()
-                .then(function (data){
-                    createPopover(data)
-                })
-            } else {
-                console.log(
-                    `fetch was not successfull: ${response.status}`
-                )
-                return ;
-            }
         })
+        .then(handleResponse)
     })
-    cytoGraph.on('mouseout', 'edge', async function(evt){
-        const delay = ms => new Promise(res => setTimeout(res, ms))  // utility function to wait 
-        await delay(300)  // wait to let mouseover-event finish first
-        const popovers = document.querySelectorAll('.popover')
-        for (let popover of popovers) {
-            popover.remove()
-        }
-    })
+    cytoGraph.on('mouseout', 'node', mouseoutEvent)
+    cytoGraph.on('mouseout', 'edge', mouseoutEvent)
 }
 
+
+function handleResponse(response){
+    if (response.ok) {
+        response.json()
+        .then(function (data){
+            createPopover(data)
+        })
+    } else {
+        console.log(
+            `fetch was not successfull: ${response.status}`
+        )
+        return ;
+    }
+}
+
+
+async function mouseoutEvent(evt){
+    const delay = ms => new Promise(res => setTimeout(res, ms))  // utility function to wait 
+    await delay(100)  // wait to let mouseover-event finish first
+    const popovers = document.querySelectorAll('.popover')
+    for (let popover of popovers) {
+        popover.remove()
+    }
+}
 
 /**
  * Create a popover for the element that is hovered over

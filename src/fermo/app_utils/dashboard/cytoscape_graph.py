@@ -258,7 +258,7 @@ def collect_nodedata(
         ]))
 
     content = [
-        ['Feature ID', nodedata['id']],
+        ''.join(['Feature ID: ', nodedata['id']]),
         ['Precursor <i>m/z</i>', feature_info['precursor_mz']],
         ['Retention time (avg)', feature_info['average_retention_time']],
         ['Annotation', annotation],

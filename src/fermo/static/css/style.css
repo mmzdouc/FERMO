@@ -224,7 +224,7 @@ input[type=number]{
     right: 10px;
     z-index: 9;
     font-size: smaller;
-    max-width: 15vw;
+    max-width: 30vw;
 }
 
 .popoverHeader {

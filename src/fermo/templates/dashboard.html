@@ -332,22 +332,14 @@
                                     <p class="text-danger">{{ cytoscape_message }}</p>
                                 {% endif %}
                                 <div id="cy"></div>
-                                <div class="d-inline-flex mt-1">
+                                <div class="d-inline-flex mt-2">
                                     {{ legend('rgb(68, 119, 170)', 'rgb(68, 119, 170)', 'Focused feature', 'me-2') }}
                                     {{ legend('rgb(238, 102, 119)', 'rgb(238, 102, 119)', 'Present in sample', 'me-2') }}
                                     {{ legend('rgb(187, 187, 187)', 'rgb(187, 187, 187)', 'Other samples', 'me-2') }}
                                     {{ legend('white', 'rgb(170, 51, 119)', 'Unique to sample', 'me-2') }}
                                     {{ legend('white', 'black', 'Unique to group', 'me-2') }}
                                 </div>
-                                <div class = 'row mt-3'>
-                                    <div class="col">
-                                        {{ display_detail_table(node_table, class='p-1', col1='Node info') }}
-                                    </div>
-                                    <div class="col">
-                                        {{ display_detail_table(edge_table, class='p-1', col1='Edge info') }}
-                                    </div>
-                                </div>
-                            </div> 
+                            </div>
                         </div>
                     </div>
                 </div>
