@@ -296,7 +296,19 @@ def example(version=__version__):
                     sample_stats,
                     vis_features,
                 )
-                # resp = json.dumps(resp)
+            else:
+                try:
+                    edge_data = req['edgeData']
+                except KeyError:
+                    try:
+                        node_data = req['nodeData']
+                    except KeyError:
+                        resp = {}
+                    else:
+                        resp = collect_nodedata(node_data, feature_dicts)
+                else:
+                    resp = collect_edgedata(edge_data)
+
             return resp
 
     else:  # data could not be loaded

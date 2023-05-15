@@ -213,6 +213,26 @@ input[type=number]{
 
 #cy {
 /* cytoscape graph */
+    position: relative;
     min-height: 250px;
     border: rgb(187, 187, 187) solid 2px;
+}
+
+.popover {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 9;
+    font-size: smaller;
+    max-width: 15vw;
+}
+
+.popoverHeader {
+    z-index: 10;
+    text-align: center;
+  }
+
+#cy ul {
+    margin: 0;
+    padding-left: 0.3rem;
 }

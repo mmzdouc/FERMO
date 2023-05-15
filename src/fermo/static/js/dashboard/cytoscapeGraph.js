@@ -23,6 +23,7 @@ export function updateCytoscape(cytoMessage){
     }
     const cy = createCytoGraph(window.network, window.stylesheet)
     selectNode(cy)
+    addHoverEvent(cy)
 }
 
 
@@ -85,4 +86,86 @@ function selectNode(cytoGraph) {
             }
         })
     })
+}
+
+
+/**
+ * Add hover event listener to nodes and edges
+ * 
+ * @param {Object} cytoGraph
+ */
+function addHoverEvent(cytoGraph){
+    cytoGraph.on('mouseover', 'node', function(evt){
+        const nodeData = evt.target['_private'].data
+        // to be continued
+    })
+    cytoGraph.on('mouseover', 'edge', function(evt){
+        const edgeData = evt.target['_private'].data
+        fetch(window.location.href, {
+                method: 'POST',
+                body: JSON.stringify({
+                    sample: [false, window.sampleName],
+                    featChanged: false,
+                    edgeData: edgeData,
+                }),
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                })
+            })
+        .then(function (response) {
+            if (response.ok) {
+                response.json()
+                .then(function (data){
+                    createPopover(data)
+                })
+            } else {
+                console.log(
+                    `fetch was not successfull: ${response.status}`
+                )
+                return ;
+            }
+        })
+    })
+    cytoGraph.on('mouseout', 'edge', async function(evt){
+        const delay = ms => new Promise(res => setTimeout(res, ms))  // utility function to wait 
+        await delay(300)  // wait to let mouseover-event finish first
+        const popovers = document.querySelectorAll('.popover')
+        for (let popover of popovers) {
+            popover.remove()
+        }
+    })
+}
+
+
+/**
+ * Create a popover for the element that is hovered over
+ *
+ * @param {Array} data
+*/
+function createPopover(data){
+    const header = data.shift() // access and remove first element of array
+    const cytoDiv = document.getElementById('cy')
+
+    const popover = document.createElement('div')
+    popover.classList.add('card', 'popover')
+
+    const popoverHeader = document.createElement('div')
+    popoverHeader.classList.add('card-header', 'popoverHeader')
+    popoverHeader.innerHTML= header
+
+    const popoverBody = document.createElement('div')
+    popoverBody.classList.add('card-body')
+
+    const bulletList = document.createElement('ul')
+    for (let row of data){
+        let bulletPoint = document.createElement('li')
+        bulletPoint.innerHTML = `${row[0]}: ${row[1]}`
+        bulletList.append(bulletPoint)
+    }
+    popoverBody.append(bulletList)
+
+    popover.append(popoverHeader, popoverBody)
+    cytoDiv.append(popover)
+
+    return popover
 }

@@ -73,7 +73,6 @@ def sample_changed(
         feature_dicts,
     )
     edge_table = collect_edgedata(edgedata)
-    print('in sample_changed: type of featTable: ', (type(feature_table)))
     response = {
         "chromatogram": chromatogram,
         "cliqueChrom": clique_chrom,
@@ -138,7 +137,6 @@ def feature_changed(
                 samples_df.feature_ID == feature_id
             ][0])
         except IndexError:  # selected feature is not in the active sample
-            resp.update({})
             return resp
     chromatogram = plot_central_chrom(
         samplename,
@@ -164,7 +162,6 @@ def feature_changed(
         feature_id,
         feature_index,
     )
-    print('in feature_changed: type of featTable: ', (type(feature_table)))
 
     resp.update({
         "chromatogram": chromatogram,

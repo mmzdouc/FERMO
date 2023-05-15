@@ -294,11 +294,12 @@ def collect_edgedata(
         return [[]]
 
     content = [
-        ['Connected nodes (IDs)', ''.join([
+        ''.join([
+            'Connection: ',
             edgedata['source'],
             '--',
             edgedata['target']
-        ])],
+        ]),
         ['Weight of edge', edgedata['weight']],
         ['<i>m/z</i> difference between nodes', edgedata['mass_diff']],
     ]
