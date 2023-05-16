@@ -57,12 +57,14 @@
                     <div id="filters" class="accordion-collapse collapse" aria-labelledby="filtersHeader">
                         <div class="accordion-body overflow-auto">
                             <div class="col-8">
-                                <button class="btn btn-primary"
+                                <a class="btn btn-primary"
                                 name="SaveSession"
-                                value="Saved"
-                                type="button">
+                                role="button"
+                                type="button"
+                                href="{{ url_for('views.download', filename='FERMO_session.json') }}"
+                                download>
                                     Save FERMO session file (JSON)
-                                </button>
+                                </a>
                             </div>
                             <hr>
                             <h6>Set filters for cutoff and press enter:</h6>

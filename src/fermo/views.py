@@ -1,3 +1,4 @@
+from os.path import join
 from flask import (
     Blueprint,
     current_app,
@@ -5,6 +6,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    send_from_directory,
     url_for,
 )
 from fermo.__version__ import __version__
@@ -78,7 +80,10 @@ def loading(version=__version__):
             print('Input ID was not in the request')
         else:
             sessionfile = request.files['sessionFile']
-            upload_folder = current_app.config.get('UPLOAD_FOLDER')
+            upload_folder = join(
+                current_app.root_path,
+                current_app.config.get('UPLOAD_FOLDER')
+            )
             feedback_or_filename, file_saved = save_file(
                 sessionfile,
                 'json',
@@ -136,7 +141,10 @@ def inspect_uploaded_file(filename, version=__version__):
             # dashboard
             return redirect(url_for('views.dashboard'))
     else:
-        upload_folder = current_app.config.get('UPLOAD_FOLDER')
+        upload_folder = join(
+            current_app.root_path,
+            current_app.config.get('UPLOAD_FOLDER')
+        )
         table_dict, message = parse_sessionfile(
             filename,
             version,
@@ -187,6 +195,17 @@ def dashboard(version=__version__):
         edge_table=[[]],
         samplename=None,
     )
+
+
+@views.route("/uploads/<path:filename>")
+def download(filename):
+    print('in download beginning')
+    upload_folder = join(
+        current_app.root_path,
+        current_app.config.get('UPLOAD_FOLDER')
+    )
+    print(upload_folder)
+    return send_from_directory(upload_folder, filename, as_attachment=True)
 
 
 @views.route("/example", methods=['GET', 'POST'])
