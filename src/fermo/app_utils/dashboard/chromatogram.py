@@ -339,7 +339,7 @@ def plot_clique_chrom(
     clique_chromatogram = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return clique_chromatogram
 
-
+  
 def append_scatter_text(
     row: pd.Series,
     fill: str,
@@ -352,12 +352,12 @@ def append_scatter_text(
 
     Parameters
     ----------
-    row : `Pandas.Series`\n
-    fill : `str`\n
-    line : `str`\n
-    width : `int`\n
-    bordercolor : `str`\n
-    feat_dicts : `dict`
+    row: `Pandas.Series`\n
+    fill: `str`\n
+    line: `str`\n
+    width: `int`\n
+    bordercolor: `str`\n
+    feat_dicts: `dict`
 
     Returns
     -------
@@ -421,7 +421,7 @@ def append_invis_trace(
 
     Parameters
     ----------
-    row : `Pandas.Series`
+    row: `Pandas.Series`
 
     Returns
     -------

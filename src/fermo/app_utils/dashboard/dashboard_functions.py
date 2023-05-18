@@ -77,7 +77,7 @@ def generate_subsets(
     Parameters
     ----------
     samples_json_dict: `dict`
-        dictionary with loaded 'json' information e.g. output from
+        Dictionary with loaded 'json' information e.g. output from
         access_loaded_data()\n
     sample: `str`\n
     thresholds: `dict`\n
