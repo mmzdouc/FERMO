@@ -2,7 +2,6 @@ import json
 import numpy as np
 import pandas as pd
 import plotly
-import plotly.express as px
 import plotly.graph_objects as go
 from fermo.app_utils.dashboard.dashboard_functions import (
     default_filters,
@@ -10,20 +9,6 @@ from fermo.app_utils.dashboard.dashboard_functions import (
 )
 
 from fermo.app_utils.dashboard.dashboard_functions import color_dict
-
-
-def placeholder_graph():
-    '''Load data from plotly express package and create simple graph'''
-    df = px.data.gapminder().query("continent=='Oceania'")
-    fig = px.line(
-        df,
-        x='year',
-        y='lifeExp',
-        color='country',
-        title="Placeholder for main Chromatogram"
-    )
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    return graphJSON
 
 
 def plot_central_chrom(

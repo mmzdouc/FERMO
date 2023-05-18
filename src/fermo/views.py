@@ -22,15 +22,13 @@ from fermo.app_utils.input_testing import (
 )
 from fermo.app_utils.dashboard.dashboard_functions import (
     access_loaded_data,
-    load_example,
+    load_sessionFile,
 )
 from fermo.app_utils.dashboard.chromatogram import (
-    placeholder_graph,
     plot_central_chrom,
     plot_clique_chrom,
 )
 from fermo.app_utils.dashboard.feature_table import (
-    empty_feature_info_df,
     update_feature_table,
 )
 from fermo.app_utils.dashboard.sample_table import (
@@ -174,44 +172,29 @@ def processing(version=__version__):
     return render_template('processing.html', version=version)
 
 
-@views.route("/dashboard")
+@views.route("/dashboard", methods=['GET', 'POST'])
 def dashboard(version=__version__):
     '''Render dashboard page'''
-    # load data for placeholder main chromatogram
-    graphJSON = placeholder_graph()
-    feature_table = empty_feature_info_df()
-
-    return render_template(
-        'dashboard.html',
-        version=version,
-        general_sample_table=[[]],
-        specific_sample_table=[[]],
-        feature_table=feature_table,
-        graphJSON=graphJSON,
-        networkJSON=None,
-        cytoscape_message=None,
-        cyto_stylesheetJSON=None,
-        node_table=[[]],
-        edge_table=[[]],
-        samplename=None,
-    )
+    if request.method == 'GET':
+        return redirect(url_for('views.example'))
+    else:  # method == 'POST'
+        return redirect(url_for('views.example'))
 
 
 @views.route("/uploads/<path:filename>")
 def download(filename):
-    print('in download beginning')
+    ''' Route to download files that were saved on the server'''
     upload_folder = join(
         current_app.root_path,
         current_app.config.get('UPLOAD_FOLDER')
     )
-    print(upload_folder)
     return send_from_directory(upload_folder, filename, as_attachment=True)
 
 
 @views.route("/example", methods=['GET', 'POST'])
 def example(version=__version__):
     '''Example dashboard'''
-    data = load_example('example_data/FERMO_session.json')
+    data = load_sessionFile('example_data/FERMO_session.json')
     if data:
         (sample_stats,
          samples_json_dict,
