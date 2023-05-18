@@ -92,7 +92,8 @@ def feature_changed(
     sample_stats: dict,
     vis_features: str
 ):
-    """ Call all functions that need updating when a new feature was selected
+    """ Call all functions that need updating when a new feature was selected,
+    depending on where the feature was selected (chromatogram or network-graph)
 
     Parameters
     ----------
@@ -118,16 +119,6 @@ def feature_changed(
     if 'featIndex' in req:  # feature was selected in the chromatogram
         feature_index = int(req['featIndex'])
         feature_id = samples_json_dict[samplename]['feature_ID'][feature_index]
-        network, cytoscape_message = generate_cyto_elements(
-            samplename,
-            feature_id,
-            feature_dicts,
-            sample_stats,
-        )
-        resp.update({
-            "network": network,
-            "cytoscapeMessage": json.dumps(cytoscape_message),
-        })
 
     else:  # feature was selected in the cytoscape graph
         feature_id = int(req['featID'])
@@ -162,10 +153,17 @@ def feature_changed(
         feature_id,
         feature_index,
     )
-
+    network, cytoscape_message = generate_cyto_elements(
+            samplename,
+            feature_id,
+            feature_dicts,
+            sample_stats,
+        )
     resp.update({
         "chromatogram": chromatogram,
         "cliqueChrom": clique_chrom,
         "featTable": str(feature_table),
+        "network": network,
+        "cytoscapeMessage": json.dumps(cytoscape_message),
     })
     return resp

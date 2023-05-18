@@ -70,11 +70,19 @@ function selectNode(cytoGraph) {
                         const chromatogram = JSON.parse(data.chromatogram)
                         const featureTable = data.featTable
                         const cliqueChrom = JSON.parse(data.cliqueChrom)
+                        try {
+                            window.network = JSON.parse(data.network)
+                        } catch (SyntaxError) {
+                            window.network = []
+                        }
+                        const cytoMessage = JSON.parse(data.cytoscapeMessage)
 
                         // call respective functions
                         plotMainChromatogram(chromatogram)
                         plotCliqueChrom(cliqueChrom)
                         updateFeatureTable(featureTable)
+                        updateCytoscape(cytoMessage)
+
                     }
                 })
             }
@@ -109,7 +117,6 @@ function addHoverEvent(cytoGraph){
             })
         })
         .then(handleResponse)
-        console.log('node should have been displayed now: ', nodeData)
     })
     cytoGraph.on('mouseover', 'edge', function(evt){
         const edgeData = evt.target['_private'].data
