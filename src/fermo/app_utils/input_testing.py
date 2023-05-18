@@ -10,7 +10,6 @@ from werkzeug.datastructures import FileStorage
 def check_file_format(
     filename: str,
     file_format: str,
-    allowed_extensions: list,
 ) -> (str):
     ''' Check filename for validity
 
@@ -19,8 +18,6 @@ def check_file_format(
     filename: `str`
     file_format: `str`
         File format of one specific input with the leading dot
-    allowed_extension: `list`
-        List of strings as specified in config file
 
     Return
     ------
@@ -39,7 +36,6 @@ def check_file_format(
 def save_file(
         file: FileStorage,
         file_format: str,
-        allowed_extensions: list,
         upload_folder: str,
 ) -> Tuple[str, str]:
     '''Save the file if it is valid
@@ -50,8 +46,6 @@ def save_file(
         An element of request.files
     file_format: `str`
         File format of one specific input with the leading dot
-    allowed_extensions: `list`
-        List of str, as specified in config file
     upload_folder: `str`
         Path to location where files should be stored
 
@@ -72,7 +66,6 @@ def save_file(
     feedback = check_file_format(
             filename,
             file_format,
-            allowed_extensions,
         )
     if feedback:
         return feedback, False

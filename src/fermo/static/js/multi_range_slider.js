@@ -93,9 +93,9 @@ function setToggleAccessible(currentTarget) {
  * @param {string} targetPage - Name of the target page (last part of the URL)
 */
 function checkURL(targetPage) {
-  var pageurl = window.location.href; // get the URL of the current page
-  var splitUrl = pageurl.split("/");
-  var currentPage = (splitUrl[splitUrl.length - 1]); // access last element of the URL
+  const pageurl = window.location.href; // get the URL of the current page
+  const splitUrl = pageurl.split("/");
+  const currentPage = (splitUrl[splitUrl.length - 1]); // access last element of the URL
   if (targetPage == currentPage) // check whether the current page is {targetPage}
   {
     return true;

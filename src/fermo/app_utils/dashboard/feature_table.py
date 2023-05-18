@@ -1,12 +1,12 @@
-import pandas as pd
-
 
 def update_feature_table(
     selected_sample: str,
-    loaded_data: dict,
+    feature_dicts: dict,
+    samples_json_dict: dict,
+    sample_stats,
     feature_id: int = 1,
     feature_index: int = 0,
-) -> dict:
+) -> list:
     '''Return feature table for selected feature
 
     Parameters
@@ -18,25 +18,16 @@ def update_feature_table(
 
     Returns
     -------
-    `dict`
+    `list`
+        List of lists
     '''
-    feature_dicts = loaded_data['feature_dicts']
-    samples_JSON = loaded_data['samples_JSON']
-    sample_stats = loaded_data['sample_stats']
-
-    samples = dict()
-    for sample in samples_JSON:
-        samples[sample] = pd.read_json(
-            samples_JSON[sample], orient='split'
-        )
-
     if isinstance(feature_index, int):
         return collect_feature_info(
             selected_sample,
             feature_id,
             feature_index,
             feature_dicts,
-            samples,
+            samples_json_dict,
             sample_stats,
         )
     else:
@@ -225,15 +216,15 @@ def collect_feature_info(
         )],
         [separator, separator],
         ['Spectral library: best match', cosine_annotation],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: best match/analog''', ann_ms2query],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: <i>m/z</i> difference to best match/analog''',
          mass_diff_ms2query],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: predicted class of best match/analog''',
          class_ms2query],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: predicted superclass of best match/analog''',
          superclass_ms2query],
         [separator, separator],
@@ -285,14 +276,14 @@ def empty_feature_info_df() -> list:
         ['Peak overlap (%)', None],
         ['-----', '-----'],
         ['Spectral library: best match', None],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: best match/analog''', None],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: <i>m/z</i> difference to best match/analog''', None],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
          MS2Query</a>: predicted class of best match/analog''', None],
-        ['''<a href="https://github.com/iomega/ms2query" target="_blank">
-         MS2Query</a>:predicted superclass of best match/analog''', None],
+        ['''<a href='https://github.com/iomega/ms2query' target='_blank'>
+         MS2Query</a>: predicted superclass of best match/analog''', None],
         ['-----', '-----'],
         ['Feature found in groups', None],
         ['Fold-differences across groups', None],

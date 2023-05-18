@@ -32,7 +32,7 @@
                     <div id="sampleTable" class="accordion-collapse collapse show" aria-labelledby="sampleTableHeader">
                         <div class="accordion-body overflow-auto">
                             {{ display_table(general_sample_table, ['Nr of samples', 'Nr of features', 'Selected features', 'Selected networks', 'Non-blank', 'Blank & MS1']) }}
-                            {{ display_table(specific_sample_table, ['Filename', 'Group', 'Selected features', 'Selected networks', 'Diversity-score', 'Spec score', 'Mean novelty score', 'Total', 'Non-blank', 'Blank & MS1']) }}
+                            {{ display_table(specific_sample_table, ['Filename', 'Group', 'Selected features', 'Selected networks', 'Diversity-score', 'Spec score', 'Mean novelty score', 'Total', 'Non-blank', 'Blank & MS1'], 'selectSample') }}
                         </div>
                     </div>
                 </div>
@@ -290,15 +290,15 @@
                             Main Chromatogram <br>
                         </div>
                         <div class="card-body overflow-auto">
-                            <h6 class="fw-bold row">
+                            <h6 id = chromHeading class="fw-bold row">
                                 Sample Chromatogram overview: {{ samplename }}
                             </h6>
                             <div class="row">
-                                Click any row in the left-hand table to visualize the sample
+                                Click any row in the sample table to visualize the sample
                             </div>
-                            <div class="d-flex">
-                                <div id="mainChromatogram" class="flex-grow-1"></div>
-                                <div class="flex-shrink-0">
+                            <div class="row">
+                                <div id="mainChromatogram" class="col-10"></div>
+                                <div class="col">
                                     {{ legend('rgba(34, 136, 51, 0.6)', 'rgb(34, 136, 51)', 'Selected') }}
                                     {{ legend('rgba(102, 204, 238, 0.6)', 'rgb(102, 204, 238)', 'Not selected') }}
                                     {{ legend('white', 'rgb(170, 51, 119)', 'Unique to sample') }}
@@ -306,14 +306,19 @@
                                     {{ legend('rgba(204, 187, 68, 0.6)', 'rgb(204, 187, 68)', 'Blank + MS1') }}
                                 </div>
                             </div>
-                            
-                            
+                            <div class="row">
+                                <div id="cliqueChromatogram" class="col-10">Click on a feature to display the feature-network chromatogram</div>
+                                <div class="col">
+                                    {{ legend('rgba(68,119,170,0.6)', 'rgba(68,119,170,1)', 'Focused feature') }}
+                                    {{ legend('rgba(238,102,119,0.6)', 'rgba(238,102,119,1)', 'Related (same network)')}}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row gx-2 mt-1">
-                <div class="accordion col-7">
+                <div class="accordion">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="cytoscapeHeader">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cytoscape" aria-expanded="true" aria-controls="Cytoscape">
@@ -327,35 +332,13 @@
                                     <p class="text-danger">{{ cytoscape_message }}</p>
                                 {% endif %}
                                 <div id="cy"></div>
-                                <div class="d-inline-flex mt-1">
+                                <div class="d-inline-flex mt-2">
                                     {{ legend('rgb(68, 119, 170)', 'rgb(68, 119, 170)', 'Focused feature', 'me-2') }}
                                     {{ legend('rgb(238, 102, 119)', 'rgb(238, 102, 119)', 'Present in sample', 'me-2') }}
                                     {{ legend('rgb(187, 187, 187)', 'rgb(187, 187, 187)', 'Other samples', 'me-2') }}
                                     {{ legend('white', 'rgb(170, 51, 119)', 'Unique to sample', 'me-2') }}
                                     {{ legend('white', 'black', 'Unique to group', 'me-2') }}
                                 </div>
-                                <div class = 'row mt-3'>
-                                    <div class="col">
-                                        {{ display_detail_table(node_table, class='p-1', col1='Node info') }}
-                                    </div>
-                                    <div class="col">
-                                        {{ display_detail_table(edge_table, class='p-1', col1='Edge info') }}
-                                    </div>
-                                </div>
-                            </div> 
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion col-5">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="sampleChromatogramsHeader">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sampleChromatograms" aria-expanded="false" aria-controls="sampleChromatograms"> 
-                                Sample chromatograms
-                            </button>
-                        </h2>
-                        <div class="accordion-collapse collapse" id="sampleChromatograms" aria-labelledby="sampleChromatogramsHeader">
-                            <div class="accordion-body overflow-auto">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, dignissimos officia vero excepturi, officiis enim, accusantium laudantium iusto asperiores aut quidem.
                             </div>
                         </div>
                     </div>
@@ -371,6 +354,7 @@
 <script src="{{url_for('static', filename='js/plotly-2.18.2.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/multi_range_slider.js') }}"></script>
 <script src="{{ url_for('static', filename='js/cytoscape.min.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/dashboard/index.js')}}"></script>
 <script>
     // activate the tooltips
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -378,21 +362,13 @@
         tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
     )
 </script>
+
 <script>
-    // plot the main chromatogram
-    var graph = {{ graphJSON | safe }};
-    Plotly.newPlot('mainChromatogram', graph, {});
-</script>
-<script>
-    // placeholder cytoscape graph
-    network = {{ networkJSON | safe }};
-    stylesheet = {{ cyto_stylesheetJSON | safe }};
-    var cy = cytoscape({
-        container: document.getElementById('cy'), // container to display graph
-        elements: network, // list of graph elements
-        style: stylesheet, // the stylesheet for the graph
-        layout: {name: 'cose', rows: 1},
-        zoom: 0.75
-    });
+    // load data
+    sampleName = {{ samplename | tojson | safe }};  // sample name
+    graph = {{ graphJSON | safe }};  // chromatogram
+    cliqueChrom = {{ cliqueChromJSON | safe }};  // clique chromatogram
+    network = {{ networkJSON | safe }};  // cytoscape network
+    stylesheet = {{ cyto_stylesheetJSON | safe }};  // cytoscape stylesheet
 </script>
 {% endblock %}

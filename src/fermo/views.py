@@ -8,7 +8,11 @@ from flask import (
     url_for,
 )
 from fermo.__version__ import __version__
-from fermo.app_utils.dashboard.networking_graph import collect_edgedata, collect_nodedata, generate_cyto_elements
+from fermo.app_utils.dashboard.cytoscape_graph import (
+    collect_edgedata,
+    collect_nodedata,
+    generate_cyto_elements,
+)
 from fermo.app_utils.input_testing import (
     save_file,
     parse_sessionfile,
@@ -21,6 +25,7 @@ from fermo.app_utils.dashboard.dashboard_functions import (
 from fermo.app_utils.dashboard.chromatogram import (
     placeholder_graph,
     plot_central_chrom,
+    plot_clique_chrom,
 )
 from fermo.app_utils.dashboard.feature_table import (
     empty_feature_info_df,
@@ -30,7 +35,11 @@ from fermo.app_utils.dashboard.sample_table import (
     get_samples_overview,
     get_samples_statistics,
 )
-from fermo.app_utils.dashboard.networking_graph import stylesheet_cytoscape
+from fermo.app_utils.dashboard.cytoscape_graph import stylesheet_cytoscape
+from fermo.app_utils.route_utils.route_dashboard import (
+    feature_changed,
+    sample_changed,
+)
 
 views = Blueprint(__name__, "views")
 
@@ -69,12 +78,10 @@ def loading(version=__version__):
             print('Input ID was not in the request')
         else:
             sessionfile = request.files['sessionFile']
-            allowed_extensions = current_app.config.get('ALLOWED_EXTENSION')
             upload_folder = current_app.config.get('UPLOAD_FOLDER')
             feedback_or_filename, file_saved = save_file(
                 sessionfile,
                 'json',
-                allowed_extensions,
                 upload_folder,
             )
             if file_saved:
@@ -173,10 +180,16 @@ def dashboard(version=__version__):
         specific_sample_table=[[]],
         feature_table=feature_table,
         graphJSON=graphJSON,
+        networkJSON=None,
+        cytoscape_message=None,
+        cyto_stylesheetJSON=None,
+        node_table=[[]],
+        edge_table=[[]],
+        samplename=None,
     )
 
 
-@views.route("/example")
+@views.route("/example", methods=['GET', 'POST'])
 def example(version=__version__):
     '''Example dashboard'''
     data = load_example('example_data/FERMO_session.json')
@@ -184,69 +197,122 @@ def example(version=__version__):
         (sample_stats,
          samples_json_dict,
          samples_dict,
-         feature_dicts,) = access_loaded_data(data)
-
-        samplename = list(samples_dict)[0]
-
-        general_sample_table = get_samples_statistics(
-            samples_json_dict,
-            samples_dict,
-            feature_dicts,
-        )
-        sample_overview_table = get_samples_overview(
-            sample_stats,
-            samples_json_dict,
-            samples_dict,
-            feature_dicts,
-        )
-        feature_table = update_feature_table(
-            samplename,  # sample = first sample of all samples
-            data,                       # just as an example
-            feature_index=28  # for session_file.json feature with ID 1 is
-        )                         # at index 28
-        chromatogram = plot_central_chrom(
-            samplename,  # hardcoded now, should accept user input eventually
-            1,  # hardcoded now, should accept user input eventually
-            sample_stats,
-            samples_json_dict,
-            feature_dicts,
-            "ALL",  # hardcoded now, should accept user input eventually
-        )
-        network, cytoscape_message = generate_cyto_elements(
-            samplename,
-            31,  # example; not ID=1 because that feature only has one node
-            feature_dicts,
-            sample_stats,
-        )
+         feature_dicts,
+         ) = access_loaded_data(data)
         cyto_stylesheet = stylesheet_cytoscape()
 
-        node_table = collect_nodedata(
-            {'id': '9', 'label': '364.1614 m/z'},  # must be extracted from JS eventually
-            feature_dicts,
-        )
-        edge_table = collect_edgedata({  # must be extracted from JS eventually
-            'source': '93',
-            'target': '12',
-            'weight': 0.93,
-            'mass_diff': 15.994,
-            'id': '48ef5707-0580-424e-8e7d-1659c0885856'
-        })
+        if request.method == 'GET':
+            # hardcode some variables to display as default
+            samplename = list(samples_dict)[0]
+            active_feature_index = None
+            active_feature_id = None
+            nodedata = {}
+            edgedata = {}
 
-        return render_template(
-            'dashboard.html',
-            version=version,
-            general_sample_table=general_sample_table,
-            specific_sample_table=sample_overview_table,
-            feature_table=feature_table,
-            graphJSON=chromatogram,
-            networkJSON=network,
-            cytoscape_message=cytoscape_message,
-            cyto_stylesheetJSON=cyto_stylesheet,
-            node_table=node_table,
-            edge_table=edge_table,
-            samplename=samplename
-        )
-    else:
+            general_sample_table = get_samples_statistics(
+                samples_json_dict,
+                samples_dict,
+                feature_dicts,
+            )
+            sample_overview_table = get_samples_overview(
+                sample_stats,
+                samples_json_dict,
+                samples_dict,
+                feature_dicts,
+            )
+            chromatogram = plot_central_chrom(
+                samplename,
+                active_feature_index,
+                sample_stats,
+                samples_json_dict,
+                feature_dicts,
+                "ALL",
+            )
+            clique_chromatogram = plot_clique_chrom(
+                samplename,
+                active_feature_index,
+                active_feature_index,
+                sample_stats,
+                samples_json_dict,
+                feature_dicts,
+            )
+            feature_table = update_feature_table(
+                samplename,
+                feature_dicts,
+                samples_json_dict,
+                sample_stats,
+                active_feature_id,
+                active_feature_index
+            )
+            network, cytoscape_message = generate_cyto_elements(
+                samplename,
+                active_feature_id,
+                feature_dicts,
+                sample_stats,
+            )
+
+            node_table = collect_nodedata(
+                nodedata,
+                feature_dicts,
+            )
+            edge_table = collect_edgedata(edgedata)
+
+            return render_template(
+                'dashboard.html',
+                version=version,
+                general_sample_table=general_sample_table,
+                specific_sample_table=sample_overview_table,
+                feature_table=feature_table,
+                graphJSON=chromatogram,
+                cliqueChromJSON=clique_chromatogram,
+                networkJSON=network,
+                cytoscape_message=cytoscape_message,
+                cyto_stylesheetJSON=cyto_stylesheet,
+                node_table=node_table,
+                edge_table=edge_table,
+                samplename=samplename
+            )
+
+        else:  # method == 'POST'
+            req = request.get_json()
+            vis_features = "ALL"  # should be taken from response: User
+            # selection from filter panel "Visualize features" radio buttons
+
+            # parse the request
+            if req['sample'][0]:  # i.e. if sample has changed
+                resp = sample_changed(
+                    req,
+                    sample_stats,
+                    samples_json_dict,
+                    feature_dicts,
+                    vis_features,
+                )
+
+            elif req['featChanged']:  # i.e. there is an active feature
+                resp = feature_changed(
+                    req,
+                    feature_dicts,
+                    samples_json_dict,
+                    sample_stats,
+                    vis_features,
+                )
+            else:
+                try:
+                    edge_data = req['edgeData']
+                except KeyError:
+                    try:
+                        node_data = req['nodeData']
+                    except KeyError:
+                        resp = {}
+                    else:
+                        resp = collect_nodedata(node_data, feature_dicts)
+                else:
+                    resp = collect_edgedata(edge_data)
+
+            return resp
+
+    else:  # data could not be loaded
+        flash('Example data could not be loaded')
         return render_template(
             'dashboard.html',
             version=version,
