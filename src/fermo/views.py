@@ -206,8 +206,8 @@ def example(version=__version__):
 
         if request.method == 'GET':
             # hardcode some variables to display as default
+            session['samplename'] = list(samples_dict)[0]
             session['vis_features'] = 'ALL'
-            samplename = list(samples_dict)[0]
             session['active_feature_index'] = None
             session['active_feature_id'] = None
             nodedata = {}
@@ -225,7 +225,7 @@ def example(version=__version__):
                 feature_dicts,
             )
             chromatogram = plot_central_chrom(
-                samplename,
+                session['samplename'],
                 session['active_feature_index'],
                 sample_stats,
                 samples_json_dict,
@@ -233,7 +233,7 @@ def example(version=__version__):
                 session['vis_features'],
             )
             clique_chromatogram = plot_clique_chrom(
-                samplename,
+                session['samplename'],
                 session['active_feature_index'],
                 session['active_feature_id'],
                 sample_stats,
@@ -241,7 +241,7 @@ def example(version=__version__):
                 feature_dicts,
             )
             feature_table = update_feature_table(
-                samplename,
+                session['samplename'],
                 feature_dicts,
                 samples_json_dict,
                 sample_stats,
@@ -249,7 +249,7 @@ def example(version=__version__):
                 session['active_feature_index']
             )
             network, cytoscape_message = generate_cyto_elements(
-                samplename,
+                session['samplename'],
                 session['active_feature_id'],
                 feature_dicts,
                 sample_stats,
@@ -274,24 +274,21 @@ def example(version=__version__):
                 cyto_stylesheetJSON=cyto_stylesheet,
                 node_table=node_table,
                 edge_table=edge_table,
-                samplename=samplename
+                samplename=session['samplename']
             )
 
         else:  # method == 'POST'
             req = request.get_json()
             if 'featureVisualizationOptions' in req:
-                print('samples dict', list(samples_dict.keys())[1])
-                samplename = list(samples_dict.keys())[1]
                 session['vis_features'] = req['featureVisualizationOptions']
                 chromatogram = plot_central_chrom(
-                    samplename,
+                    session['samplename'],
                     session['active_feature_index'],
                     sample_stats,
                     samples_json_dict,
                     feature_dicts,
                     session['vis_features'],
                 )
-                print('new vis_features: ', session['vis_features'])
 
                 resp = {
                     "chromatogram": chromatogram,
