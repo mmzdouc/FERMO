@@ -152,7 +152,10 @@ function handleResponse(response){
     }
 }
 
-
+/**
+ * Remove popovers after a delay when mouse leaves node or edge
+ * @param {Object} evt 
+ */
 async function mouseoutEvent(evt){
     const delay = ms => new Promise(res => setTimeout(res, ms))  // utility function to wait 
     await delay(100)  // wait to let mouseover-event finish first
