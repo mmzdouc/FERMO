@@ -1,4 +1,4 @@
-import { updateFeatureTable } from './featureTable.js';
+import { updateTable } from './featureTable.js';
 import { plotMainChromatogram, plotCliqueChrom } from './chromatogram.js';
 
 /**
@@ -80,7 +80,7 @@ function selectNode(cytoGraph) {
                         // call respective functions
                         plotMainChromatogram(chromatogram)
                         plotCliqueChrom(cliqueChrom)
-                        updateFeatureTable(featureTable)
+                        updateTable(featureTable, '#featureTable tbody')
                         updateCytoscape(cytoMessage)
 
                     }

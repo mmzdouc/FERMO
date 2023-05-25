@@ -1,4 +1,5 @@
 import { plotMainChromatogram } from './chromatogram.js'
+import { updateTable } from './featureTable.js'
 
 /**
  * Add event listeners to the form and its input elements
@@ -47,8 +48,13 @@ export function filterFeatures() {
                     response.json()
                     .then(function (data) {
                         const chromatogram = JSON.parse(data.chromatogram)
+                        const sampleStatsArray = JSON.parse(data.sample_stats_table)
+                        const sampleOverviewArray = JSON.parse(data.sample_overview_table)
+
 
                         plotMainChromatogram(chromatogram)
+                        updateTable(sampleStatsArray, )
+                        updateTable(sampleOverviewArray, )
                     })
                 } else {
                     console.log(

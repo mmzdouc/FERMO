@@ -5,14 +5,14 @@
  *
  * @param {string} featureTable 
  */
-export function updateFeatureTable(featureTable){
+export function updateTable(featureTable, selector){
     let featureArray = []
     if (typeof(featureTable) == 'string'){
         featureArray = tableStringToArray(featureTable)
     } else {
         featureArray = featureTable
     }
-    let tableBody = document.querySelector('#featureTable tbody')
+    let tableBody = document.querySelector(selector)
     // remove old table
     tableBody.replaceChildren()
     // create new table

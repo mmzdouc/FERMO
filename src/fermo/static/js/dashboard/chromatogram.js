@@ -1,5 +1,5 @@
 import { updateCytoscape } from './cytoscapeGraph.js';
-import { updateFeatureTable } from './featureTable.js';
+import { updateTable } from './featureTable.js';
 
 /**
  * Plot the chromatogram of the selected sample
@@ -58,7 +58,7 @@ export function selectFeatures(chromID){
                     // call respective functions
                     plotMainChromatogram(chromatogram)
                     plotCliqueChrom(cliqueChrom)
-                    updateFeatureTable(featureTable)
+                    updateTable(featureTable, '#featureTable tbody')
                     updateCytoscape(cytoMessage)
                 })
             }

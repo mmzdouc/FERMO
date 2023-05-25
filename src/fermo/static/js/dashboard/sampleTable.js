@@ -1,6 +1,6 @@
 import { plotMainChromatogram, plotCliqueChrom } from './chromatogram.js';
 import { updateCytoscape } from './cytoscapeGraph.js';
-import { updateFeatureTable } from './featureTable.js';
+import { updateTable } from './featureTable.js';
 
 /**
  * Make rows selectable and change pointer to hand when hovering over a row.
@@ -46,7 +46,7 @@ export function selectRows(){
 
                         plotMainChromatogram(chromatogram, sampleName)
                         plotCliqueChrom(cliqueChrom)
-                        updateFeatureTable(featureTable)
+                        updateTable(featureTable, '#featureTable tbody')
                         updateCytoscape(cytoMessage)
                     })
                 }
