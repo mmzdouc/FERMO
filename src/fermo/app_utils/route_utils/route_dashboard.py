@@ -1,4 +1,5 @@
 import json
+from flask import session
 from fermo.app_utils.dashboard.chromatogram import (
     plot_central_chrom,
     plot_clique_chrom,
@@ -34,13 +35,13 @@ def sample_changed(
     response: `dict`
     """
     samplename = req['sample'][1]
-    feature_index = None
-    feature_id = None
+    session['active_feature_index'] = None
+    session['active_feature_id'] = None
     nodedata = {}
     edgedata = {}
     chromatogram = plot_central_chrom(
         samplename,
-        feature_index,
+        session['active_feature_index'],
         sample_stats,
         samples_json_dict,
         feature_dicts,
@@ -48,8 +49,8 @@ def sample_changed(
     )
     clique_chrom = plot_clique_chrom(
         samplename,
-        feature_index,
-        feature_id,
+        session['active_feature_index'],
+        session['active_feature_id'],
         sample_stats,
         samples_json_dict,
         feature_dicts,
@@ -59,12 +60,12 @@ def sample_changed(
         feature_dicts,
         samples_json_dict,
         sample_stats,
-        feature_id,
-        feature_index
+        session['active_feature_id'],
+        session['active_feature_index']
     )
     network, cytoscape_message = generate_cyto_elements(
         samplename,
-        feature_id,
+        session['active_feature_id'],
         feature_dicts,
         sample_stats,
     )
@@ -92,7 +93,7 @@ def feature_changed(
     sample_stats: dict,
     vis_features: str
 ):
-    """ Call all functions that need updating when a new feature was selected,
+    """ Call all functions that need updating when a new feature was selected,\n
     depending on where the feature was selected (chromatogram or network-graph)
 
     Parameters
@@ -117,21 +118,25 @@ def feature_changed(
     samplename = req['sample'][1]
     resp = {}
     if 'featIndex' in req:  # feature was selected in the chromatogram
-        feature_index = int(req['featIndex'])
-        feature_id = samples_json_dict[samplename]['feature_ID'][feature_index]
+        session['active_feature_index'] = int(req['featIndex'])
+        session['active_feature_id'] = int(
+            samples_json_dict[samplename]
+                             ['feature_ID']
+                             [session['active_feature_index']]
+        )
 
     else:  # feature was selected in the cytoscape graph
-        feature_id = int(req['featID'])
+        session['active_feature_id'] = int(req['featID'])
         samples_df = samples_json_dict[samplename]
         try:
-            feature_index = int(samples_df.index[
-                samples_df.feature_ID == feature_id
+            session['active_feature_index'] = int(samples_df.index[
+                samples_df.feature_ID == session['active_feature_id']
             ][0])
         except IndexError:  # selected feature is not in the active sample
             return resp
     chromatogram = plot_central_chrom(
         samplename,
-        feature_index,
+        session['active_feature_index'],
         sample_stats,
         samples_json_dict,
         feature_dicts,
@@ -139,8 +144,8 @@ def feature_changed(
     )
     clique_chrom = plot_clique_chrom(
         samplename,
-        feature_index,
-        feature_id,
+        session['active_feature_index'],
+        session['active_feature_id'],
         sample_stats,
         samples_json_dict,
         feature_dicts,
@@ -150,12 +155,12 @@ def feature_changed(
         feature_dicts,
         samples_json_dict,
         sample_stats,
-        feature_id,
-        feature_index,
+        session['active_feature_id'],
+        session['active_feature_index'],
     )
     network, cytoscape_message = generate_cyto_elements(
             samplename,
-            feature_id,
+            session['active_feature_id'],
             feature_dicts,
             sample_stats,
         )
@@ -166,4 +171,5 @@ def feature_changed(
         "network": network,
         "cytoscapeMessage": json.dumps(cytoscape_message),
     })
+
     return resp

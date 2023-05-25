@@ -7,6 +7,7 @@ from flask import (
     render_template,
     request,
     send_from_directory,
+    session,
     url_for,
 )
 from fermo.__version__ import __version__
@@ -205,9 +206,10 @@ def example(version=__version__):
 
         if request.method == 'GET':
             # hardcode some variables to display as default
+            session['vis_features'] = 'ALL'
             samplename = list(samples_dict)[0]
-            active_feature_index = None
-            active_feature_id = None
+            session['active_feature_index'] = None
+            session['active_feature_id'] = None
             nodedata = {}
             edgedata = {}
 
@@ -224,16 +226,16 @@ def example(version=__version__):
             )
             chromatogram = plot_central_chrom(
                 samplename,
-                active_feature_index,
+                session['active_feature_index'],
                 sample_stats,
                 samples_json_dict,
                 feature_dicts,
-                "ALL",
+                session['vis_features'],
             )
             clique_chromatogram = plot_clique_chrom(
                 samplename,
-                active_feature_index,
-                active_feature_index,
+                session['active_feature_index'],
+                session['active_feature_id'],
                 sample_stats,
                 samples_json_dict,
                 feature_dicts,
@@ -243,12 +245,12 @@ def example(version=__version__):
                 feature_dicts,
                 samples_json_dict,
                 sample_stats,
-                active_feature_id,
-                active_feature_index
+                session['active_feature_id'],
+                session['active_feature_index']
             )
             network, cytoscape_message = generate_cyto_elements(
                 samplename,
-                active_feature_id,
+                session['active_feature_id'],
                 feature_dicts,
                 sample_stats,
             )
@@ -277,40 +279,54 @@ def example(version=__version__):
 
         else:  # method == 'POST'
             req = request.get_json()
-            vis_features = "ALL"  # should be taken from response: User
-            # selection from filter panel "Visualize features" radio buttons
-
-            # parse the request
-            if req['sample'][0]:  # i.e. if sample has changed
-                resp = sample_changed(
-                    req,
+            if 'featureVisualizationOptions' in req:
+                print('samples dict', list(samples_dict.keys())[1])
+                samplename = list(samples_dict.keys())[1]
+                session['vis_features'] = req['featureVisualizationOptions']
+                chromatogram = plot_central_chrom(
+                    samplename,
+                    session['active_feature_index'],
                     sample_stats,
                     samples_json_dict,
                     feature_dicts,
-                    vis_features,
+                    session['vis_features'],
                 )
+                print('new vis_features: ', session['vis_features'])
 
-            elif req['featChanged']:  # i.e. there is an active feature
-                resp = feature_changed(
-                    req,
-                    feature_dicts,
-                    samples_json_dict,
-                    sample_stats,
-                    vis_features,
-                )
-            else:
-                try:
-                    edge_data = req['edgeData']
-                except KeyError:
-                    try:
-                        node_data = req['nodeData']
-                    except KeyError:
-                        resp = {}
-                    else:
-                        resp = collect_nodedata(node_data, feature_dicts)
+                resp = {
+                    "chromatogram": chromatogram,
+                }
+            elif 'sample' in req:
+                # parse the request
+                if req['sample'][0]:  # i.e. if sample has changed
+                    resp = sample_changed(
+                        req,
+                        sample_stats,
+                        samples_json_dict,
+                        feature_dicts,
+                        session['vis_features'],
+                    )
+
+                elif req['featChanged']:  # i.e. there is an active feature
+                    resp = feature_changed(
+                        req,
+                        feature_dicts,
+                        samples_json_dict,
+                        sample_stats,
+                        session['vis_features'],
+                    )
                 else:
-                    resp = collect_edgedata(edge_data)
-
+                    try:
+                        edge_data = req['edgeData']
+                    except KeyError:
+                        try:
+                            node_data = req['nodeData']
+                        except KeyError:
+                            resp = {}
+                        else:
+                            resp = collect_nodedata(node_data, feature_dicts)
+                    else:
+                        resp = collect_edgedata(edge_data)
             return resp
 
     else:  # data could not be loaded

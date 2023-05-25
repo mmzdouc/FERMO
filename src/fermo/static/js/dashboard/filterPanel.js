@@ -1,3 +1,5 @@
+import { plotMainChromatogram } from './chromatogram.js'
+
 /**
  * Add event listeners to the form and its input elements
  */
@@ -25,24 +27,28 @@ export function filterFeatures() {
             }
         })
     }
-    // add event listener to the form which handles the submit
+    // add event listener which handles the submit to the form
     filterForm.addEventListener('submit', function(evt) {
         evt.preventDefault()
         if (document.valuesChanged) { // only submit if values were changed
             let formData = new FormData(filterForm)
+            /* sending as regular form data causes an error with flask,
+             so use json as workaround */
             formData = JSON.stringify(Object.fromEntries(formData))
             fetch(window.location.href, {
                 method: 'POST',
                 body: formData,
                 headers: new Headers({
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json' 
                 })
             })
             .then(function (response) {
                 if (response.ok) {
                     response.json()
                     .then(function (data) {
-                        console.log('fetched data in filterPanel.js', data)
+                        const chromatogram = JSON.parse(data.chromatogram)
+
+                        plotMainChromatogram(chromatogram)
                     })
                 } else {
                     console.log(
