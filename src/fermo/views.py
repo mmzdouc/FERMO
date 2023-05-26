@@ -114,7 +114,7 @@ def inspect_uploaded_file(filename, version=__version__):
 
     Parameters
     ----------
-    filename: `str`
+    filename: `str`\n
     version: `str`
 
     Returns
@@ -162,17 +162,11 @@ def inspect_uploaded_file(filename, version=__version__):
 
 @views.route("/processing", methods=['GET', 'POST'])
 def processing(version=__version__):
-    if request.method == 'POST':
-        filename = save_file([
-            'peaktableFile',
-            'MSMSFile',
-            'quantDataFile',
-            'MetadataFile',
-            'spectralLibraryFile',
-        ])
-        if filename:
-            pass
-    return render_template('processing.html', version=version)
+    '''Render processing page'''
+    if request.method == 'GET':
+        return render_template('processing.html', version=version)
+    else:
+        return redirect(url_for('views.example'))
 
 
 @views.route("/dashboard", methods=['GET', 'POST'])
@@ -186,7 +180,18 @@ def dashboard(version=__version__):
 
 @views.route("/uploads/<path:filename>")
 def download(filename):
-    ''' Route to download files that were saved on the server'''
+    ''' Route to download files that were saved on the server
+
+    Parameters
+    ----------
+    filename: `str`
+        name of the file to be downloaded
+
+    Notes
+    -----
+    Utility route for the dashboard page, when user want to download the
+    session file
+    '''
     upload_folder = join(
         current_app.root_path,
         current_app.config.get('UPLOAD_FOLDER')
@@ -196,7 +201,31 @@ def download(filename):
 
 @views.route("/example", methods=['GET', 'POST'])
 def example(version=__version__):
-    '''Example dashboard'''
+    '''Example dashboard
+
+    Parameters
+    ----------
+    version: `str`
+
+    Returns
+    -------
+    `str`
+        html for the browser to render
+    or `flask.wrappers.Response`
+        response for the browser to handle after fetch
+
+    Notes
+    -----
+    Displays the dashboard with example data. If a request is received,
+    (user clicks on something), the request is handled depending on what was
+    clicked.
+    There are three major types of requests:
+    - filters were applied
+    - a sample was selected
+    - a feature was selected\n
+    Each call a respective function in route_utils/route_dashboard.py to handle
+    the request appropriately.
+    '''
     data = load_sessionFile('example_data/FERMO_session.json')
     if data:
         (sample_stats,

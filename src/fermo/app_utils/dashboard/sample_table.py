@@ -80,11 +80,11 @@ def get_samples_overview(
 
     Parameters
     ----------
-    sample_stats: `dict`
-    samples_json_dict: `dict`
-    samples_dict: `dict`
-    feature_dicts: `dict`
-    thresholds: `dict`
+    sample_stats: `dict`\n
+    samples_json_dict: `dict`\n
+    samples_dict: `dict`\n
+    feature_dicts: `dict`\n
+    thresholds: `dict`\n
 
     Returns
     -------
@@ -153,8 +153,8 @@ def calc_selected_networks(
 
     Parameters
     ----------
-    sample: `str`
-    filtered_samples: `dict`
+    sample: `str`\n
+    filtered_samples: `dict`\n
     feature_dicts: `dict`
 
     Returns
@@ -178,7 +178,7 @@ def calc_diversity_score(
 
     Parameters
     ----------
-    sample: `str`
+    sample: `str`\n
     sample_stats: `dict`
 
     Returns
