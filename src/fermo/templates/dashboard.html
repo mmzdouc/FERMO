@@ -368,6 +368,8 @@
 <script>
     // load data
     sampleName = {{ samplename | tojson | safe }};  // sample name
+    general_sample_table = {{ general_sample_table | safe }};  // sample stats table
+    specific_sample_table = {{ specific_sample_table | safe }};  // sample overview table
     graph = {{ graphJSON | safe }};  // chromatogram
     cliqueChrom = {{ cliqueChromJSON | safe }};  // clique chromatogram
     network = {{ networkJSON | safe }};  // cytoscape network

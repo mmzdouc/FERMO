@@ -10,12 +10,6 @@ export function selectRows(){
     const allRows = document.querySelectorAll('#selectSample tr')
 
     for (let i=1; i<allRows.length; i++){
-        // get sample identifier (i.e. the filename of each sample)
-        const sample = allRows[i].innerText.split('\t')[0]
-
-        // set an attribute 'data-value' for each row to its sample name
-        allRows[i].setAttribute('data-value', sample) 
-
         // add clickEvent listener to each row
         allRows[i].addEventListener('click', function(e){
             window.sampleName = this.getAttribute('data-value')

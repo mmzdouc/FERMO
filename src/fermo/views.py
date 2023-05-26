@@ -223,8 +223,8 @@ def example(version=__version__):
     - filters were applied
     - a sample was selected
     - a feature was selected\n
-    Each call a respective function in route_utils/route_dashboard.py to handle
-    the request appropriately.
+    Each request calls a separate function in route_utils/route_dashboard.py
+    to be handled appropriately.
     '''
     data = load_sessionFile('example_data/FERMO_session.json')
     if data:

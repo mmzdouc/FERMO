@@ -8,7 +8,11 @@
  * 
  * @notes
  * Variables are only called featureSomething because the function was 
- * originally only intended for the feature table
+ * originally only intended for the feature table.
+ * 
+ * Relies on the template to already have a table body. If the macros in
+ * dashboard.html are removed, it must be modified to create a table body from
+ * scratch
  */
 export function updateTable(featureTable, selector){
     let featureArray = []
@@ -24,11 +28,17 @@ export function updateTable(featureTable, selector){
     if (typeof(featureArray[0]) == 'object'){
         for (let row of featureArray){
             let rowElem = document.createElement('tr')
+            rowElem.setAttribute('data-value', row[0])
             for (let cell of row){
                 let dataElem = document.createElement('td')
                 if (cell == '-----'){
                     dataElem.classList.add('p-0')
                     dataElem.innerHTML = '<hr>'
+                } else if (selector == '#sampleOverviewTable tbody' && typeof(cell) == 'string' && cell.length > 20){
+                    console.log('in featureTable.js: string was long')
+                    cell = cell.slice(0, 16) + '...'
+                    dataElem.classList.add('p-1')
+                    dataElem.innerHTML = cell
                 } else {
                     dataElem.classList.add('p-1')
                     dataElem.innerHTML = cell
@@ -38,7 +48,7 @@ export function updateTable(featureTable, selector){
             tableBody.append(rowElem)
         }
     }
-    else {
+    else { // featureArray contains numbers like in sample stats table
         let rowElem = document.createElement('tr')
         for (let cell of featureArray){
             let dataElem = document.createElement('td')
