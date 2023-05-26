@@ -18,13 +18,22 @@ def read_threshold_values(
     # extract data from request
     blank_designation_toggle = req['BlankFeaturesOptions']
     novelty_threshold = [float(req['fromNovelty']), float(req['toNovelty'])]
-    rel_intensity_threshold = [float(req['fromRelInt']), float(req['toRelInt'])]
+    rel_intensity_threshold = [
+        float(req['fromRelInt']),
+        float(req['toRelInt'])
+    ]
     peak_overlap_threshold = [float(req['fromPeak']), float(req['toPeak'])]
     bioactivity_threshold = req['quantDataAssociation']
     filter_adduct_isotopes = req['adductSearch']
     filter_annotation = req['annotationSearch']
-    filter_feature_id = req['featureIdSearch']
-    filter_spectral_sim_netw = req['specNetIdSearch']
+    try:
+        filter_feature_id = int(req['featureIdSearch'])
+    except ValueError:
+        filter_feature_id = ''
+    try:
+        filter_spectral_sim_netw = int(req['specNetIdSearch'])
+    except ValueError:
+        filter_spectral_sim_netw = ''
     filter_group = req['groupFeatures']
     filter_group_cliques = req['groupNetworks']
     filter_samplename = req['sampleNameSearch']

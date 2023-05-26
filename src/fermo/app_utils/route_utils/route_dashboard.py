@@ -154,7 +154,7 @@ def feature_changed(
     sample_stats: dict,
     vis_features: str,
 ) -> dict:
-    """ Call all functions that need updating when a new feature was selected,\n
+    """Call all functions that need updating when a new feature was selected,\n
     depending on where the feature was selected (chromatogram or network-graph)
 
     Parameters

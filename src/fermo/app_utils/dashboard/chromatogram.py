@@ -4,7 +4,6 @@ import pandas as pd
 import plotly
 import plotly.graph_objects as go
 from fermo.app_utils.dashboard.dashboard_functions import (
-    default_filters,
     generate_subsets,
 )
 
