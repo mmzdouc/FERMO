@@ -1,9 +1,14 @@
 
 /**
- * Update the feature table: remove the old table and loop over the content of
- * the new featureTable to create the new one with correct formatting.
+ * Update the table: remove the old table and loop over the content of
+ * the new table to create the new one with correct formatting.
  *
- * @param {string} featureTable 
+ * @param {string|object} featureTable
+ * @param {string} selector - css selector for the table body
+ * 
+ * @notes
+ * Variables are only called featureSomething because the function was 
+ * originally only intended for the feature table
  */
 export function updateTable(featureTable, selector){
     let featureArray = []
@@ -15,18 +20,30 @@ export function updateTable(featureTable, selector){
     let tableBody = document.querySelector(selector)
     // remove old table
     tableBody.replaceChildren()
-    // create new table
-    for (let row of featureArray){
-        let rowElem = document.createElement('tr')
-        for (let cell of row){
-            let dataElem = document.createElement('td')
-            if (cell == '-----'){
-                dataElem.classList.add('p-0')
-                dataElem.innerHTML = '<hr>'
-            } else {
-                dataElem.classList.add('p-1')
-                dataElem.innerHTML = cell
+    // create new table but check if it contains objects or numbers
+    if (typeof(featureArray[0]) == 'object'){
+        for (let row of featureArray){
+            let rowElem = document.createElement('tr')
+            for (let cell of row){
+                let dataElem = document.createElement('td')
+                if (cell == '-----'){
+                    dataElem.classList.add('p-0')
+                    dataElem.innerHTML = '<hr>'
+                } else {
+                    dataElem.classList.add('p-1')
+                    dataElem.innerHTML = cell
+                }
+                rowElem.append(dataElem)
             }
+            tableBody.append(rowElem)
+        }
+    }
+    else {
+        let rowElem = document.createElement('tr')
+        for (let cell of featureArray){
+            let dataElem = document.createElement('td')
+            dataElem.classList.add('p-1')
+            dataElem.innerHTML = cell
             rowElem.append(dataElem)
         }
         tableBody.append(rowElem)

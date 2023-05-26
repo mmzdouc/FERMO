@@ -1,7 +1,6 @@
 from statistics import StatisticsError, mean
 
 from fermo.app_utils.dashboard.dashboard_functions import (
-    default_filters,
     generate_subsets,
 )
 
@@ -10,6 +9,7 @@ def get_samples_statistics(
     samples_json_dict: dict,
     samples_dict: dict,
     feature_dicts: dict,
+    thresholds: dict,
 ) -> list:
     '''Generate list of lists for sample stats
 
@@ -18,6 +18,7 @@ def get_samples_statistics(
     samples_json_dict: `dict`
     samples_dict: `dict`
     feature_dicts: `dict`
+    thresholds: `dict`
 
     Returns
     -------
@@ -36,7 +37,7 @@ def get_samples_statistics(
         filtered_samples[sample] = generate_subsets(
             samples_json_dict,
             sample,
-            default_filters(),
+            thresholds,
             feature_dicts
         )
         # find samples with certain characteristics, e.g. nonblank, among the
@@ -73,6 +74,7 @@ def get_samples_overview(
     samples_json_dict: dict,
     samples_dict: dict,
     feature_dicts: dict,
+    thresholds: dict,
 ) -> list:
     '''Generate list of lists for sample overview
 
@@ -82,6 +84,7 @@ def get_samples_overview(
     samples_json_dict: `dict`
     samples_dict: `dict`
     feature_dicts: `dict`
+    thresholds: `dict`
 
     Returns
     -------
@@ -94,7 +97,7 @@ def get_samples_overview(
         filtered_samples[sample] = generate_subsets(
             samples_json_dict,
             sample,
-            default_filters(),
+            thresholds,
             feature_dicts
         )
         sample_row = [sample]

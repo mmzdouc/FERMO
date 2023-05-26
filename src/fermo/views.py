@@ -23,6 +23,7 @@ from fermo.app_utils.input_testing import (
 )
 from fermo.app_utils.dashboard.dashboard_functions import (
     access_loaded_data,
+    default_filters,
     load_sessionFile,
 )
 from fermo.app_utils.dashboard.chromatogram import (
@@ -39,6 +40,7 @@ from fermo.app_utils.dashboard.sample_table import (
 from fermo.app_utils.dashboard.cytoscape_graph import stylesheet_cytoscape
 from fermo.app_utils.route_utils.route_dashboard import (
     feature_changed,
+    filters_changed,
     sample_changed,
 )
 
@@ -210,6 +212,7 @@ def example(version=__version__):
             session['vis_features'] = 'ALL'
             session['active_feature_index'] = None
             session['active_feature_id'] = None
+            session['thresholds'] = default_filters()
             nodedata = {}
             edgedata = {}
 
@@ -217,12 +220,14 @@ def example(version=__version__):
                 samples_json_dict,
                 samples_dict,
                 feature_dicts,
+                session['thresholds'],
             )
             sample_overview_table = get_samples_overview(
                 sample_stats,
                 samples_json_dict,
                 samples_dict,
                 feature_dicts,
+                session['thresholds'],
             )
             chromatogram = plot_central_chrom(
                 session['samplename'],
@@ -231,6 +236,7 @@ def example(version=__version__):
                 samples_json_dict,
                 feature_dicts,
                 session['vis_features'],
+                session['thresholds']
             )
             clique_chromatogram = plot_clique_chrom(
                 session['samplename'],
@@ -279,20 +285,15 @@ def example(version=__version__):
 
         else:  # method == 'POST'
             req = request.get_json()
-            if 'featureVisualizationOptions' in req:
-                session['vis_features'] = req['featureVisualizationOptions']
-                chromatogram = plot_central_chrom(
-                    session['samplename'],
-                    session['active_feature_index'],
+            if 'featureVisualizationOptions' in req:  # filters were used
+                resp = filters_changed(
+                    req,
                     sample_stats,
                     samples_json_dict,
                     feature_dicts,
-                    session['vis_features'],
+                    samples_dict,
                 )
 
-                resp = {
-                    "chromatogram": chromatogram,
-                }
             elif 'sample' in req:
                 # parse the request
                 if req['sample'][0]:  # i.e. if sample has changed

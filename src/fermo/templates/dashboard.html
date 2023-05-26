@@ -31,8 +31,8 @@
                     </h2>
                     <div id="sampleTable" class="accordion-collapse collapse show" aria-labelledby="sampleTableHeader">
                         <div class="accordion-body overflow-auto">
-                            {{ display_table(general_sample_table, ['Nr of samples', 'Nr of features', 'Selected features', 'Selected networks', 'Non-blank', 'Blank & MS1']) }}
-                            {{ display_table(specific_sample_table, ['Filename', 'Group', 'Selected features', 'Selected networks', 'Diversity-score', 'Spec score', 'Mean novelty score', 'Total', 'Non-blank', 'Blank & MS1'], 'selectSample') }}
+                            <div id="generalSampleTable"> {{ display_table(general_sample_table, ['Nr of samples', 'Nr of features', 'Selected features', 'Selected networks', 'Non-blank', 'Blank & MS1']) }} </div>
+                            <div id="sampleOverviewTable"> {{ display_table(specific_sample_table, ['Filename', 'Group', 'Selected features', 'Selected networks', 'Diversity-score', 'Spec score', 'Mean novelty score', 'Total', 'Non-blank', 'Blank & MS1'], 'selectSample') }} </div>
                         </div>
                     </div>
                 </div>
@@ -94,7 +94,7 @@
                                     </label>
                                     <div id="blankFeatureRadio">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="BlankFeaturesOptions" id="designateBlank" value="Designate" checked>
+                                            <input class="form-check-input" type="radio" name="BlankFeaturesOptions" id="designateBlank" value="DESIGNATE" checked>
                                             <label class="form-check-label" for="designateBlank">DESIGNATE</label>
                                         </div>
                                         <div class="form-check form-check-inline">
@@ -166,15 +166,15 @@
                                     </label>
                                     <div id="quantDataAssociationRadio">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="quantDataAssociation" id="notQuantDataAssociated" value="NotAssociated" checked>
+                                            <input class="form-check-input" type="radio" name="quantDataAssociation" id="notQuantDataAssociated" value="OFF" checked>
                                             <label class="form-check-label" for="notQuantDataAssociated">OFF</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="quantDataAssociation" id="quantDataSpecificity" value="Specificity">
+                                            <input class="form-check-input" type="radio" name="quantDataAssociation" id="quantDataSpecificity" value="SPECIFICITY">
                                             <label class="form-check-label" for="quantDataSpecificity">SPECIFICITY</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="quantDataAssociation" id="quantDataSpecTrend" value="SpecTrend">
+                                            <input class="form-check-input" type="radio" name="quantDataAssociation" id="quantDataSpecTrend" value="SPEC.+TREND">
                                             <label class="form-check-label" for="quantDataSpecTrend">SPEC.+TREND</label>
                                         </div>
                                     </div>

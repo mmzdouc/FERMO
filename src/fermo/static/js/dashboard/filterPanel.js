@@ -1,5 +1,6 @@
 import { plotMainChromatogram } from './chromatogram.js'
 import { updateTable } from './featureTable.js'
+import { selectRows } from './sampleTable.js'
 
 /**
  * Add event listeners to the form and its input elements
@@ -48,13 +49,14 @@ export function filterFeatures() {
                     response.json()
                     .then(function (data) {
                         const chromatogram = JSON.parse(data.chromatogram)
-                        const sampleStatsArray = JSON.parse(data.sample_stats_table)
-                        const sampleOverviewArray = JSON.parse(data.sample_overview_table)
+                        const sampleStatsList = JSON.parse(data.sample_stats_table)
+                        const sampleOverviewList = JSON.parse(data.sample_overview_table)
 
 
                         plotMainChromatogram(chromatogram)
-                        updateTable(sampleStatsArray, )
-                        updateTable(sampleOverviewArray, )
+                        updateTable(sampleStatsList, '#generalSampleTable tbody')
+                        updateTable(sampleOverviewList, '#sampleOverviewTable tbody')
+                        selectRows()  // reinitialize event listeners for sample table
                     })
                 } else {
                     console.log(

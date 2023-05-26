@@ -18,6 +18,7 @@ def plot_central_chrom(
     samples_json_dict: dict,
     feature_dicts: dict,
     sel_all_vis: str,
+    thresholds: dict,
 ) -> str:
     '''Plot central chromatogram
 
@@ -28,7 +29,8 @@ def plot_central_chrom(
     sample_stats: `dict`\n
     samples_json_dict: `dict`\n
     feature_dicts: `dict`\n
-    sel_all_vis: `str`
+    sel_all_vis: `str`\n
+    thresholds: `dict`
 
     Returns
     -------
@@ -63,7 +65,7 @@ def plot_central_chrom(
         filtered_samples[sample] = generate_subsets(
             samples_json_dict,
             sample,
-            default_filters(),
+            thresholds,
             feature_dicts
         )
     for _, row in samples_json_dict[sel_sample].iterrows():

@@ -10,10 +10,66 @@ from fermo.app_utils.dashboard.cytoscape_graph import (
     collect_nodedata,
     generate_cyto_elements,
 )
+from fermo.app_utils.dashboard.filter_panel import read_threshold_values
+from fermo.app_utils.dashboard.sample_table import (
+    get_samples_overview,
+    get_samples_statistics,
+)
 
 
-def filters_changed():
-    pass
+def filters_changed(
+    req: dict,
+    sample_stats: dict,
+    samples_json_dict: dict,
+    feature_dicts: dict,
+    samples_dict: dict,
+) -> dict:
+    ''' Call all functions that need updating when user changes filter settings
+
+    Parameters
+    ----------
+    req: `dict`
+        as returned by request.get_json()
+    sample_stats: `dict`\n
+    samples_json_dict: `dict`\n
+    feature_dicts: `dict`\n
+    samples_dict: `dict`\n
+
+    Returns
+    -------
+    resp: `dict`
+    '''
+    session['thresholds'] = read_threshold_values(req)
+    session['vis_features'] = req['featureVisualizationOptions']
+    chromatogram = plot_central_chrom(
+        session['samplename'],
+        session['active_feature_index'],
+        sample_stats,
+        samples_json_dict,
+        feature_dicts,
+        session['vis_features'],
+        thresholds=session['thresholds'],
+    )
+    general_sample_table = get_samples_statistics(
+        samples_json_dict,
+        samples_dict,
+        feature_dicts,
+        session['thresholds'],
+    )
+    sample_overview_table = get_samples_overview(
+        sample_stats,
+        samples_json_dict,
+        samples_dict,
+        feature_dicts,
+        session['thresholds'],
+    )
+
+    resp = {
+        "chromatogram": chromatogram,
+        'sample_stats_table': json.dumps(general_sample_table),
+        'sample_overview_table': json.dumps(sample_overview_table),
+    }
+    return resp
 
 
 def sample_changed(
@@ -29,14 +85,14 @@ def sample_changed(
     ----------
     req: `dict`
         as returned by request.get_json()
-    sample_stats: `dict`
-    samples_json_dict: `dict`
-    feature_dicts: `dict`
-    vis_features: `str`
+    sample_stats: `dict`\n
+    samples_json_dict: `dict`\n
+    feature_dicts: `dict`\n
+    vis_features: `str`\n
 
     Returns
     -------
-    response: `dict`
+    resp: `dict`
     """
     session['samplename'] = req['sample'][1]
     session['active_feature_index'] = None
@@ -50,6 +106,7 @@ def sample_changed(
         samples_json_dict,
         feature_dicts,
         vis_features,
+        session['thresholds'],
     )
     clique_chrom = plot_clique_chrom(
         session['samplename'],
@@ -78,7 +135,7 @@ def sample_changed(
         feature_dicts,
     )
     edge_table = collect_edgedata(edgedata)
-    response = {
+    resp = {
         "chromatogram": chromatogram,
         "cliqueChrom": clique_chrom,
         "featTable": str(feature_table),
@@ -87,7 +144,7 @@ def sample_changed(
         "nodeTable": json.dumps(node_table),
         "edgeTable": json.dumps(edge_table)
     }
-    return response
+    return resp
 
 
 def feature_changed(
@@ -95,7 +152,7 @@ def feature_changed(
     feature_dicts: dict,
     samples_json_dict: dict,
     sample_stats: dict,
-    vis_features: str
+    vis_features: str,
 ) -> dict:
     """ Call all functions that need updating when a new feature was selected,\n
     depending on where the feature was selected (chromatogram or network-graph)
@@ -104,14 +161,14 @@ def feature_changed(
     ----------
     req: `dict`
         as returned by request.get_json()
-    feature_dicts: `dict`
-    samples_json_dict: `dict`
-    sample_stats: `dict`
-    vis_features: `str`
+    feature_dicts: `dict`\n
+    samples_json_dict: `dict`\n
+    sample_stats: `dict`\n
+    vis_features: `str`\n
 
     Returns
     -------
-    response: `dict`
+    resp: `dict`
 
     Notes
     -----
@@ -145,6 +202,7 @@ def feature_changed(
         samples_json_dict,
         feature_dicts,
         vis_features,
+        session['thresholds'],
     )
     clique_chrom = plot_clique_chrom(
         session['samplename'],
@@ -154,7 +212,7 @@ def feature_changed(
         samples_json_dict,
         feature_dicts,
     )
-    feature_table = update_feature_table(  # convert to string to avoid bug
+    feature_table = update_feature_table(
         session['samplename'],
         feature_dicts,
         samples_json_dict,
@@ -171,7 +229,7 @@ def feature_changed(
     resp.update({
         "chromatogram": chromatogram,
         "cliqueChrom": clique_chrom,
-        "featTable": str(feature_table),
+        "featTable": str(feature_table),  # convert to string to avoid bug
         "network": network,
         "cytoscapeMessage": json.dumps(cytoscape_message),
     })
