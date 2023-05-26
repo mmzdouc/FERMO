@@ -193,6 +193,10 @@ td hr {
     margin: 0.6rem 0;
 }
 
+#featureTable td {
+    overflow-wrap: break-word;
+}
+
 
 /* Specific elements */
 #loading-button{
