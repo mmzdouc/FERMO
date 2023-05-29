@@ -193,6 +193,13 @@ td hr {
     margin: 0.6rem 0;
 }
 
+#sampleOverviewTable td {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 #featureTable td {
     overflow-wrap: break-word;
 }

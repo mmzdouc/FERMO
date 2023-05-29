@@ -236,7 +236,7 @@ def example(version=__version__):
         cyto_stylesheet = stylesheet_cytoscape()
 
         if request.method == 'GET':
-            # hardcode some variables to display as default
+            # set default variables
             session['samplename'] = list(samples_dict)[0]
             session['vis_features'] = 'ALL'
             session['active_feature_index'] = None

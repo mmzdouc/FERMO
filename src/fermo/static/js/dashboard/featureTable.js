@@ -1,10 +1,11 @@
+import { bulletList } from './cytoscapeGraph.js'
 
 /**
  * Update the table: remove the old table and loop over the content of
  * the new table to create the new one with correct formatting.
  *
- * @param {string|object} featureTable
- * @param {string} selector - css selector for the table body
+ * @param {string|object} featureTable the string containing the actual content
+ * @param {string} selector css selector for the table body
  * 
  * @notes
  * Variables are only called featureSomething because the function was 
@@ -28,17 +29,11 @@ export function updateTable(featureTable, selector){
     if (typeof(featureArray[0]) == 'object'){
         for (let row of featureArray){
             let rowElem = document.createElement('tr')
-            rowElem.setAttribute('data-value', row[0])
             for (let cell of row){
                 let dataElem = document.createElement('td')
                 if (cell == '-----'){
                     dataElem.classList.add('p-0')
                     dataElem.innerHTML = '<hr>'
-                } else if (selector == '#sampleOverviewTable tbody' && typeof(cell) == 'string' && cell.length > 20){
-                    console.log('in featureTable.js: string was long')
-                    cell = cell.slice(0, 16) + '...'
-                    dataElem.classList.add('p-1')
-                    dataElem.innerHTML = cell
                 } else {
                     dataElem.classList.add('p-1')
                     dataElem.innerHTML = cell
@@ -93,4 +88,70 @@ function tableStringToArray(featureTable){
         featureArray.push(row)
     }
     return featureArray
+}
+
+
+/**
+ * Create/update sampleOverview Table with tooltips and data-values
+ * 
+ * @param {Array} content
+ */
+export function sampleOverviewTable(content){
+    let tableHead = document.querySelector('#sampleOverviewTable thead')
+    let tableBody = document.querySelector('#sampleOverviewTable tbody')
+    // "empty" the table
+    tableHead.replaceChildren()
+    tableBody.replaceChildren()
+    
+    // create tablehead
+    tableHead.setAttribute('class', 'align-middle')
+    const headrow = document.createElement('tr')
+    const cols = ['Filename', 'Group', 'Selected features', 'Selected networks']
+    for (let i=0; i<cols.length; i++){
+        let th = document.createElement('th')
+        th.setAttribute('scope', 'col')
+        th.classList.add('py-1')
+        th.innerHTML = cols[i]
+        headrow.append(th)
+    }
+    tableHead.append(headrow)
+
+    // create tablebody
+    const sampleInfoDescriptors = [
+        'Filename',
+        'Diversity-score',
+        'Spec score',
+        'Mean novelty score',
+        'Total',
+        'Non-blank',
+        'Blank & MS1'
+    ]
+    for (let i=0; i<content.length; i++){
+        let row = content[i]
+        // assemble content for the 'tooltip'
+        let sampleInfoData = row.slice(4)
+        sampleInfoData.unshift(row[0])
+        let zipped = sampleInfoDescriptors.map((x, i) => [x, sampleInfoData[i]])
+        let sampleInfoContent = bulletList(zipped).outerHTML
+        let rowElem = document.createElement('tr')
+
+        rowElem.setAttribute('data-value', row[0])
+        // set attributes for the 'tooltip' to work
+        rowElem.setAttribute('data-bs-toggle', 'tooltip')
+        rowElem.setAttribute('data-bs-html', 'true')
+        rowElem.setAttribute('data-bs-title', sampleInfoContent)
+        rowElem.setAttribute('data-bs-placement', 'right')
+        rowElem.setAttribute('data-bs-custom-class', 'custom-tooltip')
+
+        // fill table cells with content
+        for (let j=0; j<4; j++){
+            let dataElem = document.createElement('td')
+            dataElem.classList.add('p-1')
+            dataElem.innerHTML = row[j]
+            rowElem.append(dataElem)
+        }
+        tableBody.append(rowElem)
+    }
+    // initiate the new tooltips
+    initiateTooltips()
 }
