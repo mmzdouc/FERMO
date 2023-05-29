@@ -184,16 +184,30 @@ function createPopover(data){
     const popoverBody = document.createElement('div')
     popoverBody.classList.add('card-body')
 
+    const content = bulletList(data)
+    popoverBody.append(content)
+
+    popover.append(popoverHeader, popoverBody)
+    cytoDiv.append(popover)
+
+    return popover
+}
+
+/**
+ * Create an unordered list from nested Array
+ * 
+ * @param {Array} data - Array of Arrays with content
+ * e.g. [['Description1', 'value1'], ['Description2', 'value2']]
+ * 
+ * @returns
+ * HTML ul-element
+ */
+export function bulletList(data){
     const bulletList = document.createElement('ul')
     for (let row of data){
         let bulletPoint = document.createElement('li')
         bulletPoint.innerHTML = `${row[0]}: ${row[1]}`
         bulletList.append(bulletPoint)
     }
-    popoverBody.append(bulletList)
-
-    popover.append(popoverHeader, popoverBody)
-    cytoDiv.append(popover)
-
-    return popover
+    return bulletList
 }
