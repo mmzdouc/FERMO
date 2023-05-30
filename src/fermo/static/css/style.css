@@ -77,6 +77,11 @@ body {
     font-weight: bold;
 }
 
+.btn-primary:disabled, .btn-primary.disabled {
+    background-color: #297695;
+    border-color: #297695;
+}
+
 input[type="file"]::file-selector-button {
     background-color: #116789;
     color: white;
