@@ -67,8 +67,11 @@
                                 </a>
                             </div>
                             <hr>
-                            <h6>Set filters for cutoff and press enter:</h6>
-                            <form class="d-grid gap-2 me-2">
+                            <div class="d-flex">
+                                <h6 class="my-auto fw-bold">Set filters for cutoff</h6>
+                                <button type="submit" class="btn btn-sm btn-primary ms-md-3" form="filterForm">Apply</button>
+                            </div>
+                            <form id=filterForm class="d-grid gap-2 me-2 mt-2">
                                 <div id="featureVisibility">
                                     <label for="feature-visualization-radio" class="form-label">Visualize features
                                         {{ dashboard_tooltip("Toggles visualization of features in chromatogram. 'ALL' shows all features, 'SELECTED', shows only the currently selected features and grays out the remainder. 'HIDDEN' completely masks out the non-selected features. For more information, click the info-button to access the docs.") }}
@@ -260,7 +263,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input type="submit" hidden>
                             </form>
                             <div class="col-xl-11">
                                 <hr>

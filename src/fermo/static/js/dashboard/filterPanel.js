@@ -10,25 +10,13 @@ export function filterFeatures() {
     let inputElems = filterForm.querySelectorAll('input')
     document.valuesChanged = false
 
-    // add event listeners to all input elements
+    // track if any input element was changed
     for (let i = 0; i < inputElems.length; i++) {
         inputElems[i].addEventListener('change', function(evt) {
             document.valuesChanged = true
         })
-
-        inputElems[i].addEventListener('focusout', function(evt) {
-            inputElems = Array.from(inputElems)
-            let actvElem = evt.relatedTarget
-            if (inputElems.includes(actvElem)) {
-                // pass
-                // i.e. do not submit, when user clicks on another input element
-            }
-            else { // submit the form
-                filterForm.requestSubmit()
-                document.valuesChanged = false
-            }
-        })
     }
+
     // add event listener which handles the submit to the form
     filterForm.addEventListener('submit', function(evt) {
         evt.preventDefault()
@@ -51,7 +39,6 @@ export function filterFeatures() {
                         const chromatogram = JSON.parse(data.chromatogram)
                         const sampleStatsList = JSON.parse(data.sample_stats_table)
                         const sampleOverviewList = JSON.parse(data.sample_overview_table)
-
 
                         plotMainChromatogram(chromatogram)
                         sampleStatsTable(sampleStatsList)
