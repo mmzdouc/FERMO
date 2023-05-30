@@ -56,12 +56,15 @@
                     </h2>
                     <div id="filters" class="accordion-collapse collapse" aria-labelledby="filtersHeader">
                         <div class="accordion-body overflow-auto">
-                            <div class="col-8">
-                                <a class="btn btn-primary"
+                            <div class="col-8" 
+                            data-bs-toggle="tooltip"
+                            data-bs-custom-class="custom-tooltip"
+                            data-bs-placement="right"
+                            title="This feature is not availabe in this demo">
+                                <a class="btn btn-primary disabled"
                                 name="SaveSession"
                                 role="button"
                                 type="button"
-                                href="{{ url_for('views.download', filename='FERMO_session.json') }}"
                                 download>
                                     Save FERMO session file (JSON)
                                 </a>
