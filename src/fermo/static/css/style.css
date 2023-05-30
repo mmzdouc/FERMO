@@ -247,3 +247,9 @@ input[type=number]{
     margin: 0;
     padding-left: 0.3rem;
 }
+
+.tooltip-inner ul {
+    margin: 0;
+    padding-left: 0.8rem;
+    text-align: start;
+}
