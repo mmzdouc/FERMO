@@ -1,12 +1,9 @@
-from os.path import join
 from flask import (
     Blueprint,
-    current_app,
     flash,
     redirect,
     render_template,
     request,
-    send_from_directory,
     session,
     url_for,
 )
@@ -16,11 +13,7 @@ from fermo.app_utils.dashboard.cytoscape_graph import (
     collect_nodedata,
     generate_cyto_elements,
 )
-from fermo.app_utils.input_testing import (
-    save_file,
-    parse_sessionfile,
-    empty_loading_table,
-)
+
 from fermo.app_utils.dashboard.dashboard_functions import (
     access_loaded_data,
     default_filters,
@@ -50,153 +43,7 @@ views = Blueprint(__name__, "views")
 # routing
 @views.route("/")
 def landing(version=__version__):
-    return render_template('landing.html', version=version)
-
-
-@views.route("/loading", methods=['GET', 'POST'])
-def loading(version=__version__):
-    ''' Handle requests on the loading page
-
-    Parameters
-    ----------
-    version: `str`
-
-    Returns
-    -------
-    `str` or `flask.wrappers.Response`
-        either the html for the initial loading page, or the response to the
-        request
-
-    Notes
-    -----
-    Displays the initial loading page, or if a session file was uploaded,
-    checks if it was transmitted via the request, then accesses the file from
-    the request-object, allowed extensions and upload folder from the config
-    and saves the file in the specified location. Then redirects to the loading
-    page that displays the file-overview table. If applicable, displays a
-    warning message for missing or (possibly) incompatible input.
-    '''
-    if request.method == 'POST':
-        if 'sessionFile' not in request.files:
-            print('Input ID was not in the request')
-        else:
-            sessionfile = request.files['sessionFile']
-            upload_folder = join(
-                current_app.root_path,
-                current_app.config.get('UPLOAD_FOLDER')
-            )
-            feedback_or_filename, file_saved = save_file(
-                sessionfile,
-                'json',
-                upload_folder,
-            )
-            if file_saved:
-                filename = feedback_or_filename
-                return redirect(url_for(
-                    'views.inspect_uploaded_file',
-                    filename=filename,
-                ))
-            else:
-                feedback = feedback_or_filename
-                flash(feedback)
-                return redirect(request.url)
-    else:
-        return render_template(
-            'loading.html',
-            version=version,
-            table=empty_loading_table(),
-        )
-
-
-@views.route("/loading/<filename>", methods=['GET', 'POST'])
-def inspect_uploaded_file(filename, version=__version__):
-    '''Display session file overview
-
-    Parameters
-    ----------
-    filename: `str`\n
-    version: `str`
-
-    Returns
-    -------
-    `str` or `flask.wrappers.Response`
-        either the html for the initial loading page, or the response to the
-        request
-
-    Notes
-    -----
-    Displays the sessionfile overview and determines the behavior after button
-    clicks when a file was uploaded:
-    - if file-upload button was clicked, redirect to loading() while keeping
-    the POST method (hence code 307)
-    - if Start_FERMO_Dashboard-Button was clicked, #doSomething and redirect to
-    dashboard()
-    '''
-    if request.method == 'POST':
-        try:
-            request.form['Start_FERMO_Dashboard']
-        except KeyError:
-            return redirect(url_for('views.loading'), code=307)
-        else:
-            # to be implemented: parse the sessionfile as needed for the
-            # dashboard
-            return redirect(url_for('views.dashboard'))
-    else:
-        upload_folder = join(
-            current_app.root_path,
-            current_app.config.get('UPLOAD_FOLDER')
-        )
-        table_dict, message = parse_sessionfile(
-            filename,
-            version,
-            upload_folder,
-        )
-        if message:
-            flash(message)
-        return render_template(
-            'loading.html',
-            version=version,
-            table=table_dict,
-        )
-
-
-@views.route("/processing", methods=['GET', 'POST'])
-def processing(version=__version__):
-    '''Render processing page'''
-    if request.method == 'GET':
-        return render_template('processing.html', version=version)
-    else:
-        return redirect(url_for('views.example'))
-
-
-@views.route("/dashboard", methods=['GET', 'POST'])
-def dashboard(version=__version__):
-    '''Render dashboard page'''
-    if request.method == 'GET':
-        return redirect(url_for('views.example'))
-    else:  # method == 'POST'
-        return redirect(url_for('views.example'))
-
-
-@views.route("/uploads/<path:filename>")
-def download(filename):
-    ''' Route to download files that were saved on the server
-
-    Parameters
-    ----------
-    filename: `str`
-        name of the file to be downloaded
-
-    Notes
-    -----
-    Utility route for the dashboard page, when user want to download the
-    session file
-    '''
-    upload_folder = join(
-        current_app.root_path,
-        current_app.config.get('UPLOAD_FOLDER')
-    )
-    return send_from_directory(upload_folder, filename, as_attachment=True)
+    return redirect(url_for('views.example'))
 
 
 @views.route("/example", methods=['GET', 'POST'])
