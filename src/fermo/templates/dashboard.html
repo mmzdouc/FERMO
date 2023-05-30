@@ -268,8 +268,12 @@
                                 <hr>
                                 <p>Export features as tables (.csv): </p>
                                 <hr>
-                                <form class="d-grid gap-2">
-                                    <select id="exportFileSelector" class="form-select" aria-label="Export features as table">
+                                <form class="d-grid gap-2"
+                                data-bs-toggle="tooltip"
+                                data-bs-custom-class="custom-tooltip"
+                                data-bs-placement="right"
+                                title="This feature is not availabe in this demo">
+                                    <select id="exportFileSelector" class="form-select" aria-label="Export features as table" disabled>
                                         <option selected hidden>Select...</option>
                                         <option value="peak_sel_sam_sel_feat">Peak table | selected sample, selected features</option>
                                         <option value="peak_sel_sam_all_feat">Peak table | selected sample, all features</option>
@@ -278,7 +282,7 @@
                                         <option value="feature_sel"> Feature table | selected features</option>
                                         <option value="feature_all"> Feature table | all features</option>
                                     </select>
-                                    <button class="btn btn-primary" type="submit">Export table</button>
+                                    <button class="btn btn-primary" type="submit" disabled>Export table</button>
                                 </form>
                             </div>
                         </div>
