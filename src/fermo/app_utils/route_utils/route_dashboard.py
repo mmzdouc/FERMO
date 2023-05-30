@@ -1,4 +1,5 @@
 import json
+from flask import session
 from fermo.app_utils.dashboard.chromatogram import (
     plot_central_chrom,
     plot_clique_chrom,
@@ -9,6 +10,66 @@ from fermo.app_utils.dashboard.cytoscape_graph import (
     collect_nodedata,
     generate_cyto_elements,
 )
+from fermo.app_utils.dashboard.filter_panel import read_threshold_values
+from fermo.app_utils.dashboard.sample_table import (
+    get_samples_overview,
+    get_samples_statistics,
+)
+
+
+def filters_changed(
+    req: dict,
+    sample_stats: dict,
+    samples_json_dict: dict,
+    feature_dicts: dict,
+    samples_dict: dict,
+) -> dict:
+    ''' Call all functions that need updating when user changes filter settings
+
+    Parameters
+    ----------
+    req: `dict`
+        as returned by request.get_json()
+    sample_stats: `dict`\n
+    samples_json_dict: `dict`\n
+    feature_dicts: `dict`\n
+    samples_dict: `dict`\n
+
+    Returns
+    -------
+    resp: `dict`
+    '''
+    session['thresholds'] = read_threshold_values(req)
+    session['vis_features'] = req['featureVisualizationOptions']
+    chromatogram = plot_central_chrom(
+        session['samplename'],
+        session['active_feature_index'],
+        sample_stats,
+        samples_json_dict,
+        feature_dicts,
+        session['vis_features'],
+        thresholds=session['thresholds'],
+    )
+    general_sample_table = get_samples_statistics(
+        samples_json_dict,
+        samples_dict,
+        feature_dicts,
+        session['thresholds'],
+    )
+    sample_overview_table = get_samples_overview(
+        sample_stats,
+        samples_json_dict,
+        samples_dict,
+        feature_dicts,
+        session['thresholds'],
+    )
+
+    resp = {
+        "chromatogram": chromatogram,
+        'sample_stats_table': json.dumps(general_sample_table),
+        'sample_overview_table': json.dumps(sample_overview_table),
+    }
+    return resp
 
 
 def sample_changed(
@@ -17,54 +78,55 @@ def sample_changed(
     samples_json_dict: dict,
     feature_dicts: dict,
     vis_features: str,
-):
+) -> dict:
     """ Call all functions that need updating when the sample changed
 
     Parameters
     ----------
     req: `dict`
         as returned by request.get_json()
-    sample_stats: `dict`
-    samples_json_dict: `dict`
-    feature_dicts: `dict`
-    vis_features: `str`
+    sample_stats: `dict`\n
+    samples_json_dict: `dict`\n
+    feature_dicts: `dict`\n
+    vis_features: `str`\n
 
     Returns
     -------
-    response: `dict`
+    resp: `dict`
     """
-    samplename = req['sample'][1]
-    feature_index = None
-    feature_id = None
+    session['samplename'] = req['sample'][1]
+    session['active_feature_index'] = None
+    session['active_feature_id'] = None
     nodedata = {}
     edgedata = {}
     chromatogram = plot_central_chrom(
-        samplename,
-        feature_index,
+        session['samplename'],
+        session['active_feature_index'],
         sample_stats,
         samples_json_dict,
         feature_dicts,
         vis_features,
+        session['thresholds'],
     )
     clique_chrom = plot_clique_chrom(
-        samplename,
-        feature_index,
-        feature_id,
+        session['samplename'],
+        session['active_feature_index'],
+        session['active_feature_id'],
         sample_stats,
         samples_json_dict,
         feature_dicts,
     )
     feature_table = update_feature_table(
-        samplename,
+        session['samplename'],
         feature_dicts,
         samples_json_dict,
         sample_stats,
-        feature_id,
-        feature_index
+        session['active_feature_id'],
+        session['active_feature_index']
     )
     network, cytoscape_message = generate_cyto_elements(
-        samplename,
-        feature_id,
+        session['samplename'],
+        session['active_feature_id'],
         feature_dicts,
         sample_stats,
     )
@@ -73,7 +135,7 @@ def sample_changed(
         feature_dicts,
     )
     edge_table = collect_edgedata(edgedata)
-    response = {
+    resp = {
         "chromatogram": chromatogram,
         "cliqueChrom": clique_chrom,
         "featTable": str(feature_table),
@@ -82,7 +144,7 @@ def sample_changed(
         "nodeTable": json.dumps(node_table),
         "edgeTable": json.dumps(edge_table)
     }
-    return response
+    return resp
 
 
 def feature_changed(
@@ -90,22 +152,23 @@ def feature_changed(
     feature_dicts: dict,
     samples_json_dict: dict,
     sample_stats: dict,
-    vis_features: str
-):
-    """ Call all functions that need updating when a new feature was selected
+    vis_features: str,
+) -> dict:
+    """Call all functions that need updating when a new feature was selected,\n
+    depending on where the feature was selected (chromatogram or network-graph)
 
     Parameters
     ----------
     req: `dict`
         as returned by request.get_json()
-    feature_dicts: `dict`
-    samples_json_dict: `dict`
-    sample_stats: `dict`
-    vis_features: `str`
+    feature_dicts: `dict`\n
+    samples_json_dict: `dict`\n
+    sample_stats: `dict`\n
+    vis_features: `str`\n
 
     Returns
     -------
-    response: `dict`
+    resp: `dict`
 
     Notes
     -----
@@ -113,59 +176,62 @@ def feature_changed(
     cytoscape graph. This graph then does not need to be updated, therefore
     generate_cyto_elements() is not called.
     """
-    samplename = req['sample'][1]
+    session['samplename'] = req['sample'][1]
     resp = {}
     if 'featIndex' in req:  # feature was selected in the chromatogram
-        feature_index = int(req['featIndex'])
-        feature_id = samples_json_dict[samplename]['feature_ID'][feature_index]
-        network, cytoscape_message = generate_cyto_elements(
-            samplename,
-            feature_id,
-            feature_dicts,
-            sample_stats,
+        session['active_feature_index'] = int(req['featIndex'])
+        session['active_feature_id'] = int(
+            samples_json_dict[session['samplename']]
+                             ['feature_ID']
+                             [session['active_feature_index']]
         )
-        resp.update({
-            "network": network,
-            "cytoscapeMessage": json.dumps(cytoscape_message),
-        })
 
     else:  # feature was selected in the cytoscape graph
-        feature_id = int(req['featID'])
-        samples_df = samples_json_dict[samplename]
+        session['active_feature_id'] = int(req['featID'])
+        samples_df = samples_json_dict[session['samplename']]
         try:
-            feature_index = int(samples_df.index[
-                samples_df.feature_ID == feature_id
+            session['active_feature_index'] = int(samples_df.index[
+                samples_df.feature_ID == session['active_feature_id']
             ][0])
         except IndexError:  # selected feature is not in the active sample
             return resp
     chromatogram = plot_central_chrom(
-        samplename,
-        feature_index,
+        session['samplename'],
+        session['active_feature_index'],
         sample_stats,
         samples_json_dict,
         feature_dicts,
         vis_features,
+        session['thresholds'],
     )
     clique_chrom = plot_clique_chrom(
-        samplename,
-        feature_index,
-        feature_id,
+        session['samplename'],
+        session['active_feature_index'],
+        session['active_feature_id'],
         sample_stats,
         samples_json_dict,
         feature_dicts,
     )
-    feature_table = update_feature_table(  # convert to string to avoid bug
-        samplename,
+    feature_table = update_feature_table(
+        session['samplename'],
         feature_dicts,
         samples_json_dict,
         sample_stats,
-        feature_id,
-        feature_index,
+        session['active_feature_id'],
+        session['active_feature_index'],
     )
-
+    network, cytoscape_message = generate_cyto_elements(
+            session['samplename'],
+            session['active_feature_id'],
+            feature_dicts,
+            sample_stats,
+        )
     resp.update({
         "chromatogram": chromatogram,
         "cliqueChrom": clique_chrom,
-        "featTable": str(feature_table),
+        "featTable": str(feature_table),  # convert to string to avoid bug
+        "network": network,
+        "cytoscapeMessage": json.dumps(cytoscape_message),
     })
+
     return resp

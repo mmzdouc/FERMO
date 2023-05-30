@@ -2,28 +2,12 @@ import json
 import numpy as np
 import pandas as pd
 import plotly
-import plotly.express as px
 import plotly.graph_objects as go
 from fermo.app_utils.dashboard.dashboard_functions import (
-    default_filters,
     generate_subsets,
 )
 
 from fermo.app_utils.dashboard.dashboard_functions import color_dict
-
-
-def placeholder_graph():
-    '''Load data from plotly express package and create simple graph'''
-    df = px.data.gapminder().query("continent=='Oceania'")
-    fig = px.line(
-        df,
-        x='year',
-        y='lifeExp',
-        color='country',
-        title="Placeholder for main Chromatogram"
-    )
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    return graphJSON
 
 
 def plot_central_chrom(
@@ -33,6 +17,7 @@ def plot_central_chrom(
     samples_json_dict: dict,
     feature_dicts: dict,
     sel_all_vis: str,
+    thresholds: dict,
 ) -> str:
     '''Plot central chromatogram
 
@@ -43,7 +28,8 @@ def plot_central_chrom(
     sample_stats: `dict`\n
     samples_json_dict: `dict`\n
     feature_dicts: `dict`\n
-    sel_all_vis: `str`
+    sel_all_vis: `str`\n
+    thresholds: `dict`
 
     Returns
     -------
@@ -78,7 +64,7 @@ def plot_central_chrom(
         filtered_samples[sample] = generate_subsets(
             samples_json_dict,
             sample,
-            default_filters(),
+            thresholds,
             feature_dicts
         )
     for _, row in samples_json_dict[sel_sample].iterrows():

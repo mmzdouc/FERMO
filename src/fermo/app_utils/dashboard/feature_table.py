@@ -1,4 +1,3 @@
-
 def update_feature_table(
     selected_sample: str,
     feature_dicts: dict,
@@ -11,9 +10,9 @@ def update_feature_table(
 
     Parameters
     ----------
-    selected_sample: `str`
-    feature_ID: `int`
-    feature_index: `int`
+    selected_sample: `str`\n
+    feature_ID: `int`\n
+    feature_index: `int`\n
     loaded_data: `dict`
 
     Returns
@@ -46,11 +45,11 @@ def collect_feature_info(
 
     Parameters
     ----------
-    smpl: `str`
-    ID: `int`
-    index: `int`
-    feature_dicts: `dict`
-    samples: `dict`
+    smpl: `str`\n
+    ID: `int`\n
+    index: `int`\n
+    feature_dicts: `dict`\n
+    samples: `dict`\n
     sample_stats: `dict`
 
     Returns

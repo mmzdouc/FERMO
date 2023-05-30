@@ -1,4 +1,4 @@
-import { updateFeatureTable } from './featureTable.js';
+import { updateTable } from './featureTable.js';
 import { plotMainChromatogram, plotCliqueChrom } from './chromatogram.js';
 
 /**
@@ -70,11 +70,19 @@ function selectNode(cytoGraph) {
                         const chromatogram = JSON.parse(data.chromatogram)
                         const featureTable = data.featTable
                         const cliqueChrom = JSON.parse(data.cliqueChrom)
+                        try {
+                            window.network = JSON.parse(data.network)
+                        } catch (SyntaxError) {
+                            window.network = []
+                        }
+                        const cytoMessage = JSON.parse(data.cytoscapeMessage)
 
                         // call respective functions
                         plotMainChromatogram(chromatogram)
                         plotCliqueChrom(cliqueChrom)
-                        updateFeatureTable(featureTable)
+                        updateTable(featureTable, '#featureTable tbody')
+                        updateCytoscape(cytoMessage)
+
                     }
                 })
             }
@@ -109,7 +117,6 @@ function addHoverEvent(cytoGraph){
             })
         })
         .then(handleResponse)
-        console.log('node should have been displayed now: ', nodeData)
     })
     cytoGraph.on('mouseover', 'edge', function(evt){
         const edgeData = evt.target['_private'].data
@@ -145,7 +152,10 @@ function handleResponse(response){
     }
 }
 
-
+/**
+ * Remove popovers after a delay when mouse leaves node or edge
+ * @param {Object} evt 
+ */
 async function mouseoutEvent(evt){
     const delay = ms => new Promise(res => setTimeout(res, ms))  // utility function to wait 
     await delay(100)  // wait to let mouseover-event finish first
@@ -174,16 +184,30 @@ function createPopover(data){
     const popoverBody = document.createElement('div')
     popoverBody.classList.add('card-body')
 
+    const content = bulletList(data)
+    popoverBody.append(content)
+
+    popover.append(popoverHeader, popoverBody)
+    cytoDiv.append(popover)
+
+    return popover
+}
+
+/**
+ * Create an unordered list from nested Array
+ * 
+ * @param {Array} data - Array of Arrays with content
+ * e.g. [['Description1', 'value1'], ['Description2', 'value2']]
+ * 
+ * @returns
+ * HTML ul-element
+ */
+export function bulletList(data){
     const bulletList = document.createElement('ul')
     for (let row of data){
         let bulletPoint = document.createElement('li')
         bulletPoint.innerHTML = `${row[0]}: ${row[1]}`
         bulletList.append(bulletPoint)
     }
-    popoverBody.append(bulletList)
-
-    popover.append(popoverHeader, popoverBody)
-    cytoDiv.append(popover)
-
-    return popover
+    return bulletList
 }

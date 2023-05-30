@@ -15,7 +15,7 @@ def check_file_format(
 
     Parameters
     ----------
-    filename: `str`
+    filename: `str`\n
     file_format: `str`
         File format of one specific input with the leading dot
 
@@ -37,7 +37,7 @@ def save_file(
         file: FileStorage,
         file_format: str,
         upload_folder: str,
-) -> Tuple[str, str]:
+) -> Tuple[str, bool]:
     '''Save the file if it is valid
 
     Parameters
@@ -86,8 +86,8 @@ def check_version(content_dict: dict, filename: str, version: str) -> str:
     Parameters
     ----------
     content_dict: `dict`
-        From opened json file
-    filename: `str`
+        From opened json file\n
+    filename: `str`\n
     version: `str`
         Version of the running tool
 
@@ -171,10 +171,10 @@ def create_session_table(
 
     Parameters
     ----------
-    params: `dict`
-    files: `dict`
-    metadata: `dict`
-    version: `dict`
+    params: `dict`\n
+    files: `dict`\n
+    metadata: `dict`\n
+    version: `dict`\n
     logging: `dict`
 
     Returns
@@ -232,9 +232,9 @@ def parse_sessionfile(
 
     Parameters
     ----------
-    filename: `str`
+    filename: `str`\n
     version: `str`
-        Current version of FERMO as read from __version__.py file
+        Current version of FERMO as read from __version__.py file\n
     upload_folder: `str`
         location were uploaded files are stored
 

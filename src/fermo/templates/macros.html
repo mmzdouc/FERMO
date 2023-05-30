@@ -1,6 +1,6 @@
-{% macro tooltip(title, link) %}
 <!-- Create tooltip on questionmark image -->
-    <a href="link"
+{% macro tooltip(title, link) %}
+    <a href="{{ link }}"
     target="_blank"
     data-bs-toggle="tooltip"
     data-bs-placement="right"
@@ -10,16 +10,17 @@
     </a>
 {% endmacro %}
 
+
 {% macro dashboard_tooltip(title)%}
     {{ tooltip(title, 'https://github.com/mmzdouc/FERMO/wiki/Scores-page') }}
 {% endmacro %}
+
 
 {% macro processing_tooltip(title)%}
     {{ tooltip(title, 'https://github.com/mmzdouc/FERMO/wiki/Pages-Processing-page') }}
 {% endmacro %}
 
 
-{% macro display_tablebody(tablename, class='p-1') %}
 <!-- Create HTML code for table body
 
     Parameters:
@@ -28,6 +29,7 @@
         class: string 
             classnames, used to style data rows
 -->
+{% macro display_tablebody(tablename, class='p-1') %}
 <tbody class="text-start">
     {% if tablename[0] is integer %} <!-- if true, tablename is a simple list
         of integers instead of a list of lists (like in the general sample list
@@ -53,7 +55,7 @@
 </tbody>
 {% endmacro %}
 
-{% macro display_table(tablename, columns, ID = '') %}
+
 <!-- Create HTML code for general tables
 
     Parameters:
@@ -62,11 +64,12 @@
         columns: list
             column names for the head of the table
 -->
+{% macro display_table(tablename, columns, ID = '') %}
 <table class="table table-striped" id="{{ ID }}">
     <thead class="align-middle">
         <tr>
             {% for column in columns %}
-                <th scope="col">{{ column }}</th>
+                <th scope="col" class="py-0">{{ column }}</th>
             {% endfor %}
         </tr>
     </thead>
@@ -74,7 +77,7 @@
 </table>
 {% endmacro %}
 
-{% macro display_detail_table(tablename, class='p-1', col1='Attribute') %}
+
 <!-- Create HTML code for detail tables (on loading page and dashboard page(feature overview))
 
     Parameters:
@@ -83,6 +86,7 @@
         class: string
             used to style data rows
 -->
+{% macro display_detail_table(tablename, class='p-1', col1='Attribute') %}
 <table class="table table-striped">
     <thead class="lh-sm">
         <tr>
@@ -95,7 +99,6 @@
 {% endmacro %}
 
 
-{% macro legend(background_color='', border_color='', text='', class='') %}
 <!-- Create HTML code for legend rectangle
 
     Parameters:
@@ -103,6 +106,7 @@
         border_color: string
         text: string
 -->
+{% macro legend(background_color='', border_color='', text='', class='') %}
 <div class = "{{ class }}">
     <span class="legend_rect"
     style="background-color: {{ background_color }};

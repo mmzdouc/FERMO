@@ -1,3 +1,4 @@
+from os.path import join
 from flask import (
     Blueprint,
     current_app,
@@ -5,6 +6,8 @@ from flask import (
     redirect,
     render_template,
     request,
+    send_from_directory,
+    session,
     url_for,
 )
 from fermo.__version__ import __version__
@@ -20,15 +23,14 @@ from fermo.app_utils.input_testing import (
 )
 from fermo.app_utils.dashboard.dashboard_functions import (
     access_loaded_data,
-    load_example,
+    default_filters,
+    load_sessionFile,
 )
 from fermo.app_utils.dashboard.chromatogram import (
-    placeholder_graph,
     plot_central_chrom,
     plot_clique_chrom,
 )
 from fermo.app_utils.dashboard.feature_table import (
-    empty_feature_info_df,
     update_feature_table,
 )
 from fermo.app_utils.dashboard.sample_table import (
@@ -38,6 +40,7 @@ from fermo.app_utils.dashboard.sample_table import (
 from fermo.app_utils.dashboard.cytoscape_graph import stylesheet_cytoscape
 from fermo.app_utils.route_utils.route_dashboard import (
     feature_changed,
+    filters_changed,
     sample_changed,
 )
 
@@ -78,7 +81,10 @@ def loading(version=__version__):
             print('Input ID was not in the request')
         else:
             sessionfile = request.files['sessionFile']
-            upload_folder = current_app.config.get('UPLOAD_FOLDER')
+            upload_folder = join(
+                current_app.root_path,
+                current_app.config.get('UPLOAD_FOLDER')
+            )
             feedback_or_filename, file_saved = save_file(
                 sessionfile,
                 'json',
@@ -108,7 +114,7 @@ def inspect_uploaded_file(filename, version=__version__):
 
     Parameters
     ----------
-    filename: `str`
+    filename: `str`\n
     version: `str`
 
     Returns
@@ -136,7 +142,10 @@ def inspect_uploaded_file(filename, version=__version__):
             # dashboard
             return redirect(url_for('views.dashboard'))
     else:
-        upload_folder = current_app.config.get('UPLOAD_FOLDER')
+        upload_folder = join(
+            current_app.root_path,
+            current_app.config.get('UPLOAD_FOLDER')
+        )
         table_dict, message = parse_sessionfile(
             filename,
             version,
@@ -153,46 +162,71 @@ def inspect_uploaded_file(filename, version=__version__):
 
 @views.route("/processing", methods=['GET', 'POST'])
 def processing(version=__version__):
-    if request.method == 'POST':
-        filename = save_file([
-            'peaktableFile',
-            'MSMSFile',
-            'quantDataFile',
-            'MetadataFile',
-            'spectralLibraryFile',
-        ])
-        if filename:
-            pass
-    return render_template('processing.html', version=version)
+    '''Render processing page'''
+    if request.method == 'GET':
+        return render_template('processing.html', version=version)
+    else:
+        return redirect(url_for('views.example'))
 
 
-@views.route("/dashboard")
+@views.route("/dashboard", methods=['GET', 'POST'])
 def dashboard(version=__version__):
     '''Render dashboard page'''
-    # load data for placeholder main chromatogram
-    graphJSON = placeholder_graph()
-    feature_table = empty_feature_info_df()
+    if request.method == 'GET':
+        return redirect(url_for('views.example'))
+    else:  # method == 'POST'
+        return redirect(url_for('views.example'))
 
-    return render_template(
-        'dashboard.html',
-        version=version,
-        general_sample_table=[[]],
-        specific_sample_table=[[]],
-        feature_table=feature_table,
-        graphJSON=graphJSON,
-        networkJSON=None,
-        cytoscape_message=None,
-        cyto_stylesheetJSON=None,
-        node_table=[[]],
-        edge_table=[[]],
-        samplename=None,
+
+@views.route("/uploads/<path:filename>")
+def download(filename):
+    ''' Route to download files that were saved on the server
+
+    Parameters
+    ----------
+    filename: `str`
+        name of the file to be downloaded
+
+    Notes
+    -----
+    Utility route for the dashboard page, when user want to download the
+    session file
+    '''
+    upload_folder = join(
+        current_app.root_path,
+        current_app.config.get('UPLOAD_FOLDER')
     )
+    return send_from_directory(upload_folder, filename, as_attachment=True)
 
 
 @views.route("/example", methods=['GET', 'POST'])
 def example(version=__version__):
-    '''Example dashboard'''
-    data = load_example('example_data/FERMO_session.json')
+    '''Example dashboard
+
+    Parameters
+    ----------
+    version: `str`
+
+    Returns
+    -------
+    `str`
+        html for the browser to render
+    or `flask.wrappers.Response`
+        response for the browser to handle after fetch
+
+    Notes
+    -----
+    Displays the dashboard with example data. If a request is received,
+    (user clicks on something), the request is handled depending on what was
+    clicked.
+    There are three major types of requests:
+    - filters were applied
+    - a sample was selected
+    - a feature was selected\n
+    Each request calls a separate function in route_utils/route_dashboard.py
+    to be handled appropriately.
+    '''
+    data = load_sessionFile('example_data/FERMO_session.json')
     if data:
         (sample_stats,
          samples_json_dict,
@@ -202,10 +236,12 @@ def example(version=__version__):
         cyto_stylesheet = stylesheet_cytoscape()
 
         if request.method == 'GET':
-            # hardcode some variables to display as default
-            samplename = list(samples_dict)[0]
-            active_feature_index = None
-            active_feature_id = None
+            # set default variables
+            session['samplename'] = list(samples_dict)[0]
+            session['vis_features'] = 'ALL'
+            session['active_feature_index'] = None
+            session['active_feature_id'] = None
+            session['thresholds'] = default_filters()
             nodedata = {}
             edgedata = {}
 
@@ -213,40 +249,43 @@ def example(version=__version__):
                 samples_json_dict,
                 samples_dict,
                 feature_dicts,
+                session['thresholds'],
             )
             sample_overview_table = get_samples_overview(
                 sample_stats,
                 samples_json_dict,
                 samples_dict,
                 feature_dicts,
+                session['thresholds'],
             )
             chromatogram = plot_central_chrom(
-                samplename,
-                active_feature_index,
+                session['samplename'],
+                session['active_feature_index'],
                 sample_stats,
                 samples_json_dict,
                 feature_dicts,
-                "ALL",
+                session['vis_features'],
+                session['thresholds']
             )
             clique_chromatogram = plot_clique_chrom(
-                samplename,
-                active_feature_index,
-                active_feature_index,
+                session['samplename'],
+                session['active_feature_index'],
+                session['active_feature_id'],
                 sample_stats,
                 samples_json_dict,
                 feature_dicts,
             )
             feature_table = update_feature_table(
-                samplename,
+                session['samplename'],
                 feature_dicts,
                 samples_json_dict,
                 sample_stats,
-                active_feature_id,
-                active_feature_index
+                session['active_feature_id'],
+                session['active_feature_index']
             )
             network, cytoscape_message = generate_cyto_elements(
-                samplename,
-                active_feature_id,
+                session['samplename'],
+                session['active_feature_id'],
                 feature_dicts,
                 sample_stats,
             )
@@ -270,45 +309,51 @@ def example(version=__version__):
                 cyto_stylesheetJSON=cyto_stylesheet,
                 node_table=node_table,
                 edge_table=edge_table,
-                samplename=samplename
+                samplename=session['samplename']
             )
 
         else:  # method == 'POST'
             req = request.get_json()
-            vis_features = "ALL"  # should be taken from response: User
-            # selection from filter panel "Visualize features" radio buttons
-
-            # parse the request
-            if req['sample'][0]:  # i.e. if sample has changed
-                resp = sample_changed(
+            if 'featureVisualizationOptions' in req:  # filters were used
+                resp = filters_changed(
                     req,
                     sample_stats,
                     samples_json_dict,
                     feature_dicts,
-                    vis_features,
+                    samples_dict,
                 )
 
-            elif req['featChanged']:  # i.e. there is an active feature
-                resp = feature_changed(
-                    req,
-                    feature_dicts,
-                    samples_json_dict,
-                    sample_stats,
-                    vis_features,
-                )
-            else:
-                try:
-                    edge_data = req['edgeData']
-                except KeyError:
-                    try:
-                        node_data = req['nodeData']
-                    except KeyError:
-                        resp = {}
-                    else:
-                        resp = collect_nodedata(node_data, feature_dicts)
+            elif 'sample' in req:
+                # parse the request
+                if req['sample'][0]:  # i.e. if sample has changed
+                    resp = sample_changed(
+                        req,
+                        sample_stats,
+                        samples_json_dict,
+                        feature_dicts,
+                        session['vis_features'],
+                    )
+
+                elif req['featChanged']:  # i.e. there is an active feature
+                    resp = feature_changed(
+                        req,
+                        feature_dicts,
+                        samples_json_dict,
+                        sample_stats,
+                        session['vis_features'],
+                    )
                 else:
-                    resp = collect_edgedata(edge_data)
-
+                    try:
+                        edge_data = req['edgeData']
+                    except KeyError:
+                        try:
+                            node_data = req['nodeData']
+                        except KeyError:
+                            resp = {}
+                        else:
+                            resp = collect_nodedata(node_data, feature_dicts)
+                    else:
+                        resp = collect_edgedata(edge_data)
             return resp
 
     else:  # data could not be loaded

@@ -2,7 +2,7 @@
 
 DEBUG = 'true'
 FLASK_ENV = 'development'
-UPLOAD_FOLDER = 'src/fermo/uploads/'  # temporary until database is implemented
+UPLOAD_FOLDER = 'uploads/'  # temporary until database is implemented
 ALLOWED_EXTENSION = ['.json', '.mgf', '.csv']
 # key for development only:
 SECRET_KEY = 'n\x01w\t\x95+j\xd3*\xc2&\xbd\x1d0\x8a\xf2j\xb2\x92\x9bM!\xe1F'

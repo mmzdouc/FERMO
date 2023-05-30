@@ -8,13 +8,13 @@ from json.decoder import JSONDecodeError
 import pandas as pd
 
 
-def load_example(path: str) -> dict:
-    '''Load example session file
+def load_sessionFile(path: str) -> dict:
+    '''Load session file
 
     Parameters
     ----------
     path: `str`
-        Path to the example session file
+        Path to the session file
 
     Returns
     -------

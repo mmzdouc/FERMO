@@ -17,7 +17,7 @@ def generate_cyto_elements(
     sel_sample : `str`\n
     active_feature_id : `int`\n
     feature_dicts : `dict`\n
-    sample_stats : `dict`\n
+    sample_stats : `dict`
 
     Returns
     -------
@@ -277,12 +277,12 @@ def collect_edgedata(
     Parameters
     ----------
     edgedata : `dict`
-        Should look something like this: {
-            'source': '93',
-            'target': '12',
-            'weight': 0.93,
-            'mass_diff': 15.994,
-            'id': '48ef5707-0580-424e-8e7d-1659c0885856'
+        Should look something like this: {\n
+            'source': '93',\n
+            'target': '12',\n
+            'weight': 0.93,\n
+            'mass_diff': 15.994,\n
+            'id': '48ef5707-0580-424e-8e7d-1659c0885856'\n
         }
 
     Returns

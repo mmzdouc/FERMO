@@ -23,7 +23,7 @@ body {
 
 .accordion-body{
     background: #fff;
-    max-height: 63vh;
+    max-height: 62vh;
 }
 
 .accordion-button:focus {
@@ -193,6 +193,17 @@ td hr {
     margin: 0.6rem 0;
 }
 
+#sampleOverviewTable td {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#featureTable td {
+    overflow-wrap: break-word;
+}
+
 
 /* Specific elements */
 #loading-button{
@@ -235,4 +246,10 @@ input[type=number]{
 #cy ul {
     margin: 0;
     padding-left: 0.3rem;
+}
+
+.tooltip-inner ul {
+    margin: 0;
+    padding-left: 0.8rem;
+    text-align: start;
 }
