@@ -1,5 +1,5 @@
 import { plotMainChromatogram } from './chromatogram.js'
-import { sampleOverviewTable, updateTable } from './featureTable.js'
+import { sampleOverviewTable, sampleStatsTable } from './featureTable.js'
 import { selectRows } from './sampleTable.js'
 
 /**
@@ -54,7 +54,7 @@ export function filterFeatures() {
 
 
                         plotMainChromatogram(chromatogram)
-                        updateTable(sampleStatsList, '#generalSampleTable tbody')
+                        sampleStatsTable(sampleStatsList)
                         sampleOverviewTable(sampleOverviewList)
                         selectRows()  // reinitialize event listeners for sample table
                     })

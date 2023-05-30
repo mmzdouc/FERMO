@@ -6,14 +6,6 @@ import { bulletList } from './cytoscapeGraph.js'
  *
  * @param {string|object} featureTable the string containing the actual content
  * @param {string} selector css selector for the table body
- * 
- * @notes
- * Variables are only called featureSomething because the function was 
- * originally only intended for the feature table.
- * 
- * Relies on the template to already have a table body. If the macros in
- * dashboard.html are removed, it must be modified to create a table body from
- * scratch
  */
 export function updateTable(featureTable, selector){
     let featureArray = []
@@ -25,30 +17,18 @@ export function updateTable(featureTable, selector){
     let tableBody = document.querySelector(selector)
     // remove old table
     tableBody.replaceChildren()
-    // create new table but check if it contains objects or numbers
-    if (typeof(featureArray[0]) == 'object'){
-        for (let row of featureArray){
-            let rowElem = document.createElement('tr')
-            for (let cell of row){
-                let dataElem = document.createElement('td')
-                if (cell == '-----'){
-                    dataElem.classList.add('p-0')
-                    dataElem.innerHTML = '<hr>'
-                } else {
-                    dataElem.classList.add('p-1')
-                    dataElem.innerHTML = cell
-                }
-                rowElem.append(dataElem)
-            }
-            tableBody.append(rowElem)
-        }
-    }
-    else { // featureArray contains numbers like in sample stats table
+    // create new table
+    for (let row of featureArray){
         let rowElem = document.createElement('tr')
-        for (let cell of featureArray){
+        for (let cell of row){
             let dataElem = document.createElement('td')
-            dataElem.classList.add('p-1')
-            dataElem.innerHTML = cell
+            if (cell == '-----'){
+                dataElem.classList.add('p-0')
+                dataElem.innerHTML = '<hr>'
+            } else {
+                dataElem.classList.add('p-1')
+                dataElem.innerHTML = cell
+            }
             rowElem.append(dataElem)
         }
         tableBody.append(rowElem)
@@ -154,4 +134,52 @@ export function sampleOverviewTable(content){
     }
     // initiate the new tooltips
     initiateTooltips()
+}
+
+
+/**
+ * Create sampleStatsTable
+ * 
+ * @param {Array} content
+ */
+export function sampleStatsTable(content){
+    const tableHead = document.querySelector('#generalSampleTable thead')
+    const tableBody = document.querySelector('#generalSampleTable tbody')
+
+    tableHead.replaceChildren()
+    tableBody.replaceChildren()
+
+    // create tablehead
+    tableHead.classList.add('lh-sm')
+    const headRow = document.createElement('tr')
+    const cols = ['Number of', 'Value']
+    for (let i=0; i<cols.length; i++){
+        let headCell = document.createElement('th')
+        headCell.setAttribute('scope', 'col')
+        headCell.classList.add('col', 'col-7')
+        headCell.append(cols[i])
+        headRow.append(headCell)
+    }
+    tableHead.append(headRow)
+
+    // create tablebody
+    const attributes = [
+        "Total samples:",
+        "Total features:",
+        "Selected features:",
+        "Selected networks:",
+        "Non-blank:",
+        "Blank & MS1:"
+    ]
+    let zipped = attributes.map((x, i) => [x, content[i]])
+    for (let row of zipped) {
+        let rowElem = document.createElement('tr')
+        for (let cell of row){
+            let dataElem = document.createElement('td')
+            dataElem.classList.add('p-1')
+            dataElem.innerHTML = cell
+            rowElem.append(dataElem)
+        }
+        tableBody.append(rowElem)
+    }
 }
