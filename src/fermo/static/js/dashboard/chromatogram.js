@@ -15,7 +15,7 @@ export function plotMainChromatogram(chromatogram, sampleName=''){
     const chromID = 'mainChromatogram'
     Plotly.newPlot(chromID, chromatogram, {})
     selectFeatures(chromID)
-    return
+    return ;
 }
 
 

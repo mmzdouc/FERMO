@@ -8,66 +8,6 @@ body {
 }
 
 
-/* elements on dashboard page */
-.accordion {
-    --bs-accordion-btn-icon: url("/static/images/collapse_icon_white.svg");
-    --bs-accordion-btn-active-icon: url("/static/images/collapse_icon_white.svg");
-    --bs-accordion-btn-padding-x: 0.5rem;
-    --bs-accordion-btn-padding-y: 0.5rem;
-    --bs-accordion-body-padding-x: 0.5rem;
-    --bs-accordion-body-padding-y: 0.5rem;
-    --bs-accordion-active-color: #fff;
-    --bs-accordion-bg: #116789;
-    --bs-accordion-active-bg: #116789;
-}
-
-.accordion-body{
-    background: #fff;
-    max-height: 62vh;
-}
-
-.accordion-button:focus {
-    border-color: rgba(17,103,137, 0.8);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(17,103,137, 0.8);
-    outline: 0 none;
-}
-
-.accordion-button {
-    color: #fff; 
-}
-
-.card{
-    --bs-card-cap-padding-y: 0.36rem;
-    --bs-card-cap-padding-x: 0.5rem;
-}
-
-.card-header {
-    background-color: #116789;
-    color: #fff;
-}
-
-#filters input[type="search"] {
-    padding: 0.2rem 0.5rem;
-    font-size: 14px;
-}
-
-#filters input[type="number"] {
-    font-size: 14px;
-}
-
-#filters button[type="submit"] {
-    font-size: 14px;
-}
-
-.legend_rect {
-    height: 20px;
-    width: 20px;
-    display: inline-block;
-    border-style: solid;
-    border-width: 4px;
-}
-
-
 /* input forms */
 .btn-primary {
     --bs-btn-bg: #116789;
@@ -205,7 +145,93 @@ td hr {
 }
 
 
+/* general elements on dashboard page */
+.accordion {
+    --bs-accordion-btn-icon: url("/static/images/collapse_icon_white.svg");
+    --bs-accordion-btn-active-icon: url("/static/images/collapse_icon_white.svg");
+    --bs-accordion-btn-padding-x: 0.5rem;
+    --bs-accordion-btn-padding-y: 0.5rem;
+    --bs-accordion-body-padding-x: 0.5rem;
+    --bs-accordion-body-padding-y: 0.5rem;
+    --bs-accordion-active-color: #fff;
+    --bs-accordion-bg: #116789;
+    --bs-accordion-active-bg: #116789;
+}
+
+.accordion-body{
+    background: #fff;
+    max-height: 62vh;
+}
+
+.accordion-button:focus {
+    border-color: rgba(17,103,137, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(17,103,137, 0.8);
+    outline: 0 none;
+}
+
+.accordion-button {
+    color: #fff; 
+}
+
+.card{
+    --bs-card-cap-padding-y: 0.36rem;
+    --bs-card-cap-padding-x: 0.5rem;
+}
+
+.card-header {
+    background-color: #116789;
+    color: #fff;
+}
+
+#filters input[type="search"] {
+    padding: 0.2rem 0.5rem;
+    font-size: 14px;
+}
+
+#filters input[type="number"] {
+    font-size: 14px;
+}
+
+#filters button[type="submit"] {
+    font-size: 14px;
+}
+
+.legend_rect {
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    border-style: solid;
+    border-width: 4px;
+}
+
+
 /* Specific elements */
+/* .plot-container.plotly {
+    margin-left: 15px;
+    padding: 0;
+    background-image: repeating-linear-gradient(
+        180deg,
+        rgba(68,119,170,0.15),
+        rgba(68,119,170,0.15) 30px,
+        rgba(68,119,170,0.1) 30px,
+        rgba(68,119,170,0.1) 20%
+    )
+}
+ 
+#cliqueChromatogram {
+    margin-left: 15px;
+    padding: 0;
+    background-image: repeating-linear-gradient(
+        180deg,
+        rgba(68,119,170,0.15),
+        rgba(68,119,170,0.15) 30px,
+        rgba(68,119,170,0.1) 30px,
+        rgba(68,119,170,0.1) 35%
+    )
+} 
+*/
+ 
+
 #loading-button{
     margin-top: 100px;
 }

@@ -58,6 +58,10 @@ def plot_central_chrom(
         showgrid=False,
         title_text="Relative Intensity",
         range=[0, 1.05],
+        linecolor='black',
+        zeroline=True,
+        zerolinewidth=0.5,
+        zerolinecolor='black',
     )
     filtered_samples = {}
     for sample in samples_json_dict:
@@ -266,8 +270,12 @@ def plot_clique_chrom(
     )
 
     fig.update_yaxes(
-        visible=False,
+        visible=True,
         showgrid=False,
+        linecolor='black',
+        zeroline=True,
+        zerolinewidth=0.5,
+        zerolinecolor='black',
     )
 
     fig.update_xaxes(
