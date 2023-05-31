@@ -99,8 +99,8 @@ export function sampleOverviewTable(content){
     // create tablebody
     const sampleInfoDescriptors = [
         'Filename',
-        'Diversity-score',
-        'Spec score',
+        'Diversity score',
+        'Specificity score',
         'Mean novelty score',
         'Total features',
         'Non-blank features',
