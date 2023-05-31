@@ -102,9 +102,9 @@ export function sampleOverviewTable(content){
         'Diversity-score',
         'Spec score',
         'Mean novelty score',
-        'Total',
-        'Non-blank',
-        'Blank & MS1'
+        'Total features',
+        'Non-blank features',
+        'Blank & MS1 features'
     ]
     for (let i=0; i<content.length; i++){
         let row = content[i]
