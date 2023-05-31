@@ -13,4 +13,4 @@ app.register_blueprint(views, url_prefix="/")
 app.testing = True
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=8001)
