@@ -206,31 +206,6 @@ td hr {
 
 
 /* Specific elements */
-/* .plot-container.plotly {
-    margin-left: 15px;
-    padding: 0;
-    background-image: repeating-linear-gradient(
-        180deg,
-        rgba(68,119,170,0.15),
-        rgba(68,119,170,0.15) 30px,
-        rgba(68,119,170,0.1) 30px,
-        rgba(68,119,170,0.1) 20%
-    )
-}
- 
-#cliqueChromatogram {
-    margin-left: 15px;
-    padding: 0;
-    background-image: repeating-linear-gradient(
-        180deg,
-        rgba(68,119,170,0.15),
-        rgba(68,119,170,0.15) 30px,
-        rgba(68,119,170,0.1) 30px,
-        rgba(68,119,170,0.1) 35%
-    )
-} 
-*/
- 
 
 #loading-button{
     margin-top: 100px;
