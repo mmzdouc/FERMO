@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   fermo:
-    build: FERMO
+    build: .
     ports:
       - 8001:8001
 

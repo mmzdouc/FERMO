@@ -1,6 +1,6 @@
 FROM python:3.8-slim-buster
 
-COPY ../ home/FERMO/
+COPY ./ home/
 
 WORKDIR /home/FERMO
 
