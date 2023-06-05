@@ -1,13 +1,13 @@
 # MS2Query library files
-src/fermo/libraries/ALL_GNPS_210409_positive_processed_annotated_CF_NPC_classes.txt
-src/fermo/libraries/library_GNPS_15_12_2021_ms2ds_embeddings.pickle
-src/fermo/libraries/library_GNPS_15_12_2021_s2v_embeddings.pickle
-src/fermo/libraries/library_GNPS_15_12_2021.sqlite
-src/fermo/libraries/ms2ds_model_GNPS_15_12_2021.hdf5
-src/fermo/libraries/ms2query_random_forest_model.pickle
-src/fermo/libraries/spec2vec_model_GNPS_15_12_2021.model
-src/fermo/libraries/spec2vec_model_GNPS_15_12_2021.model.syn1neg.npy
-src/fermo/libraries/spec2vec_model_GNPS_15_12_2021.model.wv.vectors.npy
+FERMO/libraries/ALL_GNPS_210409_positive_processed_annotated_CF_NPC_classes.txt
+FERMO/libraries/library_GNPS_15_12_2021_ms2ds_embeddings.pickle
+FERMO/libraries/library_GNPS_15_12_2021_s2v_embeddings.pickle
+FERMO/libraries/library_GNPS_15_12_2021.sqlite
+FERMO/libraries/ms2ds_model_GNPS_15_12_2021.hdf5
+FERMO/libraries/ms2query_random_forest_model.pickle
+FERMO/libraries/spec2vec_model_GNPS_15_12_2021.model
+FERMO/libraries/spec2vec_model_GNPS_15_12_2021.model.syn1neg.npy
+FERMO/libraries/spec2vec_model_GNPS_15_12_2021.model.wv.vectors.npy
 
 # Temporary files Dash
 cache/
