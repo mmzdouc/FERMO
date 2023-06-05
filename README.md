@@ -2,7 +2,7 @@
 <br/>
 <br/>
 
-![FERMO logo](readme_assets/Fermo_logo_blue.svg)
+![FERMO logo](FERMO/readme_assets/Fermo_logo_blue.svg)
 <br/>
 <br/>
 
@@ -16,7 +16,7 @@ References, tutorials, and guides can be found in the [**FERMO Github Wiki**](ht
 
 Of note, FERMO is currently in beta development. If you notice a bug or another issue, please contact us by opening an issue on [**FERMO's Github page**](https://github.com/mmzdouc/FERMO/).
 
-![FERMO Dashboard Overview](readme_assets/Figure_1.png)
+![FERMO Dashboard Overview](FERMO/readme_assets/Figure_1.png)
 
 ## Getting Started
 
@@ -165,7 +165,7 @@ This guide describes the essential steps to process and analyze data with FERMO,
     - **Sample Chromatograms (E)**
     - **Filter and Export Panel**
 
-![FERMO Dashboard Overview](readme_assets/Figure_2.png)
+![FERMO Dashboard Overview](FERMO/readme_assets/Figure_2.png)
 
 7. To display a specific sample, click on one of the rows in the **Sample Information Tables (A)**. This triggers the update of the **Sample Chromatogram Overview (B)**, which displays the molecular features detected in the sample. Hovering over a molecular feature presents general information. A click on a molecular feature focuses it, which triggers an update of the **Molecular Feature Information Table (C)**, the **Cytoscape Spectral Similarity Networking (D)**, and the **Sample Chromatograms (E)**.
 
