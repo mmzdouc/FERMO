@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  fermo:
+    build: FERMO
+    ports:
+      - 8001:8001
+
+  nginx:
+    build: nginx
+    ports:
+      - 1337:80
+    depends_on:
+      - fermo
