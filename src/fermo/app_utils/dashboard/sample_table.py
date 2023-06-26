@@ -161,10 +161,10 @@ def calc_selected_networks(
     -------
     sample_selected_cliques: `list`
     '''
-    sample_selected_cliques = []
+    sample_selected_cliques = set()
     for ID in filtered_samples[sample]['all_select_no_blank']:
         if feature_dicts[str(ID)]['similarity_clique']:
-            sample_selected_cliques.append(
+            sample_selected_cliques.add(
                 feature_dicts[str(ID)]['similarity_clique_number']
             )
     return sample_selected_cliques
