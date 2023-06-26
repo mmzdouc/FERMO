@@ -60,7 +60,7 @@ function tableStringToArray(featureTable){
                 /* remove newline characters if present; 'blank' is an 
                    indicator because it occurs in those lines where the
                    html-'a'-tag was used */
-                if (row[i].includes('blank')){
+                if (row[i].includes('blank') && i == 0){
                     row[i] = row[i].slice(0, 61) + row[i].slice(63)
                 }
             }
@@ -72,7 +72,7 @@ function tableStringToArray(featureTable){
 
 
 /**
- * Create/update sampleOverview Table with tooltips and data-values
+ * Create/update sampleOverview Table with tooltips (meaning the sample info popups) and data-values
  * 
  * @param {Array} content
  */
