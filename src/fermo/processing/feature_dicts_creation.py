@@ -177,10 +177,10 @@ def create_ms2_object(
             )
         spectrum = matchms.filtering.add_precursor_mz(spectrum)
         spectrum = matchms.filtering.normalize_intensities(spectrum)
-        spectrum = matchms.filtering.select_by_intensity(
-            spectrum, 
-            intensity_from=0.01
-            )
+        # ~ spectrum = matchms.filtering.select_by_intensity(
+            # ~ spectrum, 
+            # ~ intensity_from=0.01
+            # ~ )
         return spectrum
 
 def feature_dicts_creation(
