@@ -15,6 +15,7 @@ authors = [
 
 dependencies = [
     "jsonschema==4.19.0",
+    "Flask==3.0.1"
 ]
 
 [project.optional-dependencies]
