@@ -1,4 +1,9 @@
-# MS2Query library files
+# CUSTOM START #
+
+# pycharm
+.idea/
+
+# ms2query library files
 src/fermo/libraries/ALL_GNPS_210409_positive_processed_annotated_CF_NPC_classes.txt
 src/fermo/libraries/library_GNPS_15_12_2021_ms2ds_embeddings.pickle
 src/fermo/libraries/library_GNPS_15_12_2021_s2v_embeddings.pickle
@@ -12,6 +17,8 @@ src/fermo/libraries/ms2query_random_forest_model.onnx
 
 # Temporary files Dash
 cache/
+
+# CUSTOM STOP #
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
