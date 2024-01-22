@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2022 Mitja M. Zdouc, PhD
+Copyright (c) 2022 to present Mitja M. Zdouc, PhD and individual contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
