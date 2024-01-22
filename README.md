@@ -1,6 +1,6 @@
 Announcement - Please Read
 ============
-### FERMO is currently being refactored. The code in this fork is experimental and may change quickly and without announcements. For a more stable version, please look at [FERMO's main page](github.com/mmzdouc/fermo).
+### FERMO is currently being refactored. The code in this fork is experimental and may change quickly and without announcements. For a more stable version, please look at [FERMO's main page](https://github.com/mmzdouc/fermo).
 
 ---
 
