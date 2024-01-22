@@ -24,7 +24,7 @@ FERMO is licensed under the [MIT License](LICENSE.md).
 
 ### Contributing and Coding Style
 
-For general guidelines regarding contributing to this project, see [CONTRIBUTING.md](CONTRIBUTING.md).
+For general guidelines regarding contributing to this project, see [CONTRIBUTING](CONTRIBUTING.md).
 Furthermore, we have a [CODE OF CONDUCT](CODE_OF_CONDUCT.md).
 
 #### Practices:
