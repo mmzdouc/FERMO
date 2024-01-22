@@ -19,12 +19,13 @@ FERMO is licensed under the [MIT License](LICENSE.md).
 - Clone the repository to your local machine
 - Create a new virtual environment (e.g. with `conda`)
 - Install `python 3.11`
-- Install `fermo_gui` with `pip install -e .` (while in the `fermo_gui` directory)
+- Install `fermo_gui` with `pip install -e '.[dev]'` (while in the `fermo_gui` directory)
 - Initialize `pre-commit` with `pre-commit install`.
 
 ### Contributing and Coding Style
 
 For general guidelines regarding contributing to this project, see [CONTRIBUTING.md](CONTRIBUTING.md).
+Furthermore, we have a [CODE OF CONDUCT](CODE_OF_CONDUCT.md).
 
 #### Practices:
 
