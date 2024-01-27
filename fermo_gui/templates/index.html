@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <span class="title"><h3>{% block title %} The Home Page of FERMO {% endblock %}</h3></span>
+    <div class="content">
+        <a class="btn btn-primary" href="{{ url_for('forms.start_analysis') }}" role="button">Start Analysis</a>
+    </div>
+{% endblock %}

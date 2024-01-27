@@ -16,11 +16,12 @@ FERMO is licensed under the [MIT License](LICENSE.md).
 
 ### Installation and Setup
 
-- Clone the repository to your local machine
+- Clone the repository to your local machine and enter it: this is the main directory
 - Create a new virtual environment (e.g. with `conda`)
 - Install `python 3.11`
-- Install `fermo_gui` with `pip install -e '.[dev]'` (while in the `fermo_gui` directory)
+- Install `fermo_gui` with `pip install -e '.[dev]'` (while in the main directory)
 - Initialize `pre-commit` with `pre-commit install`.
+- Run the app with `flask --app fermo_gui run --debug` (while in the main directory)
 
 ### Contributing and Coding Style
 
@@ -30,7 +31,7 @@ Furthermore, we have a [CODE OF CONDUCT](CODE_OF_CONDUCT.md).
 #### Practices:
 
 This project follows certain practices to ensure coding standards:
-- For code development, use of a branching model - one branch per feature, pull 
+- For code development, use of a branching model - one branch per feature, pull
   requests to merge into `main`. The `main` branch is protected.
 - For consistent code style, tools including `black`, `flake8`.
 - Application of said tools before committing via `pre-commit`.
@@ -48,7 +49,7 @@ To contribute code:
 
 To merge into the `main` branch:
 - Add changes to the [CHANGELOG](CHANGELOG.md) using plain and concise language.
-- Update the version by increasing the counter in [pyproject.toml](pyproject.toml) 
+- Update the version by increasing the counter in [pyproject.toml](pyproject.toml)
   as instructed by the lead developers.
 - Issue a pull request to the `main` branch.
 - After code review, the pull request may or may not be accepted.

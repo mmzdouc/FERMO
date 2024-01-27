@@ -21,10 +21,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from importlib import metadata
 import os
 from typing import Optional
 
 from flask import Flask
+
+from fermo_gui.main import bp as main_bp
+from fermo_gui.forms import bp as forms_bp
 
 
 def create_app(test_config: Optional[dict] = None) -> Flask:
@@ -37,6 +41,21 @@ def create_app(test_config: Optional[dict] = None) -> Flask:
         An instance of the Flask object
     """
     app = Flask(__name__, instance_relative_config=True)
+    configure_app(app, test_config)
+    create_instance_path(app)
+    register_context_processors(app)
+    register_blueprints(app)
+
+    return app
+
+
+def configure_app(app: Flask, test_config: Optional[dict] = None):
+    """Configure the Flask app.
+
+    Arguments:
+        app: The Flask app instance
+        test_config: mapping of app configuration for testing purposes
+    """
     app.config.from_mapping(SECRET_KEY="dev")
 
     if test_config is None:
@@ -44,13 +63,36 @@ def create_app(test_config: Optional[dict] = None) -> Flask:
     else:
         app.config.from_mapping(test_config)
 
+
+def create_instance_path(app: Flask):
+    """Create the instance path for the Flask app.
+
+    Arguments:
+        app: The Flask app instance
+    """
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
 
-    @app.route("/hello")
-    def hello():
-        return "Hello, World!"
 
-    return app
+def register_context_processors(app: Flask):
+    """Register context processors to get access to variables across all pages.
+
+    Arguments:
+        app: The Flask app instance
+    """
+
+    @app.context_processor
+    def set_version() -> dict:
+        return dict(version=metadata.version("fermo_gui"))
+
+
+def register_blueprints(app: Flask):
+    """Register blueprints for the Flask app.
+
+    Arguments:
+        app: The Flask app instance
+    """
+    app.register_blueprint(main_bp)
+    app.register_blueprint(forms_bp, url_prefix="/start-analysis")
