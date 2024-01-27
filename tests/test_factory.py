@@ -37,7 +37,6 @@ def test_create_instance_path(app):
     assert os.path.exists(app.instance_path)
 
 
-def test_register_blueprints_valid(app):
-    with app.test_client() as client:
-        response = client.get("/")
-        assert response.status_code == 200
+def test_register_blueprints_valid(client):
+    response = client.get("/")
+    assert response.status_code == 200
