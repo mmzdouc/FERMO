@@ -34,3 +34,13 @@ def start_analysis():
         The rendered forms.html page as string
     """
     return render_template("forms/forms.html")
+
+
+@bp.route("/processing/")
+def processing():
+    """Render the processing page, serving as placeholder during calculation.
+
+    Returns:
+        The rendered processing.html page as string
+    """
+    return render_template("forms/processing.html")

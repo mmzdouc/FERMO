@@ -4,5 +4,6 @@
     <span class="title"><h1>{% block title %} Start Analysis {% endblock %}</h1></span>
     <div class="content">
         <h2>This is the start analysis page</h2>
+        <a class="btn btn-primary" href="{{ url_for('forms.processing') }}" role="button">Run Analysis</a>
     </div>
 {% endblock %}
