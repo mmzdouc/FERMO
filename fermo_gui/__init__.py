@@ -29,6 +29,7 @@ from flask import Flask
 
 from fermo_gui.main import bp as main_bp
 from fermo_gui.forms import bp as forms_bp
+from fermo_gui.results import bp as results_bp
 
 
 def create_app(test_config: Optional[dict] = None) -> Flask:
@@ -95,3 +96,4 @@ def register_blueprints(app: Flask):
     """
     app.register_blueprint(main_bp)
     app.register_blueprint(forms_bp, url_prefix="/start-analysis")
+    app.register_blueprint(results_bp, url_prefix="/results")
