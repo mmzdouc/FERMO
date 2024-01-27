@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FERMO{% endblock %}</title>
+    <link rel="shortcut icon" href="{{url_for('static', filename='images/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+      .nav-item .nav-link {
+          color: white;
+      }
+      .content {
+          flex: 1;
+      }
+    </style>
+</head>
+<body class="d-flex flex-column vh-100">
+  {% block header%}
+  <header>
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-primary p-1">
+      <div class="container-fluid" style="padding-left: 8px; font-size: 18px;">
+        <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='/images/Fermo_logo.svg') }}" alt="FERMO logo" width="150" height="40"></a>
+        <div id="navbarSupportedContent" class="collapse navbar-collapse">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="/start-analysis">Start Analysis</a></li>
+            <li class="nav-item"><a class="nav-link" href="/results/example">Example</a></li>
+            <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+            <li class="nav-item"><a class="nav-link" href="/help">Help</a></li>
+          </ul>
+          <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li class="nav-item"><a class="nav-link disabled" href="#">v{{version}}</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://github.com/fermo-met/fermo_gui" target="_blank" rel="noopener" aria-label="GitHub"><img src="{{ url_for('static', filename='/images/github.svg') }}" alt="GitHub"></a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  {% endblock %}
+
+  {% block content %}
+    <main>
+      The content was not populated
+    </main>
+  {% endblock %}
+
+  {% block footer %}
+  <footer class="container-fluid bg-light text-muted py-1 border-top">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="d-flex flex-column h-100">
+          <div class="mt-auto">
+            <h6 class="text-uppercase fw-bold mb-1">Fermo Dashboard</h6>
+              <p class="mb-0" style="font-size: 13px">Version {{version}}</p>
+              <p class="mb-0" style="font-size: 13px;">© 2022 - Present Mitja M. Zdouc et al. under the <a rel="license" href="https://opensource.org/license/mit/" class="text-decoration-none" style="color: #116789" target="_blank">MIT License.</a></p>
+            </div>
+        </div>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <div class="mt-auto mb-0">
+          <a href="https://vdhooftcompmet.github.io/" target="_blank"><img src="{{ url_for('static', filename='images/vdh_logo.jpeg') }}" alt="Van der Hooft Computational Metabolomics Group Logo" height="60" class="d-inline-block"/></a>
+          <a href="https://www.wur.nl/en/research-results/chair-groups/plant-sciences/bioinformatics/people.htm" target="_blank"><img src="{{ url_for('static', filename='images/WUR_logo.png') }}" alt="Wageningen University and Research Logo" height="60" class="d-inline-block"/></a>
+          <a href="https://marblesproject.eu/" target="_blank"><img src="{{ url_for('static', filename='images/Marbles_logo.svg') }}" alt="MARBLES EU Logo" height="60" class="d-inline-block"/></a>
+        </div>
+      </div>
+    </div>
+</footer>
+  {% endblock %}
+
+  {% block scripts %}
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  {% endblock %}
+
+</body>
+</html>
