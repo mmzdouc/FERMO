@@ -32,7 +32,7 @@ from fermo_gui.forms import bp as forms_bp
 
 
 def create_app(test_config: Optional[dict] = None) -> Flask:
-    """Factory function to create and configure the Flask app.
+    """Factory function for Flask app, automatically detected by Flask.
 
     Arguments:
         test_config: mapping of app configuration for testing purposes
@@ -45,7 +45,6 @@ def create_app(test_config: Optional[dict] = None) -> Flask:
     create_instance_path(app)
     register_context_processors(app)
     register_blueprints(app)
-
     return app
 
 

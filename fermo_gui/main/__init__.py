@@ -2,4 +2,4 @@ from flask import Blueprint
 
 bp = Blueprint("main", __name__)
 
-from fermo_gui.main import routes
+from fermo_gui.main import routes_main

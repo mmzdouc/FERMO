@@ -5,5 +5,9 @@ from fermo_gui.main import bp
 
 @bp.route("/")
 def index():
-    """Set route to the index template."""
+    """Render the index (landing) page of fermo_gui
+
+    Returns:
+        The index.html page as string.
+    """
     return render_template("index.html")
