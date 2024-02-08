@@ -24,12 +24,12 @@ def test_help_valid(client):
 
 
 def test_forms_valid(client):
-    response = client.get("/start-analysis/")
+    response = client.get("/analysis/start_analysis")
     assert response.status_code == 200
 
 
 def test_processing_valid(client):
-    response = client.get("/start-analysis/processing/")
+    response = client.get("/analysis/job_submitted/")
     assert response.status_code == 200
 
 

@@ -1,4 +1,4 @@
-"""Routes for forms and data processing.
+"""Routes for pages related to data input and processing.
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -23,24 +23,24 @@ SOFTWARE.
 
 from flask import render_template
 
-from fermo_gui.forms import bp
+from fermo_gui.routes import bp
 
 
-@bp.route("/")
+@bp.route("/analysis/start_analysis")
 def start_analysis():
-    """Render the index page of the start analysis forms.
+    """Render start analysis page.
 
     Returns:
-        The rendered forms.html page as string
+        The rendered start_analysis.html page as string
     """
-    return render_template("forms/forms.html")
+    return render_template("start_analysis.html")
 
 
-@bp.route("/processing/")
-def processing():
-    """Render the processing page, serving as placeholder during calculation.
+@bp.route("/analysis/job_submitted/")
+def job_submitted():
+    """Render the job_submitted page, serving as placeholder during calculation.
 
     Returns:
-        The rendered processing.html page as string
+        The rendered job_submitted.html page as string
     """
-    return render_template("forms/processing.html")
+    return render_template("job_submitted.html")

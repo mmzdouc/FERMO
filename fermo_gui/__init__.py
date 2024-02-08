@@ -27,9 +27,7 @@ from typing import Optional
 
 from flask import Flask
 
-from fermo_gui.main import bp as main_bp
-from fermo_gui.forms import bp as forms_bp
-from fermo_gui.results import bp as results_bp
+from fermo_gui.routes import bp
 
 
 def create_app(test_config: Optional[dict] = None) -> Flask:
@@ -45,7 +43,7 @@ def create_app(test_config: Optional[dict] = None) -> Flask:
     configure_app(app, test_config)
     create_instance_path(app)
     register_context_processors(app)
-    register_blueprints(app)
+    app.register_blueprint(bp)
     return app
 
 
@@ -65,7 +63,7 @@ def configure_app(app: Flask, test_config: Optional[dict] = None):
 
 
 def create_instance_path(app: Flask):
-    """Create the instance path for the Flask app.
+    """Create the instance path for the Flask app if not available.
 
     Arguments:
         app: The Flask app instance
@@ -86,14 +84,3 @@ def register_context_processors(app: Flask):
     @app.context_processor
     def set_version() -> dict:
         return dict(version=metadata.version("fermo_gui"))
-
-
-def register_blueprints(app: Flask):
-    """Register blueprints for the Flask app.
-
-    Arguments:
-        app: The Flask app instance
-    """
-    app.register_blueprint(main_bp)
-    app.register_blueprint(forms_bp, url_prefix="/start-analysis")
-    app.register_blueprint(results_bp, url_prefix="/results")
