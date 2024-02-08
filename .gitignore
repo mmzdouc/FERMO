@@ -15,6 +15,9 @@ src/fermo/libraries/spec2vec_model_GNPS_15_12_2021.model.syn1neg.npy
 src/fermo/libraries/spec2vec_model_GNPS_15_12_2021.model.wv.vectors.npy
 src/fermo/libraries/ms2query_random_forest_model.onnx
 
+# Example data
+example_data/
+
 # Temporary files Dash
 cache/
 
