@@ -1,27 +1,15 @@
-# CUSTOM START #
+### CUSTOM START ###
 
 # pycharm
 .idea/
 
-# ms2query library files
-src/fermo/libraries/ALL_GNPS_210409_positive_processed_annotated_CF_NPC_classes.txt
-src/fermo/libraries/library_GNPS_15_12_2021_ms2ds_embeddings.pickle
-src/fermo/libraries/library_GNPS_15_12_2021_s2v_embeddings.pickle
-src/fermo/libraries/library_GNPS_15_12_2021.sqlite
-src/fermo/libraries/ms2ds_model_GNPS_15_12_2021.hdf5
-src/fermo/libraries/ms2query_random_forest_model.pickle
-src/fermo/libraries/spec2vec_model_GNPS_15_12_2021.model
-src/fermo/libraries/spec2vec_model_GNPS_15_12_2021.model.syn1neg.npy
-src/fermo/libraries/spec2vec_model_GNPS_15_12_2021.model.wv.vectors.npy
-src/fermo/libraries/ms2query_random_forest_model.onnx
-
-# Example data
+# Flask app
+fermo_gui/upload/
+flask_session/
+instance/
 example_data/
 
-# Temporary files Dash
-cache/
-
-# CUSTOM STOP #
+### CUSTOM STOP ###
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
