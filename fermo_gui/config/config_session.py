@@ -21,6 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from flask import Flask
+import redis
 
 
 def configure_session(app: Flask) -> Flask:
@@ -30,5 +31,5 @@ def configure_session(app: Flask) -> Flask:
         app: The Flask app instance
     """
     app.config["SESSION_PERMANENT"] = False
-    app.config["SESSION_TYPE"] = "filesystem"
+    app.config["SESSION_TYPE"] = "redis"
     return app

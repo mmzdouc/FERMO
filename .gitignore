@@ -5,7 +5,6 @@
 
 # Flask app
 fermo_gui/upload/
-flask_session/
 instance/
 example_data/
 
