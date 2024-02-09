@@ -27,7 +27,7 @@ from typing import Optional
 
 from flask import Flask
 
-from fermo_gui.config.extensions import mail_f, session_f
+from fermo_gui.config.extensions import mail, session, celery
 from fermo_gui.config.config_mail import configure_mail
 from fermo_gui.config.config_session import configure_session
 from fermo_gui.routes import bp
@@ -45,11 +45,13 @@ def create_app(test_config: Optional[dict] = None) -> Flask:
     app = Flask(__name__, instance_relative_config=True)
     app = configure_app(app, test_config)
 
-    session_f.init_app(app)
+    session.init_app(app)
     app = configure_session(app)
 
-    mail_f.init_app(app)
+    mail.init_app(app)
     app = configure_mail(app)
+
+    celery.init_app(app)
 
     create_instance_path(app)
     register_context_processors(app)
