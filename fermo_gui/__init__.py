@@ -27,6 +27,9 @@ from typing import Optional
 
 from flask import Flask
 
+from fermo_gui.config.extensions import mail_f, session_f
+from fermo_gui.config.config_mail import configure_mail
+from fermo_gui.config.config_session import configure_session
 from fermo_gui.routes import bp
 
 
@@ -40,14 +43,21 @@ def create_app(test_config: Optional[dict] = None) -> Flask:
         An instance of the Flask object
     """
     app = Flask(__name__, instance_relative_config=True)
-    configure_app(app, test_config)
+    app = configure_app(app, test_config)
+
+    session_f.init_app(app)
+    app = configure_session(app)
+
+    mail_f.init_app(app)
+    app = configure_mail(app)
+
     create_instance_path(app)
     register_context_processors(app)
     app.register_blueprint(bp)
     return app
 
 
-def configure_app(app: Flask, test_config: Optional[dict] = None):
+def configure_app(app: Flask, test_config: Optional[dict] = None) -> Flask:
     """Configure the Flask app.
 
     Arguments:
@@ -55,11 +65,15 @@ def configure_app(app: Flask, test_config: Optional[dict] = None):
         test_config: mapping of app configuration for testing purposes
     """
     app.config.from_mapping(SECRET_KEY="dev")
+    app.config["SECRET_KEY"] = "dev"
+    app.config["UPLOAD_FOLDER"] = "fermo_gui/upload/"
+    app.config["ALLOWED_EXTENSIONS"] = {"json", "csv", "mgf"}
 
     if test_config is None:
         app.config.from_pyfile("config.py", silent=True)
     else:
         app.config.from_mapping(test_config)
+    return app
 
 
 def create_instance_path(app: Flask):
