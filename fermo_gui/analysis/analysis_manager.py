@@ -1,4 +1,4 @@
-"""Sets the Flask Session configuration.
+"""Class to manage data analysis with fermo_core.
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -20,15 +20,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from flask import Flask
+from time import sleep
+
+from celery import shared_task
 
 
-def configure_session(app: Flask) -> Flask:
-    """Configure Session cache settings for intermediate data storage
+class FermoAnalysisManager:
+    """Organize logic related to fermo_core processing"""
 
-    Arguments:
-        app: The Flask app instance
-    """
-    app.config["SESSION_PERMANENT"] = False
-    app.config["SESSION_TYPE"] = "filesystem"
-    return app
+    @staticmethod
+    @shared_task(ignore_result=False)
+    def slow_add_dummy(x, y, job_id):
+        sleep(5)
+        return x + y

@@ -20,20 +20,43 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from datetime import datetime
+from typing import Union
 
-from flask import render_template
+from celery import uuid
+from flask import render_template, redirect, url_for, session, Response
 
+from fermo_gui.analysis.analysis_manager import FermoAnalysisManager as Manager
+from fermo_gui.forms.analysis_input_forms import AnalysisInput
 from fermo_gui.routes import bp
 
 
-@bp.route("/analysis/start_analysis")
-def start_analysis():
-    """Render start analysis page.
+@bp.route("/analysis/start_analysis", methods=["GET", "POST"])
+def start_analysis() -> Union[str, Response]:
+    """Render start analysis page, get and store data, init analysis.
 
     Returns:
         The rendered start_analysis.html page as string
     """
-    return render_template("start_analysis.html")
+    form = AnalysisInput()
+
+    if form.validate_on_submit():
+        task_id = uuid()
+        task = Manager().slow_add_dummy.apply_async(
+            kwargs={
+                "x": 2,
+                "y": 2,
+                "job_id": task_id,
+            },
+            task_id=task_id,
+        )
+
+        session["task_id"] = task.id
+        session["start_time"] = datetime.now().replace(microsecond=0)
+
+        return redirect(url_for("routes.job_submitted"))
+
+    return render_template("start_analysis.html", form=form)
 
 
 @bp.route("/analysis/job_submitted/")
@@ -43,4 +66,4 @@ def job_submitted():
     Returns:
         The rendered job_submitted.html page as string
     """
-    return render_template("job_submitted.html")
+    return render_template("job_submitted.html", session=session)

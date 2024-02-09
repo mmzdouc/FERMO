@@ -27,7 +27,8 @@ from typing import Optional
 
 from flask import Flask
 
-from fermo_gui.config.extensions import mail, session, celery
+from fermo_gui.config.extensions import mail, session
+from fermo_gui.config.config_celery import configure_celery
 from fermo_gui.config.config_mail import configure_mail
 from fermo_gui.config.config_session import configure_session
 from fermo_gui.routes import bp
@@ -44,14 +45,12 @@ def create_app(test_config: Optional[dict] = None) -> Flask:
     """
     app = Flask(__name__, instance_relative_config=True)
     app = configure_app(app, test_config)
+    app = configure_session(app)
+    app = configure_mail(app)
+    app = configure_celery(app)
 
     session.init_app(app)
-    app = configure_session(app)
-
     mail.init_app(app)
-    app = configure_mail(app)
-
-    celery.init_app(app)
 
     create_instance_path(app)
     register_context_processors(app)
@@ -66,7 +65,6 @@ def configure_app(app: Flask, test_config: Optional[dict] = None) -> Flask:
         app: The Flask app instance
         test_config: mapping of app configuration for testing purposes
     """
-    app.config.from_mapping(SECRET_KEY="dev")
     app.config["SECRET_KEY"] = "dev"
     app.config["UPLOAD_FOLDER"] = "fermo_gui/upload/"
     app.config["ALLOWED_EXTENSIONS"] = {"json", "csv", "mgf"}

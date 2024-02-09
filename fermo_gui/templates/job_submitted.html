@@ -3,6 +3,8 @@
 {% block content %}
     <span class="title"><h1>{% block title %} Job submitted {% endblock %}</h1></span>
     <div class="content">
-        <h2>This is the job submitted page, a placeholder during calculations.</h2>
+        <h5>Submitted: {{ session.get("start_time") }}</h5>
+        <h5>Job ID: {{ session.get("task_id") }}</h5>
+        <h5>Once the job is completed, you will be notified and/or the page will reload. </h5>
     </div>
 {% endblock %}

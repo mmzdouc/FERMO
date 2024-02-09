@@ -22,9 +22,6 @@ SOFTWARE.
 """
 from flask_mail import Mail
 from flask_session import Session
-from flask_execute import Celery
-
 
 mail = Mail()
 session = Session()
-celery = Celery()

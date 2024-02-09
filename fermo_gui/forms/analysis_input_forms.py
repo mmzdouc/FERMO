@@ -1,4 +1,4 @@
-"""Sets the Flask Session configuration.
+"""Class to manage data input forms for fermo data analysis
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -20,15 +20,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from flask import Flask
+from flask_wtf import FlaskForm
+from wtforms import SubmitField
 
 
-def configure_session(app: Flask) -> Flask:
-    """Configure Session cache settings for intermediate data storage
+class AnalysisInput(FlaskForm):
+    """Set class variables to act as fields of data input form."""
 
-    Arguments:
-        app: The Flask app instance
-    """
-    app.config["SESSION_PERMANENT"] = False
-    app.config["SESSION_TYPE"] = "filesystem"
-    return app
+    submit = SubmitField("Submit")
