@@ -59,6 +59,7 @@ def start_analysis() -> Union[str, Response]:
     task_id = uuid()
     Manager().create_upload_dir(current_app.config.get("UPLOAD_FOLDER"), task_id)
     session["task_id"] = task_id
+
     return render_template("start_analysis.html", form=form)
 
 
