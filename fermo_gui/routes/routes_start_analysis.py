@@ -24,7 +24,7 @@ from datetime import datetime
 from typing import Union
 
 from celery import uuid
-from flask import render_template, redirect, url_for, session, Response
+from flask import render_template, redirect, url_for, session, Response, current_app
 
 from fermo_gui.analysis.analysis_manager import FermoAnalysisManager as Manager
 from fermo_gui.forms.analysis_input_forms import AnalysisInput
@@ -41,8 +41,9 @@ def start_analysis() -> Union[str, Response]:
     form = AnalysisInput()
 
     if form.validate_on_submit():
-        task_id = uuid()
-        task = Manager().slow_add_dummy.apply_async(
+        task_id = session["task_id"]
+
+        Manager().slow_add_dummy.apply_async(
             kwargs={
                 "x": 2,
                 "y": 2,
@@ -51,11 +52,13 @@ def start_analysis() -> Union[str, Response]:
             task_id=task_id,
         )
 
-        session["task_id"] = task.id
         session["start_time"] = datetime.now().replace(microsecond=0)
 
         return redirect(url_for("routes.job_submitted"))
 
+    task_id = uuid()
+    Manager().create_upload_dir(current_app.config.get("UPLOAD_FOLDER"), task_id)
+    session["task_id"] = task_id
     return render_template("start_analysis.html", form=form)
 
 

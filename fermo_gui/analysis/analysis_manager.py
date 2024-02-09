@@ -20,6 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from pathlib import Path
 from time import sleep
 
 from celery import shared_task
@@ -27,6 +28,21 @@ from celery import shared_task
 
 class FermoAnalysisManager:
     """Organize logic related to fermo_core processing"""
+
+    @staticmethod
+    def create_upload_dir(location: str, task_id: str) -> Path:
+        """Create a task-specific directory for data upload
+
+        Arguments:
+            location: the location of the upload dir
+            task_id: the task identifier
+
+        Returns:
+            A Path object indicating the specific upload dir path
+        """
+        path = Path(location).joinpath(task_id)
+        path.mkdir()
+        return path
 
     @staticmethod
     @shared_task(ignore_result=False)
