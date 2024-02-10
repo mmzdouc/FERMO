@@ -1,4 +1,4 @@
-"""Routes for forms and data processing.
+"""Class to manage data analysis with fermo_core.
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -20,27 +20,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from pathlib import Path
+from time import sleep
 
-from flask import render_template
-
-from fermo_gui.forms import bp
-
-
-@bp.route("/")
-def start_analysis():
-    """Render the index page of the start analysis forms.
-
-    Returns:
-        The rendered forms.html page as string
-    """
-    return render_template("forms/forms.html")
+from celery import shared_task
 
 
-@bp.route("/processing/")
-def processing():
-    """Render the processing page, serving as placeholder during calculation.
+class FermoAnalysisManager:
+    """Organize logic related to fermo_core processing"""
 
-    Returns:
-        The rendered processing.html page as string
-    """
-    return render_template("forms/processing.html")
+    @staticmethod
+    def create_upload_dir(location: str, task_id: str) -> Path:
+        """Create a task-specific directory for data upload
+
+        Arguments:
+            location: the location of the upload dir
+            task_id: the task identifier
+
+        Returns:
+            A Path object indicating the specific upload dir path
+        """
+        path = Path(location).joinpath(task_id)
+        path.mkdir()
+        return path
+
+    @staticmethod
+    @shared_task(ignore_result=False)
+    def slow_add_dummy(x, y, job_id):
+        sleep(5)
+        return x + y

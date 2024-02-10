@@ -20,8 +20,9 @@ FERMO is licensed under the [MIT License](LICENSE.md).
 - Create a new virtual environment (e.g. with `conda`)
 - Install `python 3.11`
 - Install `fermo_gui` with `pip install -e '.[dev]'` (while in the main directory)
-- Initialize `pre-commit` with `pre-commit install`.
+- Initialize `pre-commit` with `pre-commit install`
 - Run the app with `flask --app fermo_gui run --debug` (while in the main directory)
+- In a separate CLI, run the Celery work queue with `elery -A make_celery worker --loglevel INFO` (while in the main directory)
 
 ### Contributing and Coding Style
 

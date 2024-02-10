@@ -14,7 +14,7 @@
       <header>
         <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-primary p-1">
           <div class="container-fluid px-5" style="font-size: 18px;">
-            <a class="navbar-brand" href="{{ url_for('main.index') }}">
+            <a class="navbar-brand" href="{{ url_for('routes.index') }}">
               <img src="{{ url_for('static', filename='/images/Fermo_logo.svg') }}"
                    alt="FERMO logo" width="150" height="40">
             </a>
@@ -29,19 +29,19 @@
             <div id="navbarSupportedContent" class="collapse navbar-collapse">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('forms.start_analysis') }}">Start Analysis</a>
+                  <a class="nav-link" href="{{ url_for('routes.start_analysis') }}">Start Analysis</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('results.example') }}">Example</a>
+                  <a class="nav-link" href="{{ url_for('routes.example') }}">Example</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('main.about') }}">About</a>
+                  <a class="nav-link" href="{{ url_for('routes.about') }}">About</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('main.contact') }}">Contact</a>
+                  <a class="nav-link" href="{{ url_for('routes.contact') }}">Contact</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('main.help') }}">Help</a>
+                  <a class="nav-link" href="{{ url_for('routes.help') }}">Help</a>
                 </li>
               </ul>
               <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">

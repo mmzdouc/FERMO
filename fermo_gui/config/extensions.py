@@ -1,4 +1,4 @@
-"""Routes for main pages, mostly static.
+"""Instantiates Flask extensions in a central place for convenient retrieval.
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -20,47 +20,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from flask_mail import Mail
+from flask_session import Session
 
-from flask import render_template
-
-from fermo_gui.main import bp
-
-
-@bp.route("/")
-def index():
-    """Render the index (landing) page of fermo_gui
-
-    Returns:
-        The index.html page as string.
-    """
-    return render_template("main/index.html")
-
-
-@bp.route("/about/")
-def about():
-    """Render the about page of fermo_gui
-
-    Returns:
-        The about.html page as string.
-    """
-    return render_template("main/about.html")
-
-
-@bp.route("/contact/")
-def contact():
-    """Render the contact page of fermo_gui
-
-    Returns:
-        The contact.html page as string.
-    """
-    return render_template("main/contact.html")
-
-
-@bp.route("/help/")
-def help():
-    """Render the help page of fermo_gui
-
-    Returns:
-        The help.html page as string.
-    """
-    return render_template("main/help.html")
+mail = Mail()
+session = Session()

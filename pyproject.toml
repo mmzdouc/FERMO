@@ -15,7 +15,11 @@ authors = [
 
 dependencies = [
     "jsonschema==4.19.0",
-    "Flask==3.0.1"
+    "Flask==3.0.1",
+    "Flask-WTF==1.2.1",
+    "celery[redis]==5.2.7",
+    "Flask-Session==0.6.0",
+    "Flask-Mail==0.9.1"
 ]
 
 [project.optional-dependencies]

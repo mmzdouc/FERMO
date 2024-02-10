@@ -1,4 +1,4 @@
-"""Routes for results pages.
+"""Class to manage data input forms for fermo data analysis
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -20,17 +20,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-
-from flask import render_template
-
-from fermo_gui.results import bp
+from flask_wtf import FlaskForm
+from wtforms import SubmitField
 
 
-@bp.route("/example/")
-def example():
-    """Render the example result dashboard page of fermo_gui
+class AnalysisInput(FlaskForm):
+    """Set class variables to act as fields of data input form."""
 
-    Returns:
-        The results.html page as string.
-    """
-    return render_template("results/example.html")
+    submit = SubmitField("Submit")

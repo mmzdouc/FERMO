@@ -27,9 +27,11 @@ from typing import Optional
 
 from flask import Flask
 
-from fermo_gui.main import bp as main_bp
-from fermo_gui.forms import bp as forms_bp
-from fermo_gui.results import bp as results_bp
+from fermo_gui.config.extensions import mail, session
+from fermo_gui.config.config_celery import configure_celery
+from fermo_gui.config.config_mail import configure_mail
+from fermo_gui.config.config_session import configure_session
+from fermo_gui.routes import bp
 
 
 def create_app(test_config: Optional[dict] = None) -> Flask:
@@ -42,30 +44,40 @@ def create_app(test_config: Optional[dict] = None) -> Flask:
         An instance of the Flask object
     """
     app = Flask(__name__, instance_relative_config=True)
-    configure_app(app, test_config)
+    app = configure_app(app, test_config)
+    app = configure_session(app)
+    app = configure_mail(app)
+    app = configure_celery(app)
+
+    session.init_app(app)
+    mail.init_app(app)
+
     create_instance_path(app)
     register_context_processors(app)
-    register_blueprints(app)
+    app.register_blueprint(bp)
     return app
 
 
-def configure_app(app: Flask, test_config: Optional[dict] = None):
+def configure_app(app: Flask, test_config: Optional[dict] = None) -> Flask:
     """Configure the Flask app.
 
     Arguments:
         app: The Flask app instance
         test_config: mapping of app configuration for testing purposes
     """
-    app.config.from_mapping(SECRET_KEY="dev")
+    app.config["SECRET_KEY"] = "dev"
+    app.config["UPLOAD_FOLDER"] = "fermo_gui/upload/"
+    app.config["ALLOWED_EXTENSIONS"] = {"json", "csv", "mgf"}
 
     if test_config is None:
         app.config.from_pyfile("config.py", silent=True)
     else:
         app.config.from_mapping(test_config)
+    return app
 
 
 def create_instance_path(app: Flask):
-    """Create the instance path for the Flask app.
+    """Create the instance path for the Flask app if not available.
 
     Arguments:
         app: The Flask app instance
@@ -86,14 +98,3 @@ def register_context_processors(app: Flask):
     @app.context_processor
     def set_version() -> dict:
         return dict(version=metadata.version("fermo_gui"))
-
-
-def register_blueprints(app: Flask):
-    """Register blueprints for the Flask app.
-
-    Arguments:
-        app: The Flask app instance
-    """
-    app.register_blueprint(main_bp)
-    app.register_blueprint(forms_bp, url_prefix="/start-analysis")
-    app.register_blueprint(results_bp, url_prefix="/results")
