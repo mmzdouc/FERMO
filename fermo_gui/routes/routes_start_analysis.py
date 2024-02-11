@@ -23,10 +23,10 @@ SOFTWARE.
 from datetime import datetime
 from typing import Union
 
-from celery import uuid
 from flask import render_template, redirect, url_for, session, Response, current_app
 
-from fermo_gui.analysis.analysis_manager import FermoAnalysisManager as Manager
+from fermo_gui.analysis.analysis_manager import start_fermo_core
+from fermo_gui.analysis.general_manager import GeneralManager as GenManager
 from fermo_gui.forms.analysis_input_forms import AnalysisInput
 from fermo_gui.routes import bp
 
@@ -41,24 +41,26 @@ def start_analysis() -> Union[str, Response]:
     form = AnalysisInput()
 
     if form.validate_on_submit():
-        task_id = session["task_id"]
-
-        Manager().slow_add_dummy.apply_async(
-            kwargs={
-                "x": 2,
-                "y": 2,
-                "job_id": task_id,
-            },
-            task_id=task_id,
+        GenManager.store_data_as_json(
+            session["task_upload_path"], session["task_id"], {"email": form.email.data}
         )
 
+        start_fermo_core.apply_async(
+            kwargs={
+                "job_id": session["task_id"],
+                "upload_path": session["task_upload_path"],
+            },
+            task_id=session["task_id"],
+        )
         session["start_time"] = datetime.now().replace(microsecond=0)
-
         return redirect(url_for("routes.job_submitted"))
 
-    task_id = uuid()
-    Manager().create_upload_dir(current_app.config.get("UPLOAD_FOLDER"), task_id)
+    task_id = GenManager().create_uuid(current_app.config.get("UPLOAD_FOLDER"))
+    task_upload_path = GenManager().create_upload_dir(
+        current_app.config.get("UPLOAD_FOLDER"), task_id
+    )
     session["task_id"] = task_id
+    session["task_upload_path"] = task_upload_path
 
     return render_template("start_analysis.html", form=form)
 

@@ -4,9 +4,13 @@
     <span class="title"><h1>{% block title %} Start Analysis {% endblock %}</h1></span>
     <div class="content">
         <h2>This is the start analysis page with a bunch of forms for data input</h2>
-        <form method="post" action="{{ url_for('routes.start_analysis') }}">
-            {{ form.hidden_tag() }}
-            {{ form.submit() }}
+        {% from "_formhelpers.html" import render_field %}
+        <form method=post action="{{ url_for('routes.start_analysis') }}">
+          {{ form.hidden_tag() }}
+          <dl>
+            {{ render_field(form.email) }}
+          </dl>
+          {{ form.submit() }}
         </form>
     </div>
 {% endblock %}

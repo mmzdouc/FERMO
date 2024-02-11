@@ -1,4 +1,4 @@
-"""Class to manage data input forms for fermo data analysis
+"""Manages all dashboard functionality
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -20,19 +20,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField
-from wtforms.validators import Email, DataRequired
-
-
-class AnalysisInput(FlaskForm):
-    """Set class variables to act as fields of data input form."""
-
-    email = StringField(
-        label="Email Address",
-        validators=[
-            Email(),
-            DataRequired(),
-        ],
-    )
-    submit = SubmitField("Submit")
+pass
