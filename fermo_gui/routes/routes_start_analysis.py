@@ -23,7 +23,15 @@ SOFTWARE.
 from datetime import datetime
 from typing import Union
 
-from flask import render_template, redirect, url_for, session, Response, current_app
+from flask import (
+    render_template,
+    redirect,
+    url_for,
+    session,
+    Response,
+    current_app,
+    request,
+)
 
 from fermo_gui.analysis.analysis_manager import start_fermo_core
 from fermo_gui.analysis.general_manager import GeneralManager as GenManager
@@ -40,6 +48,15 @@ def start_analysis() -> Union[str, Response]:
     """
     form = AnalysisInput()
 
+    if request.method == "GET":
+        task_id = GenManager().create_uuid(current_app.config.get("UPLOAD_FOLDER"))
+        task_upload_path = GenManager().create_upload_dir(
+            current_app.config.get("UPLOAD_FOLDER"), task_id
+        )
+        session["task_id"] = task_id
+        session["task_upload_path"] = task_upload_path
+        return render_template("start_analysis.html", form=form)
+
     if form.validate_on_submit():
         GenManager.store_data_as_json(
             session["task_upload_path"], session["task_id"], {"email": form.email.data}
@@ -54,15 +71,6 @@ def start_analysis() -> Union[str, Response]:
         )
         session["start_time"] = datetime.now().replace(microsecond=0)
         return redirect(url_for("routes.job_submitted"))
-
-    task_id = GenManager().create_uuid(current_app.config.get("UPLOAD_FOLDER"))
-    task_upload_path = GenManager().create_upload_dir(
-        current_app.config.get("UPLOAD_FOLDER"), task_id
-    )
-    session["task_id"] = task_id
-    session["task_upload_path"] = task_upload_path
-
-    return render_template("start_analysis.html", form=form)
 
 
 @bp.route("/analysis/job_submitted/")
