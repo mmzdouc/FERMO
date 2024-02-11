@@ -23,6 +23,7 @@ SOFTWARE.
 from datetime import datetime
 from typing import Union
 
+from celery.result import AsyncResult
 from flask import (
     render_template,
     redirect,
@@ -69,15 +70,22 @@ def start_analysis() -> Union[str, Response]:
             },
             task_id=session["task_id"],
         )
+
         session["start_time"] = datetime.now().replace(microsecond=0)
+
         return redirect(url_for("routes.job_submitted"))
 
 
-@bp.route("/analysis/job_submitted/")
+@bp.route("/analysis/job_submitted/", methods=["GET"])
 def job_submitted():
     """Render the job_submitted page, serving as placeholder during calculation.
 
     Returns:
         The rendered job_submitted.html page as string
     """
-    return render_template("job_submitted.html", session=session)
+    job_id = session.get("task_id")
+    result = AsyncResult(job_id)
+    if result.ready():
+        return redirect(url_for("routes.task_result", job_id=job_id))
+    else:
+        return render_template("job_submitted.html", session=session)

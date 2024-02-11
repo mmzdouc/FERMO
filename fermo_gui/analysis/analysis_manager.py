@@ -57,7 +57,7 @@ class FermoAnalysisManager:
     @staticmethod
     def placeholder():
         """Placeholder method, replace once fermo_core is available."""
-        sleep(5)
+        sleep(10)
 
     @staticmethod
     def email_notification_placeholder(email: str, job_id: str):

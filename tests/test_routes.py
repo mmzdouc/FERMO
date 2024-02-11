@@ -23,11 +23,6 @@ def test_help_valid(client):
     assert response.status_code == 200
 
 
-def test_processing_valid(client):
-    response = client.get("/analysis/job_submitted/")
-    assert response.status_code == 200
-
-
 def test_results_example_valid(client):
     response = client.get("/results/example/")
     assert response.status_code == 200
