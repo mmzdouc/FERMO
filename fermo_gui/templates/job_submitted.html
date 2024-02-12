@@ -6,7 +6,6 @@
         <h5>Submitted: {{ session.get("start_time") }}</h5>
         <h5>Job ID: {{ session.get("task_id") }}</h5>
         <h5>Once the job is completed, you will be notified and/or the page will reload. </h5>
-        <button id="startJobButton">Check Job Status</button>
     </div>
     <script type="text/javascript" charset="utf-8">
         var socket = io();
@@ -27,8 +26,10 @@
             }
         });
 
-        document.getElementById('startJobButton').addEventListener('click', function() {
+        function getStatus() {
             socket.emit('start_job', {job_id: {{ session.get("task_id")|tojson|safe }}});
-        });
+        }
+        setInterval(getStatus, 5000);
+        getStatus();
     </script>
 {% endblock %}
