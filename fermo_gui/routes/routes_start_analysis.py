@@ -23,10 +23,20 @@ SOFTWARE.
 from datetime import datetime
 from typing import Union
 
-from celery import uuid
-from flask import render_template, redirect, url_for, session, Response, current_app
+from celery.result import AsyncResult
+from flask import (
+    render_template,
+    redirect,
+    url_for,
+    session,
+    Response,
+    current_app,
+    request,
+)
 
-from fermo_gui.analysis.analysis_manager import FermoAnalysisManager as Manager
+from fermo_gui.analysis.analysis_manager import start_fermo_core
+from fermo_gui.analysis.general_manager import GeneralManager as GenManager
+from fermo_gui.config.extensions import socketio
 from fermo_gui.forms.analysis_input_forms import AnalysisInput
 from fermo_gui.routes import bp
 
@@ -40,30 +50,36 @@ def start_analysis() -> Union[str, Response]:
     """
     form = AnalysisInput()
 
-    if form.validate_on_submit():
-        task_id = session["task_id"]
+    if request.method == "GET":
+        task_id = GenManager().create_uuid(current_app.config.get("UPLOAD_FOLDER"))
+        task_upload_path = GenManager().create_upload_dir(
+            current_app.config.get("UPLOAD_FOLDER"), task_id
+        )
+        session["task_id"] = task_id
+        session["task_upload_path"] = task_upload_path
+        return render_template("start_analysis.html", form=form)
 
-        Manager().slow_add_dummy.apply_async(
+    if form.validate_on_submit():
+        GenManager.store_data_as_json(
+            session["task_upload_path"],
+            f"{session['task_id']}.json",
+            {"email": form.email.data},
+        )
+
+        start_fermo_core.apply_async(
             kwargs={
-                "x": 2,
-                "y": 2,
-                "job_id": task_id,
+                "job_id": session["task_id"],
+                "upload_path": session["task_upload_path"],
             },
-            task_id=task_id,
+            task_id=session["task_id"],
         )
 
         session["start_time"] = datetime.now().replace(microsecond=0)
-
+        session["root_url"] = request.base_url.replace("/analysis/start_analysis", "")
         return redirect(url_for("routes.job_submitted"))
 
-    task_id = uuid()
-    Manager().create_upload_dir(current_app.config.get("UPLOAD_FOLDER"), task_id)
-    session["task_id"] = task_id
 
-    return render_template("start_analysis.html", form=form)
-
-
-@bp.route("/analysis/job_submitted/")
+@bp.route("/analysis/job_submitted/", methods=["GET"])
 def job_submitted():
     """Render the job_submitted page, serving as placeholder during calculation.
 
@@ -71,3 +87,24 @@ def job_submitted():
         The rendered job_submitted.html page as string
     """
     return render_template("job_submitted.html", session=session)
+
+
+@socketio.on("startup_event")
+def handle_startup_message(data):
+    print("received json: " + str(data))
+
+
+@socketio.on("start_job")
+def handle_start_job(data):
+    try:
+        result = AsyncResult(data.get("job_id"))
+        outcome = result.result if result.ready() else None
+        match outcome:
+            case True:
+                socketio.emit("job_status", {"status": "job_successful"})
+            case None:
+                socketio.emit("job_status", {"status": "job_running"})
+            case False:
+                socketio.emit("job_status", {"status": "job_failed"})
+    except ValueError:
+        socketio.emit("job_status", {"status": "job_not_found"})

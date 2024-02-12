@@ -4,9 +4,9 @@
 .idea/
 
 # Flask app
-fermo_gui/upload/
 instance/
-example_data/
+fermo_gui/upload/*
+!fermo_gui/upload/example
 
 ### CUSTOM STOP ###
 

@@ -27,7 +27,7 @@ from typing import Optional
 
 from flask import Flask
 
-from fermo_gui.config.extensions import mail, session
+from fermo_gui.config.extensions import mail, session, socketio
 from fermo_gui.config.config_celery import configure_celery
 from fermo_gui.config.config_mail import configure_mail
 from fermo_gui.config.config_session import configure_session
@@ -51,6 +51,7 @@ def create_app(test_config: Optional[dict] = None) -> Flask:
 
     session.init_app(app)
     mail.init_app(app)
+    socketio.init_app(app)
 
     create_instance_path(app)
     register_context_processors(app)
@@ -67,7 +68,7 @@ def configure_app(app: Flask, test_config: Optional[dict] = None) -> Flask:
     """
     app.config["SECRET_KEY"] = "dev"
     app.config["UPLOAD_FOLDER"] = "fermo_gui/upload/"
-    app.config["ALLOWED_EXTENSIONS"] = {"json", "csv", "mgf"}
+    app.config["ALLOWED_EXTENSIONS"] = {"json", "csv", "mgf", "session"}
 
     if test_config is None:
         app.config.from_pyfile("config.py", silent=True)

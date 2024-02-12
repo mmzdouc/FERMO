@@ -20,16 +20,66 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from flask import render_template
+from pathlib import Path
+from typing import Union
 
+from flask import render_template, current_app, request, redirect, url_for, Response
+
+from fermo_gui.analysis.general_manager import GeneralManager
 from fermo_gui.routes import bp
 
 
-@bp.route("/results/example/")
-def example():
-    """Render the example result dashboard page of fermo_gui
+@bp.route("/results/job_failed/<job_id>/")
+def job_failed(job_id: str) -> str:
+    """Render the job_failed html.
+
+    Arguments:
+        job_id: the job identifier
 
     Returns:
-        The example.html page as string.
+        The job_failed page for the job ID
     """
-    return render_template("example.html")
+    return render_template("job_failed.html", data={"task_id": job_id})
+
+
+@bp.route("/results/job_not_found/<job_id>/")
+def job_not_found(job_id: str) -> str:
+    """Render the job_not_found page.
+
+    Arguments:
+        job_id: the job identifier
+
+    Returns:
+        The job_not_found page for the job ID
+    """
+    return render_template("job_not_found.html", data={"task_id": job_id})
+
+
+@bp.route("/results/<job_id>/", methods=["GET", "POST"])
+def task_result(job_id: str) -> Union[str, Response]:
+    """Render the result dashboard page for the given job id.
+
+    Arguments:
+        job_id: the job identifier provided by the URL
+
+    Returns:
+        The result page or job_not_found
+
+    Notes: All backend dashboard functionality should be called from
+    fermo_gui.analysis.dashboard_manager
+    """
+    try:
+        data = GeneralManager().read_data_from_json(
+            str(Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id)),
+            f"{job_id}.session",
+        )
+    except FileNotFoundError:
+        return redirect(url_for("routes.job_not_found", job_id=job_id))
+
+    if request.method == "GET":
+        # TODO(HEA, MMZ, 11.2.24): here comes the GET functionality (dashboard buildup)
+        return render_template("dashboard.html", data=data)
+
+    elif request.method == "POST":
+        # TODO(HEA, MMZ, 11.2.24): here comes the POST functionality (triggers)
+        return render_template("dashboard.html", data=data)

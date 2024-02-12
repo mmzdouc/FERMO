@@ -19,7 +19,9 @@ dependencies = [
     "Flask-WTF==1.2.1",
     "celery[redis]==5.2.7",
     "Flask-Session==0.6.0",
-    "Flask-Mail==0.9.1"
+    "Flask-Mail==0.9.1",
+    "email-validator==2.1.0.post1",
+    "Flask-SocketIO==5.3.6"
 ]
 
 [project.optional-dependencies]

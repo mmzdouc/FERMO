@@ -7,4 +7,33 @@
         <h5>Job ID: {{ session.get("task_id") }}</h5>
         <h5>Once the job is completed, you will be notified and/or the page will reload. </h5>
     </div>
+    <script type="text/javascript" charset="utf-8">
+        // Uses socket.io to poll for job status via getStatus()
+        var socket = io();
+
+        // Test function to verify connection to SocketIO (for debugging purposes)
+        socket.on('connect', function() {
+            socket.emit('startup_event', {data: 'Connected to SocketIO.'});
+        });
+
+        // Responds to poll return message with wait or redirects, depending on outcome
+        socket.on('job_status', function(data) {
+            if (data.status === 'job_successful') {
+                window.location.href = "{{ session.get('root_url') }}/results/{{ session.get('task_id') }}/";
+            } else if (data.status === 'job_running') {
+                // pass and wait for next cycle
+            } else if (data.status === 'job_not_found') {
+                window.location.href = "{{ session.get('root_url') }}/results/job_not_found/{{ session.get('task_id') }}/";
+            } else {
+                window.location.href = "{{ session.get('root_url') }}/results/job_failed/{{ session.get('task_id') }}/";
+            }
+        });
+
+        // Polling function; triggered every n seconds. Requests status update.
+        function getStatus() {
+            socket.emit('start_job', {job_id: {{ session.get("task_id")|tojson|safe }}});
+        }
+        setInterval(getStatus, 5000);
+        getStatus();
+    </script>
 {% endblock %}
