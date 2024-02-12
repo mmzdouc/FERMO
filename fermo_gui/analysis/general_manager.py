@@ -70,7 +70,7 @@ class GeneralManager:
             params: the specified user-provided parameters
         """
         location = Path(location)
-        with open(location.joinpath(filename).with_suffix(".json"), "w") as outfile:
+        with open(location.joinpath(filename), "w") as outfile:
             outfile.write(json.dumps(params, indent=4, ensure_ascii=False))
 
     @staticmethod
@@ -82,6 +82,6 @@ class GeneralManager:
             filename: the filename identifier
         """
         location = Path(location)
-        with open(location.joinpath(filename).with_suffix(".json")) as infile:
+        with open(location.joinpath(filename)) as infile:
             params = json.load(infile)
         return params

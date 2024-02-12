@@ -68,7 +68,7 @@ def configure_app(app: Flask, test_config: Optional[dict] = None) -> Flask:
     """
     app.config["SECRET_KEY"] = "dev"
     app.config["UPLOAD_FOLDER"] = "fermo_gui/upload/"
-    app.config["ALLOWED_EXTENSIONS"] = {"json", "csv", "mgf"}
+    app.config["ALLOWED_EXTENSIONS"] = {"json", "csv", "mgf", "session"}
 
     if test_config is None:
         app.config.from_pyfile("config.py", silent=True)

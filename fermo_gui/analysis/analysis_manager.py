@@ -38,16 +38,21 @@ def start_fermo_core(job_id: str, upload_path: str):
     Arguments:
         job_id: links input and output of fermo_core
         upload_path: stores input and output
+
+    Returns:
+        True if job
     """
     try:
-        params = GeneralManager().read_data_from_json(upload_path, job_id)
-
+        params = GeneralManager().read_data_from_json(upload_path, f"{job_id}.json")
         manager = FermoAnalysisManager()
         manager.placeholder()
         manager.email_notification_placeholder(params["email"], job_id)
+        # TODO(MMZ 12.2.24): Dump the result as job_id.session
         return True
     except Exception as e:
         print(e)
+        # TODO(MMZ 12.2.24): add proper error handling; dump the log in the
+        #  user-folder for display (as job_id.log)
         return False
 
 

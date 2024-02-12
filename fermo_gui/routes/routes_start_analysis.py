@@ -61,7 +61,9 @@ def start_analysis() -> Union[str, Response]:
 
     if form.validate_on_submit():
         GenManager.store_data_as_json(
-            session["task_upload_path"], session["task_id"], {"email": form.email.data}
+            session["task_upload_path"],
+            f"{session['task_id']}.json",
+            {"email": form.email.data},
         )
 
         start_fermo_core.apply_async(

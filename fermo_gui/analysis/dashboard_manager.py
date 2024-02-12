@@ -20,4 +20,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-pass
+
+
+class DashboardManager:
+    """Organize general functionality such as data management"""
+
+    pass
+    # TODO(MMZ HEA 12.2.24): add the GET and POST functionality of the dashboard
