@@ -22,10 +22,32 @@ SOFTWARE.
 """
 from pathlib import Path
 
-from flask import render_template, current_app, request
+from flask import render_template, current_app, request, redirect, url_for, session
 
 from fermo_gui.analysis.general_manager import GeneralManager
 from fermo_gui.routes import bp
+
+
+@bp.route("/results/job_failed/")
+def job_failed():
+    """Render the job_failed html.
+
+    Returns:
+        The job_failed page
+    """
+    return render_template("job_failed.html", data={"task_id": session.get("task_id")})
+
+
+@bp.route("/results/job_not_found/")
+def job_not_found():
+    """Render the job_not_found page.
+
+    Returns:
+        The job_not_found page
+    """
+    return render_template(
+        "job_not_found.html", data={"task_id": session.get("task_id")}
+    )
 
 
 @bp.route("/results/<job_id>/", methods=["GET", "POST"])
@@ -43,7 +65,7 @@ def task_result(job_id: str):
             str(Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id)), job_id
         )
     except FileNotFoundError:
-        return render_template("job_not_found.html", data={"task_id": job_id})
+        return redirect(url_for("routes.job_not_found"))
 
     if request.method == "GET":
         # TODO(HEA, MMZ, 11.2.24): here comes the GET functionality (dashboard buildup)

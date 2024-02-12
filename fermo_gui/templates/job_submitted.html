@@ -5,6 +5,30 @@
     <div class="content">
         <h5>Submitted: {{ session.get("start_time") }}</h5>
         <h5>Job ID: {{ session.get("task_id") }}</h5>
-        <h5>Once the job is completed, you will be notified and/or the page will redirect to the results.</h5>
+        <h5>Once the job is completed, you will be notified and/or the page will reload. </h5>
+        <button id="startJobButton">Check Job Status</button>
     </div>
+    <script type="text/javascript" charset="utf-8">
+        var socket = io();
+
+        socket.on('connect', function() {
+            socket.emit('startup_event', {data: 'Connected to SocketIO.'});
+        });
+
+        socket.on('job_status', function(data) {
+            if (data.status === 'job_successful') {
+                window.location.href = "{{ session.get('root_url') }}/results/{{ session.get('task_id') }}/";
+            } else if (data.status === 'job_running') {
+                // pass
+            } else if (data.status === 'job_not_found') {
+                window.location.href = "{{ session.get('root_url') }}/results/job_not_found/";
+            } else {
+                window.location.href = "{{ session.get('root_url') }}/results/job_failed/";
+            }
+        });
+
+        document.getElementById('startJobButton').addEventListener('click', function() {
+            socket.emit('start_job', {job_id: {{ session.get("task_id")|tojson|safe }}});
+        });
+    </script>
 {% endblock %}

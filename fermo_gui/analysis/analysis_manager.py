@@ -39,14 +39,16 @@ def start_fermo_core(job_id: str, upload_path: str):
         job_id: links input and output of fermo_core
         upload_path: stores input and output
     """
-    params = GeneralManager().read_data_from_json(upload_path, job_id)
+    try:
+        params = GeneralManager().read_data_from_json(upload_path, job_id)
 
-    manager = FermoAnalysisManager()
-    manager.placeholder()
-    manager.email_notification_placeholder(params["email"], job_id)
-
-    # have one big try: except here; return different results based on outcome
-    # start replacing with real code
+        manager = FermoAnalysisManager()
+        manager.placeholder()
+        manager.email_notification_placeholder(params["email"], job_id)
+        return True
+    except Exception as e:
+        print(e)
+        return False
 
 
 class FermoAnalysisManager:

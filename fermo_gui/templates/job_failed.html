@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <span class="title"><h1>{% block title %} Job failed {% endblock %}</h1></span>
+    <div class="content">
+        <h5>The job with the ID '{{ data.get("task_id") }}' failed.</h5>
+        <h5>See below for a log which may give insights why the job failed.</h5>
+    </div>
+{% endblock %}

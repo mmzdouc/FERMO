@@ -36,6 +36,7 @@ from flask import (
 
 from fermo_gui.analysis.analysis_manager import start_fermo_core
 from fermo_gui.analysis.general_manager import GeneralManager as GenManager
+from fermo_gui.config.extensions import socketio
 from fermo_gui.forms.analysis_input_forms import AnalysisInput
 from fermo_gui.routes import bp
 
@@ -72,7 +73,7 @@ def start_analysis() -> Union[str, Response]:
         )
 
         session["start_time"] = datetime.now().replace(microsecond=0)
-
+        session["root_url"] = request.base_url.replace("/analysis/start_analysis", "")
         return redirect(url_for("routes.job_submitted"))
 
 
@@ -83,9 +84,25 @@ def job_submitted():
     Returns:
         The rendered job_submitted.html page as string
     """
-    job_id = session.get("task_id")
-    result = AsyncResult(job_id)
-    if result.ready():
-        return redirect(url_for("routes.task_result", job_id=job_id))
-    else:
-        return render_template("job_submitted.html", session=session)
+    return render_template("job_submitted.html", session=session)
+
+
+@socketio.on("startup_event")
+def handle_startup_message(data):
+    print("received json: " + str(data))
+
+
+@socketio.on("start_job")
+def handle_start_job(data):
+    try:
+        result = AsyncResult(data.get("job_id"))
+        outcome = result.result if result.ready() else None
+        match outcome:
+            case True:
+                socketio.emit("job_status", {"status": "job_successful"})
+            case None:
+                socketio.emit("job_status", {"status": "job_running"})
+            case False:
+                socketio.emit("job_status", {"status": "job_failed"})
+    except ValueError:
+        socketio.emit("job_status", {"status": "job_not_found"})

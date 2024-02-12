@@ -22,6 +22,8 @@ SOFTWARE.
 """
 from flask_mail import Mail
 from flask_session import Session
+from flask_socketio import SocketIO
 
 mail = Mail()
 session = Session()
+socketio = SocketIO()
