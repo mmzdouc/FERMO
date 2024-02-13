@@ -63,7 +63,7 @@ def task_result(job_id: str) -> Union[str, Response]:
         job_id: the job identifier provided by the URL
 
     Returns:
-        The result page or job_not_found
+        The dashboard page or the job_not_found page
 
     Notes: All backend dashboard functionality should be called from
     fermo_gui.analysis.dashboard_manager
@@ -71,7 +71,7 @@ def task_result(job_id: str) -> Union[str, Response]:
     try:
         data = GeneralManager().read_data_from_json(
             str(Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id)),
-            f"{job_id}.session",
+            f"{job_id}.session.json",
         )
     except FileNotFoundError:
         return redirect(url_for("routes.job_not_found", job_id=job_id))

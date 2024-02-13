@@ -43,16 +43,34 @@ def start_fermo_core(job_id: str, upload_path: str):
         True if job
     """
     try:
-        params = GeneralManager().read_data_from_json(upload_path, f"{job_id}.json")
+        params = GeneralManager().read_data_from_json(
+            upload_path, f"{job_id}.params.json"
+        )
         manager = FermoAnalysisManager()
         manager.placeholder()
         manager.email_notification_placeholder(params["email"], job_id)
-        # TODO(MMZ 12.2.24): Dump the result as job_id.session
+        # TODO(MMZ 12.2.24): Dump the result as job_id.session.json - use fermo_core
+        #  infrastructure instead of GeneralManager
+        GeneralManager().store_data_as_json(
+            upload_path, f"{job_id}.session.json", {"data": "dummy data"}
+        )  # TODO(MMZ 13.2.24): replace placeholder session data dump
+        GeneralManager().store_data_as_json(
+            upload_path,
+            f"{job_id}.log.json",
+            {
+                "message log": [
+                    "log step1: this happened first",
+                    "log step2: this happened second",
+                    "log step3: this happened third",
+                    "log step4: WARNING",
+                ]
+            },
+        )  # TODO(MMZ 13.2.24): replace placeholder log dump
         return True
     except Exception as e:
         print(e)
         # TODO(MMZ 12.2.24): add proper error handling; dump the log in the
-        #  user-folder for display (as job_id.log)
+        #  user-folder for display (as job_id.log) on the job_failed html page
         return False
 
 
@@ -64,7 +82,7 @@ class FermoAnalysisManager:
     @staticmethod
     def placeholder():
         """Placeholder method, replace once fermo_core is available."""
-        sleep(10)
+        sleep(5)
 
     @staticmethod
     def email_notification_placeholder(email: str, job_id: str):

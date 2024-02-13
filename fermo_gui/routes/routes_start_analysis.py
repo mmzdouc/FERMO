@@ -60,11 +60,16 @@ def start_analysis() -> Union[str, Response]:
         return render_template("start_analysis.html", form=form)
 
     if form.validate_on_submit():
+        data = {"email": form.email.data}
+
         GenManager.store_data_as_json(
             session["task_upload_path"],
-            f"{session['task_id']}.json",
-            {"email": form.email.data},
+            f"{session['task_id']}.params.json",
+            data,
         )
+
+        # TODO(MMZ 13.2.24): simplify start by providing a dictionray with the args
+        #  to use in start_fermo_core()
 
         start_fermo_core.apply_async(
             kwargs={
