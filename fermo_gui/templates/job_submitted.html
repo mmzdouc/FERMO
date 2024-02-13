@@ -4,7 +4,9 @@
     <span class="title"><h1>{% block title %} Job submitted {% endblock %}</h1></span>
     <div class="content">
         <h5>Job ID: {{ job_data.get("task_id") }}</h5>
-        <h5>Once the job is completed, you will be notified and/or the page will reload. </h5>
+        <h5>Once the job is completed, this site will automatically redirect to the results.</h5>
+        <h5>The results will be made available under: <a href="{{ job_data.get('root_url') }}/results/{{ job_data.get('task_id') }}/">{{ job_data.get('root_url') }}/results/{{ job_data.get('task_id') }}/</a></h5>
+        <h5>If you have specified an email, you will be notified (provided that FERMO is running as an online application).</h5>
     </div>
     <script type="text/javascript" charset="utf-8">
         // Uses socket.io to poll for job status via getStatus()
