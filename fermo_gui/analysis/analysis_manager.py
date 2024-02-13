@@ -32,31 +32,32 @@ from fermo_gui.config.extensions import mail
 
 
 @shared_task(ignore_result=False)
-def start_fermo_core(job_id: str, upload_path: str):
+def start_fermo_core(data: dict) -> bool:
     """Start fermo_core analysis via FermoAnalysisManager
 
     Arguments:
-        job_id: links input and output of fermo_core
-        upload_path: stores input and output
+        data: a dict containing data for running of the job
 
     Returns:
-        True if job
+        True if job successful, False if error was raised
     """
     try:
         params = GeneralManager().read_data_from_json(
-            upload_path, f"{job_id}.params.json"
+            data.get("upload_path"), f"{data.get('job_id')}.params.json"
         )
         manager = FermoAnalysisManager()
         manager.placeholder()
-        manager.email_notification_placeholder(params["email"], job_id)
+        manager.email_notification_placeholder(params["email"], data.get("job_id"))
         # TODO(MMZ 12.2.24): Dump the result as job_id.session.json - use fermo_core
         #  infrastructure instead of GeneralManager
         GeneralManager().store_data_as_json(
-            upload_path, f"{job_id}.session.json", {"data": "dummy data"}
+            data.get("upload_path"),
+            f"{data.get('job_id')}.session.json",
+            {"data": "dummy data"},
         )  # TODO(MMZ 13.2.24): replace placeholder session data dump
         GeneralManager().store_data_as_json(
-            upload_path,
-            f"{job_id}.log.json",
+            data.get("upload_path"),
+            f"{data.get('job_id')}.log.json",
             {
                 "message_log": [
                     "log step1: this happened first",

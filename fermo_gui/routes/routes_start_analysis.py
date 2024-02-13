@@ -68,14 +68,13 @@ def start_analysis() -> Union[str, Response]:
             form_data,
         )
 
-        # TODO(MMZ 13.2.24): simplify start by providing a dictionary with the args
-        #  to use in start_fermo_core()
+        data = {
+            "job_id": session["task_id"],
+            "upload_path": session["task_upload_path"],
+        }
 
         start_fermo_core.apply_async(
-            kwargs={
-                "job_id": session["task_id"],
-                "upload_path": session["task_upload_path"],
-            },
+            kwargs={"data": data},
             task_id=session["task_id"],
         )
         return redirect(url_for("routes.job_submitted", job_id=session["task_id"]))
