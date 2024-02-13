@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from datetime import datetime
+from pathlib import Path
 from typing import Union
 
 from celery.result import AsyncResult
@@ -60,15 +60,15 @@ def start_analysis() -> Union[str, Response]:
         return render_template("start_analysis.html", form=form)
 
     if form.validate_on_submit():
-        data = {"email": form.email.data}
+        form_data = {"email": form.email.data}
 
         GenManager.store_data_as_json(
             session["task_upload_path"],
             f"{session['task_id']}.params.json",
-            data,
+            form_data,
         )
 
-        # TODO(MMZ 13.2.24): simplify start by providing a dictionray with the args
+        # TODO(MMZ 13.2.24): simplify start by providing a dictionary with the args
         #  to use in start_fermo_core()
 
         start_fermo_core.apply_async(
@@ -78,38 +78,59 @@ def start_analysis() -> Union[str, Response]:
             },
             task_id=session["task_id"],
         )
-
-        session["start_time"] = datetime.now().replace(microsecond=0)
-        session["root_url"] = request.base_url.replace("/analysis/start_analysis", "")
-        return redirect(url_for("routes.job_submitted"))
+        return redirect(url_for("routes.job_submitted", job_id=session["task_id"]))
 
 
-@bp.route("/analysis/job_submitted/", methods=["GET"])
-def job_submitted():
+@bp.route("/analysis/job_submitted/<job_id>/", methods=["GET"])
+def job_submitted(job_id):
     """Render the job_submitted page, serving as placeholder during calculation.
+
+    Arguments:
+        job_id: The job id to check for
 
     Returns:
         The rendered job_submitted.html page as string
     """
-    return render_template("job_submitted.html", session=session)
+    job_data = {
+        "task_id": job_id,
+        "root_url": request.base_url.partition("/analysis/job_submitted/")[0],
+    }
+    return render_template("job_submitted.html", job_data=job_data)
 
 
 @socketio.on("startup_event")
 def handle_startup_message(data):
+    """Check if socket.io is responsive (for debugging purposes)
+
+    Arguments:
+        data: a JSON-derived dictionary
+    """
     print("received json: " + str(data))
 
 
-@socketio.on("start_job")
-def handle_start_job(data):
-    try:
-        result = AsyncResult(data.get("job_id"))
-        outcome = result.result if result.ready() else None
-        match outcome:
-            case True:
-                socketio.emit("job_status", {"status": "job_successful"})
-            case None:
-                socketio.emit("job_status", {"status": "job_running"})
-            case False:
-                socketio.emit("job_status", {"status": "job_failed"})
-    except ValueError:
+@socketio.on("get_status")
+def check_job_status(data):
+    """Serve job status upon request.
+
+    Arguments:
+        data: JSON-derived dict with job ID to check for
+    """
+    if (
+        not Path(current_app.config.get("UPLOAD_FOLDER"))
+        .joinpath(data.get("task_id"))
+        .exists()
+    ):
         socketio.emit("job_status", {"status": "job_not_found"})
+    else:
+        try:
+            result = AsyncResult(data.get("task_id"))
+            outcome = result.result if result.ready() else None
+            match outcome:
+                case True:
+                    socketio.emit("job_status", {"status": "job_successful"})
+                case False:
+                    socketio.emit("job_status", {"status": "job_failed"})
+                case None:
+                    socketio.emit("job_status", {"status": "job_running"})
+        except ValueError:
+            socketio.emit("job_status", {"status": "job_not_found"})

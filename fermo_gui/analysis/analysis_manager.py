@@ -66,11 +66,11 @@ def start_fermo_core(job_id: str, upload_path: str):
                 ]
             },
         )  # TODO(MMZ 13.2.24): replace placeholder log dump
-        return False  # TODO(MMZ 13.2.24): CHANGE BACK TO TRUE
+        return True
     except Exception as e:
-        print(e)
         # TODO(MMZ 12.2.24): add proper error handling; dump the log in the
         #  user-folder for display (as job_id.log) on the job_failed html page
+        print(e)
         return False
 
 
