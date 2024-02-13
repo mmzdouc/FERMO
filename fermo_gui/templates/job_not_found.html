@@ -4,6 +4,10 @@
     <span class="title"><h1>{% block title %} Job not found {% endblock %}</h1></span>
     <div class="content">
         <h5>The job with the ID '{{ data.get("task_id") }}' could not be found.</h5>
-        <h5>Keep in mind that jobs on this website are deleted after two weeks.</h5>
+        <h5>This could have two reasons.</h5>
+        <ul>
+            <li>The job is still running.</li>
+            <li>The job was run more than two weeks ago. Results are only kept for two weeks and are then deleted.</li>
+        </ul>
     </div>
 {% endblock %}

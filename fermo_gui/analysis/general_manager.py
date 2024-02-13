@@ -25,6 +25,9 @@ from pathlib import Path
 from typing import Any
 
 from celery import uuid
+from flask_mail import Message
+
+from fermo_gui.config.extensions import mail
 
 
 class GeneralManager:
@@ -61,17 +64,17 @@ class GeneralManager:
         return str(path.resolve())
 
     @staticmethod
-    def store_data_as_json(location: str, filename: str, params: Any):
+    def store_data_as_json(location: str, filename: str, data: dict):
         """Stores data as a json file under the filename in the specified location.
 
         Arguments:
             location: the location of the upload dir
             filename: the filename identifier
-            params: the specified user-provided parameters
+            data: the specified user-provided parameters
         """
         location = Path(location)
         with open(location.joinpath(filename), "w") as outfile:
-            outfile.write(json.dumps(params, indent=4, ensure_ascii=False))
+            outfile.write(json.dumps(data, indent=4, ensure_ascii=False))
 
     @staticmethod
     def read_data_from_json(location: str, filename: str) -> dict:
@@ -85,3 +88,55 @@ class GeneralManager:
         with open(location.joinpath(filename)) as infile:
             params = json.load(infile)
         return params
+
+    @staticmethod
+    def email_notify_success(root_url: str, address: str, job_id: str):
+        """Notify user if job completed successfully
+
+        Arguments:
+            root_url: URL to construct link
+            address: the user-provided email address
+            job_id: the job identifier
+        """
+        msg = Message()
+        msg.recipients = [address]
+        msg.subject = "Fermo Job Successful (NOREPLY)"
+        msg.body = (
+            "Dear user, \n"
+            "\n"
+            "your job with the ID \n"
+            f"{job_id}\n"
+            "has completed successfully. \n"
+            "Please follow this link to see the results: \n"
+            f"{root_url}/results/{job_id}/.\n"
+            "\n"
+            "Kind regards, \n"
+            "the FERMO team. \n"
+        )
+        mail.send(msg)
+
+    @staticmethod
+    def email_notify_fail(root_url: str, address: str, job_id: str):
+        """Notify user that job failed
+
+        Arguments:
+            root_url: URL to construct link
+            address: the user-provided email address
+            job_id: the job identifier
+        """
+        msg = Message()
+        msg.recipients = [address]
+        msg.subject = "Fermo Job Failed (NOREPLY)"
+        msg.body = (
+            "Dear user, \n"
+            "\n"
+            "your job with the ID \n"
+            f"{job_id}\n"
+            "has failed. \n"
+            "Please follow this link to see the fail log: \n"
+            f"{root_url}/results/job_failed/{job_id}/.\n"
+            "\n"
+            "Kind regards, \n"
+            "the FERMO team. \n"
+        )
+        mail.send(msg)

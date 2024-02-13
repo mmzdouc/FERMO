@@ -23,76 +23,112 @@ SOFTWARE.
 import json
 from pathlib import Path
 from time import sleep
+from typing import Self
 
 from celery import shared_task
-from flask_mail import Message
+from pydantic import BaseModel, DirectoryPath, AnyUrl
 
 from fermo_gui.analysis.general_manager import GeneralManager
-from fermo_gui.config.extensions import mail
 
 
 @shared_task(ignore_result=False)
-def start_fermo_core(job_id: str, upload_path: str):
+def start_fermo_core(data: dict) -> bool:
     """Start fermo_core analysis via FermoAnalysisManager
 
     Arguments:
-        job_id: links input and output of fermo_core
-        upload_path: stores input and output
+        data: a dict containing data for running of the job
 
     Returns:
-        True if job
+        True if job successful, False if error was raised
     """
     try:
-        params = GeneralManager().read_data_from_json(upload_path, f"{job_id}.json")
-        manager = FermoAnalysisManager()
-        manager.placeholder()
-        manager.email_notification_placeholder(params["email"], job_id)
-        # TODO(MMZ 12.2.24): Dump the result as job_id.session
+        params = GeneralManager().read_data_from_json(
+            data.get("upload_path"), f"{data.get('job_id')}.params.json"
+        )
+
+        manager = FermoAnalysisManager(params=params, **data)
+        manager.run_manager()
+
+        if data.get("email_notify"):
+            GeneralManager().email_notify_success(
+                root_url=data.get("root_url"),
+                address=data.get("email"),
+                job_id=data.get("job_id"),
+            )
         return True
     except Exception as e:
-        print(e)
-        # TODO(MMZ 12.2.24): add proper error handling; dump the log in the
-        #  user-folder for display (as job_id.log)
+        # TODO(MMZ 12.2.24): dump the error in the correct location - append to log?
+        log = {
+            "message_log": [
+                "step1",
+                "step2",
+            ]
+        }
+        log["message_log"].append(str(e))
+        # TODO(MMZ 13.2.24): Error messages raised inside Celery are empty - FYI
+
+        GeneralManager().store_data_as_json(
+            data.get("upload_path"), f"{data.get('job_id')}.log.json", log
+        )
+
+        if data.get("email_notify"):
+            GeneralManager().email_notify_fail(
+                root_url=data.get("root_url"),
+                address=data.get("email"),
+                job_id=data.get("job_id"),
+            )
         return False
 
 
-class FermoAnalysisManager:
-    """Organize logic related to fermo_core processing"""
+class FermoAnalysisManager(BaseModel):
+    """Pydantic-based class organizing functionality wrt fermo_core
 
-    # Implement Pydantic-based class?
+    Attributes:
+        params: user-defined parameters, matching the parameter file by fermo_core.
+        upload_path: the upload-path containing user-provided files.
+        job_id: The job-specific ID.
+        root_url: The root URL of the running fermo_gui instance.
 
-    @staticmethod
-    def placeholder():
-        """Placeholder method, replace once fermo_core is available."""
-        sleep(10)
+    Raise:
+        pydantic.ValidationError: Pydantic validation failed during instantiation.
+        Further Errors raised by fermo_core
+    """
 
-    @staticmethod
-    def email_notification_placeholder(email: str, job_id: str):
-        """Mock email placeholder"""
-        msg = Message()
-        msg.recipients = [email]
-        msg.subject = "Fermo job notification"
-        msg.body = (
-            "Dear user, \n"
-            "your job with the ID \n"
-            f"{job_id}\n"
-            "has been processed. \n"
-            "Please follow this link to see the results: \n"
-            f"http://127.0.0.1:5000/results/{job_id}/.\n"
-        )
-        mail.send(msg)
+    params: dict
+    upload_path: DirectoryPath
+    job_id: str
+    root_url: AnyUrl
 
-    def run_manager(self):
+    def run_manager(self: Self):
         """Run all fermo_core setup, analysis, and teardown steps.
 
         Also needs error management system.
         """
-        pass
 
-    def notify_user(self):
-        """If online (email set), perform job notification"""
-        pass
+        # TODO(MMZ 13.2.24): replace placeholder functionality
+        sleep(5)
+        self.write_results_placeholder()
+        self.write_log_placeholder()
 
-    def write_results(self):
+    def write_results_placeholder(self):
         """Write results to results-json file"""
-        pass
+        # TODO(MMZ 13.2.24): replace placeholder session data dump
+        GeneralManager().store_data_as_json(
+            self.upload_path,
+            f"{self.job_id}.session.json",
+            {"data": "dummy data"},
+        )
+
+    def write_log_placeholder(self):
+        """Write log of session"""
+        # TODO(MMZ 13.2.24): replace placeholder process log dump
+        GeneralManager().store_data_as_json(
+            self.upload_path,
+            f"{self.job_id}.log.json",
+            {
+                "message_log": [
+                    "log step1: this happened first",
+                    "log step2: this happened second",
+                ]
+            },
+        )

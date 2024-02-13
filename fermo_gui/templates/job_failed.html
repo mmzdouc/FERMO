@@ -5,5 +5,19 @@
     <div class="content">
         <h5>The job with the ID '{{ data.get("task_id") }}' failed.</h5>
         <h5>See below for a log which may give insights why the job failed.</h5>
+        <hr>
+        <h5>Start of message log</h5>
+        {% if data.log %}
+            <pre>
+                <code>
+                    {% for entry in data.log %}
+                        {{ entry }}<br>
+                    {% endfor %}
+                </code>
+            </pre>
+        {% else %}
+            <p>No log entries available.</p>
+        {% endif %}
+        <h5>End of message log</h5>
     </div>
 {% endblock %}
