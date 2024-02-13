@@ -30,7 +30,7 @@ from fermo_gui.routes import bp
 
 
 @bp.route("/results/job_failed/<job_id>/")
-def job_failed(job_id: str) -> str:
+def job_failed(job_id: str) -> Union[str, Response]:
     """Render the job_failed html.
 
     Arguments:
@@ -39,7 +39,16 @@ def job_failed(job_id: str) -> str:
     Returns:
         The job_failed page for the job ID
     """
-    return render_template("job_failed.html", data={"task_id": job_id})
+    try:
+        log = GeneralManager().read_data_from_json(
+            str(Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id)),
+            f"{job_id}.log.json",
+        )
+        return render_template(
+            "job_failed.html", data={"task_id": job_id, "log": log.get("message_log")}
+        )
+    except FileNotFoundError:
+        return redirect(url_for("routes.job_not_found", job_id=job_id))
 
 
 @bp.route("/results/job_not_found/<job_id>/")

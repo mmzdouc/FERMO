@@ -58,7 +58,7 @@ def start_fermo_core(job_id: str, upload_path: str):
             upload_path,
             f"{job_id}.log.json",
             {
-                "message log": [
+                "message_log": [
                     "log step1: this happened first",
                     "log step2: this happened second",
                     "log step3: this happened third",
@@ -66,7 +66,7 @@ def start_fermo_core(job_id: str, upload_path: str):
                 ]
             },
         )  # TODO(MMZ 13.2.24): replace placeholder log dump
-        return True
+        return False  # TODO(MMZ 13.2.24): CHANGE BACK TO TRUE
     except Exception as e:
         print(e)
         # TODO(MMZ 12.2.24): add proper error handling; dump the log in the
