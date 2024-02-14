@@ -22,7 +22,6 @@ SOFTWARE.
 """
 import json
 from pathlib import Path
-from typing import Any
 
 from celery import uuid
 from flask_mail import Message
@@ -84,6 +83,7 @@ class GeneralManager:
             location: the location of the upload dir
             filename: the filename identifier
         """
+        # TODO(MMZ 14.2.24): Cover with tests
         location = Path(location)
         with open(location.joinpath(filename)) as infile:
             params = json.load(infile)
@@ -98,6 +98,7 @@ class GeneralManager:
             address: the user-provided email address
             job_id: the job identifier
         """
+        # TODO(MMZ 14.2.24): Cover with tests
         msg = Message()
         msg.recipients = [address]
         msg.subject = "Fermo Job Successful (NOREPLY)"
@@ -124,6 +125,7 @@ class GeneralManager:
             address: the user-provided email address
             job_id: the job identifier
         """
+        # TODO(MMZ 14.2.24): Cover with tests
         msg = Message()
         msg.recipients = [address]
         msg.subject = "Fermo Job Failed (NOREPLY)"

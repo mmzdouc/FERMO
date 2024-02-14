@@ -4,6 +4,14 @@ Announcement - Please Read
 
 ---
 
+## Overview
+
+TBA
+
+## Versions
+
+All previous version of FERMO can be accessed via its [Zenodo repository](https://zenodo.org/doi/10.5281/zenodo.7565700).
+
 ## Dependencies
 
 A list of dependencies can be found in the file [pyproject.toml](pyproject.toml).

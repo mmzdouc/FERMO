@@ -1,4 +1,4 @@
-"""Routes for results pages.
+"""Routes and logic for results pages.
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -33,12 +33,16 @@ from fermo_gui.routes import bp
 def job_failed(job_id: str) -> Union[str, Response]:
     """Render the job_failed html.
 
+    Assumes that every failed job should have a logfile; if not found, redirect to
+    'job_not_found' page.
+
     Arguments:
-        job_id: the job identifier
+        job_id: the job identifier, provided by the URL variable
 
     Returns:
-        The job_failed page for the job ID
+        The job_failed page for the job ID or a redirect to 'job_not_found' page.
     """
+    # TODO(MMZ 14.2.24): Cover with tests
     try:
         log = GeneralManager().read_data_from_json(
             str(Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id)),
@@ -55,28 +59,32 @@ def job_failed(job_id: str) -> Union[str, Response]:
 def job_not_found(job_id: str) -> str:
     """Render the job_not_found page.
 
+    Logical end-point of job routes.
+
     Arguments:
-        job_id: the job identifier
+        job_id: the job identifier, provided by the URL variable
 
     Returns:
         The job_not_found page for the job ID
     """
+    # TODO(MMZ 14.2.24): Cover with tests
     return render_template("job_not_found.html", data={"task_id": job_id})
 
 
 @bp.route("/results/<job_id>/", methods=["GET", "POST"])
 def task_result(job_id: str) -> Union[str, Response]:
-    """Render the result dashboard page for the given job id.
+    """Render the result dashboard page for the given job id if found.
 
     Arguments:
-        job_id: the job identifier provided by the URL
+        job_id: the job identifier, provided by the URL variable
 
     Returns:
         The dashboard page or the job_not_found page
 
-    Notes: All backend dashboard functionality should be called from
+    Notes: All backend dashboard functionality should be implemented in and called from
     fermo_gui.analysis.dashboard_manager
     """
+    # TODO(MMZ 14.2.24): Cover with tests
     try:
         data = GeneralManager().read_data_from_json(
             str(Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id)),

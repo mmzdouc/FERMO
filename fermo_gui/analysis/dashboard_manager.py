@@ -21,6 +21,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+# TODO(MMZ 14.2.24): Cover with tests
+
 
 class DashboardManager:
     """Organize general functionality such as data management"""

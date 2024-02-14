@@ -27,7 +27,7 @@ from fermo_gui.routes import bp
 
 
 @bp.route("/")
-def index():
+def index() -> str:
     """Render the index (landing) page of fermo_gui
 
     Returns:
@@ -37,7 +37,7 @@ def index():
 
 
 @bp.route("/about/")
-def about():
+def about() -> str:
     """Render the about page of fermo_gui
 
     Returns:
@@ -47,7 +47,7 @@ def about():
 
 
 @bp.route("/contact/")
-def contact():
+def contact() -> str:
     """Render the contact page of fermo_gui
 
     Returns:
@@ -57,7 +57,7 @@ def contact():
 
 
 @bp.route("/help/")
-def help():
+def help() -> str:
     """Render the help page of fermo_gui
 
     Returns:

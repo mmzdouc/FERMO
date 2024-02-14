@@ -30,6 +30,8 @@ from pydantic import BaseModel, DirectoryPath, AnyUrl
 
 from fermo_gui.analysis.general_manager import GeneralManager
 
+# TODO(MMZ 14.2.24): Cover with tests
+
 
 @shared_task(ignore_result=False)
 def start_fermo_core(data: dict) -> bool:
