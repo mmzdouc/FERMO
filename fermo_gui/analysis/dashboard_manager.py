@@ -20,12 +20,56 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from typing import Optional, Self
 
-# TODO(MMZ 14.2.24): Cover with tests
+from pydantic import BaseModel
 
 
-class DashboardManager:
+class DashboardManager(BaseModel):
     """Organize general functionality such as data management"""
 
-    pass
-    # TODO(MMZ HEA 12.2.24): add the GET and POST functionality of the dashboard
+    stats_analysis: Optional[dict] = None
+
+    def get_dashboard_data(self: Self, f_sess: dict, filters: Optional[dict] = None):
+        """Extract and filter dashboard data
+
+        Filter settings can be provided to filter output data (for POST methods)
+
+        Arguments:
+            f_sess: fermo session file
+            filters: optional filter settings
+        """
+        self.get_stats_analysis(f_sess)
+
+    def to_json_dict(self: Self) -> dict:
+        """Returns dashboard data as dict
+
+        Returns: a json-compatible dict
+        """
+        return {"stats_analysis": self.stats_analysis}
+
+    def get_stats_analysis(self: Self, f_sess: dict):
+        """Extracts static analysis stats from fermo.session file
+
+        Arguments:
+            f_sess: fermo session file
+        """
+        self.stats_analysis = {
+            "Total Samples": len(f_sess.get("stats", {}).get("samples")),
+            "Sample Groups": (len(f_sess.get("stats", {}).get("groups")) - 1),
+            "Molecular Features": f_sess.get("stats", {}).get("features"),
+            "Removed Mol. Features": len(
+                f_sess.get("stats", {}).get("inactive_features")
+            ),
+            "FERMO-CORE Version": f_sess.get("metadata", {}).get("fermo_core_version"),
+        }
+
+    # each data package is its own attribute (a dict)
+
+    # build up the attributes with different functions
+
+    # for the post functionality, apply filters to the dictionaries
+
+    # have an export function that dups it at once as a json-compatible dict
+
+    # TODO(MMZ 14.2.24): Cover with tests

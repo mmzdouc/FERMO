@@ -25,6 +25,7 @@ from typing import Union
 
 from flask import render_template, current_app, request, redirect, url_for, Response
 
+from fermo_gui.analysis.dashboard_manager import DashboardManager
 from fermo_gui.analysis.general_manager import GeneralManager
 from fermo_gui.routes import bp
 
@@ -82,13 +83,10 @@ def task_result(job_id: str) -> Union[str, Response]:
 
     Returns:
         The dashboard page or the job_not_found page
-
-    Notes: All backend dashboard functionality should be implemented in and called from
-    fermo_gui.analysis.dashboard_manager
     """
     # TODO(MMZ 14.2.24): Cover with tests
     try:
-        data = GeneralManager().read_data_from_json(
+        f_sess = GeneralManager().read_data_from_json(
             str(Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id)),
             f"{job_id}.session.json",
         )
@@ -96,9 +94,10 @@ def task_result(job_id: str) -> Union[str, Response]:
         return redirect(url_for("routes.job_not_found", job_id=job_id))
 
     if request.method == "GET":
-        # TODO(HEA, MMZ, 11.2.24): here comes the GET functionality (dashboard buildup)
-        return render_template("dashboard.html", data=data)
-
-    elif request.method == "POST":
-        # TODO(HEA, MMZ, 11.2.24): here comes the POST functionality (triggers)
-        return render_template("dashboard.html", data=data)
+        manager = DashboardManager()
+        manager.get_dashboard_data(f_sess)
+        return render_template("dashboard.html", data=manager.to_json_dict())
+    #
+    # elif request.method == "POST":
+    #     # TODO(HEA, MMZ, 11.2.24): here comes the POST functionality (triggers)
+    #     return render_template("dashboard.html", data=data)
