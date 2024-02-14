@@ -34,28 +34,28 @@ from fermo_gui.analysis.general_manager import GeneralManager
 
 
 @shared_task(ignore_result=False)
-def start_fermo_core(data: dict) -> bool:
+def start_fermo_core(metadata: dict) -> bool:
     """Start fermo_core analysis via FermoAnalysisManager
 
     Arguments:
-        data: a dict containing data for running of the job
+        metadata: a dict containing metadata for running of the job
 
     Returns:
         True if job successful, False if error was raised
     """
     try:
         params = GeneralManager().read_data_from_json(
-            data.get("upload_path"), f"{data.get('job_id')}.params.json"
+            metadata.get("upload_path"), f"{metadata.get('job_id')}.params.json"
         )
 
-        manager = FermoAnalysisManager(params=params, **data)
+        manager = FermoAnalysisManager(params=params, **metadata)
         manager.run_manager()
 
-        if data.get("email_notify"):
+        if metadata.get("email_notify"):
             GeneralManager().email_notify_success(
-                root_url=data.get("root_url"),
-                address=data.get("email"),
-                job_id=data.get("job_id"),
+                root_url=metadata.get("root_url"),
+                address=metadata.get("email"),
+                job_id=metadata.get("job_id"),
             )
         return True
     except Exception as e:
@@ -70,14 +70,14 @@ def start_fermo_core(data: dict) -> bool:
         # TODO(MMZ 13.2.24): Error messages raised inside Celery are empty - FYI
 
         GeneralManager().store_data_as_json(
-            data.get("upload_path"), f"{data.get('job_id')}.log.json", log
+            metadata.get("upload_path"), f"{metadata.get('job_id')}.log.json", log
         )
 
-        if data.get("email_notify"):
+        if metadata.get("email_notify"):
             GeneralManager().email_notify_fail(
-                root_url=data.get("root_url"),
-                address=data.get("email"),
-                job_id=data.get("job_id"),
+                root_url=metadata.get("root_url"),
+                address=metadata.get("email"),
+                job_id=metadata.get("job_id"),
             )
         return False
 

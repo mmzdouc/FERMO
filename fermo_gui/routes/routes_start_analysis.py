@@ -72,24 +72,24 @@ def start_analysis() -> Union[str, Response]:
             params,
         )
 
-        data = {
+        metadata = {
             "job_id": session["task_id"],
             "upload_path": session["task_upload_path"],
             "root_url": request.base_url.partition("/analysis/start_analysis/")[0],
-            "email": params.get("email"),
+            "email": form.email.data,
             "email_notify": True,
         }
 
-        if "localhost" in data["root_url"] or "127.0.0.1" in data["root_url"]:
-            data["email_notify"] = False
+        if "localhost" in metadata["root_url"] or "127.0.0.1" in metadata["root_url"]:
+            metadata["email_notify"] = False
         elif params.get("email") is None:
             # TODO(MMZ 13.2.24): change to the correct params data structure
-            data["email_notify"] = False
+            metadata["email_notify"] = False
         elif current_app.config.get("MAIL_USERNAME") is None:
-            data["email_notify"] = False
+            metadata["email_notify"] = False
 
         start_fermo_core.apply_async(
-            kwargs={"data": data},
+            kwargs={"metadata": metadata},
             task_id=session["task_id"],
         )
         return redirect(url_for("routes.job_submitted", job_id=session["task_id"]))
