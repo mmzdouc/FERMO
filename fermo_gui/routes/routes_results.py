@@ -44,13 +44,15 @@ def job_failed(job_id: str) -> Union[str, Response]:
     """
     # TODO(MMZ 14.2.24): Cover with tests
     try:
-        log = GeneralManager().read_data_from_json(
-            str(Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id)),
-            f"{job_id}.log.json",
-        )
-        return render_template(
-            "job_failed.html", data={"task_id": job_id, "log": log.get("message_log")}
-        )
+        with open(
+            Path(current_app.config.get("UPLOAD_FOLDER"))
+            .joinpath(job_id)
+            .joinpath(f"{job_id}.log"),
+            "r",
+        ) as logfile:
+            log = logfile.read().split("\n")
+
+        return render_template("job_failed.html", data={"task_id": job_id, "log": log})
     except FileNotFoundError:
         return redirect(url_for("routes.job_not_found", job_id=job_id))
 
