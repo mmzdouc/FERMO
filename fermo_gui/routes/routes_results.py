@@ -85,6 +85,10 @@ def task_result(job_id: str) -> Union[str, Response]:
         The dashboard page or the job_not_found page
     """
     # TODO(MMZ 14.2.24): Cover with tests
+    # TODO(MMZ 14.2.24): For improved speed: use socket-io based updating of only
+    #  parts of the page - see also flask-turbo. Also server-side session cookies
+    #  possible (no size restriction); maybe a mixed approach (keep the GET
+    #  functionality in the cache and only load the POST stuff)
     try:
         f_sess = GeneralManager().read_data_from_json(
             str(Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id)),
@@ -95,8 +99,8 @@ def task_result(job_id: str) -> Union[str, Response]:
 
     if request.method == "GET":
         manager = DashboardManager()
-        manager.get_dashboard_data(f_sess)
-        return render_template("dashboard.html", data=manager.to_json_dict())
+        manager.prepare_data_get(f_sess)
+        return render_template("dashboard.html", data=manager.provide_data_get())
     #
     # elif request.method == "POST":
     #     # TODO(HEA, MMZ, 11.2.24): here comes the POST functionality (triggers)

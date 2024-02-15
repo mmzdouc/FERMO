@@ -1,4 +1,4 @@
-"""Manages all dashboard functionality
+"""Manages dashboard data loading and filtering functionality
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -20,56 +20,96 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import Optional, Self
+from typing import Self, Optional
 
 from pydantic import BaseModel
 
 
 class DashboardManager(BaseModel):
-    """Organize general functionality such as data management"""
+    """Organizes data extraction and filtering for dashboard
 
-    stats_analysis: Optional[dict] = None
+    Attributes:
+        stats_analysis: static stats data from general analysis run
+        stats_samples_dyn: mixed static and dynamic data on samples (overview)
+        retained_features: features remaining after any filter settings were applied
+    """
 
-    def get_dashboard_data(self: Self, f_sess: dict, filters: Optional[dict] = None):
-        """Extract and filter dashboard data
+    stats_analysis: dict = {}
+    stats_samples_dyn: dict = {}
+    retained_features: Optional[set] = None
 
-        Filter settings can be provided to filter output data (for POST methods)
+    def prepare_data_get(self: Self, f_sess: dict):
+        """Run methods to prepare the data required by GET method
 
         Arguments:
             f_sess: fermo session file
-            filters: optional filter settings
         """
-        self.get_stats_analysis(f_sess)
+        self.extract_stats_analysis(f_sess)
+        self.extract_stats_samples_dyn(f_sess)
 
-    def to_json_dict(self: Self) -> dict:
-        """Returns dashboard data as dict
+    def provide_data_get(self: Self) -> dict:
+        """Return data required by GET method
 
         Returns: a json-compatible dict
         """
-        return {"stats_analysis": self.stats_analysis}
+        return {
+            "stats_analysis": self.stats_analysis,
+            "stats_samples_dyn": self.stats_samples_dyn,
+        }
 
-    def get_stats_analysis(self: Self, f_sess: dict):
+    def extract_stats_analysis(self: Self, f_sess: dict):
         """Extracts static analysis stats from fermo.session file
 
         Arguments:
             f_sess: fermo session file
         """
-        self.stats_analysis = {
-            "Total Samples": len(f_sess.get("stats", {}).get("samples")),
-            "Sample Groups": (len(f_sess.get("stats", {}).get("groups")) - 1),
-            "Molecular Features": f_sess.get("stats", {}).get("features"),
-            "Removed Mol. Features": len(
-                f_sess.get("stats", {}).get("inactive_features")
-            ),
-            "FERMO-CORE Version": f_sess.get("metadata", {}).get("fermo_core_version"),
-        }
+        try:
+            self.stats_analysis = {
+                "Total Samples": len(f_sess.get("stats", {}).get("samples")),
+                "Sample Groups": (len(f_sess.get("stats", {}).get("groups")) - 1),
+                "Molecular Features": f_sess.get("stats", {}).get("features"),
+                "Removed Mol. Features": len(
+                    f_sess.get("stats", {}).get("inactive_features")
+                ),
+                "FERMO-CORE Version": f_sess.get("metadata", {}).get(
+                    "fermo_core_version"
+                ),
+            }
+        except TypeError:
+            self.stats_analysis = {"error": "error during parsing of session file"}
 
-    # each data package is its own attribute (a dict)
+    def extract_stats_samples_dyn(self: Self, f_sess: dict):
+        """Extracts dynamic stats of samples
 
-    # build up the attributes with different functions
+        Arguments:
+            f_sess: fermo session file
+        """
+        try:
+            for sample in f_sess.get("stats", {}).get("samples"):
+                total_features = len(
+                    f_sess.get("samples", {}).get(sample, {}).get("feature_ids")
+                )
 
-    # for the post functionality, apply filters to the dictionaries
+                retained_features = 0
+                if self.retained_features is not None:
+                    # TODO(MMZ 15.2.24): add filter logic, call method for feature filtering
+                    #  use set method to get intersection of total features and features in
+                    #  sample
+                    pass
+                else:
+                    retained_features = total_features
 
-    # have an export function that dups it at once as a json-compatible dict
+                groups = ", ".join(
+                    map(str, f_sess.get("samples", {}).get(sample, {}).get("groups"))
+                )
+                if groups == "":
+                    groups = "N/A"
 
-    # TODO(MMZ 14.2.24): Cover with tests
+                self.stats_samples_dyn[sample] = {
+                    "sample_name": sample,
+                    "groups": groups,
+                    "total_features": total_features,
+                    "retained_features": retained_features,
+                }
+        except (TypeError, ValueError):
+            self.stats_samples_dyn = {"error": "error during parsing of session file"}
