@@ -45,3 +45,23 @@ def test_extract_stats_samples_dyn_invalid():
     assert manager.stats_samples_dyn == {
         "error": "error during parsing of session file"
     }
+
+
+def test_prepare_ret_features(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    assert len(manager.ret_features.get("total")) == 143
+
+
+def test_extract_retained_features_valid(session):
+    manager = Manager()
+    filters = {"rel_intensity": [0.0, 1.0], "rel_area": [0.0, 1.0]}
+    manager.filter_ret_features(session, filters)
+    assert len(manager.ret_features["total"]) == 143
+
+
+def test_filter_feature_range_valid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_feature_range(session, [0.06, 1.0], "rel_intensity")
+    assert len(manager.ret_features["total"]) == 140
