@@ -60,8 +60,22 @@ def test_extract_retained_features_valid(session):
     assert len(manager.ret_features["total"]) == 143
 
 
-def test_filter_feature_range_valid(session):
+def test_filter_spec_feature_range_valid(session):
     manager = Manager()
     manager.prepare_ret_features(session)
-    manager.filter_feature_range(session, [0.06, 1.0], "rel_intensity")
+    manager.filter_spec_feature_range(session, [0.06, 1.0], "rel_intensity")
     assert len(manager.ret_features["total"]) == 140
+
+
+def test_filter_feature_id_valid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_feature_id(1)
+    assert len(manager.ret_features["total"]) == 1
+
+
+def test_filter_feature_id_invalid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_feature_id(1234567)
+    assert len(manager.ret_features["total"]) == 0

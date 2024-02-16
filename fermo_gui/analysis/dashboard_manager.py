@@ -126,9 +126,21 @@ class DashboardManager(BaseModel):
         for param in filters:
             match param:
                 case "rel_intensity":
-                    self.filter_feature_range(f_sess, filters[param], "rel_intensity")
+                    self.filter_spec_feature_range(
+                        f_sess, filters[param], "rel_intensity"
+                    )
                 case "rel_area":
-                    self.filter_feature_range(f_sess, filters[param], "rel_area")
+                    self.filter_spec_feature_range(f_sess, filters[param], "rel_area")
+                case "filter_feature_id":
+                    self.filter_feature_id(filters[param])
+
+        return {
+            "samples": {
+                sample: list(self.ret_features["samples"][sample])
+                for sample in self.ret_features["samples"]
+            },
+            "total": list(self.ret_features["total"]),
+        }
 
     def prepare_ret_features(self: Self, f_sess: dict):
         """Prepares the ret_features attribute for further filtering
@@ -144,7 +156,9 @@ class DashboardManager(BaseModel):
             "total": set(f_sess.get("stats", {}).get("active_features")),
         }
 
-    def filter_feature_range(self: Self, f_sess: dict, filt: List[float], param: str):
+    def filter_spec_feature_range(
+        self: Self, f_sess: dict, filt: List[float], param: str
+    ):
         """Filters sample-specific features for a parameter with a given range
 
         Part of the POST functionality (user applies filter on frontend, followed by
@@ -180,3 +194,29 @@ class DashboardManager(BaseModel):
                 ]
             )
             self.ret_features["total"].intersection_update(remainder_in_samples)
+            return
+
+    def filter_feature_id(self: Self, feature_id: int):
+        """Filters for a single feature ID
+
+        Part of the POST functionality (user applies filter on frontend, followed by
+        website update).
+
+        Arguments:
+            feature_id: a feature identifier integer to filter for
+        """
+        if len(self.ret_features["total"]) == 0:
+            return
+        else:
+            self.ret_features["total"].intersection_update(
+                {
+                    feature_id,
+                }
+            )
+            for sample in self.ret_features["samples"]:
+                self.ret_features["samples"][sample].intersection_update(
+                    {
+                        feature_id,
+                    }
+                )
+            return
