@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import Self, Optional, List
+from typing import Self, List
 from copy import deepcopy
 
 from pydantic import BaseModel
@@ -145,7 +145,8 @@ class DashboardManager(BaseModel):
                 # TODO(MM 16.2.24): implement network_id (feature_spec)
                 # TODO(MM 16.2.24): implement groups_feature (feature_spec)
                 # TODO(MM 16.2.24): implement groups_network (feature_spec)
-                # TODO(MM 16.2.24): implement nr_samples (feature_spec)
+                case "nr_samples":
+                    self.filter_nr_samples(f_sess, filters[param])
                 case "precursor_mz":
                     self.filter_gen_feature_range(f_sess, filters[param], "mz")
                 # TODO(MM 16.2.24): implement fold_include
