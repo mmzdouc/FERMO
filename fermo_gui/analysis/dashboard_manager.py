@@ -146,7 +146,8 @@ class DashboardManager(BaseModel):
                     self.filter_network_id(f_sess, filters[param])
                 case "groups_feature":
                     self.filter_groups_feature(f_sess, filters[param])
-                # TODO(MM 16.2.24): implement groups_network (feature_spec)
+                case "groups_network":
+                    self.filter_groups_network(f_sess, filters[param])
                 case "nr_samples":
                     self.filter_nr_samples(f_sess, filters[param])
                 case "precursor_mz":
@@ -375,6 +376,8 @@ class DashboardManager(BaseModel):
             return
         elif len(f_sess["stats"]["groups"]) == 1:
             return
+        elif filt not in f_sess["stats"]["groups"]:
+            return
         else:
             retained_set = set()
             for sample in f_sess["samples"]:
@@ -384,4 +387,49 @@ class DashboardManager(BaseModel):
             self.ret_features["total"].intersection_update(retained_set)
             for sample in self.ret_features["samples"]:
                 self.ret_features["samples"][sample].intersection_update(retained_set)
+            return
+
+    def filter_groups_network(self: Self, f_sess: dict, filt: dict):
+        """Filters for features in all networks that the groups contributed to.
+
+        Only applicable if groups were specified.
+        Part of the POST functionality (user applies filter on frontend, followed by
+        website update).
+
+        Arguments:
+            f_sess: fermo session file
+            filt: a dict with group and network algorithm information
+        """
+        if len(self.ret_features["total"]) == 0:
+            return
+        elif len(f_sess["stats"]["groups"]) == 1:
+            return
+        elif filt["group"] not in f_sess["stats"]["groups"]:
+            return
+        else:
+            group_set = set()
+            for sample in f_sess["samples"]:
+                if filt["group"] in f_sess["samples"][sample]["groups"]:
+                    group_set.update(set(f_sess["samples"][sample]["feature_ids"]))
+
+            network_set = deepcopy(group_set)
+            for network in f_sess["stats"]["networks"][filt["algorithm"]]["summary"]:
+                if bool(
+                    set(
+                        f_sess["stats"]["networks"][filt["algorithm"]]["summary"][
+                            network
+                        ]
+                    ).intersection(group_set)
+                ):
+                    network_set.update(
+                        set(
+                            f_sess["stats"]["networks"][filt["algorithm"]]["summary"][
+                                network
+                            ]
+                        )
+                    )
+
+            self.ret_features["total"].intersection_update(network_set)
+            for sample in self.ret_features["samples"]:
+                self.ret_features["samples"][sample].intersection_update(network_set)
             return

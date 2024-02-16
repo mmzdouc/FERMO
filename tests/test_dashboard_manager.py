@@ -31,7 +31,10 @@ def filters():
             "n_id": 1,
         },
         "groups_feature": "S",
-        "groups_network": "S",
+        "groups_network": {
+            "algorithm": "modified_cosine",
+            "group": "S",
+        },
         "nr_samples": {"minimum": 0, "maximum": 0},
         "precursor_mz": [0.0, 3000.0],
         "fold_include": {"groups": "S/V2", "n_fold": 3.2},
@@ -179,3 +182,12 @@ def test_filter_groups_feature_valid(session):
     manager.prepare_ret_features(session)
     manager.filter_groups_feature(session, "V2")
     assert len(manager.ret_features["total"]) == 31
+
+
+def test_filter_groups_network_valid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_groups_network(
+        session, {"algorithm": "modified_cosine", "group": "V2"}
+    )
+    assert len(manager.ret_features["total"]) == 78
