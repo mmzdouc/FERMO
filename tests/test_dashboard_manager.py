@@ -33,7 +33,7 @@ def filters():
         "groups_feature": "S",
         "groups_network": "S",
         "nr_samples": [1, 3],
-        "precursor_mz": [100.0, 200.0],
+        "precursor_mz": [0.0, 3000.0],
         "fold_include": {"groups": "S/V2", "n_fold": 3.2},
         "fold_exclude": {"groups": "V2/S", "n_fold": 2.0},
     }
@@ -127,3 +127,10 @@ def test_filter_feature_id_invalid(session):
     manager.prepare_ret_features(session)
     manager.filter_feature_id(1234567)
     assert len(manager.ret_features["total"]) == 0
+
+
+def test_filter_precursor_mz_invalid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_gen_feature_range(session, [268.9976, 268.9976], "mz")
+    assert len(manager.ret_features["total"]) == 1

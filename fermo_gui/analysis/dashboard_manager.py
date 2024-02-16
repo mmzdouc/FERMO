@@ -146,7 +146,8 @@ class DashboardManager(BaseModel):
                 # TODO(MM 16.2.24): implement groups_feature
                 # TODO(MM 16.2.24): implement groups_network
                 # TODO(MM 16.2.24): implement nr_samples
-                # TODO(MM 16.2.24): implement precursor_mz
+                case "precursor_mz":
+                    self.filter_gen_feature_range(f_sess, filters[param], "mz")
                 # TODO(MM 16.2.24): implement fold_include
                 # TODO(MM 16.2.24): implement fold_exclude
 
@@ -237,4 +238,38 @@ class DashboardManager(BaseModel):
                         feature_id,
                     }
                 )
+            return
+
+    def filter_gen_feature_range(
+        self: Self, f_sess: dict, filt: List[float], param: str
+    ):
+        """Filters general features for a parameter with a given range
+
+        Part of the POST functionality (user applies filter on frontend, followed by
+        website update).
+
+        Arguments:
+            f_sess: fermo session file
+            filt: a list with two floats indicating a range
+            param: the parameter in the session file to filter for
+        """
+        filt = [min(filt), max(filt)]
+
+        if float(filt[0]) == 0.0 and float(filt[1]) == 1.0:
+            return
+        elif len(self.ret_features["total"]) == 0:
+            return
+        else:
+            set_total = deepcopy(self.ret_features["total"])
+            for feature in self.ret_features["total"]:
+                if not (
+                    filt[0]
+                    <= f_sess["general_features"][str(feature)][param]
+                    <= filt[1]
+                ):
+                    set_total.discard(feature)
+            self.ret_features["total"] = set_total
+
+            for sample in self.ret_features["samples"]:
+                self.ret_features["samples"][sample].intersection_update(set_total)
             return
