@@ -11,6 +11,34 @@ def session():
     )
 
 
+@pytest.fixture
+def filters():
+    return {
+        "rel_intensity": [0.0, 1.0],
+        "abs_intensity": [5000, 10000],
+        "rel_area": [0.0, 1.0],
+        "abs_area": [5000, 10000],
+        "peak_overlap": [0.0, 1.0],
+        "novelty_score": [0.0, 1.0],
+        "blank_assoc": True,
+        "quant_data_assoc": {
+            "algorithm": "all",
+        },
+        "annotation": {"field": "ms2query", "value": "siomycin", "regexp": False},
+        "feature_id": 1,
+        "network_id": {
+            "algorithm": "mod_cosine",
+            "n_id": 1,
+        },
+        "groups_feature": "S",
+        "groups_network": "S",
+        "nr_samples": [1, 3],
+        "precursor_mz": [100.0, 200.0],
+        "fold_include": {"groups": "S/V2", "n_fold": 3.2},
+        "fold_exclude": {"groups": "V2/S", "n_fold": 2.0},
+    }
+
+
 def test_init_dashboard_manager():
     assert isinstance(Manager(), Manager)
 
