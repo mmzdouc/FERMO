@@ -135,17 +135,17 @@ class DashboardManager(BaseModel):
                     self.filter_spec_feature_range(f_sess, filters[param], "rel_area")
                 case "abs_area":
                     self.filter_spec_feature_range(f_sess, filters[param], "area")
-                # TODO(MM 16.2.24): implement peak_overlap
-                # TODO(MM 16.2.24): implement novelty_score
-                # TODO(MM 16.2.24): implement blank_assoc
-                # TODO(MM 16.2.24): implement quant_data_assoc
-                # TODO(MM 16.2.24): implement annotation
+                # TODO(MM 16.2.24): implement peak_overlap range (sample_spec)
+                # TODO(MM 16.2.24): implement novelty_score range (feature_spec)
+                # TODO(MM 16.2.24): implement blank_assoc (feature_spec)
+                # TODO(MM 16.2.24): implement quant_data_assoc (feature_spec)
+                # TODO(MM 16.2.24): implement annotation (feature_spec)
                 case "filter_feature_id":
                     self.filter_feature_id(filters[param])
-                # TODO(MM 16.2.24): implement network_id
-                # TODO(MM 16.2.24): implement groups_feature
-                # TODO(MM 16.2.24): implement groups_network
-                # TODO(MM 16.2.24): implement nr_samples
+                # TODO(MM 16.2.24): implement network_id (feature_spec)
+                # TODO(MM 16.2.24): implement groups_feature (feature_spec)
+                # TODO(MM 16.2.24): implement groups_network (feature_spec)
+                # TODO(MM 16.2.24): implement nr_samples (feature_spec)
                 case "precursor_mz":
                     self.filter_gen_feature_range(f_sess, filters[param], "mz")
                 # TODO(MM 16.2.24): implement fold_include
@@ -183,7 +183,7 @@ class DashboardManager(BaseModel):
 
         Arguments:
             f_sess: fermo session file
-            filt: a list with two floats indicating a range
+            filt: a list of two numbers indicating a range
             param: the parameter in the session file to filter for
         """
         filt = [min(filt), max(filt)]
@@ -215,6 +215,40 @@ class DashboardManager(BaseModel):
             self.ret_features["total"].intersection_update(remainder_in_samples)
             return
 
+    def filter_gen_feature_range(
+        self: Self, f_sess: dict, filt: List[float], param: str
+    ):
+        """Filters general features for a parameter with a given range
+
+        Part of the POST functionality (user applies filter on frontend, followed by
+        website update).
+
+        Arguments:
+            f_sess: fermo session file
+            filt: a list of two numbers indicating a range
+            param: the parameter in the session file to filter for
+        """
+        filt = [min(filt), max(filt)]
+
+        if float(filt[0]) == 0.0 and float(filt[1]) == 1.0:
+            return
+        elif len(self.ret_features["total"]) == 0:
+            return
+        else:
+            set_total = deepcopy(self.ret_features["total"])
+            for feature in self.ret_features["total"]:
+                if not (
+                    filt[0]
+                    <= f_sess["general_features"][str(feature)][param]
+                    <= filt[1]
+                ):
+                    set_total.discard(feature)
+            self.ret_features["total"] = set_total
+
+            for sample in self.ret_features["samples"]:
+                self.ret_features["samples"][sample].intersection_update(set_total)
+            return
+
     def filter_feature_id(self: Self, feature_id: int):
         """Filters for a single feature ID
 
@@ -240,36 +274,58 @@ class DashboardManager(BaseModel):
                 )
             return
 
-    def filter_gen_feature_range(
-        self: Self, f_sess: dict, filt: List[float], param: str
-    ):
-        """Filters general features for a parameter with a given range
+    def filter_nr_samples(self: Self, f_sess: dict, filt: dict):
+        """Filters for features observed in a specified number of samples
 
         Part of the POST functionality (user applies filter on frontend, followed by
         website update).
 
         Arguments:
             f_sess: fermo session file
-            filt: a list with two floats indicating a range
-            param: the parameter in the session file to filter for
+            filt: a dict indicating an optional minimum and/or maximum of samples
         """
-        filt = [min(filt), max(filt)]
+        if len(self.ret_features["total"]) == 0:
+            return
 
-        if float(filt[0]) == 0.0 and float(filt[1]) == 1.0:
-            return
-        elif len(self.ret_features["total"]) == 0:
-            return
+        mode = ""
+        if (
+            filt.get("minimum") is not None
+            and filt.get("maximum") is not None
+            and filt.get("minimum") > 0
+            and filt.get("maximum") > 0
+        ):
+            mode = "range"
+        elif filt.get("minimum") is not None and filt.get("minimum") > 0:
+            mode = "greater_equal"
+        elif filt.get("maximum") is not None and filt.get("maximum") > 0:
+            mode = "less_equal"
         else:
-            set_total = deepcopy(self.ret_features["total"])
-            for feature in self.ret_features["total"]:
-                if not (
-                    filt[0]
-                    <= f_sess["general_features"][str(feature)][param]
-                    <= filt[1]
-                ):
-                    set_total.discard(feature)
-            self.ret_features["total"] = set_total
-
-            for sample in self.ret_features["samples"]:
-                self.ret_features["samples"][sample].intersection_update(set_total)
             return
+
+        set_total = deepcopy(self.ret_features["total"])
+        for feature in self.ret_features["total"]:
+            match mode:
+                case "range":
+                    if not (
+                        filt["minimum"]
+                        <= len(f_sess["general_features"][str(feature)]["samples"])
+                        <= filt["maximum"]
+                    ):
+                        set_total.discard(feature)
+                case "greater_equal":
+                    if not (
+                        filt["minimum"]
+                        <= len(f_sess["general_features"][str(feature)]["samples"])
+                    ):
+                        set_total.discard(feature)
+                case "less_equal":
+                    if not (
+                        len(f_sess["general_features"][str(feature)]["samples"])
+                        <= filt["maximum"]
+                    ):
+                        set_total.discard(feature)
+
+        self.ret_features["total"] = set_total
+        for sample in self.ret_features["samples"]:
+            self.ret_features["samples"][sample].intersection_update(set_total)
+        return

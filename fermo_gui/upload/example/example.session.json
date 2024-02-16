@@ -1,15 +1,15 @@
 {
     "metadata": {
         "fermo_core_version": "0.1.0",
-        "file_created_isoformat": "2024-02-02T15:12:59.416387",
-        "runtime_seconds": 19.909114,
+        "file_created_isoformat": "2024-02-16T12:34:09.693530",
+        "runtime_seconds": 20.101373,
         "system": "Linux",
-        "version": "#101~20.04.1-Ubuntu SMP Thu Nov 16 14:22:28 UTC 2023",
+        "version": "#102~20.04.1-Ubuntu SMP Mon Jan 15 13:09:14 UTC 2024",
         "architecture": [
             "64bit",
             "ELF"
         ],
-        "release": "5.15.0-91-generic",
+        "release": "5.15.0-92-generic",
         "machine": "x86_64",
         "processor": "x86_64",
         "python_version": "3.11.4"
@@ -189,19 +189,19 @@
         "groups": {
             "DEFAULT": [],
             "C": [
-                "5425_5426_mod.mzXML",
                 "5444_5443_mod.mzXML",
-                "5458_5457_mod.mzXML"
+                "5458_5457_mod.mzXML",
+                "5425_5426_mod.mzXML"
             ],
             "A2": [
-                "5432_5431_mod2.mzXML",
-                "5440_5439_mod.mzXML"
+                "5440_5439_mod.mzXML",
+                "5432_5431_mod2.mzXML"
             ],
             "S": [
-                "5456_5455_mod.mzXML",
-                "5452_5451_mod.mzXML",
+                "5446_5445_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5446_5445_mod.mzXML"
+                "5456_5455_mod.mzXML",
+                "5452_5451_mod.mzXML"
             ],
             "V2": [
                 "5450_5449_mod.mzXML"
@@ -14885,7 +14885,7 @@
             "format": "mgf"
         },
         "OutputParameters": {
-            "filepath": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/fermo_session",
+            "filepath": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/fermo.session",
             "format": "all"
         },
         "AdductAnnotationParameters": {
@@ -14962,7 +14962,6 @@
                 "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
@@ -15025,7 +15024,6 @@
                 "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
@@ -15076,13 +15074,11 @@
                 "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -15164,8 +15160,7 @@
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -15266,15 +15261,8 @@
             "samples": [
                 "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -15557,13 +15545,11 @@
                 "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -15666,13 +15652,11 @@
                 "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -15794,16 +15778,7 @@
             "area": 8700,
             "samples": [
                 "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5432_5431_mod2.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -16366,15 +16341,8 @@
             "samples": [
                 "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -16760,16 +16728,7 @@
             "area": 3100,
             "samples": [
                 "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5432_5431_mod2.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -16879,16 +16838,7 @@
             "area": 1100,
             "samples": [
                 "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5432_5431_mod2.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -16955,15 +16905,8 @@
             "samples": [
                 "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -18274,15 +18217,8 @@
             "samples": [
                 "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -20767,15 +20703,8 @@
             "samples": [
                 "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -21208,15 +21137,8 @@
             "samples": [
                 "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -22431,10 +22353,7 @@
                 "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -22591,7 +22510,6 @@
                 "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
@@ -23100,15 +23018,11 @@
             "samples": [
                 "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
                 "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -25615,16 +25529,9 @@
             "area": 12000,
             "samples": [
                 "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5452_5451_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -25671,17 +25578,8 @@
             "rt_stop": 2.03,
             "area": 670,
             "samples": [
-                "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5434_5433_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -25724,11 +25622,9 @@
             "rt_stop": 2.48,
             "area": 3000,
             "samples": [
-                "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
@@ -25809,17 +25705,9 @@
             "rt_stop": 2.36,
             "area": 1200,
             "samples": [
-                "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -25880,17 +25768,8 @@
             "rt_stop": 2.81,
             "area": 820,
             "samples": [
-                "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -25943,17 +25822,7 @@
             "rt_stop": 3.95,
             "area": 1400,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5432_5431_mod2.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -26018,17 +25887,7 @@
             "rt_stop": 5.35,
             "area": 1500,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5432_5431_mod2.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -26243,17 +26102,8 @@
             "rt_stop": 5.71,
             "area": 910,
             "samples": [
-                "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -26298,17 +26148,11 @@
             "rt_stop": 6.07,
             "area": 1400,
             "samples": [
-                "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -26365,17 +26209,7 @@
             "rt_stop": 7.93,
             "area": 670,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5432_5431_mod2.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -26524,17 +26358,9 @@
             "rt_stop": 8.44,
             "area": 1300,
             "samples": [
-                "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -27137,17 +26963,7 @@
             "rt_stop": 8.75,
             "area": 1100,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5432_5431_mod2.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -27262,7 +27078,6 @@
             "rt_stop": 9.09,
             "area": 1900,
             "samples": [
-                "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
@@ -27271,8 +27086,7 @@
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -27861,17 +27675,7 @@
             "rt_stop": 10.87,
             "area": 880,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5432_5431_mod2.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -28010,17 +27814,7 @@
             "rt_stop": 11.57,
             "area": 840,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5432_5431_mod2.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -28097,17 +27891,13 @@
             "rt_stop": 12.2,
             "area": 1700,
             "samples": [
-                "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -28174,17 +27964,7 @@
             "rt_stop": 13.31,
             "area": 1400,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5432_5431_mod2.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -28357,17 +28137,13 @@
             "rt_stop": 13.63,
             "area": 3500,
             "samples": [
-                "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -28508,17 +28284,11 @@
             "rt_stop": 14.01,
             "area": 1700,
             "samples": [
-                "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -28899,14 +28669,9 @@
             "rt_stop": 16.26,
             "area": 3300,
             "samples": [
-                "5440_5439_mod.mzXML",
                 "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
                 "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
@@ -28966,16 +28731,9 @@
             "rt_stop": 1.99,
             "area": 1100,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -29053,17 +28811,8 @@
             "rt_stop": 4.38,
             "area": 1000,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -29130,17 +28879,8 @@
             "rt_stop": 5.86,
             "area": 940,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -29261,17 +29001,7 @@
             "rt_stop": 6.11,
             "area": 2000,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5425_5426_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -29394,17 +29124,7 @@
             "rt_stop": 7.3,
             "area": 880,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5425_5426_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -29479,17 +29199,7 @@
             "rt_stop": 7.58,
             "area": 1200,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5425_5426_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -29564,17 +29274,10 @@
             "rt_stop": 9.51,
             "area": 930,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -29949,17 +29652,8 @@
             "rt_stop": 10.56,
             "area": 1500,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -30088,17 +29782,12 @@
             "rt_stop": 20.7,
             "area": 18000,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
                 "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
                 "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -30163,16 +29852,9 @@
             "rt_stop": 2.01,
             "area": 640,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -30252,17 +29934,7 @@
             "rt_stop": 2.48,
             "area": 1100,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5434_5433_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -30351,16 +30023,10 @@
             "rt_stop": 2.5,
             "area": 1200,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -30438,17 +30104,8 @@
             "rt_stop": 5.7,
             "area": 1900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -30727,17 +30384,10 @@
             "rt_stop": 6.66,
             "area": 10000,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -31036,17 +30686,10 @@
             "rt_stop": 7.85,
             "area": 1100,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -31201,17 +30844,8 @@
             "rt_stop": 8.8,
             "area": 2700,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -31516,17 +31150,8 @@
             "rt_stop": 8.96,
             "area": 1100,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -31739,17 +31364,8 @@
             "rt_stop": 9.53,
             "area": 4600,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -32294,17 +31910,8 @@
             "rt_stop": 9.56,
             "area": 1300,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -32631,17 +32238,8 @@
             "rt_stop": 9.79,
             "area": 1900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -32688,17 +32286,7 @@
             "rt_stop": 9.61,
             "area": 900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5434_5433_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -32975,17 +32563,8 @@
             "rt_stop": 10.76,
             "area": 2100,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -33240,17 +32819,8 @@
             "rt_stop": 11.17,
             "area": 1500,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -33383,17 +32953,10 @@
             "rt_stop": 13.5,
             "area": 2100,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -34116,16 +33679,7 @@
             "rt_stop": 13.67,
             "area": 1000,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -34433,17 +33987,10 @@
             "rt_stop": 14.54,
             "area": 1900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -35082,17 +34629,10 @@
             "rt_stop": 15.37,
             "area": 2200,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -35683,17 +35223,9 @@
             "rt_stop": 15.28,
             "area": 1200,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5446_5445_mod.mzXML"
             ]
         },
         "82": {
@@ -35704,17 +35236,10 @@
             "rt_stop": 15.38,
             "area": 3700,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -36381,17 +35906,10 @@
             "rt_stop": 15.65,
             "area": 17000,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -39324,17 +38842,10 @@
             "rt_stop": 16.0,
             "area": 1900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
                 "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
                 "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -40031,17 +39542,7 @@
             "rt_stop": 18.24,
             "area": 1800,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5434_5433_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -40432,17 +39933,7 @@
             "rt_stop": 1.81,
             "area": 1300,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -40721,17 +40212,7 @@
             "rt_stop": 1.83,
             "area": 760,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -40992,17 +40473,7 @@
             "rt_stop": 6.92,
             "area": 930,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -41107,17 +40578,7 @@
             "rt_stop": 7.51,
             "area": 650,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -41344,17 +40805,7 @@
             "rt_stop": 7.84,
             "area": 810,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -41581,17 +41032,7 @@
             "rt_stop": 8.33,
             "area": 1100,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -41744,17 +41185,7 @@
             "rt_stop": 8.33,
             "area": 660,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -41861,17 +41292,7 @@
             "rt_stop": 8.86,
             "area": 4700,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -42082,17 +41503,7 @@
             "rt_stop": 10.24,
             "area": 4200,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -42433,17 +41844,7 @@
             "rt_stop": 10.64,
             "area": 3000,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -42764,17 +42165,7 @@
             "rt_stop": 10.97,
             "area": 850,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5450_5449_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -42935,17 +42326,7 @@
             "rt_stop": 15.4,
             "area": 1700,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5444_5443_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -43082,17 +42463,8 @@
             "rt_stop": 16.97,
             "area": 2000,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -43141,17 +42513,9 @@
             "rt_stop": 20.13,
             "area": 3300,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
                 "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -43210,17 +42574,9 @@
             "rt_stop": 7.08,
             "area": 2600,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -43395,17 +42751,8 @@
             "rt_stop": 9.66,
             "area": 1000,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -43494,17 +42841,7 @@
             "rt_stop": 14.45,
             "area": 1700,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5452_5451_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -44027,17 +43364,7 @@
             "rt_stop": 15.79,
             "area": 2500,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5452_5451_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -44840,17 +44167,8 @@
             "rt_stop": 17.09,
             "area": 3200,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -44897,17 +44215,9 @@
             "rt_stop": 17.59,
             "area": 4700,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -44966,17 +44276,8 @@
             "rt_stop": 18.89,
             "area": 4900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -45025,17 +44326,8 @@
             "rt_stop": 18.87,
             "area": 1900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
                 "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -45088,17 +44380,7 @@
             "rt_stop": 9.84,
             "area": 1300,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5446_5445_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -45465,17 +44747,7 @@
             "rt_stop": 9.93,
             "area": 680,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5446_5445_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -45676,17 +44948,7 @@
             "rt_stop": 2.12,
             "area": 610,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -45813,17 +45075,7 @@
             "rt_stop": 6.31,
             "area": 900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -45868,17 +45120,8 @@
             "rt_stop": 7.27,
             "area": 1400,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -45999,17 +45242,7 @@
             "rt_stop": 15.22,
             "area": 860,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ]
         },
         "118": {
@@ -46020,17 +45253,7 @@
             "rt_stop": 19.73,
             "area": 1300,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5456_5455_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -46093,17 +45316,7 @@
             "rt_stop": 1.82,
             "area": 1400,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -46156,17 +45369,7 @@
             "rt_stop": 1.85,
             "area": 2200,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -46367,17 +45570,7 @@
             "rt_stop": 3.91,
             "area": 1900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -46510,17 +45703,7 @@
             "rt_stop": 5.94,
             "area": 1500,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -46631,17 +45814,7 @@
             "rt_stop": 6.13,
             "area": 950,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -46974,17 +46147,7 @@
             "rt_stop": 6.5,
             "area": 1600,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -47181,17 +46344,7 @@
             "rt_stop": 6.44,
             "area": 690,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -47214,17 +46367,7 @@
             "rt_stop": 7.35,
             "area": 850,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -47455,17 +46598,7 @@
             "rt_stop": 8.33,
             "area": 750,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -47532,17 +46665,7 @@
             "rt_stop": 15.22,
             "area": 1100,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -47587,17 +46710,7 @@
             "rt_stop": 15.47,
             "area": 1200,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -47638,17 +46751,7 @@
             "rt_stop": 16.26,
             "area": 1500,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "D3_H3_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "spectrum": {
                 "mz": [
@@ -47699,15 +46802,6 @@
             "rt_stop": 17.45,
             "area": 2000,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
                 "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
@@ -47778,16 +46872,6 @@
             "rt_stop": 1.97,
             "area": 940,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -47847,16 +46931,6 @@
             "rt_stop": 1.95,
             "area": 490,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -47918,16 +46992,6 @@
             "rt_stop": 2.32,
             "area": 1300,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -47957,16 +47021,6 @@
             "rt_stop": 2.5,
             "area": 810,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -48116,16 +47170,6 @@
             "rt_stop": 3.54,
             "area": 1100,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -48191,16 +47235,6 @@
             "rt_stop": 3.89,
             "area": 1300,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -48272,16 +47306,6 @@
             "rt_stop": 5.67,
             "area": 780,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -48333,16 +47357,6 @@
             "rt_stop": 7.83,
             "area": 4300,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -48802,16 +47816,6 @@
             "rt_stop": 7.77,
             "area": 1900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -48887,16 +47891,6 @@
             "rt_stop": 8.84,
             "area": 1600,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -48958,16 +47952,6 @@
             "rt_stop": 8.91,
             "area": 3900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -49313,16 +48297,6 @@
             "rt_stop": 9.26,
             "area": 920,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -49522,16 +48496,6 @@
             "rt_stop": 10.39,
             "area": 1200,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -49669,16 +48633,6 @@
             "rt_stop": 11.82,
             "area": 9300,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -49902,16 +48856,6 @@
             "rt_stop": 11.54,
             "area": 620,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -49983,16 +48927,6 @@
             "rt_stop": 13.1,
             "area": 3400,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -50060,16 +48994,6 @@
             "rt_stop": 14.73,
             "area": 4100,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -50153,16 +49077,6 @@
             "rt_stop": 15.71,
             "area": 4100,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -50256,16 +49170,6 @@
             "rt_stop": 15.9,
             "area": 1700,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -50377,16 +49281,6 @@
             "rt_stop": 16.33,
             "area": 3900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -50450,16 +49344,6 @@
             "rt_stop": 16.33,
             "area": 5200,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -50959,16 +49843,6 @@
             "rt_stop": 16.71,
             "area": 3900,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -51022,16 +49896,6 @@
             "rt_stop": 17.3,
             "area": 30000,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -51531,16 +50395,6 @@
             "rt_stop": 16.71,
             "area": 2600,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -51826,16 +50680,6 @@
             "rt_stop": 17.21,
             "area": 1500,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -52021,16 +50865,6 @@
             "rt_stop": 17.86,
             "area": 14000,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {
@@ -52208,16 +51042,6 @@
             "rt_stop": 18.56,
             "area": 6800,
             "samples": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML",
-                "5425_5426_mod.mzXML",
-                "5434_5433_mod.mzXML",
-                "5450_5449_mod.mzXML",
-                "5444_5443_mod.mzXML",
-                "5452_5451_mod.mzXML",
-                "5446_5445_mod.mzXML",
-                "5456_5455_mod.mzXML",
-                "5458_5457_mod.mzXML",
                 "D3_H3_mod.mzXML"
             ],
             "spectrum": {

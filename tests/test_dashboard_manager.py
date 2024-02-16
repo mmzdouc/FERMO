@@ -32,7 +32,7 @@ def filters():
         },
         "groups_feature": "S",
         "groups_network": "S",
-        "nr_samples": [1, 3],
+        "nr_samples": {"minimum": 0, "maximum": 0},
         "precursor_mz": [0.0, 3000.0],
         "fold_include": {"groups": "S/V2", "n_fold": 3.2},
         "fold_exclude": {"groups": "V2/S", "n_fold": 2.0},
@@ -129,8 +129,36 @@ def test_filter_feature_id_invalid(session):
     assert len(manager.ret_features["total"]) == 0
 
 
-def test_filter_precursor_mz_invalid(session):
+def test_filter_precursor_mz_valid(session):
     manager = Manager()
     manager.prepare_ret_features(session)
     manager.filter_gen_feature_range(session, [268.9976, 268.9976], "mz")
     assert len(manager.ret_features["total"]) == 1
+
+
+def test_filter_nr_samples_range_valid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_nr_samples(session, {"minimum": 11, "maximum": 11})
+    assert len(manager.ret_features["total"]) == 4
+
+
+def test_filter_nr_samples_less_equal_valid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_nr_samples(session, {"minimum": 11, "maximum": 0})
+    assert len(manager.ret_features["total"]) == 4
+
+
+def test_filter_nr_samples_greater_equal_valid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_nr_samples(session, {"minimum": 11, "maximum": 0})
+    assert len(manager.ret_features["total"]) == 4
+
+
+def test_filter_nr_samples_invalid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_nr_samples(session, {"minimum": 0, "maximum": 0})
+    assert len(manager.ret_features["total"]) == 143
