@@ -129,10 +129,26 @@ class DashboardManager(BaseModel):
                     self.filter_spec_feature_range(
                         f_sess, filters[param], "rel_intensity"
                     )
+                case "abs_intensity":
+                    self.filter_spec_feature_range(f_sess, filters[param], "intensity")
                 case "rel_area":
                     self.filter_spec_feature_range(f_sess, filters[param], "rel_area")
+                case "abs_area":
+                    self.filter_spec_feature_range(f_sess, filters[param], "area")
+                # TODO(MM 16.2.24): implement peak_overlap
+                # TODO(MM 16.2.24): implement novelty_score
+                # TODO(MM 16.2.24): implement blank_assoc
+                # TODO(MM 16.2.24): implement quant_data_assoc
+                # TODO(MM 16.2.24): implement annotation
                 case "filter_feature_id":
                     self.filter_feature_id(filters[param])
+                # TODO(MM 16.2.24): implement network_id
+                # TODO(MM 16.2.24): implement groups_feature
+                # TODO(MM 16.2.24): implement groups_network
+                # TODO(MM 16.2.24): implement nr_samples
+                # TODO(MM 16.2.24): implement precursor_mz
+                # TODO(MM 16.2.24): implement fold_include
+                # TODO(MM 16.2.24): implement fold_exclude
 
         return {
             "samples": {
@@ -169,7 +185,9 @@ class DashboardManager(BaseModel):
             filt: a list with two floats indicating a range
             param: the parameter in the session file to filter for
         """
-        if filt[0] == 0.0 and filt[1] == 1.0:
+        filt = [min(filt), max(filt)]
+
+        if float(filt[0]) == 0.0 and float(filt[1]) == 1.0:
             return
         elif len(self.ret_features["total"]) == 0:
             return

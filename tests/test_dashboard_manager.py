@@ -15,12 +15,12 @@ def session():
 def filters():
     return {
         "rel_intensity": [0.0, 1.0],
-        "abs_intensity": [5000, 10000],
+        "abs_intensity": [0, 100000000],
         "rel_area": [0.0, 1.0],
-        "abs_area": [5000, 10000],
+        "abs_area": [0, 100000000],
         "peak_overlap": [0.0, 1.0],
         "novelty_score": [0.0, 1.0],
-        "blank_assoc": True,
+        "blank_assoc": False,
         "quant_data_assoc": {
             "algorithm": "all",
         },
@@ -81,18 +81,38 @@ def test_prepare_ret_features(session):
     assert len(manager.ret_features.get("total")) == 143
 
 
-def test_extract_retained_features_valid(session):
+def test_extract_retained_features_valid(session, filters):
     manager = Manager()
-    filters = {"rel_intensity": [0.0, 1.0], "rel_area": [0.0, 1.0]}
     manager.filter_ret_features(session, filters)
     assert len(manager.ret_features["total"]) == 143
 
 
-def test_filter_spec_feature_range_valid(session):
+def test_filter_rel_intensity_valid(session):
     manager = Manager()
     manager.prepare_ret_features(session)
     manager.filter_spec_feature_range(session, [0.06, 1.0], "rel_intensity")
     assert len(manager.ret_features["total"]) == 140
+
+
+def test_filter_abs_intensity_valid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_spec_feature_range(session, [110000, 110000], "intensity")
+    assert len(manager.ret_features["total"]) == 2
+
+
+def test_filter_rel_area_valid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_spec_feature_range(session, [0.06, 1.0], "rel_area")
+    assert len(manager.ret_features["total"]) == 104
+
+
+def test_filter_abs_area_valid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_spec_feature_range(session, [44000, 44000], "area")
+    assert len(manager.ret_features["total"]) == 1
 
 
 def test_filter_feature_id_valid(session):
