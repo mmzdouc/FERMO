@@ -101,7 +101,3 @@ def task_result(job_id: str) -> Union[str, Response]:
         manager = DashboardManager()
         manager.prepare_data_get(f_sess)
         return render_template("dashboard.html", data=manager.provide_data_get())
-    #
-    # elif request.method == "POST":
-    #     # TODO(HEA, MMZ, 11.2.24): here comes the POST functionality (triggers)
-    #     return render_template("dashboard.html", data=data)
