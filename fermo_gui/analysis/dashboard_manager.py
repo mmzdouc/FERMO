@@ -140,9 +140,10 @@ class DashboardManager(BaseModel):
                 # TODO(MM 16.2.24): implement blank_assoc (feature_spec)
                 # TODO(MM 16.2.24): implement quant_data_assoc (feature_spec)
                 # TODO(MM 16.2.24): implement annotation (feature_spec)
-                case "filter_feature_id":
+                case "feature_id":
                     self.filter_feature_id(filters[param])
-                # TODO(MM 16.2.24): implement network_id (feature_spec)
+                case "network_id":
+                    self.filter_network_id(f_sess, filters[param])
                 # TODO(MM 16.2.24): implement groups_feature (feature_spec)
                 # TODO(MM 16.2.24): implement groups_network (feature_spec)
                 case "nr_samples":
@@ -330,3 +331,31 @@ class DashboardManager(BaseModel):
         for sample in self.ret_features["samples"]:
             self.ret_features["samples"][sample].intersection_update(set_total)
         return
+
+    def filter_network_id(self: Self, f_sess: dict, filt: dict):
+        """Filters for features observed in a specified spectrum similarity network
+
+        Part of the POST functionality (user applies filter on frontend, followed by
+        website update).
+
+        Arguments:
+            f_sess: fermo session file
+            filt: a dict indicating the network algorithm and ID
+        """
+        if len(self.ret_features["total"]) == 0:
+            return
+        try:
+            set_total = deepcopy(self.ret_features["total"])
+            set_total.intersection_update(
+                set(
+                    f_sess["stats"]["networks"][filt["algorithm"]]["summary"][
+                        str(filt["n_id"])
+                    ]
+                )
+            )
+            self.ret_features["total"] = set_total
+            for sample in self.ret_features["samples"]:
+                self.ret_features["samples"][sample].intersection_update(set_total)
+            return
+        except (KeyError, TypeError):
+            return

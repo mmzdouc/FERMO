@@ -27,7 +27,7 @@ def filters():
         "annotation": {"field": "ms2query", "value": "siomycin", "regexp": False},
         "feature_id": 1,
         "network_id": {
-            "algorithm": "mod_cosine",
+            "algorithm": "modified_cosine",
             "n_id": 1,
         },
         "groups_feature": "S",
@@ -84,7 +84,7 @@ def test_prepare_ret_features(session):
 def test_extract_retained_features_valid(session, filters):
     manager = Manager()
     manager.filter_ret_features(session, filters)
-    assert len(manager.ret_features["total"]) == 143
+    assert len(manager.ret_features["total"]) == 0
 
 
 def test_filter_rel_intensity_valid(session):
@@ -162,3 +162,13 @@ def test_filter_nr_samples_invalid(session):
     manager.prepare_ret_features(session)
     manager.filter_nr_samples(session, {"minimum": 0, "maximum": 0})
     assert len(manager.ret_features["total"]) == 143
+
+
+def test_filter_network_id_valid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_network_id(session, {"algorithm": "modified_cosine", "n_id": 0})
+    assert len(manager.ret_features["total"]) == 1
+    assert manager.ret_features["total"] == {
+        1,
+    }
