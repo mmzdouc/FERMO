@@ -172,3 +172,10 @@ def test_filter_network_id_valid(session):
     assert manager.ret_features["total"] == {
         1,
     }
+
+
+def test_filter_groups_feature_valid(session):
+    manager = Manager()
+    manager.prepare_ret_features(session)
+    manager.filter_groups_feature(session, "V2")
+    assert len(manager.ret_features["total"]) == 31

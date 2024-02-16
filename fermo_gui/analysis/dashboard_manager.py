@@ -144,7 +144,8 @@ class DashboardManager(BaseModel):
                     self.filter_feature_id(filters[param])
                 case "network_id":
                     self.filter_network_id(f_sess, filters[param])
-                # TODO(MM 16.2.24): implement groups_feature (feature_spec)
+                case "groups_feature":
+                    self.filter_groups_feature(f_sess, filters[param])
                 # TODO(MM 16.2.24): implement groups_network (feature_spec)
                 case "nr_samples":
                     self.filter_nr_samples(f_sess, filters[param])
@@ -358,4 +359,29 @@ class DashboardManager(BaseModel):
                 self.ret_features["samples"][sample].intersection_update(set_total)
             return
         except (KeyError, TypeError):
+            return
+
+    def filter_groups_feature(self: Self, f_sess: dict, filt: str):
+        """Filters for features observed in a specified group if groups were specified
+
+        Part of the POST functionality (user applies filter on frontend, followed by
+        website update).
+
+        Arguments:
+            f_sess: fermo session file
+            filt: a string indicating the group to filter for
+        """
+        if len(self.ret_features["total"]) == 0:
+            return
+        elif len(f_sess["stats"]["groups"]) == 1:
+            return
+        else:
+            retained_set = set()
+            for sample in f_sess["samples"]:
+                if filt in f_sess["samples"][sample]["groups"]:
+                    retained_set.update(set(f_sess["samples"][sample]["feature_ids"]))
+
+            self.ret_features["total"].intersection_update(retained_set)
+            for sample in self.ret_features["samples"]:
+                self.ret_features["samples"][sample].intersection_update(retained_set)
             return
