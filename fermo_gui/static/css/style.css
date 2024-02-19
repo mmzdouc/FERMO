@@ -161,8 +161,18 @@ td hr {
     overflow-wrap: break-word;
 }
 
+/* Drop zone layout. Active layout in dashboard.js */
+.dropzone {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 25px;
+}
 
-/* general elements on dashboard page */
+.dropzone-dragging {
+    background-color: #e8e8e8;
+}
+
+/* dashboard page accordion elements */
 .accordion {
     --bs-accordion-btn-icon: url("/static/images/collapse_icon_white.svg");
     --bs-accordion-btn-active-icon: url("/static/images/collapse_icon_white.svg");
@@ -190,15 +200,7 @@ td hr {
     color: #fff;
 }
 
-.card{
-    --bs-card-cap-padding-y: 0.36rem;
-    --bs-card-cap-padding-x: 0.5rem;
-}
 
-.card-header {
-    background-color: #116789;
-    color: #fff;
-}
 
 #filters input[type="search"] {
     padding: 0.2rem 0.5rem;
