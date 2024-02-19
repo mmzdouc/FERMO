@@ -45,9 +45,13 @@ from fermo_gui.routes import bp
 def start_analysis() -> Union[str, Response]:
     """Render start analysis page, get and store data, init analysis.
 
+    Notes: On every GET, the page prepares a new job (job ID + upload directory)
+    On POST (form.validate_on_submit()), the asynchronous job is started
+
     Returns:
-        The rendered start_analysis.html page as string
+        On GET, the "start_analysis" page, on POST a redirect to the "job_submitted" p.
     """
+    # TODO(MMZ 14.2.24): Cover with tests
     form = AnalysisInput()
 
     if request.method == "GET":
@@ -68,39 +72,40 @@ def start_analysis() -> Union[str, Response]:
             params,
         )
 
-        data = {
+        metadata = {
             "job_id": session["task_id"],
             "upload_path": session["task_upload_path"],
             "root_url": request.base_url.partition("/analysis/start_analysis/")[0],
-            "email": params.get("email"),
+            "email": form.email.data,
             "email_notify": True,
         }
 
-        if "localhost" in data["root_url"] or "127.0.0.1" in data["root_url"]:
-            data["email_notify"] = False
+        if "localhost" in metadata["root_url"] or "127.0.0.1" in metadata["root_url"]:
+            metadata["email_notify"] = False
         elif params.get("email") is None:
             # TODO(MMZ 13.2.24): change to the correct params data structure
-            data["email_notify"] = False
+            metadata["email_notify"] = False
         elif current_app.config.get("MAIL_USERNAME") is None:
-            data["email_notify"] = False
+            metadata["email_notify"] = False
 
         start_fermo_core.apply_async(
-            kwargs={"data": data},
+            kwargs={"metadata": metadata},
             task_id=session["task_id"],
         )
         return redirect(url_for("routes.job_submitted", job_id=session["task_id"]))
 
 
 @bp.route("/analysis/job_submitted/<job_id>/", methods=["GET"])
-def job_submitted(job_id):
-    """Render the job_submitted page, serving as placeholder during calculation.
+def job_submitted(job_id: str) -> str:
+    """Serves as placeholder during calculation.
 
     Arguments:
-        job_id: The job id to check for
+        job_id: the job identifier, provided by the URL variable
 
     Returns:
-        The rendered job_submitted.html page as string
+        The rendered "job_submitted.html" page
     """
+    # TODO(MMZ 14.2.24): Cover with tests
     job_data = {
         "task_id": job_id,
         "root_url": request.base_url.partition("/analysis/job_submitted/")[0],
@@ -109,8 +114,8 @@ def job_submitted(job_id):
 
 
 @socketio.on("startup_event")
-def handle_startup_message(data):
-    """Check if socket.io is responsive (for debugging purposes)
+def handle_startup_message(data: dict):
+    """Debug function to check responsiveness of socket.io
 
     Arguments:
         data: a JSON-derived dictionary
@@ -119,12 +124,17 @@ def handle_startup_message(data):
 
 
 @socketio.on("get_status")
-def check_job_status(data):
+def check_job_status(data: str):
     """Serve job status upon request.
 
+    Note: Celery does not differentiate between non-existing and non-running jobs.
+    To prevent endless loops on non-existing jobs, existence of upload folder is
+    verified: no folder, no job run
+
     Arguments:
-        data: JSON-derived dict with job ID to check for
+        data: JSON-derived dict with job ID to check status of
     """
+    # TODO(MMZ 14.2.24): Cover with tests
     if (
         not Path(current_app.config.get("UPLOAD_FOLDER"))
         .joinpath(data.get("task_id"))

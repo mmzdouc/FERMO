@@ -21,7 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from flask import Flask
-import redis
 
 
 def configure_session(app: Flask) -> Flask:

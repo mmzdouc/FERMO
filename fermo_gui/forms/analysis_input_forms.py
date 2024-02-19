@@ -24,6 +24,8 @@ from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField
 from wtforms.validators import Email, DataRequired
 
+# TODO(MMZ 14.2.24): Cover with tests
+
 
 class AnalysisInput(FlaskForm):
     """Set class variables to act as fields of data input form."""

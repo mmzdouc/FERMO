@@ -30,52 +30,51 @@ from pydantic import BaseModel, DirectoryPath, AnyUrl
 
 from fermo_gui.analysis.general_manager import GeneralManager
 
+# TODO(MMZ 14.2.24): Cover with tests
+
 
 @shared_task(ignore_result=False)
-def start_fermo_core(data: dict) -> bool:
+def start_fermo_core(metadata: dict) -> bool:
     """Start fermo_core analysis via FermoAnalysisManager
 
     Arguments:
-        data: a dict containing data for running of the job
+        metadata: a dict containing metadata for running of the job
 
     Returns:
         True if job successful, False if error was raised
     """
     try:
         params = GeneralManager().read_data_from_json(
-            data.get("upload_path"), f"{data.get('job_id')}.params.json"
+            metadata.get("upload_path"), f"{metadata.get('job_id')}.params.json"
         )
 
-        manager = FermoAnalysisManager(params=params, **data)
+        manager = FermoAnalysisManager(params=params, **metadata)
         manager.run_manager()
 
-        if data.get("email_notify"):
+        if metadata.get("email_notify"):
             GeneralManager().email_notify_success(
-                root_url=data.get("root_url"),
-                address=data.get("email"),
-                job_id=data.get("job_id"),
+                root_url=metadata.get("root_url"),
+                address=metadata.get("email"),
+                job_id=metadata.get("job_id"),
             )
         return True
     except Exception as e:
-        # TODO(MMZ 12.2.24): dump the error in the correct location - append to log?
-        log = {
-            "message_log": [
-                "step1",
-                "step2",
-            ]
-        }
-        log["message_log"].append(str(e))
-        # TODO(MMZ 13.2.24): Error messages raised inside Celery are empty - FYI
+        print(e)  # Due to Celery Error catching, empty "e"
 
-        GeneralManager().store_data_as_json(
-            data.get("upload_path"), f"{data.get('job_id')}.log.json", log
-        )
+        # TODO(MMZ 14.2.24): only a placeholder log - replaced by fermo_core implement.
+        log = ["step1", "step2", "step3"]
+        with open(
+            Path(metadata.get("upload_path")).joinpath(f"{metadata.get('job_id')}.log"),
+            "w",
+        ) as logfile:
+            for line in log:
+                logfile.write(f"{line} \n")
 
-        if data.get("email_notify"):
+        if metadata.get("email_notify"):
             GeneralManager().email_notify_fail(
-                root_url=data.get("root_url"),
-                address=data.get("email"),
-                job_id=data.get("job_id"),
+                root_url=metadata.get("root_url"),
+                address=metadata.get("email"),
+                job_id=metadata.get("job_id"),
             )
         return False
 
@@ -122,13 +121,10 @@ class FermoAnalysisManager(BaseModel):
     def write_log_placeholder(self):
         """Write log of session"""
         # TODO(MMZ 13.2.24): replace placeholder process log dump
-        GeneralManager().store_data_as_json(
-            self.upload_path,
-            f"{self.job_id}.log.json",
-            {
-                "message_log": [
-                    "log step1: this happened first",
-                    "log step2: this happened second",
-                ]
-            },
-        )
+        # TODO(MMZ 14.2.24): only a placeholder log - replaced by fermo_core implement.
+        log = ["step1", "step2", "step3"]
+        with open(
+            Path(self.upload_path).joinpath(f"{self.job_id}.log"), "w"
+        ) as logfile:
+            for line in log:
+                logfile.write(f"{line} \n")

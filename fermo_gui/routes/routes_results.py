@@ -1,4 +1,4 @@
-"""Routes for results pages.
+"""Routes and logic for results pages.
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -25,6 +25,7 @@ from typing import Union
 
 from flask import render_template, current_app, request, redirect, url_for, Response
 
+from fermo_gui.analysis.dashboard_manager import DashboardManager
 from fermo_gui.analysis.general_manager import GeneralManager
 from fermo_gui.routes import bp
 
@@ -33,20 +34,26 @@ from fermo_gui.routes import bp
 def job_failed(job_id: str) -> Union[str, Response]:
     """Render the job_failed html.
 
+    Assumes that every failed job should have a logfile; if not found, redirect to
+    'job_not_found' page.
+
     Arguments:
-        job_id: the job identifier
+        job_id: the job identifier, provided by the URL variable
 
     Returns:
-        The job_failed page for the job ID
+        The job_failed page for the job ID or a redirect to 'job_not_found' page.
     """
+    # TODO(MMZ 14.2.24): Cover with tests
     try:
-        log = GeneralManager().read_data_from_json(
-            str(Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id)),
-            f"{job_id}.log.json",
-        )
-        return render_template(
-            "job_failed.html", data={"task_id": job_id, "log": log.get("message_log")}
-        )
+        with open(
+            Path(current_app.config.get("UPLOAD_FOLDER"))
+            .joinpath(job_id)
+            .joinpath(f"{job_id}.log"),
+            "r",
+        ) as logfile:
+            log = logfile.read().split("\n")
+
+        return render_template("job_failed.html", data={"task_id": job_id, "log": log})
     except FileNotFoundError:
         return redirect(url_for("routes.job_not_found", job_id=job_id))
 
@@ -55,30 +62,35 @@ def job_failed(job_id: str) -> Union[str, Response]:
 def job_not_found(job_id: str) -> str:
     """Render the job_not_found page.
 
+    Logical end-point of job routes.
+
     Arguments:
-        job_id: the job identifier
+        job_id: the job identifier, provided by the URL variable
 
     Returns:
         The job_not_found page for the job ID
     """
+    # TODO(MMZ 14.2.24): Cover with tests
     return render_template("job_not_found.html", data={"task_id": job_id})
 
 
 @bp.route("/results/<job_id>/", methods=["GET", "POST"])
 def task_result(job_id: str) -> Union[str, Response]:
-    """Render the result dashboard page for the given job id.
+    """Render the result dashboard page for the given job id if found.
 
     Arguments:
-        job_id: the job identifier provided by the URL
+        job_id: the job identifier, provided by the URL variable
 
     Returns:
         The dashboard page or the job_not_found page
-
-    Notes: All backend dashboard functionality should be called from
-    fermo_gui.analysis.dashboard_manager
     """
+    # TODO(MMZ 14.2.24): Cover with tests
+    # TODO(MMZ 14.2.24): For improved speed: use socket-io based updating of only
+    #  parts of the page - see also flask-turbo. Also server-side session cookies
+    #  possible (no size restriction); maybe a mixed approach (keep the GET
+    #  functionality in the cache and only load the POST stuff)
     try:
-        data = GeneralManager().read_data_from_json(
+        f_sess = GeneralManager().read_data_from_json(
             str(Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id)),
             f"{job_id}.session.json",
         )
@@ -86,9 +98,6 @@ def task_result(job_id: str) -> Union[str, Response]:
         return redirect(url_for("routes.job_not_found", job_id=job_id))
 
     if request.method == "GET":
-        # TODO(HEA, MMZ, 11.2.24): here comes the GET functionality (dashboard buildup)
-        return render_template("dashboard.html", data=data)
-
-    elif request.method == "POST":
-        # TODO(HEA, MMZ, 11.2.24): here comes the POST functionality (triggers)
-        return render_template("dashboard.html", data=data)
+        manager = DashboardManager()
+        manager.prepare_data_get(f_sess)
+        return render_template("dashboard.html", data=manager.provide_data_get())
