@@ -36,7 +36,7 @@ class DashboardManager(BaseModel):
     """
 
     stats_analysis: dict = {}
-    stats_samples_dyn: dict = {}
+    stats_samples_dyn: list = []
     ret_features: dict = {}
 
     def prepare_data_get(self: Self, f_sess: dict):
@@ -102,12 +102,14 @@ class DashboardManager(BaseModel):
                 if groups == "":
                     groups = "N/A"
 
-                self.stats_samples_dyn[sample] = {
-                    "sample_name": sample,
-                    "groups": groups,
-                    "total_features": total_features,
-                    "retained_features": remaining_features,
-                }
+                self.stats_samples_dyn.append(
+                    {
+                        "Sample name": sample,
+                        "Group": groups,
+                        "Total features": total_features,
+                        "Retained features": remaining_features,
+                    }
+                )
         except (TypeError, ValueError):
             self.stats_samples_dyn = {"error": "error during parsing of session file"}
 

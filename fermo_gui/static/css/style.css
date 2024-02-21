@@ -135,31 +135,36 @@ input[type="range"] {
 
 /* tables */
 thead {
-    background-color: #116789 !important;
+    background-color: #2e8cb0 !important; /* #116789 !important; */
     color: white !important;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.2;
 }
 
-td {
+td, th {
     font-size: 12px;
-}
-
-td hr {
-    opacity: 0.5;
-    margin: 0.6rem 0;
-}
-
-#sampleOverviewTable td {
-    max-width: 100px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-#featureTable td {
     overflow-wrap: break-word;
+    text-align: center;
 }
+
+th {
+    background-color: blue;
+    border-top: none;
+    vertical-align: middle;
+}
+
+table th:first-child{
+  border-radius:5px 0px 0px 0px;
+}
+
+table th:last-child{
+  border-radius:0px 5px 0px 0px;
+}
+
+#sampleTableGeneral{
+    text-align: left;
+}
+
 
 /* Drop zone layout. Active layout in dashboard.js */
 .dropzone {
@@ -201,7 +206,6 @@ td hr {
 }
 
 
-
 #filters input[type="search"] {
     padding: 0.2rem 0.5rem;
     font-size: 14px;
@@ -223,24 +227,6 @@ td hr {
     border-width: 4px;
 }
 
-
-/* Specific elements */
-
-#loading-button{
-    margin-top: 100px;
-}
-
-.custom-tooltip {
-    --bs-tooltip-bg: #116789;
-}
-
-#landingPage {
-    font-size: 20px
-}
-
-input[type=number]{
-    padding: 0.2rem 0.5rem;
-}
 
 #cy {
 /* cytoscape graph */
