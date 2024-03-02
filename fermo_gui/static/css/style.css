@@ -165,12 +165,15 @@ table th:last-child{
     text-align: left;
 }
 
+.chromDiv{
+    font-size: 13px;
+    padding: 0.6rem;
+}
 
 /* Drop zone layout. Active layout in dashboard.js */
 .dropzone {
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 25px;
+  padding: 0.6rem;
+  border-radius: 1.4rem;
 }
 
 .dropzone-dragging {
@@ -217,14 +220,6 @@ table th:last-child{
 
 #filters button[type="submit"] {
     font-size: 14px;
-}
-
-.legend_rect {
-    height: 20px;
-    width: 20px;
-    display: inline-block;
-    border-style: solid;
-    border-width: 4px;
 }
 
 

@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-4">
+    <div class="col-xs-12 col-sm-12 col-md-4 pe-md-0 pe-sm-3">
         <div class="dropzone">
             <div class="accordion accordion-item" draggable="true" id="sample">
                 <h2 class="accordion-header" id="sampleTableHeader">
@@ -117,7 +117,7 @@
         </div>
 
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-8">
+    <div class="col-xs-12 col-sm-12 col-md-8 ps-md-0 pe-sm-3">
         <div class="dropzone">
             <div class="accordion accordion-item" draggable="true" id="chromatogram">
                 <h2 class="accordion-header" id="ChromatogramHeader">
@@ -133,6 +133,21 @@
                 <div id="ChromatogramBody"
                      class="accordion-collapse collapse show"
                      aria-labelledby="sampleTableHeader">
+                    <div class="accordion-body overflow-auto">
+                        <div class="chromDiv row-md-12">
+                            <h6 class="fw-bold" style="font-size: 14px;">
+                                Sample: {{ data.stats_chromatogram | first }}
+                            </h6>
+                            <p>Click any sample name in the 'Sample Overview' to visualize it.</p>
+                            <div id="mainChromatogram"
+                                 sample-name="{{ data.stats_chromatogram | first }}"
+                                 data-stats-chromatogram='{{ data.stats_chromatogram | tojson | safe }}'>
+                            </div>
+
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -182,5 +197,10 @@
 
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/chromatogram.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/plotly-2.18.2.min.js') }}"></script>
+<script>
+    var statsChromatogram = {{ data.stats_chromatogram | tojson | safe }};
+</script>
 
 {% endblock %}
