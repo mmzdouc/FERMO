@@ -37,6 +37,7 @@ class DashboardManager(BaseModel):
 
     stats_analysis: dict = {}
     stats_samples_dyn: list = []
+    stats_chromatogram: dict = {}
     ret_features: dict = {}
 
     def prepare_data_get(self: Self, f_sess: dict):
@@ -47,6 +48,7 @@ class DashboardManager(BaseModel):
         """
         self.extract_stats_analysis(f_sess)
         self.extract_stats_samples_dyn(f_sess)
+        self.create_chromatogram(f_sess)
 
     def provide_data_get(self: Self) -> dict:
         """Return data required by GET method
@@ -56,6 +58,7 @@ class DashboardManager(BaseModel):
         return {
             "stats_analysis": self.stats_analysis,
             "stats_samples_dyn": self.stats_samples_dyn,
+            "stats_chromatogram": self.stats_chromatogram,
         }
 
     def extract_stats_analysis(self: Self, f_sess: dict):
@@ -435,3 +438,30 @@ class DashboardManager(BaseModel):
             for sample in self.ret_features["samples"]:
                 self.ret_features["samples"][sample].intersection_update(network_set)
             return
+
+    def create_chromatogram(self: Self, f_sess: dict):
+        """Creates chromatogram file from fermo.session file
+
+        Arguments:
+            f_sess: fermo session file
+        """
+        try:
+            samples = f_sess.get("stats", {}).get("samples") or []
+            for sample in samples:
+                sample_data = f_sess.get("samples", {}).get(sample, {})
+                feature_data = []
+                for f_id in sample_data.get("feature_ids", []):
+                    f_info = sample_data.get("sample_spec_features", {}).get(
+                        str(f_id), {}
+                    )
+                    feature_data.append(
+                        {
+                            "f_id": f_info.get("f_id"),
+                            "trace_rt": f_info.get("trace_rt"),
+                            "trace_int": f_info.get("trace_int"),
+                        }
+                    )
+                self.stats_chromatogram[sample] = feature_data
+
+        except TypeError:
+            self.stats_chromatogram = {"error": "error during parsing of session file"}
