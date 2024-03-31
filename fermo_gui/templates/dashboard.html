@@ -35,7 +35,7 @@
         </div>
 
         <div class="dropzone">
-            <div class="accordion accordion-item" draggable="true" id="sampleInfo">
+            <div class="accordion accordion-item" id="sampleInfo">
                 <h2 class="accordion-header" id="sampleInfoHeader">
                     <button class="accordion-button collapsed"
                             type="button"
@@ -60,7 +60,9 @@
                             </thead>
                             <tbody>
                                 {% for filename in data.stats_samples_dyn %}
-                                    <tr>
+                                    <tr class="select-sample"
+                                        data-sample-name="{{ filename['Sample name'] }}"
+                                        style="cursor: pointer;">
                                         {% for key, value in filename.items() %}
                                             <td>{{ value }}</td>
                                         {% endfor %}
@@ -135,12 +137,11 @@
                      aria-labelledby="sampleTableHeader">
                     <div class="accordion-body overflow-auto">
                         <div class="chromDiv row-md-12">
-                            <h6 class="fw-bold" style="font-size: 14px;">
+                            <h6 id="activeSample" class="fw-bold" style="font-size: 14px;">
                                 Sample: {{ data.stats_chromatogram | first }}
                             </h6>
-                            <p>Click any sample name in the 'Sample Overview' to visualize it.</p>
+                            <p>Click any sample in the 'Sample Overview' table to visualize its chromatogram.</p>
                             <div id="mainChromatogram"
-                                 sample-name="{{ data.stats_chromatogram | first }}"
                                  data-stats-chromatogram='{{ data.stats_chromatogram | tojson | safe }}'>
                             </div>
 

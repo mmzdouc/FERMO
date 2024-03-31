@@ -1,10 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Load data from dashboard
+    // Load all chromatogram data
     var chromatogramElement = document.getElementById('mainChromatogram');
-    var sampleName = chromatogramElement.getAttribute('sample-name');
     var statsChromatogram = JSON.parse(chromatogramElement.getAttribute('data-stats-chromatogram'));
 
-    // Get the sample and extract the intensity and RT for each feature
+    // Automatically visualize the first sample on page load
+    var firstSample = document.querySelector('.select-sample');
+    if (firstSample) {
+        var firstSampleName = firstSample.getAttribute('data-sample-name');
+        visualizeData(firstSampleName, statsChromatogram);
+        document.getElementById('activeSample').textContent = 'Sample: ' + firstSampleName;
+    }
+
+    // Activate the clicked sample of the 'Sample overview'
+    var rows = document.querySelectorAll('.select-sample');
+    rows.forEach(function(row) {
+       row.addEventListener('click', function() {
+          var sampleName = this.getAttribute('data-sample-name');
+          visualizeData(sampleName, statsChromatogram);
+          document.getElementById('activeSample').textContent = 'Sample: ' + sampleName;
+       });
+    });
+});
+
+function visualizeData(sampleName, statsChromatogram) {
+    // Extract sample data
     var activeSampleData = statsChromatogram[sampleName];
     const combinedTraceInt = activeSampleData.map(obj => obj.trace_int);
     const combinedTraceRt = activeSampleData.map(obj => obj.trace_rt);
@@ -15,14 +34,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const maxRt = Math.max(...allTraceRtValues);
     const minRt = Math.min(...allTraceRtValues);
-    const upperRange = maxRt + maxRt * 0.05;
+    const upperRange = maxRt + maxRt * 0.02;
     const lowerRange = minRt - minRt * 0.05;
 
     // TODO: add annotation for filtering or blank associated
     var colors = ['#6358f5'];
-
     var data = [];
-
     for ( var i = 0 ; i < combinedTraceRt.length ; i++ ) {
       var result = {
         showlegend: false,
@@ -83,11 +100,9 @@ document.addEventListener('DOMContentLoaded', function() {
         titlefont: {
           family: 'Arial',
           size: 12,
-          color: 'lightgrey'
+          color: 'grey'
         },
       },
     };
-
     Plotly.newPlot('mainChromatogram', data, layout);
-
-});
+}
