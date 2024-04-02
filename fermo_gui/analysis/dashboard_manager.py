@@ -454,11 +454,16 @@ class DashboardManager(BaseModel):
                     f_info = sample_data.get("sample_spec_features", {}).get(
                         str(f_id), {}
                     )
+                    g_info = f_sess.get("general_features", {}).get(str(f_id), {})
                     feature_data.append(
                         {
                             "f_id": f_info.get("f_id"),
+                            "rt": f_info.get("rt"),
                             "trace_rt": f_info.get("trace_rt"),
                             "trace_int": f_info.get("trace_int"),
+                            "abs_int": f_info.get("intensity"),
+                            "rel_int": f_info.get("rel_intensity"),
+                            "mz": g_info.get("mz"),
                         }
                     )
                 self.stats_chromatogram[sample] = feature_data

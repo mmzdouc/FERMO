@@ -1,15 +1,15 @@
 {
     "metadata": {
         "fermo_core_version": "0.1.0",
-        "file_created_isoformat": "2024-02-16T12:34:09.693530",
-        "runtime_seconds": 20.101373,
+        "file_created_isoformat": "2024-03-20T14:18:39.205467",
+        "runtime_seconds": 21.196874,
         "system": "Linux",
-        "version": "#102~20.04.1-Ubuntu SMP Mon Jan 15 13:09:14 UTC 2024",
+        "version": "#110~20.04.1-Ubuntu SMP Tue Feb 13 14:25:03 UTC 2024",
         "architecture": [
             "64bit",
             "ELF"
         ],
-        "release": "5.15.0-92-generic",
+        "release": "5.15.0-100-generic",
         "machine": "x86_64",
         "processor": "x86_64",
         "python_version": "3.11.4"
@@ -184,24 +184,25 @@
         "analysis_log": [
             "Ran module 'FeatureFilter'. For parameters, see 'feature_filtering'.",
             "Ran module 'SimNetworksManager'. For parameters, see 'core_modules/spec_sim_networking'.",
+            "Ran module 'AnnotationManager'. For parameters, see 'core_modules' and 'additional_modules'.",
             "Ran module 'ChromTraceCalculator'."
         ],
         "groups": {
             "DEFAULT": [],
             "C": [
+                "5425_5426_mod.mzXML",
                 "5444_5443_mod.mzXML",
-                "5458_5457_mod.mzXML",
-                "5425_5426_mod.mzXML"
+                "5458_5457_mod.mzXML"
             ],
             "A2": [
-                "5440_5439_mod.mzXML",
-                "5432_5431_mod2.mzXML"
+                "5432_5431_mod2.mzXML",
+                "5440_5439_mod.mzXML"
             ],
             "S": [
-                "5446_5445_mod.mzXML",
-                "5434_5433_mod.mzXML",
                 "5456_5455_mod.mzXML",
-                "5452_5451_mod.mzXML"
+                "5452_5451_mod.mzXML",
+                "5434_5433_mod.mzXML",
+                "5446_5445_mod.mzXML"
             ],
             "V2": [
                 "5450_5449_mod.mzXML"
@@ -14932,12 +14933,14 @@
             "activate_module": true,
             "fragment_tol": 0.1,
             "min_nr_matched_peaks": 5,
-            "score_cutoff": 0.7
+            "score_cutoff": 0.7,
+            "maximum_runtime": 1200
         },
         "SpectralLibMatchingDeepscoreParameters": {
             "activate_module": true,
             "directory_path": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/fermo_core/libraries/ms2deepscore",
-            "score_cutoff": 0.7
+            "score_cutoff": 0.7,
+            "maximum_runtime": 1200
         },
         "Ms2QueryAnnotationParameters": {
             "activate_module": true,
@@ -16329,6 +16332,26 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Biarylitide YFH M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.99,
+                        "mz": 506.202,
+                        "diff_mz": 0.0014
+                    },
+                    {
+                        "id": "Biarylitide YYH M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.98,
+                        "mz": 522.198,
+                        "diff_mz": 15.9946
+                    }
+                ]
             }
         },
         "9": {
@@ -16717,6 +16740,42 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "KF 77AG6 M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.97,
+                        "mz": 366.19,
+                        "diff_mz": 2.0286
+                    },
+                    {
+                        "id": "Chymostatin B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.76,
+                        "mz": 594.302,
+                        "diff_mz": 230.1406
+                    },
+                    {
+                        "id": "Chymostatinol A M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.74,
+                        "mz": 596.316,
+                        "diff_mz": 232.1546
+                    },
+                    {
+                        "id": "Chymostatinol B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.71,
+                        "mz": 610.327,
+                        "diff_mz": 246.1656
+                    }
+                ]
             }
         },
         "10": {
@@ -18205,6 +18264,42 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 3
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatinol A M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 1.0,
+                        "mz": 596.316,
+                        "diff_mz": 0.0033
+                    },
+                    {
+                        "id": "GE-20372-A/B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.99,
+                        "mz": 612.313,
+                        "diff_mz": 15.9937
+                    },
+                    {
+                        "id": "Chymostatin B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.97,
+                        "mz": 594.302,
+                        "diff_mz": 2.0173
+                    },
+                    {
+                        "id": "Chymostatinol B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.95,
+                        "mz": 610.327,
+                        "diff_mz": 14.0077
+                    }
+                ]
             }
         },
         "13": {
@@ -20691,6 +20786,42 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 3
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatinol A M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.99,
+                        "mz": 596.316,
+                        "diff_mz": 14.0186
+                    },
+                    {
+                        "id": "Chymostatinol B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.93,
+                        "mz": 610.327,
+                        "diff_mz": 0.0076
+                    },
+                    {
+                        "id": "Chymostatin B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.83,
+                        "mz": 594.302,
+                        "diff_mz": 16.0326
+                    },
+                    {
+                        "id": "Chymostatin A/C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.81,
+                        "mz": 608.311,
+                        "diff_mz": 2.0236
+                    }
+                ]
             }
         },
         "14": {
@@ -21125,6 +21256,42 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 3
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatinol A M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.99,
+                        "mz": 596.316,
+                        "diff_mz": 0.0015
+                    },
+                    {
+                        "id": "GE-20372-A/B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.99,
+                        "mz": 612.313,
+                        "diff_mz": 15.9955
+                    },
+                    {
+                        "id": "Chymostatin B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.98,
+                        "mz": 594.302,
+                        "diff_mz": 2.0155
+                    },
+                    {
+                        "id": "Chymostatinol B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.95,
+                        "mz": 610.327,
+                        "diff_mz": 14.0095
+                    }
+                ]
             }
         },
         "15": {
@@ -22037,6 +22204,42 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 3
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatinol A M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 1.0,
+                        "mz": 596.316,
+                        "diff_mz": 14.018
+                    },
+                    {
+                        "id": "Chymostatinol B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.95,
+                        "mz": 610.327,
+                        "diff_mz": 0.007
+                    },
+                    {
+                        "id": "Chymostatin B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.84,
+                        "mz": 594.302,
+                        "diff_mz": 16.032
+                    },
+                    {
+                        "id": "Chymostatin A/C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.81,
+                        "mz": 608.311,
+                        "diff_mz": 2.023
+                    }
+                ]
             }
         },
         "16": {
@@ -31140,6 +31343,34 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 3
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatin A/C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.93,
+                        "mz": 608.311,
+                        "diff_mz": 18.0184
+                    },
+                    {
+                        "id": "Chymostatinol B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.88,
+                        "mz": 610.327,
+                        "diff_mz": 16.0024
+                    },
+                    {
+                        "id": "GE-20372-A/B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.76,
+                        "mz": 612.313,
+                        "diff_mz": 14.0164
+                    }
+                ]
             }
         },
         "69": {
@@ -31900,6 +32131,26 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 3
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatinol A M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.96,
+                        "mz": 596.316,
+                        "diff_mz": 3.9926
+                    },
+                    {
+                        "id": "GE-20372-A/B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.82,
+                        "mz": 612.313,
+                        "diff_mz": 19.9896
+                    }
+                ]
             }
         },
         "71": {
@@ -32228,6 +32479,26 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 3
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatin A/C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.85,
+                        "mz": 608.311,
+                        "diff_mz": 31.9625
+                    },
+                    {
+                        "id": "Chymostatinol B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.78,
+                        "mz": 610.327,
+                        "diff_mz": 33.9785
+                    }
+                ]
             }
         },
         "72": {
@@ -33669,6 +33940,34 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Siomycin_B M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.94,
+                        "mz": 755.714,
+                        "diff_mz": 69.0229
+                    },
+                    {
+                        "id": "Siomycin_A/Sporangiomycin M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.93,
+                        "mz": 824.739,
+                        "diff_mz": 0.0021
+                    },
+                    {
+                        "id": "Siomycin_C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.76,
+                        "mz": 832.739,
+                        "diff_mz": 8.0021
+                    }
+                ]
             }
         },
         "77": {
@@ -34619,6 +34918,34 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Siomycin_B M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.92,
+                        "mz": 755.714,
+                        "diff_mz": 0.0013
+                    },
+                    {
+                        "id": "Siomycin_A/Sporangiomycin M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.92,
+                        "mz": 824.739,
+                        "diff_mz": 69.0237
+                    },
+                    {
+                        "id": "Siomycin_C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.73,
+                        "mz": 832.739,
+                        "diff_mz": 77.0237
+                    }
+                ]
             }
         },
         "79": {
@@ -35213,6 +35540,26 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Siomycin_A/Sporangiomycin M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.95,
+                        "mz": 824.739,
+                        "diff_mz": 34.5127
+                    },
+                    {
+                        "id": "Siomycin_B M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.92,
+                        "mz": 755.714,
+                        "diff_mz": 34.5123
+                    }
+                ]
             }
         },
         "80": {
@@ -35896,6 +36243,26 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Siomycin_A/Sporangiomycin M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.92,
+                        "mz": 1649.45,
+                        "diff_mz": 0.9953
+                    },
+                    {
+                        "id": "Siomycin_B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.91,
+                        "mz": 1510.42,
+                        "diff_mz": 138.0347
+                    }
+                ]
             }
         },
         "83": {
@@ -38832,6 +39199,34 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Siomycin_A/Sporangiomycin M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.98,
+                        "mz": 824.739,
+                        "diff_mz": 0.0011
+                    },
+                    {
+                        "id": "Siomycin_B M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.96,
+                        "mz": 755.714,
+                        "diff_mz": 69.0239
+                    },
+                    {
+                        "id": "Siomycin_C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.74,
+                        "mz": 832.739,
+                        "diff_mz": 8.0011
+                    }
+                ]
             }
         },
         "84": {
@@ -39532,6 +39927,34 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Siomycin_A/Sporangiomycin M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.94,
+                        "mz": 824.739,
+                        "diff_mz": 0.0018
+                    },
+                    {
+                        "id": "Siomycin_B M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.93,
+                        "mz": 755.714,
+                        "diff_mz": 69.0232
+                    },
+                    {
+                        "id": "Siomycin_C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.73,
+                        "mz": 832.739,
+                        "diff_mz": 8.0018
+                    }
+                ]
             }
         },
         "85": {
@@ -39923,6 +40346,34 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Siomycin_B M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.91,
+                        "mz": 755.714,
+                        "diff_mz": 69.5162
+                    },
+                    {
+                        "id": "Siomycin_A/Sporangiomycin M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.9,
+                        "mz": 824.739,
+                        "diff_mz": 0.4912
+                    },
+                    {
+                        "id": "Siomycin_C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.74,
+                        "mz": 832.739,
+                        "diff_mz": 7.5088
+                    }
+                ]
             }
         },
         "88": {
@@ -40568,6 +41019,18 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Antipain M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.71,
+                        "mz": 303.179,
+                        "diff_mz": 7.0086
+                    }
+                ]
             }
         },
         "91": {
@@ -41175,6 +41638,34 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 3
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatinol A M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.93,
+                        "mz": 596.316,
+                        "diff_mz": 15.997
+                    },
+                    {
+                        "id": "Chymostatin B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.93,
+                        "mz": 594.302,
+                        "diff_mz": 18.011
+                    },
+                    {
+                        "id": "Chymostatinol B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.72,
+                        "mz": 610.327,
+                        "diff_mz": 1.986
+                    }
+                ]
             }
         },
         "94": {
@@ -41282,6 +41773,42 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatin B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.92,
+                        "mz": 594.302,
+                        "diff_mz": 131.0727
+                    },
+                    {
+                        "id": "Chymostatinol A M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.91,
+                        "mz": 596.316,
+                        "diff_mz": 133.0867
+                    },
+                    {
+                        "id": "Chymostatinol B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.8,
+                        "mz": 610.327,
+                        "diff_mz": 147.0977
+                    },
+                    {
+                        "id": "KF 77AG6 M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.79,
+                        "mz": 366.19,
+                        "diff_mz": 97.0393
+                    }
+                ]
             }
         },
         "95": {
@@ -41493,6 +42020,50 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 3
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatin B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.86,
+                        "mz": 594.302,
+                        "diff_mz": 117.0565
+                    },
+                    {
+                        "id": "KF 77AG6 M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.86,
+                        "mz": 366.19,
+                        "diff_mz": 111.0555
+                    },
+                    {
+                        "id": "Chymostatinol A M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.86,
+                        "mz": 596.316,
+                        "diff_mz": 119.0705
+                    },
+                    {
+                        "id": "Chymostatinol B M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.85,
+                        "mz": 610.327,
+                        "diff_mz": 133.0815
+                    },
+                    {
+                        "id": "Chymostatin A/C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.71,
+                        "mz": 608.311,
+                        "diff_mz": 131.0655
+                    }
+                ]
             }
         },
         "96": {
@@ -41834,6 +42405,18 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 3
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatin A/C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.75,
+                        "mz": 608.311,
+                        "diff_mz": 18.0171
+                    }
+                ]
             }
         },
         "97": {
@@ -42155,6 +42738,18 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 3
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatin A/C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.76,
+                        "mz": 608.311,
+                        "diff_mz": 32.0326
+                    }
+                ]
             }
         },
         "98": {
@@ -42316,6 +42911,18 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 3
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Chymostatin A/C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.84,
+                        "mz": 608.311,
+                        "diff_mz": 46.0487
+                    }
+                ]
             }
         },
         "100": {
@@ -43354,6 +43961,26 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Siomycin_A/Sporangiomycin M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.94,
+                        "mz": 824.739,
+                        "diff_mz": 1.0047
+                    },
+                    {
+                        "id": "Siomycin_B M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.92,
+                        "mz": 755.714,
+                        "diff_mz": 70.0297
+                    }
+                ]
             }
         },
         "106": {
@@ -44157,6 +44784,34 @@
                     "algorithm": "ms2deepscore",
                     "network_id": 0
                 }
+            },
+            "annotations": {
+                "matches": [
+                    {
+                        "id": "Siomycin_A/Sporangiomycin M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.95,
+                        "mz": 824.739,
+                        "diff_mz": 1.498
+                    },
+                    {
+                        "id": "Siomycin_B M+2H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.93,
+                        "mz": 755.714,
+                        "diff_mz": 70.523
+                    },
+                    {
+                        "id": "Siomycin_C M+H",
+                        "library": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_spectral_library.mgf",
+                        "algorithm": "modified cosine",
+                        "score": 0.73,
+                        "mz": 832.739,
+                        "diff_mz": 6.502
+                    }
+                ]
             }
         },
         "107": {

@@ -23,30 +23,50 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function visualizeData(sampleName, statsChromatogram) {
-    // Extract sample data
+    // Extract sample data for plotting chromatogram lines
     var activeSampleData = statsChromatogram[sampleName];
-    const combinedTraceInt = activeSampleData.map(obj => obj.trace_int);
-    const combinedTraceRt = activeSampleData.map(obj => obj.trace_rt);
+    const traceInt = activeSampleData.map(obj => obj.trace_int);
+    const traceRt = activeSampleData.map(obj => obj.trace_rt);
+
+    // Extract sample data for tooltip
+    const featureId = activeSampleData.map(obj => obj.f_id);
+    const absInt = activeSampleData.map(obj => obj.abs_int);
+    const relInt = activeSampleData.map(obj => obj.rel_int);
+    const retTime = activeSampleData.map(obj => obj.rt);
+    const precMz = activeSampleData.map(obj => obj.mz);
 
     // Get the max and min RT across all samples to use as plot range
     const allTraceRtValues = Object.values(statsChromatogram).
     flatMap(sample => sample.flatMap(obj => obj.trace_rt));
-
     const maxRt = Math.max(...allTraceRtValues);
     const minRt = Math.min(...allTraceRtValues);
     const upperRange = maxRt + maxRt * 0.02;
     const lowerRange = minRt - minRt * 0.05;
 
-    // TODO: add annotation for filtering or blank associated
-    var colors = ['#6358f5'];
+    // Fill or line colors of chromatogram peaks and legend
+    var fillColors = ['#99bf9f', '#fce097'];
+    var lineColors = ['#5a755e', '#fab80f'];
+    var legendLabels = ['Selected', 'Blank'];
+
+    // Data plotting
     var data = [];
-    for ( var i = 0 ; i < combinedTraceRt.length ; i++ ) {
+    for ( var i = 0 ; i < traceRt.length ; i++ ) {
+
+      var toolTip = `&nbsp;Feature ID: ${featureId[i]}<br>
+                     Precursor m/z: ${precMz[i]}<br>
+                     Retention time: ${retTime[i]}<br>
+                     Relative intensity: ${relInt[i]}<br>
+                     Absolute intensity: ${absInt[i]}<br>`
+
       var result = {
         showlegend: false,
-        x: combinedTraceRt[i],
-        y: combinedTraceInt[i],
+        x: traceRt[i],
+        y: traceInt[i],
         type: 'scatter',
         mode: 'lines',
+        text: toolTip,
+        hoverinfo: 'text',
+        hoverlabel: { bgcolor: '#41454c' },
         fill: 'toself',
         fillcolor: '#99bf9f',
         line: {
@@ -58,27 +78,29 @@ function visualizeData(sampleName, statsChromatogram) {
       };
       data.push(result);
     }
-    // TODO: make legends for other options
-    var custom_legend = {
-      x: [null],
-      y: [null],
-      mode: 'markers',
-      name: 'Selected',
-      marker: {
-         size: 10,
-         symbol: 'square',
-         color: '#99bf9f',
-         line: {
-            color: '#5a755e',
-            width: 2,
-            shape: 'spline',
-            smoothing: 0.8,
-          }
-      },
-      showlegend: true
-    };
-    data.push(custom_legend);
 
+    // Legend layout
+    for ( var i = 0 ; i < legendLabels.length ; i++ ) {
+      var custom_legend = {
+        x: [null],
+        y: [null],
+        mode: 'markers',
+        name: legendLabels[i],
+        marker: {
+           size: 10,
+           symbol: 'square',
+           color: fillColors[i],
+           line: {
+              color: lineColors[i],
+              width: 2
+            }
+        },
+        showlegend: true
+      };
+      data.push(custom_legend);
+    }
+
+    // Axis layout
     var layout = {
       height: 300,
       margin: { l: 50, r: 0, t: 0 },
