@@ -89,28 +89,48 @@ class DashboardManager(BaseModel):
             f_sess: fermo session file
         """
         try:
+            groups = f_sess.get("stats", {}).get("groups", {}).get("categories", {})
+
+            # TODO: handle no input metadata
+            if groups == "":
+                groups = "N/A"
+
+            group_list = []
+            sample_to_group = {}
+
+            for group_id, categories in groups.items():
+                group_list.append(group_id.title())
+                for category, details in categories.items():
+                    for s_id in details["s_ids"]:
+                        if s_id in sample_to_group:
+                            sample_to_group[s_id].update({group_id.title(): category})
+                        else:
+                            sample_to_group[s_id] = {group_id.title(): category}
+
             for sample in f_sess.get("stats", {}).get("samples"):
                 total_features = len(
                     f_sess.get("samples", {}).get(sample, {}).get("feature_ids")
                 )
-
                 if len(self.ret_features) != 0:
                     remaining_features = self.ret_features["samples"][sample]
                 else:
                     remaining_features = total_features
 
-                groups = ", ".join(
-                    map(str, f_sess.get("samples", {}).get(sample, {}).get("groups"))
-                )
-                if groups == "":
-                    groups = "N/A"
+                group_info = sample_to_group.get(sample, {})
+                if len(group_info.keys()) != len(group_list):
+                    for item in group_list:
+                        if item not in group_info:
+                            group_info[item] = "N/A"
+                ordered_group_info = {
+                    key: group_info.get(key, "N/A") for key in group_list
+                }
 
                 self.stats_samples_dyn.append(
                     {
                         "Sample name": sample,
-                        "Group": groups,
                         "Total features": total_features,
                         "Retained features": remaining_features,
+                        **ordered_group_info,
                     }
                 )
         except (TypeError, ValueError):
