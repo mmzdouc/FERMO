@@ -34,85 +34,96 @@ document.addEventListener('DOMContentLoaded', function() {
           });
        });
     });
-
 });
 
 function visualizeData(sampleData) {
     var data = [];
-    for ( var i = 0 ; i < sampleData.traceRt.length ; i++ ) {
-      const { lineCol, fillCol } = getChromColors(sampleData, i)
-      var result = {
-        showlegend: false,
-        x: sampleData.traceRt[i],
-        y: sampleData.traceInt[i],
-        type: 'scatter',
-        mode: 'lines',
-        name: `${sampleData.featureId[i]}`,
-        text: getToolTip(sampleData, i),
-        hoverinfo: 'text',
-        hoverlabel: { bgcolor: '#41454c' },
-        fill: 'toself',
-        fillcolor: fillCol,
-        line: {
-          color: lineCol,
-          width: 2,
-          shape: 'spline',
-          smoothing: 0.8,
-        }
-      };
-      data.push(result);
-    }
+    var maxPeaksPerSample = sampleData.traceInt.map(trace => Math.max(...trace));
+    var combinedData = sampleData.traceRt.map((rt, i) => ({
+        traceRt: rt,
+        traceInt: sampleData.traceInt[i],
+        featureId: sampleData.featureId[i],
+        maxPeak: maxPeaksPerSample[i],
+        chromColors: getChromColors(sampleData, i),
+        toolTip: getToolTip(sampleData, i)
+    }));
+    combinedData.sort((a, b) => b.maxPeak - a.maxPeak);  // sort peaks so the smallest peaks are to the front
+
+    // Create the Plotly data array
+    combinedData.forEach(dataItem => {
+        var result = {
+            showlegend: false,
+            x: dataItem.traceRt,
+            y: dataItem.traceInt,
+            type: 'scatter',
+            mode: 'lines',
+            name: `${dataItem.featureId}`,
+            text: dataItem.toolTip,
+            hoverinfo: 'text',
+            hoverlabel: { bgcolor: '#41454c' },
+            fill: 'toself',
+            fillcolor: dataItem.chromColors.fillCol,
+            line: {
+                color: dataItem.chromColors.lineCol,
+                width: 2,
+                shape: 'spline',
+                smoothing: 0.8,
+            },
+        };
+        data.push(result);
+    });
 
     // Legend layout
-    const { legLab, lineCol, fillCol }  = getChromColors(sampleData, false)
-    for ( var i = 0 ; i < legLab.length ; i++ ) {
-      var custom_legend = {
-        x: [null],
-        y: [null],
-        mode: 'markers',
-        name: legLab[i],
-        marker: {
-           size: 10,
-           symbol: 'square',
-           color: fillCol[i],
-           line: {
-              color: lineCol[i],
-              width: 2
-            }
-        },
-        showlegend: true
-      };
-      data.push(custom_legend);
+    const { legLab, lineCol, fillCol } = getChromColors(sampleData, false);
+    for (var i = 0; i < legLab.length; i++) {
+        var custom_legend = {
+            x: [null],
+            y: [null],
+            mode: 'markers',
+            name: legLab[i],
+            marker: {
+                size: 10,
+                symbol: 'square',
+                color: fillCol[i],
+                line: {
+                    color: lineCol[i],
+                    width: 2
+                }
+            },
+            showlegend: true
+        };
+        data.push(custom_legend);
     }
 
     // Axis layout
     var layout = {
-      height: 300,
-      margin: { l: 50, r: 0, t: 0 },
-      xaxis: {
-        autorange: false,
-        showgrid: false,
-        visible: true,
-        range: sampleData.upLowRange
-      },
-      yaxis: {
-        autorange: false,
-        showgrid: false,
-        range: [0, 1.05],
-        linecolor: 'black',
-        zeroline: true,
-        zerolinewidth: 0.5,
-        zerolinecolor: 'black',
-        title: 'Relative intensity',
-        titlefont: {
-          family: 'Arial',
-          size: 12,
-          color: 'grey'
+        height: 300,
+        margin: { l: 50, r: 0, t: 0 },
+        xaxis: {
+            autorange: false,
+            showgrid: false,
+            visible: true,
+            range: sampleData.upLowRange
         },
-      },
+        yaxis: {
+            autorange: false,
+            showgrid: false,
+            range: [0, 1.05],
+            linecolor: 'black',
+            zeroline: true,
+            zerolinewidth: 0.5,
+            zerolinecolor: 'black',
+            title: 'Relative intensity',
+            titlefont: {
+                family: 'Arial',
+                size: 12,
+                color: 'grey'
+            },
+        },
     };
     Plotly.newPlot('mainChromatogram', data, layout);
 }
+
 
 function getSampleData(sampleName, statsChromatogram) {
     // Extract sample data for plotting chromatogram lines
@@ -145,7 +156,6 @@ function getChromColors(sampleData, peakNumber) {
     var legendLabels = ['Selected', 'Blank'];
 
     if (peakNumber == false && peakNumber!== 0) {
-        console.log(peakNumber)
         return { legLab: legendLabels, lineCol: lineColors, fillCol: fillColors };
     } else {
         switch (sampleData.blankAs[peakNumber]) {
@@ -165,6 +175,7 @@ function getToolTip(sampleData, peakNumber) {
             Relative intensity: ${sampleData.relInt[peakNumber]}<br>
             Absolute intensity: ${sampleData.absInt[peakNumber]}<br>`
 }
+
 
 function updateTableWithFeatureData(fId, sampleData) {
     // Update the general feature info table with the clicked feature data
