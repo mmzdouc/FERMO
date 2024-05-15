@@ -475,6 +475,8 @@ class DashboardManager(BaseModel):
                         str(f_id), {}
                     )
                     g_info = f_sess.get("general_features", {}).get(str(f_id), {})
+                    novelty = g_info.get("scores", {}).get("novelty", {})
+
                     feature_data.append(
                         {
                             "f_id": f_info.get("f_id"),
@@ -483,6 +485,8 @@ class DashboardManager(BaseModel):
                             "trace_int": f_info.get("trace_int"),
                             "abs_int": f_info.get("intensity"),
                             "rel_int": f_info.get("rel_intensity"),
+                            "blank": g_info.get("blank"),
+                            "novelty": 0 if not novelty else novelty,
                             "mz": g_info.get("mz"),
                         }
                     )

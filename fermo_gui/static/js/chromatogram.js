@@ -38,14 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function visualizeData(sampleData) {
-
-    // Fill or line colors of chromatogram peaks and legend
-    var fillColors = ['rgba(153, 191, 159, 0.75)', '#fce097'];
-    var lineColors = ['#5a755e', '#fab80f'];
-    var legendLabels = ['Selected', 'Blank'];
-
     var data = [];
     for ( var i = 0 ; i < sampleData.traceRt.length ; i++ ) {
+      const { lineCol, fillCol } = getChromColors(sampleData, i)
       var result = {
         showlegend: false,
         x: sampleData.traceRt[i],
@@ -57,9 +52,9 @@ function visualizeData(sampleData) {
         hoverinfo: 'text',
         hoverlabel: { bgcolor: '#41454c' },
         fill: 'toself',
-        fillcolor: 'rgba(153, 191, 159, 0.75)',
+        fillcolor: fillCol,
         line: {
-          color: '#5a755e',
+          color: lineCol,
           width: 2,
           shape: 'spline',
           smoothing: 0.8,
@@ -69,18 +64,19 @@ function visualizeData(sampleData) {
     }
 
     // Legend layout
-    for ( var i = 0 ; i < legendLabels.length ; i++ ) {
+    const { legLab, lineCol, fillCol }  = getChromColors(sampleData, false)
+    for ( var i = 0 ; i < legLab.length ; i++ ) {
       var custom_legend = {
         x: [null],
         y: [null],
         mode: 'markers',
-        name: legendLabels[i],
+        name: legLab[i],
         marker: {
            size: 10,
            symbol: 'square',
-           color: fillColors[i],
+           color: fillCol[i],
            line: {
-              color: lineColors[i],
+              color: lineCol[i],
               width: 2
             }
         },
@@ -136,9 +132,31 @@ function getSampleData(sampleName, statsChromatogram) {
         relInt: activeSampleData.map(obj => obj.rel_int),
         retTime: activeSampleData.map(obj => obj.rt),
         precMz: activeSampleData.map(obj => obj.mz),
+        novScore: activeSampleData.map(obj => obj.novelty),
+        blankAs: activeSampleData.map(obj => obj.blank),
         upLowRange: [minRt - minRt * 0.05, maxRt + maxRt * 0.02]
     }
 }
+
+
+function getChromColors(sampleData, peakNumber) {
+    var fillColors = ['rgba(153, 191, 159, 0.70)', 'rgba(252, 224, 151, 0.70)'];
+    var lineColors = ['#5a755e', '#fab80f'];
+    var legendLabels = ['Selected', 'Blank'];
+
+    if (peakNumber == false && peakNumber!== 0) {
+        console.log(peakNumber)
+        return { legLab: legendLabels, lineCol: lineColors, fillCol: fillColors };
+    } else {
+        switch (sampleData.blankAs[peakNumber]) {
+        case true:
+            return { lineCol: lineColors[1], fillCol: fillColors[1] };
+        case false:
+            return { lineCol: lineColors[0], fillCol: fillColors[0] };
+        };
+    };
+}
+
 
 function getToolTip(sampleData, peakNumber) {
     return `&nbsp;Feature ID: ${sampleData.featureId[peakNumber]}<br>
@@ -157,6 +175,8 @@ function updateTableWithFeatureData(fId, sampleData) {
             document.getElementById('retTimeCell').textContent = sampleData.retTime[i];
             document.getElementById('relIntCell').textContent = sampleData.relInt[i];
             document.getElementById('absIntCell').textContent = sampleData.absInt[i];
+            document.getElementById('NovScore').textContent = sampleData.novScore[i];
+            document.getElementById('BlankAs').textContent = sampleData.blankAs[i];
         }
     }
 }
