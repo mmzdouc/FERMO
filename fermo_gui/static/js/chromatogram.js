@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         chromatogramElement.on('plotly_click', function(data) {
             var featureId = data.points[0].data.name;
             updateTableWithFeatureData(featureId, sampleData);
+            addBoxVisualization(featureId, sampleData);
         });
     }
 
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
           chromatogramElement.on('plotly_click', function(data) {
               var featureId = data.points[0].data.name;
               updateTableWithFeatureData(featureId, sampleData);
+              addBoxVisualization(data.points[0]);
           });
        });
     });
@@ -94,6 +96,23 @@ function visualizeData(sampleData) {
         };
         data.push(custom_legend);
     }
+    // Add a custom legend item for a red dashed line
+    var redDashedLineLegend = {
+        x: [null],
+        y: [null],
+        mode: 'markers',
+        name: 'Selected feature',
+        marker: {
+            size: 8,
+            symbol: 'line-ew',
+            line: {
+                color: '#960303',
+                width: 2
+            }
+        },
+        showlegend: true
+    };
+    data.push(redDashedLineLegend);
 
     // Axis layout
     var layout = {
@@ -122,6 +141,39 @@ function visualizeData(sampleData) {
         },
     };
     Plotly.newPlot('mainChromatogram', data, layout);
+}
+
+
+function addBoxVisualization(featureId, sampleData) {
+    var boxSizeX = 0.12;
+    var boxSizeY = 0.04;
+
+    for ( var i = 0 ; i < sampleData.featureId.length ; i++ ) {
+        if (sampleData.featureId[i] == featureId) {
+            var maxInt = Math.max(...sampleData.traceInt[i]);
+            var maxRt = Math.max(...sampleData.traceRt[i]);
+            var minRt = Math.min(...sampleData.traceRt[i]);
+        };
+    };
+
+    var update = {
+        shapes: [{
+            type: 'rect',
+            mode: 'lines',
+            xref: 'x',
+            yref: 'y',
+            x0: minRt - boxSizeX,
+            y0: 0,
+            x1: maxRt + boxSizeX,
+            y1: maxInt + boxSizeY,
+            line: {
+                color: '#960303',
+                width: 2.5,
+                dash: 'dash'
+            }
+        }]
+    };
+    Plotly.relayout('mainChromatogram', update);
 }
 
 
