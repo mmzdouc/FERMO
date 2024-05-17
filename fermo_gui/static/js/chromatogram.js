@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (firstSample) {
         var firstSampleName = firstSample.getAttribute('data-sample-name');
         sampleData = getSampleData(firstSampleName, statsChromatogram)
-        visualizeData(sampleData);
+        visualizeData(sampleData, false);
         document.getElementById('activeSample').textContent = 'Sample: ' + firstSampleName;
 
         // Update the feature table
@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
             var featureId = data.points[0].data.name;
             updateTableWithFeatureData(featureId, sampleData);
             addBoxVisualization(featureId, sampleData);
+            var filteredSampleData = getFeatureData(featureId, sampleData);
+            visualizeData(filteredSampleData, true);
         });
     }
 
@@ -25,30 +27,36 @@ document.addEventListener('DOMContentLoaded', function() {
        row.addEventListener('click', function() {
           var sampleName = this.getAttribute('data-sample-name');
           sampleData = getSampleData(sampleName, statsChromatogram)
-          visualizeData(sampleData);
+          visualizeData(sampleData, false);
           document.getElementById('activeSample').textContent = 'Sample: ' + sampleName;
+          Plotly.purge('featureChromatogram');
 
           // Update the feature table
           chromatogramElement.on('plotly_click', function(data) {
               var featureId = data.points[0].data.name;
               updateTableWithFeatureData(featureId, sampleData);
-              addBoxVisualization(data.points[0]);
+              addBoxVisualization(featureId, sampleData);
+              var filteredSampleData = getFeatureData(featureId, sampleData);
+              visualizeData(filteredSampleData, true);
           });
        });
     });
 });
 
-function visualizeData(sampleData) {
+
+function visualizeData(sampleData, isFeatureVisualization = false) {
     var data = [];
     var maxPeaksPerSample = sampleData.traceInt.map(trace => Math.max(...trace));
+
     var combinedData = sampleData.traceRt.map((rt, i) => ({
         traceRt: rt,
         traceInt: sampleData.traceInt[i],
         featureId: sampleData.featureId[i],
         maxPeak: maxPeaksPerSample[i],
-        chromColors: getChromColors(sampleData, i),
+        chromColors: getChromColors(sampleData, i, isFeatureVisualization),
         toolTip: getToolTip(sampleData, i)
     }));
+
     combinedData.sort((a, b) => b.maxPeak - a.maxPeak);  // sort peaks so the smallest peaks are to the front
 
     // Create the Plotly data array
@@ -76,7 +84,7 @@ function visualizeData(sampleData) {
     });
 
     // Legend layout
-    const { legLab, lineCol, fillCol } = getChromColors(sampleData, false);
+    const { legLab, lineCol, fillCol } = getChromColors(sampleData, false, isFeatureVisualization);
     for (var i = 0; i < legLab.length; i++) {
         var custom_legend = {
             x: [null],
@@ -96,33 +104,45 @@ function visualizeData(sampleData) {
         };
         data.push(custom_legend);
     }
-    // Add a custom legend item for a red dashed line
-    var redDashedLineLegend = {
-        x: [null],
-        y: [null],
-        mode: 'markers',
-        name: 'Selected feature',
-        marker: {
-            size: 8,
-            symbol: 'line-ew',
-            line: {
-                color: '#960303',
-                width: 2
-            }
-        },
-        showlegend: true
-    };
-    data.push(redDashedLineLegend);
+
+    // Add a custom legend item for a red dashed line if not feature visualization
+    if (!isFeatureVisualization) {
+        var redDashedLineLegend = {
+            x: [null],
+            y: [null],
+            mode: 'markers',
+            name: 'Selected feature',
+            marker: {
+                size: 8,
+                symbol: 'line-ew',
+                line: {
+                    color: '#960303',
+                    width: 2
+                }
+            },
+            showlegend: true
+        };
+        data.push(redDashedLineLegend);
+    }
 
     // Axis layout
     var layout = {
-        height: 300,
-        margin: { l: 50, r: 0, t: 0 },
+        height: isFeatureVisualization ? 150 : 300,
+        margin: {
+            l: 50, r: 0, t: 0,
+            b: isFeatureVisualization ? 50 : 30,
+            },
         xaxis: {
             autorange: false,
             showgrid: false,
             visible: true,
-            range: sampleData.upLowRange
+            range: sampleData.upLowRange,
+            title: isFeatureVisualization ? 'Retention time (min)' : false,
+            titlefont: isFeatureVisualization ? {
+                family: 'Arial',
+                size: 12,
+                color: 'grey'
+            } : false
         },
         yaxis: {
             autorange: false,
@@ -132,7 +152,7 @@ function visualizeData(sampleData) {
             zeroline: true,
             zerolinewidth: 0.5,
             zerolinecolor: 'black',
-            title: 'Relative intensity',
+            title: isFeatureVisualization ? 'Rel. intensity' : 'Relative intensity',
             titlefont: {
                 family: 'Arial',
                 size: 12,
@@ -140,8 +160,61 @@ function visualizeData(sampleData) {
             },
         },
     };
-    Plotly.newPlot('mainChromatogram', data, layout);
+
+    // Choose the correct plot ID based on the visualization type
+    var plotId = isFeatureVisualization ? 'featureChromatogram' : 'mainChromatogram';
+
+    Plotly.newPlot(plotId, data, layout);
 }
+
+
+function getFeatureData(featureId, sampleData) {
+    let filteredData = {
+        featureId: [],
+        fNetwork: [],
+        traceInt: [],
+        traceRt: [],
+        precMz: [],
+        retTime: [],
+        relInt: [],
+        absInt: [],
+        upLowRange: [],
+        blankAs: [],
+        target: []
+    };
+
+    // Iterate through the original sampleData to find matching features
+    for (var i = 0; i < sampleData.featureId.length; i++) {
+        if (sampleData.featureId[i] == featureId) {
+            filteredData.upLowRange.push(sampleData.upLowRange[0], sampleData.upLowRange[1]);
+            filteredData.fNetwork.push(sampleData.fNetwork[i]);
+
+            // Iterate through the fNetwork array to find the corresponding features
+            for (var j = 0; j < sampleData.fNetwork[i].length; j++) {
+                let key = sampleData.fNetwork[i][j];
+                let index = sampleData.featureId.indexOf(key);
+
+                if (index >= 0 && index < sampleData.traceInt.length) {
+                    if (sampleData.featureId[index] == featureId) {
+                        filteredData.target.push('selected');
+                    } else {
+                        filteredData.target.push('related');
+                    }
+                    filteredData.featureId.push(sampleData.featureId[index]);
+                    filteredData.traceInt.push(sampleData.traceInt[index]);
+                    filteredData.traceRt.push(sampleData.traceRt[index]);
+                    filteredData.blankAs.push(sampleData.blankAs[index]);
+                    filteredData.precMz.push(sampleData.precMz[index]);
+                    filteredData.retTime.push(sampleData.retTime[index]);
+                    filteredData.absInt.push(sampleData.absInt[index]);
+                    filteredData.relInt.push(sampleData.relInt[index]);
+                }
+            }
+        }
+    }
+    return filteredData;
+}
+
 
 
 function addBoxVisualization(featureId, sampleData) {
@@ -197,24 +270,40 @@ function getSampleData(sampleName, statsChromatogram) {
         precMz: activeSampleData.map(obj => obj.mz),
         novScore: activeSampleData.map(obj => obj.novelty),
         blankAs: activeSampleData.map(obj => obj.blank),
+        fNetwork: activeSampleData.map(obj => obj.network_features),
         upLowRange: [minRt - minRt * 0.05, maxRt + maxRt * 0.02]
     }
 }
 
 
-function getChromColors(sampleData, peakNumber) {
+function getChromColors(sampleData, peakNumber, isFeatureVisualization) {
     var fillColors = ['rgba(153, 191, 159, 0.70)', 'rgba(252, 224, 151, 0.70)'];
     var lineColors = ['#5a755e', '#fab80f'];
     var legendLabels = ['Selected', 'Blank'];
 
+    var fillColorsFeature = ['rgba(245, 127, 129, 0.70)', 'rgba(66, 135, 245, 0.30)'];
+    var lineColorsFeature = ['#960303', '#127aa3'];
+    var legendLabelsFeature = ['Selected feature', 'Related feature'];
+
     if (peakNumber == false && peakNumber!== 0) {
-        return { legLab: legendLabels, lineCol: lineColors, fillCol: fillColors };
+        return isFeatureVisualization ?
+        { legLab: legendLabelsFeature, lineCol: lineColorsFeature, fillCol: fillColorsFeature } :
+        { legLab: legendLabels, lineCol: lineColors, fillCol: fillColors };
     } else {
-        switch (sampleData.blankAs[peakNumber]) {
-        case true:
-            return { lineCol: lineColors[1], fillCol: fillColors[1] };
-        case false:
-            return { lineCol: lineColors[0], fillCol: fillColors[0] };
+        if (isFeatureVisualization == false) {
+            switch (sampleData.blankAs[peakNumber]) {
+            case true:
+                return { lineCol: lineColors[1], fillCol: fillColors[1] };
+            case false:
+                return { lineCol: lineColors[0], fillCol: fillColors[0] };
+            };
+        } else {
+            switch (sampleData.target[peakNumber]) {
+                case 'selected':
+                    return { lineCol: lineColorsFeature[0], fillCol: fillColorsFeature[0] };
+                case 'related':
+                    return { lineCol: lineColorsFeature[1], fillCol: fillColorsFeature[1] };
+            }
         };
     };
 }

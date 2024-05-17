@@ -316,7 +316,6 @@ class DashboardManager(BaseModel):
         if len(self.ret_features["total"]) == 0:
             return
 
-        mode = ""
         if (
             filt.get("minimum") is not None
             and filt.get("maximum") is not None
@@ -460,7 +459,7 @@ class DashboardManager(BaseModel):
             return
 
     def create_chromatogram(self: Self, f_sess: dict):
-        """Creates chromatogram file from fermo.session file
+        """Creates chromatogram from fermo.session file
 
         Arguments:
             f_sess: fermo session file
@@ -477,6 +476,17 @@ class DashboardManager(BaseModel):
                     g_info = f_sess.get("general_features", {}).get(str(f_id), {})
                     novelty = g_info.get("scores", {}).get("novelty", {})
 
+                    network_features = []
+                    networks = f_sess.get("stats", {}).get("networks", {})
+                    for network_type in networks:
+                        network_data = networks.get(str(network_type), {}).get(
+                            "summary", {}
+                        )
+                        for n_id in network_data:
+                            n_features = network_data.get(str(n_id), {})
+                            if f_id in n_features:
+                                network_features = n_features
+
                     feature_data.append(
                         {
                             "f_id": f_info.get("f_id"),
@@ -488,6 +498,7 @@ class DashboardManager(BaseModel):
                             "blank": g_info.get("blank"),
                             "novelty": 0 if not novelty else novelty,
                             "mz": g_info.get("mz"),
+                            "network_features": network_features,
                         }
                     )
                 self.stats_chromatogram[sample] = feature_data

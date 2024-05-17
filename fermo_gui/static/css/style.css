@@ -135,7 +135,7 @@ input[type="range"] {
 
 /* tables */
 thead {
-    background-color: #2e8cb0 !important; /* #116789 !important; */
+    background-color: #116789 !important;
     color: white !important;
     font-size: 13px;
     line-height: 1.2;
