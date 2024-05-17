@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
 function visualizeData(sampleData, isFeatureVisualization = false) {
     var data = [];
     var maxPeaksPerSample = sampleData.traceInt.map(trace => Math.max(...trace));
@@ -86,43 +85,11 @@ function visualizeData(sampleData, isFeatureVisualization = false) {
     // Legend layout
     const { legLab, lineCol, fillCol } = getChromColors(sampleData, false, isFeatureVisualization);
     for (var i = 0; i < legLab.length; i++) {
-        var custom_legend = {
-            x: [null],
-            y: [null],
-            mode: 'markers',
-            name: legLab[i],
-            marker: {
-                size: 10,
-                symbol: 'square',
-                color: fillCol[i],
-                line: {
-                    color: lineCol[i],
-                    width: 2
-                }
-            },
-            showlegend: true
-        };
-        data.push(custom_legend);
+        data.push(createLegendItem(legLab[i], fillCol[i], lineCol[i], 'square'));
     }
-
-    // Add a custom legend item for a red dashed line if not feature visualization
     if (!isFeatureVisualization) {
-        var redDashedLineLegend = {
-            x: [null],
-            y: [null],
-            mode: 'markers',
-            name: 'Selected feature',
-            marker: {
-                size: 8,
-                symbol: 'line-ew',
-                line: {
-                    color: '#960303',
-                    width: 2
-                }
-            },
-            showlegend: true
-        };
-        data.push(redDashedLineLegend);
+        data.push(createLegendItem('Unique to sample', '#000000'));
+        data.push(createLegendItem('Selected feature', '#960303'));
     }
 
     // Axis layout
@@ -167,6 +134,38 @@ function visualizeData(sampleData, isFeatureVisualization = false) {
     Plotly.newPlot(plotId, data, layout);
 }
 
+function createLegendItem(name, color, lineCol, type = 'line') {
+    const legendItem = {
+        x: [null],
+        y: [null],
+        mode: 'markers',
+        name: name,
+        showlegend: true
+    };
+
+    if (type === 'line') {
+        legendItem.marker = {
+            size: 8,
+            symbol: 'line-ew',
+            line: {
+                color: color,
+                width: 2
+            }
+        };
+    } else if (type === 'square') {
+        legendItem.marker = {
+            size: 10,
+            symbol: 'square',
+            color: color,
+            line: {
+                color: lineCol,
+                width: 2
+            }
+        };
+
+    }
+    return legendItem;
+}
 
 function getFeatureData(featureId, sampleData) {
     let filteredData = {
@@ -195,11 +194,7 @@ function getFeatureData(featureId, sampleData) {
                 let index = sampleData.featureId.indexOf(key);
 
                 if (index >= 0 && index < sampleData.traceInt.length) {
-                    if (sampleData.featureId[index] == featureId) {
-                        filteredData.target.push('selected');
-                    } else {
-                        filteredData.target.push('related');
-                    }
+                    filteredData.target.push(sampleData.featureId[index] == featureId ? 'selected' : 'related');
                     filteredData.featureId.push(sampleData.featureId[index]);
                     filteredData.traceInt.push(sampleData.traceInt[index]);
                     filteredData.traceRt.push(sampleData.traceRt[index]);
@@ -214,8 +209,6 @@ function getFeatureData(featureId, sampleData) {
     }
     return filteredData;
 }
-
-
 
 function addBoxVisualization(featureId, sampleData) {
     var boxSizeX = 0.12;
@@ -249,7 +242,6 @@ function addBoxVisualization(featureId, sampleData) {
     Plotly.relayout('mainChromatogram', update);
 }
 
-
 function getSampleData(sampleName, statsChromatogram) {
     // Extract sample data for plotting chromatogram lines
     var activeSampleData = statsChromatogram[sampleName];
@@ -271,41 +263,51 @@ function getSampleData(sampleName, statsChromatogram) {
         novScore: activeSampleData.map(obj => obj.novelty),
         blankAs: activeSampleData.map(obj => obj.blank),
         fNetwork: activeSampleData.map(obj => obj.network_features),
+        samples: activeSampleData.map(obj => obj.samples),
         upLowRange: [minRt - minRt * 0.05, maxRt + maxRt * 0.02]
     }
 }
 
-
 function getChromColors(sampleData, peakNumber, isFeatureVisualization) {
-    var fillColors = ['rgba(153, 191, 159, 0.70)', 'rgba(252, 224, 151, 0.70)'];
-    var lineColors = ['#5a755e', '#fab80f'];
-    var legendLabels = ['Selected', 'Blank'];
-
-    var fillColorsFeature = ['rgba(245, 127, 129, 0.70)', 'rgba(66, 135, 245, 0.30)'];
-    var lineColorsFeature = ['#960303', '#127aa3'];
-    var legendLabelsFeature = ['Selected feature', 'Related feature'];
-
-    if (peakNumber == false && peakNumber!== 0) {
-        return isFeatureVisualization ?
-        { legLab: legendLabelsFeature, lineCol: lineColorsFeature, fillCol: fillColorsFeature } :
-        { legLab: legendLabels, lineCol: lineColors, fillCol: fillColors };
-    } else {
-        if (isFeatureVisualization == false) {
-            switch (sampleData.blankAs[peakNumber]) {
-            case true:
-                return { lineCol: lineColors[1], fillCol: fillColors[1] };
-            case false:
-                return { lineCol: lineColors[0], fillCol: fillColors[0] };
-            };
-        } else {
-            switch (sampleData.target[peakNumber]) {
-                case 'selected':
-                    return { lineCol: lineColorsFeature[0], fillCol: fillColorsFeature[0] };
-                case 'related':
-                    return { lineCol: lineColorsFeature[1], fillCol: fillColorsFeature[1] };
-            }
-        };
+    const colors = {
+        default: {
+            fillColors: ['rgba(153, 191, 159, 0.70)', 'rgba(252, 224, 151, 0.70)'],
+            lineColors: ['#5a755e', '#fab80f'],
+            legendLabels: ['Selected', 'Blank']
+        },
+        feature: {
+            fillColors: ['rgba(245, 127, 129, 0.70)', 'rgba(66, 135, 245, 0.30)'],
+            lineColors: ['#960303', '#127aa3'],
+            legendLabels: ['Selected feature', 'Related feature']
+        }
     };
+
+    const colorSet = isFeatureVisualization ? colors.feature : colors.default;
+
+    if (peakNumber === false || peakNumber === undefined) {
+        return {
+            legLab: colorSet.legendLabels,
+            lineCol: colorSet.lineColors,
+            fillCol: colorSet.fillColors
+        };
+    }
+
+    if (!isFeatureVisualization) {
+        const isBlank = sampleData.blankAs[peakNumber];
+        const isSingleSample = sampleData.samples[peakNumber].length === 1;
+        const index = isBlank ? 1 : 0;
+        return {
+            lineCol: isSingleSample ? '#000000' : colorSet.lineColors[index],
+            fillCol: colorSet.fillColors[index]
+        };
+    } else {
+        const targetType = sampleData.target[peakNumber];
+        if (targetType === 'selected') {
+            return { lineCol: colorSet.lineColors[0], fillCol: colorSet.fillColors[0] };
+        } else if (targetType === 'related') {
+            return { lineCol: colorSet.lineColors[1], fillCol: colorSet.fillColors[1] };
+        }
+    }
 }
 
 

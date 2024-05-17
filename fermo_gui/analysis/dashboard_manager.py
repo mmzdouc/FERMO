@@ -498,6 +498,7 @@ class DashboardManager(BaseModel):
                             "blank": g_info.get("blank"),
                             "novelty": 0 if not novelty else novelty,
                             "mz": g_info.get("mz"),
+                            "samples": g_info.get("samples"),
                             "network_features": network_features,
                         }
                     )
