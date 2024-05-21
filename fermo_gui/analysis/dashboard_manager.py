@@ -499,6 +499,7 @@ class DashboardManager(BaseModel):
                             "novelty": 0 if not novelty else novelty,
                             "mz": g_info.get("mz"),
                             "samples": g_info.get("samples"),
+                            "f_group": g_info.get("group_factors"),
                             "network_features": network_features,
                         }
                     )

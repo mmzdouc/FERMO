@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
             addBoxVisualization(featureId, sampleData);
             var filteredSampleData = getFeatureData(featureId, sampleData);
             visualizeData(filteredSampleData, true);
+            updateTableWithGroupData(featureId, sampleData);
         });
     }
 
@@ -30,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
           visualizeData(sampleData, false);
           document.getElementById('activeSample').textContent = 'Sample: ' + sampleName;
           Plotly.purge('featureChromatogram');
+          document.getElementById('feature-general-info').textContent = 'Click on any feature in the main chromatogram overview.'
+          Plotly.purge('heatmap-container');
 
           // Update the feature table
           chromatogramElement.on('plotly_click', function(data) {
@@ -38,11 +41,84 @@ document.addEventListener('DOMContentLoaded', function() {
               addBoxVisualization(featureId, sampleData);
               var filteredSampleData = getFeatureData(featureId, sampleData);
               visualizeData(filteredSampleData, true);
+              updateTableWithGroupData(featureId, sampleData);
           });
        });
     });
 });
 
+// Data extraction functions //
+function getSampleData(sampleName, statsChromatogram) {
+    // Extract sample data for plotting chromatogram lines
+    var activeSampleData = statsChromatogram[sampleName];
+
+    // Get the max and min RT across all samples to use as plot range
+    const allTraceRtValues = Object.values(statsChromatogram).
+    flatMap(sample => sample.flatMap(obj => obj.trace_rt));
+    const maxRt = Math.max(...allTraceRtValues);
+    const minRt = Math.min(...allTraceRtValues);
+
+    return {
+        traceInt: activeSampleData.map(obj => obj.trace_int),
+        traceRt: activeSampleData.map(obj => obj.trace_rt),
+        featureId: activeSampleData.map(obj => obj.f_id),
+        absInt: activeSampleData.map(obj => obj.abs_int),
+        relInt: activeSampleData.map(obj => obj.rel_int),
+        retTime: activeSampleData.map(obj => obj.rt),
+        precMz: activeSampleData.map(obj => obj.mz),
+        novScore: activeSampleData.map(obj => obj.novelty),
+        blankAs: activeSampleData.map(obj => obj.blank),
+        fNetwork: activeSampleData.map(obj => obj.network_features),
+        samples: activeSampleData.map(obj => obj.samples),
+        fGroupData: activeSampleData.map(obj => obj.f_group),
+        upLowRange: [minRt - minRt * 0.05, maxRt + maxRt * 0.02]
+    }
+}
+
+function getFeatureData(featureId, sampleData) {
+    let filteredData = {
+        featureId: [],
+        fNetwork: [],
+        traceInt: [],
+        traceRt: [],
+        precMz: [],
+        retTime: [],
+        relInt: [],
+        absInt: [],
+        upLowRange: [],
+        blankAs: [],
+        target: []
+    };
+
+    // Iterate through the original sampleData to find matching features
+    for (var i = 0; i < sampleData.featureId.length; i++) {
+        if (sampleData.featureId[i] == featureId) {
+            filteredData.upLowRange.push(sampleData.upLowRange[0], sampleData.upLowRange[1]);
+            filteredData.fNetwork.push(sampleData.fNetwork[i]);
+
+            // Iterate through the fNetwork array to find the corresponding features
+            for (var j = 0; j < sampleData.fNetwork[i].length; j++) {
+                let key = sampleData.fNetwork[i][j];
+                let index = sampleData.featureId.indexOf(key);
+
+                if (index >= 0 && index < sampleData.traceInt.length) {
+                    filteredData.target.push(sampleData.featureId[index] == featureId ? 'selected' : 'related');
+                    filteredData.featureId.push(sampleData.featureId[index]);
+                    filteredData.traceInt.push(sampleData.traceInt[index]);
+                    filteredData.traceRt.push(sampleData.traceRt[index]);
+                    filteredData.blankAs.push(sampleData.blankAs[index]);
+                    filteredData.precMz.push(sampleData.precMz[index]);
+                    filteredData.retTime.push(sampleData.retTime[index]);
+                    filteredData.absInt.push(sampleData.absInt[index]);
+                    filteredData.relInt.push(sampleData.relInt[index]);
+                }
+            }
+        }
+    }
+    return filteredData;
+}
+
+// Chromatogram visualization functions //
 function visualizeData(sampleData, isFeatureVisualization = false) {
     var data = [];
     var maxPeaksPerSample = sampleData.traceInt.map(trace => Math.max(...trace));
@@ -167,107 +243,6 @@ function createLegendItem(name, color, lineCol, type = 'line') {
     return legendItem;
 }
 
-function getFeatureData(featureId, sampleData) {
-    let filteredData = {
-        featureId: [],
-        fNetwork: [],
-        traceInt: [],
-        traceRt: [],
-        precMz: [],
-        retTime: [],
-        relInt: [],
-        absInt: [],
-        upLowRange: [],
-        blankAs: [],
-        target: []
-    };
-
-    // Iterate through the original sampleData to find matching features
-    for (var i = 0; i < sampleData.featureId.length; i++) {
-        if (sampleData.featureId[i] == featureId) {
-            filteredData.upLowRange.push(sampleData.upLowRange[0], sampleData.upLowRange[1]);
-            filteredData.fNetwork.push(sampleData.fNetwork[i]);
-
-            // Iterate through the fNetwork array to find the corresponding features
-            for (var j = 0; j < sampleData.fNetwork[i].length; j++) {
-                let key = sampleData.fNetwork[i][j];
-                let index = sampleData.featureId.indexOf(key);
-
-                if (index >= 0 && index < sampleData.traceInt.length) {
-                    filteredData.target.push(sampleData.featureId[index] == featureId ? 'selected' : 'related');
-                    filteredData.featureId.push(sampleData.featureId[index]);
-                    filteredData.traceInt.push(sampleData.traceInt[index]);
-                    filteredData.traceRt.push(sampleData.traceRt[index]);
-                    filteredData.blankAs.push(sampleData.blankAs[index]);
-                    filteredData.precMz.push(sampleData.precMz[index]);
-                    filteredData.retTime.push(sampleData.retTime[index]);
-                    filteredData.absInt.push(sampleData.absInt[index]);
-                    filteredData.relInt.push(sampleData.relInt[index]);
-                }
-            }
-        }
-    }
-    return filteredData;
-}
-
-function addBoxVisualization(featureId, sampleData) {
-    var boxSizeX = 0.12;
-    var boxSizeY = 0.04;
-
-    for ( var i = 0 ; i < sampleData.featureId.length ; i++ ) {
-        if (sampleData.featureId[i] == featureId) {
-            var maxInt = Math.max(...sampleData.traceInt[i]);
-            var maxRt = Math.max(...sampleData.traceRt[i]);
-            var minRt = Math.min(...sampleData.traceRt[i]);
-        };
-    };
-
-    var update = {
-        shapes: [{
-            type: 'rect',
-            mode: 'lines',
-            xref: 'x',
-            yref: 'y',
-            x0: minRt - boxSizeX,
-            y0: 0,
-            x1: maxRt + boxSizeX,
-            y1: maxInt + boxSizeY,
-            line: {
-                color: '#960303',
-                width: 2.5,
-                dash: 'dash'
-            }
-        }]
-    };
-    Plotly.relayout('mainChromatogram', update);
-}
-
-function getSampleData(sampleName, statsChromatogram) {
-    // Extract sample data for plotting chromatogram lines
-    var activeSampleData = statsChromatogram[sampleName];
-
-    // Get the max and min RT across all samples to use as plot range
-    const allTraceRtValues = Object.values(statsChromatogram).
-    flatMap(sample => sample.flatMap(obj => obj.trace_rt));
-    const maxRt = Math.max(...allTraceRtValues);
-    const minRt = Math.min(...allTraceRtValues);
-
-    return {
-        traceInt: activeSampleData.map(obj => obj.trace_int),
-        traceRt: activeSampleData.map(obj => obj.trace_rt),
-        featureId: activeSampleData.map(obj => obj.f_id),
-        absInt: activeSampleData.map(obj => obj.abs_int),
-        relInt: activeSampleData.map(obj => obj.rel_int),
-        retTime: activeSampleData.map(obj => obj.rt),
-        precMz: activeSampleData.map(obj => obj.mz),
-        novScore: activeSampleData.map(obj => obj.novelty),
-        blankAs: activeSampleData.map(obj => obj.blank),
-        fNetwork: activeSampleData.map(obj => obj.network_features),
-        samples: activeSampleData.map(obj => obj.samples),
-        upLowRange: [minRt - minRt * 0.05, maxRt + maxRt * 0.02]
-    }
-}
-
 function getChromColors(sampleData, peakNumber, isFeatureVisualization) {
     const colors = {
         default: {
@@ -310,7 +285,6 @@ function getChromColors(sampleData, peakNumber, isFeatureVisualization) {
     }
 }
 
-
 function getToolTip(sampleData, peakNumber) {
     return `&nbsp;Feature ID: ${sampleData.featureId[peakNumber]}<br>
             Precursor m/z: ${sampleData.precMz[peakNumber]}<br>
@@ -319,7 +293,114 @@ function getToolTip(sampleData, peakNumber) {
             Absolute intensity: ${sampleData.absInt[peakNumber]}<br>`
 }
 
+function addBoxVisualization(featureId, sampleData) {
+    var boxSizeX = 0.12;
+    var boxSizeY = 0.04;
 
+    for ( var i = 0 ; i < sampleData.featureId.length ; i++ ) {
+        if (sampleData.featureId[i] == featureId) {
+            var maxInt = Math.max(...sampleData.traceInt[i]);
+            var maxRt = Math.max(...sampleData.traceRt[i]);
+            var minRt = Math.min(...sampleData.traceRt[i]);
+        };
+    };
+
+    var update = {
+        shapes: [{
+            type: 'rect',
+            mode: 'lines',
+            xref: 'x',
+            yref: 'y',
+            x0: minRt - boxSizeX,
+            y0: 0,
+            x1: maxRt + boxSizeX,
+            y1: maxInt + boxSizeY,
+            line: {
+                color: '#960303',
+                width: 2.5,
+                dash: 'dash'
+            }
+        }]
+    };
+    Plotly.relayout('mainChromatogram', update);
+}
+
+// Heatmap visualization functions //
+function createHeatmap(data, groupName) {
+	const groupValues = [...new Set([...data.map(item => item.group1), ...data.map(item => item.group2)])].sort();
+	const matrix = groupValues.map(() => Array(groupValues.length).fill(0));
+
+	// Fill the matrix with factor values
+	data.forEach(item => {
+		const rowIndex = groupValues.indexOf(item.group1);
+		const colIndex = groupValues.indexOf(item.group2);
+		matrix[rowIndex][colIndex] = item.factor;
+		matrix[colIndex][rowIndex] = item.factor;
+	});
+	const reversedMatrix = matrix.reverse();
+	const reversedGroupValues = [...groupValues].reverse();
+
+	// Create value annotations to be shown within the heatmap
+	const annotations = [];
+	for (let i = 0; i < reversedGroupValues.length; i++) {
+		for (let j = 0; j < groupValues.length; j++) {
+			if (reversedMatrix[i][j] !== null) {
+				annotations.push({
+					x: groupValues[j],
+					y: reversedGroupValues[i],
+					text: reversedMatrix[i][j].toFixed(2),
+					showarrow: false
+				});
+			}
+		}
+	}
+
+	// Define colorscale
+	const colorscaleValue = [
+		[0, '#f5f5f5'],
+		[0.01, '#dbf3ff'],
+		[1, '#de4b4b']
+	];
+
+	// Create a new Plotly figure
+	const trace = {
+		z: reversedMatrix,
+		x: groupValues,
+		y: reversedGroupValues,
+		type: 'heatmap',
+		colorscale: colorscaleValue,
+		showscale: false
+	};
+
+	// Define layout options
+	const layout = {
+		title: {
+			text: `<b>${groupName}</b>`,
+			font: { size: 12 },
+			x: 0.5,
+			xanchor: 'center',
+		},
+		width: 350,
+		height: 350,
+		xaxis: {
+			ticks: '',
+			ticksuffix: ' ',
+			autosize: false,
+		},
+		yaxis: {
+			ticks: '',
+			ticksuffix: ' ',
+			autosize: false,
+		},
+		annotations: annotations,
+		margin: { l: 50, r: 50, t: 50, b: 50 },
+	};
+
+	// Create the heatmap
+	Plotly.newPlot('heatmap-container', [trace], layout);
+}
+
+// Table update functions //
 function updateTableWithFeatureData(fId, sampleData) {
     // Update the general feature info table with the clicked feature data
     for ( var i = 0 ; i < sampleData.featureId.length ; i++ ) {
@@ -331,6 +412,24 @@ function updateTableWithFeatureData(fId, sampleData) {
             document.getElementById('absIntCell').textContent = sampleData.absInt[i];
             document.getElementById('NovScore').textContent = sampleData.novScore[i];
             document.getElementById('BlankAs').textContent = sampleData.blankAs[i];
+        }
+    }
+}
+
+// TODO: test multiple groups
+function updateTableWithGroupData(featureId, sampleData){
+    for (var i = 0; i < sampleData.featureId.length; i++) {
+        if (sampleData.featureId[i] == featureId) {
+            var featureData = Object.entries(sampleData.fGroupData[i]);
+            if (Object.keys(featureData).length === 0) {
+                document.getElementById('feature-general-info').textContent = 'No group data available for this feature.'
+                Plotly.purge('heatmap-container');
+            } else {
+                document.getElementById('feature-general-info').textContent = 'Fold-differences across:'
+                for (const [key, value] of featureData) {
+                    createHeatmap(value, key);
+                }
+            }
         }
     }
 }

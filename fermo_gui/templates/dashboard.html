@@ -88,8 +88,8 @@
                     </button>
                 </h2>
                 <div id="featureTable"
-                     class="accordion-collapse collapse"
-                     aria-labelledby="featureTableHeader">
+                    class="accordion-collapse collapse"
+                    aria-labelledby="featureTableHeader">
                     <div class="accordion-body overflow-auto">
                         <div class="accordion accordion-item" draggable="false" id="genFeature">
                             <h2 class="accordion-header" id="featureTableGeneral">
@@ -175,29 +175,15 @@
                                         data-bs-target="#featureGroups"
                                         aria-expanded="false"
                                         aria-controls="featureTable">
-                                    Feature info across samples
+                                    Feature group info
                                 </button>
                             </h2>
                             <div id="featureGroups"
                                  class="accordion-collapse collapse"
                                  aria-labelledby="featureTableGeneral">
                                 <div class="accordion-body overflow-auto">
-                                    <table class="table table-striped table-hover">
-                                        <tbody>
-                                            <tr>
-                                                <td style="text-align: left;">Feature found in groups</td>
-                                                <td id="featureGroupCell" style="text-align: left;"></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="text-align: left;">Fold-differences across groups</td>
-                                                <td id="groupFoldCell" style="text-align: left;">Click on any feature in the main chromatogram overview</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="text-align: left;">Intensity per sample</td>
-                                                <td id="groupIntCell" style="text-align: left;"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <p id="feature-general-info">Click on any feature in the main chromatogram overview</p>
+                                    <div id="heatmap-container"></div>
                                 </div>
                             </div>
                         </div>
@@ -269,7 +255,6 @@
                 </div>
             </div>
         </div>
-
     </div>
     <div class="col-xs-12 col-sm-12 col-md-8 ps-md-0 pe-sm-3">
         <div class="dropzone">
@@ -281,7 +266,7 @@
                             data-bs-target="#ChromatogramBody"
                             aria-expanded="true"
                             aria-controls="ChromatogramBody">
-                    Main Chromatogram
+                        Main Chromatogram
                     </button>
                 </h2>
                 <div id="ChromatogramBody"
