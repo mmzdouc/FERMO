@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var filteredSampleData = getFeatureData(featureId, sampleData);
             visualizeData(filteredSampleData, true);
             updateTableWithGroupData(featureId, sampleData);
+            updateTableWithSampleData(featureId, sampleData);
         });
     }
 
@@ -33,6 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
           Plotly.purge('featureChromatogram');
           document.getElementById('feature-general-info').textContent = 'Click on any feature in the main chromatogram overview.'
           Plotly.purge('heatmap-container');
+          document.getElementById("sampleCell").innerHTML =
+          "<tr><td>Click on any feature in the main chromatogram overview.</td><td></td></tr>";
 
           // Update the feature table
           chromatogramElement.on('plotly_click', function(data) {
@@ -42,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
               var filteredSampleData = getFeatureData(featureId, sampleData);
               visualizeData(filteredSampleData, true);
               updateTableWithGroupData(featureId, sampleData);
+              updateTableWithSampleData(featureId, sampleData);
           });
        });
     });
@@ -71,6 +75,7 @@ function getSampleData(sampleName, statsChromatogram) {
         fNetwork: activeSampleData.map(obj => obj.network_features),
         samples: activeSampleData.map(obj => obj.samples),
         fGroupData: activeSampleData.map(obj => obj.f_group),
+        fSampleData: activeSampleData.map(obj => obj.f_sample),
         upLowRange: [minRt - minRt * 0.05, maxRt + maxRt * 0.02]
     }
 }
@@ -349,7 +354,8 @@ function createHeatmap(data, groupName) {
 					x: groupValues[j],
 					y: reversedGroupValues[i],
 					text: reversedMatrix[i][j].toFixed(2),
-					showarrow: false
+					showarrow: false,
+					font: { size: 7 }
 				});
 			}
 		}
@@ -375,22 +381,24 @@ function createHeatmap(data, groupName) {
 	// Define layout options
 	const layout = {
 		title: {
-			text: `<b>${groupName}</b>`,
+			text: `Fold-differences of <br><b>${groupName}</b>`,
 			font: { size: 12 },
 			x: 0.5,
 			xanchor: 'center',
 		},
-		width: 350,
-		height: 350,
+		width: 250,
+		height: 250,
 		xaxis: {
 			ticks: '',
 			ticksuffix: ' ',
 			autosize: false,
+			font: { size: 7 },
 		},
 		yaxis: {
 			ticks: '',
 			ticksuffix: ' ',
 			autosize: false,
+			font: { size: 7 },
 		},
 		annotations: annotations,
 		margin: { l: 50, r: 50, t: 50, b: 50 },
@@ -401,6 +409,7 @@ function createHeatmap(data, groupName) {
 }
 
 // Table update functions //
+// TODO: remove general feature data after sample switch
 function updateTableWithFeatureData(fId, sampleData) {
     // Update the general feature info table with the clicked feature data
     for ( var i = 0 ; i < sampleData.featureId.length ; i++ ) {
@@ -425,11 +434,36 @@ function updateTableWithGroupData(featureId, sampleData){
                 document.getElementById('feature-general-info').textContent = 'No group data available for this feature.'
                 Plotly.purge('heatmap-container');
             } else {
-                document.getElementById('feature-general-info').textContent = 'Fold-differences across:'
+                document.getElementById('feature-general-info').textContent = 'The feature is found in the following groups:'
                 for (const [key, value] of featureData) {
                     createHeatmap(value, key);
                 }
             }
+        }
+    }
+}
+
+function updateTableWithSampleData(fId, sampleData) {
+    let tableBody = document.getElementById("sampleCell");
+    tableBody.innerHTML = "";
+
+    for (var i = 0; i < sampleData.featureId.length; i++) {
+        if (sampleData.featureId[i] == fId) {
+            let dataArray = sampleData.fSampleData[i];
+
+            dataArray.forEach(item => {
+                let row = document.createElement("tr");
+
+                let sIdCell = document.createElement("td");
+                sIdCell.textContent = item.s_id;
+                row.appendChild(sIdCell);
+
+                let valueCell = document.createElement("td");
+                valueCell.textContent = item.value;
+                row.appendChild(valueCell);
+
+                tableBody.appendChild(row);
+            });
         }
     }
 }

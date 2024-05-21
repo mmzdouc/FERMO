@@ -500,6 +500,7 @@ class DashboardManager(BaseModel):
                             "mz": g_info.get("mz"),
                             "samples": g_info.get("samples"),
                             "f_group": g_info.get("group_factors"),
+                            "f_sample": g_info.get("height_per_sample"),
                             "network_features": network_features,
                         }
                     )

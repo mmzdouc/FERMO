@@ -145,7 +145,7 @@ thead {
 td, th {
     font-size: 12px;
     overflow-wrap: break-word;
-    text-align: center;
+    text-align: left;
 }
 
 th {

@@ -23,8 +23,8 @@
                             <tbody>
                                 {% for key in data.stats_analysis %}
                                     <tr>
-                                        <td style="text-align: left;">{{ key }}</td>
-                                        <td style="text-align: left;">{{ data.stats_analysis[key] }}</td>
+                                        <td>{{ key }}</td>
+                                        <td>{{ data.stats_analysis[key] }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -54,7 +54,7 @@
                             <thead>
                                 <tr>
                                     {% for header_value in data.stats_samples_dyn[0] %}
-                                        <th>{{ header_value }}</th>
+                                        <th style="text-align: center;">{{ header_value }}</th>
                                     {% endfor %}
                                 </tr>
                             </thead>
@@ -64,7 +64,7 @@
                                         data-sample-name="{{ filename['Sample name'] }}"
                                         style="cursor: pointer;">
                                         {% for key, value in filename.items() %}
-                                            <td>{{ value }}</td>
+                                            <td style="text-align: center;">{{ value }}</td>
                                         {% endfor %}
                                     </tr>
                                 {% endfor %}
@@ -109,32 +109,32 @@
                                     <table class="table table-striped table-hover">
                                         <tbody>
                                             <tr>
-                                                <td style="text-align: left;">Feature ID</td>
-                                                <td id="featureIdCell" style="text-align: left;"></td>
+                                                <td>Feature ID</td>
+                                                <td id="featureIdCell"></td>
                                             </tr>
                                             <tr>
-                                                <td style="text-align: left;">Precursor m/z</td>
-                                                <td id="precMzCell" style="text-align: left;"></td>
+                                                <td>Precursor m/z</td>
+                                                <td id="precMzCell"></td>
                                             </tr>
                                             <tr>
-                                                <td style="text-align: left;">Retention time (min)</td>
-                                                <td id="retTimeCell" style="text-align: left;"></td>
+                                                <td>Retention time (min)</td>
+                                                <td id="retTimeCell"></td>
                                             </tr>
                                             <tr>
-                                                <td style="text-align: left;">Feature intensity (relative)</td>
-                                                <td id="relIntCell" style="text-align: left;">Click on any feature in the main chromatogram overview</td>
+                                                <td>Feature intensity (relative)</td>
+                                                <td id="relIntCell">Click on any feature in the main chromatogram overview</td>
                                             </tr>
                                             <tr>
-                                                <td style="text-align: left;">Feature intensity (absolute)</td>
-                                                <td id="absIntCell" style="text-align: left;"></td>
+                                                <td>Feature intensity (absolute)</td>
+                                                <td id="absIntCell"></td>
                                             </tr>
                                             <tr>
-                                                <td style="text-align: left;">Feature novelty score</td>
-                                                <td id="NovScore" style="text-align: left;"></td>
+                                                <td>Feature novelty score</td>
+                                                <td id="NovScore"></td>
                                             </tr>
                                             <tr>
-                                                <td style="text-align: left;">Feature blank associated</td>
-                                                <td id="BlankAs" style="text-align: left;"></td>
+                                                <td>Feature blank associated</td>
+                                                <td id="BlankAs"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -184,6 +184,38 @@
                                 <div class="accordion-body overflow-auto">
                                     <p id="feature-general-info">Click on any feature in the main chromatogram overview</p>
                                     <div id="heatmap-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion accordion-item" draggable="false" id="sampleFeature">
+                            <h2 class="accordion-header" id="featureTableSamples">
+                                <button class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#featureSamples"
+                                        aria-expanded="false"
+                                        aria-controls="featureTable">
+                                    Feature info across samples
+                                </button>
+                            </h2>
+                            <div id="featureSamples"
+                                 class="accordion-collapse collapse"
+                                 aria-labelledby="featureTableSample">
+                                <div class="accordion-body overflow-auto">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Sample</th>
+                                                <th>Intensity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="sampleCell" style="text-align: left;">
+                                            <tr>
+                                                <td>Click on any feature in the main chromatogram overview</td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
