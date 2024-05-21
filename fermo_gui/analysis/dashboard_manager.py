@@ -501,6 +501,7 @@ class DashboardManager(BaseModel):
                             "samples": g_info.get("samples"),
                             "f_group": g_info.get("group_factors"),
                             "f_sample": g_info.get("height_per_sample"),
+                            "annotations": g_info.get("annotations"),
                             "network_features": network_features,
                         }
                     )

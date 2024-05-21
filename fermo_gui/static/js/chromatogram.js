@@ -14,12 +14,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update the feature table
         chromatogramElement.on('plotly_click', function(data) {
             var featureId = data.points[0].data.name;
-            updateTableWithFeatureData(featureId, sampleData);
-            addBoxVisualization(featureId, sampleData);
-            var filteredSampleData = getFeatureData(featureId, sampleData);
-            visualizeData(filteredSampleData, true);
-            updateTableWithGroupData(featureId, sampleData);
-            updateTableWithSampleData(featureId, sampleData);
+            for (var i = 0; i < sampleData.featureId.length; i++) {
+                if (sampleData.featureId[i] == featureId) {
+                    addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
+                    var filteredSampleData = getFeatureData(featureId, sampleData);
+                    visualizeData(filteredSampleData, true);
+                    updateTableWithFeatureData(i, sampleData);
+                    updateTableWithGroupData(sampleData.fGroupData[i]);
+                    updateTableWithSampleData(sampleData.fSampleData[i]);
+                    updateTableWithAnnotationData(sampleData.annotations[i]);
+                }
+            }
         });
     }
 
@@ -40,12 +45,17 @@ document.addEventListener('DOMContentLoaded', function() {
           // Update the feature table
           chromatogramElement.on('plotly_click', function(data) {
               var featureId = data.points[0].data.name;
-              updateTableWithFeatureData(featureId, sampleData);
-              addBoxVisualization(featureId, sampleData);
-              var filteredSampleData = getFeatureData(featureId, sampleData);
-              visualizeData(filteredSampleData, true);
-              updateTableWithGroupData(featureId, sampleData);
-              updateTableWithSampleData(featureId, sampleData);
+              for (var i = 0; i < sampleData.featureId.length; i++) {
+                  if (sampleData.featureId[i] == featureId) {
+                      addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
+                      var filteredSampleData = getFeatureData(featureId, sampleData);
+                      visualizeData(filteredSampleData, true);
+                      updateTableWithFeatureData(i, sampleData);
+                      updateTableWithGroupData(sampleData.fGroupData[i]);
+                      updateTableWithSampleData(sampleData.fSampleData[i]);
+                      updateTableWithAnnotationData(sampleData.annotations[i]);
+                  }
+              }
           });
        });
     });
@@ -76,6 +86,7 @@ function getSampleData(sampleName, statsChromatogram) {
         samples: activeSampleData.map(obj => obj.samples),
         fGroupData: activeSampleData.map(obj => obj.f_group),
         fSampleData: activeSampleData.map(obj => obj.f_sample),
+        annotations: activeSampleData.map(obj => obj.annotations),
         upLowRange: [minRt - minRt * 0.05, maxRt + maxRt * 0.02]
     }
 }
@@ -298,17 +309,12 @@ function getToolTip(sampleData, peakNumber) {
             Absolute intensity: ${sampleData.absInt[peakNumber]}<br>`
 }
 
-function addBoxVisualization(featureId, sampleData) {
+function addBoxVisualization(traceInt, traceRt) {
     var boxSizeX = 0.12;
     var boxSizeY = 0.04;
-
-    for ( var i = 0 ; i < sampleData.featureId.length ; i++ ) {
-        if (sampleData.featureId[i] == featureId) {
-            var maxInt = Math.max(...sampleData.traceInt[i]);
-            var maxRt = Math.max(...sampleData.traceRt[i]);
-            var minRt = Math.min(...sampleData.traceRt[i]);
-        };
-    };
+    var maxInt = Math.max(...traceInt);
+    var maxRt = Math.max(...traceRt);
+    var minRt = Math.min(...traceRt);
 
     var update = {
         shapes: [{
@@ -411,59 +417,45 @@ function createHeatmap(data, groupName) {
 // Table update functions //
 // TODO: remove general feature data after sample switch
 function updateTableWithFeatureData(fId, sampleData) {
-    // Update the general feature info table with the clicked feature data
-    for ( var i = 0 ; i < sampleData.featureId.length ; i++ ) {
-        if (sampleData.featureId[i] == fId) {
-            document.getElementById('featureIdCell').textContent = sampleData.featureId[i];
-            document.getElementById('precMzCell').textContent = sampleData.precMz[i];
-            document.getElementById('retTimeCell').textContent = sampleData.retTime[i];
-            document.getElementById('relIntCell').textContent = sampleData.relInt[i];
-            document.getElementById('absIntCell').textContent = sampleData.absInt[i];
-            document.getElementById('NovScore').textContent = sampleData.novScore[i];
-            document.getElementById('BlankAs').textContent = sampleData.blankAs[i];
-        }
-    }
+    document.getElementById('featureIdCell').textContent = sampleData.featureId[fId];
+    document.getElementById('precMzCell').textContent = sampleData.precMz[fId];
+    document.getElementById('retTimeCell').textContent = sampleData.retTime[fId];
+    document.getElementById('relIntCell').textContent = sampleData.relInt[fId];
+    document.getElementById('absIntCell').textContent = sampleData.absInt[fId];
+    document.getElementById('NovScore').textContent = sampleData.novScore[fId];
+    document.getElementById('BlankAs').textContent = sampleData.blankAs[fId];
 }
 
 // TODO: test multiple groups
-function updateTableWithGroupData(featureId, sampleData){
-    for (var i = 0; i < sampleData.featureId.length; i++) {
-        if (sampleData.featureId[i] == featureId) {
-            var featureData = Object.entries(sampleData.fGroupData[i]);
-            if (Object.keys(featureData).length === 0) {
-                document.getElementById('feature-general-info').textContent = 'No group data available for this feature.'
-                Plotly.purge('heatmap-container');
-            } else {
-                document.getElementById('feature-general-info').textContent = 'The feature is found in the following groups:'
-                for (const [key, value] of featureData) {
-                    createHeatmap(value, key);
-                }
-            }
+function updateTableWithGroupData(groupData){
+    var featureData = Object.entries(groupData);
+    if (Object.keys(featureData).length === 0) {
+        document.getElementById('feature-general-info').textContent = 'No group data available for this feature.'
+        Plotly.purge('heatmap-container');
+    } else {
+        document.getElementById('feature-general-info').textContent = 'The feature is found in the following groups:'
+        for (const [key, value] of featureData) {
+            createHeatmap(value, key);
         }
     }
 }
 
-function updateTableWithSampleData(fId, sampleData) {
+function updateTableWithSampleData(sampleData) {
     let tableBody = document.getElementById("sampleCell");
     tableBody.innerHTML = "";
+    let dataArray = sampleData;
+    dataArray.forEach(item => {
+        let row = document.createElement("tr");
+        let sIdCell = document.createElement("td");
+        sIdCell.textContent = item.s_id;
+        row.appendChild(sIdCell);
+        let valueCell = document.createElement("td");
+        valueCell.textContent = item.value;
+        row.appendChild(valueCell);
+        tableBody.appendChild(row);
+    });
+}
 
-    for (var i = 0; i < sampleData.featureId.length; i++) {
-        if (sampleData.featureId[i] == fId) {
-            let dataArray = sampleData.fSampleData[i];
-
-            dataArray.forEach(item => {
-                let row = document.createElement("tr");
-
-                let sIdCell = document.createElement("td");
-                sIdCell.textContent = item.s_id;
-                row.appendChild(sIdCell);
-
-                let valueCell = document.createElement("td");
-                valueCell.textContent = item.value;
-                row.appendChild(valueCell);
-
-                tableBody.appendChild(row);
-            });
-        }
-    }
+function updateTableWithAnnotationData(annotations) {
+    console.log(annotations);
 }
