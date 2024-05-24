@@ -457,5 +457,103 @@ function updateTableWithSampleData(sampleData) {
 }
 
 function updateTableWithAnnotationData(annotations) {
-    console.log(annotations);
+    let tableBody = document.getElementById("matchTable");
+    let annMessage = document.getElementById("feature-annotation");
+    tableBody.innerHTML = "";
+    annMessage.innerHTML = "";
+
+    if (annotations['matches'] != []) {
+        // Create table header
+        let tHead = document.createElement("thead");
+        let rowHead = document.createElement("tr");
+
+        let matchIdHead = document.createElement("th");
+        matchIdHead.textContent = "Match id";
+        rowHead.appendChild(matchIdHead);
+
+        let scoreHead = document.createElement("th");
+        scoreHead.textContent = "Score";
+        rowHead.appendChild(scoreHead);
+
+        tHead.appendChild(rowHead);
+        tableBody.appendChild(tHead);
+
+        // Create table body
+        let tBody = document.createElement("tbody");
+
+        annotations['matches'].forEach(item => {
+            let row = document.createElement("tr");
+
+            let sIdCell = document.createElement("td");
+            sIdCell.textContent = item.id.split("|")[0];
+            row.appendChild(sIdCell);
+
+            let valueCell = document.createElement("td");
+            valueCell.textContent = item.score;
+            row.appendChild(valueCell);
+
+            // Add rows to table body
+            tBody.appendChild(row);
+
+            // Create extra info row
+            let extraInfoRow = document.createElement("tr");
+            let extraInfoCell = document.createElement("td");
+            extraInfoCell.colSpan = 2;
+            extraInfoCell.style.padding = 0;
+
+            let extraInfo = document.createElement("div");
+            extraInfo.style.display = "none";
+            extraInfo.style.padding = "10px";
+            extraInfo.style.backgroundColor = "#f9f9f9";
+
+            // Create a table for extra information
+            let infoTable = document.createElement("table");
+
+            var mibigLink = document.createElement('a');
+            mibigLink.href = `https://mibig.secondarymetabolites.org/repository/${item.id.split('|')[1]}`;
+            mibigLink.textContent = item.id.split("|")[1];
+            var mibigLinkHtml = mibigLink.outerHTML;
+
+            let infoData = [
+                { title: "Algorithm", value: item.algorithm },
+                { title: "Mz", value: item.mz },
+                { title: "Difference in mz", value: item.diff_mz },
+                { title: "SMILES", value: item.smiles },
+                { title: "Link to MIBiG", value: mibigLinkHtml }
+            ];
+
+            infoData.forEach(info => {
+                let infoRow = document.createElement("tr");
+
+                let titleCell = document.createElement("td");
+                titleCell.textContent = info.title + ":";
+                titleCell.style.fontWeight = "bold";
+                infoRow.appendChild(titleCell);
+
+                let valueCell = document.createElement("td");
+                valueCell.textContent = info.value;
+                infoRow.appendChild(valueCell);
+
+                infoTable.appendChild(infoRow);
+            });
+
+            extraInfo.appendChild(infoTable);
+            extraInfoCell.appendChild(extraInfo);
+            extraInfoRow.appendChild(extraInfoCell);
+
+            // Add event listener to main row to toggle extra info row
+            row.addEventListener("click", function() {
+                if (extraInfo.style.display === "none" || extraInfo.style.display === "") {
+                    extraInfo.style.display = "block";
+                } else {
+                    extraInfo.style.display = "none";
+                }
+            });
+
+            // Add extra info row to table body
+            tBody.appendChild(extraInfoRow);
+        });
+
+        tableBody.appendChild(tBody);
+    }
 }
