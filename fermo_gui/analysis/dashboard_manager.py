@@ -89,28 +89,48 @@ class DashboardManager(BaseModel):
             f_sess: fermo session file
         """
         try:
+            groups = f_sess.get("stats", {}).get("groups", {}).get("categories", {})
+
+            # TODO: handle no input metadata
+            if groups == "":
+                groups = "N/A"
+
+            group_list = []
+            sample_to_group = {}
+
+            for group_id, categories in groups.items():
+                group_list.append(group_id.title())
+                for category, details in categories.items():
+                    for s_id in details["s_ids"]:
+                        if s_id in sample_to_group:
+                            sample_to_group[s_id].update({group_id.title(): category})
+                        else:
+                            sample_to_group[s_id] = {group_id.title(): category}
+
             for sample in f_sess.get("stats", {}).get("samples"):
                 total_features = len(
                     f_sess.get("samples", {}).get(sample, {}).get("feature_ids")
                 )
-
                 if len(self.ret_features) != 0:
                     remaining_features = self.ret_features["samples"][sample]
                 else:
                     remaining_features = total_features
 
-                groups = ", ".join(
-                    map(str, f_sess.get("samples", {}).get(sample, {}).get("groups"))
-                )
-                if groups == "":
-                    groups = "N/A"
+                group_info = sample_to_group.get(sample, {})
+                if len(group_info.keys()) != len(group_list):
+                    for item in group_list:
+                        if item not in group_info:
+                            group_info[item] = "N/A"
+                ordered_group_info = {
+                    key: group_info.get(key, "N/A") for key in group_list
+                }
 
                 self.stats_samples_dyn.append(
                     {
                         "Sample name": sample,
-                        "Group": groups,
                         "Total features": total_features,
                         "Retained features": remaining_features,
+                        **ordered_group_info,
                     }
                 )
         except (TypeError, ValueError):
@@ -296,7 +316,6 @@ class DashboardManager(BaseModel):
         if len(self.ret_features["total"]) == 0:
             return
 
-        mode = ""
         if (
             filt.get("minimum") is not None
             and filt.get("maximum") is not None
@@ -440,7 +459,7 @@ class DashboardManager(BaseModel):
             return
 
     def create_chromatogram(self: Self, f_sess: dict):
-        """Creates chromatogram file from fermo.session file
+        """Creates chromatogram from fermo.session file
 
         Arguments:
             f_sess: fermo session file
@@ -454,11 +473,36 @@ class DashboardManager(BaseModel):
                     f_info = sample_data.get("sample_spec_features", {}).get(
                         str(f_id), {}
                     )
+                    g_info = f_sess.get("general_features", {}).get(str(f_id), {})
+                    novelty = g_info.get("scores", {}).get("novelty", {})
+
+                    network_features = []
+                    networks = f_sess.get("stats", {}).get("networks", {})
+                    for network_type in networks:
+                        network_data = networks.get(str(network_type), {}).get(
+                            "summary", {}
+                        )
+                        for n_id in network_data:
+                            n_features = network_data.get(str(n_id), {})
+                            if f_id in n_features:
+                                network_features = n_features
+
                     feature_data.append(
                         {
                             "f_id": f_info.get("f_id"),
+                            "rt": f_info.get("rt"),
                             "trace_rt": f_info.get("trace_rt"),
                             "trace_int": f_info.get("trace_int"),
+                            "abs_int": f_info.get("intensity"),
+                            "rel_int": f_info.get("rel_intensity"),
+                            "blank": g_info.get("blank"),
+                            "novelty": 0 if not novelty else novelty,
+                            "mz": g_info.get("mz"),
+                            "samples": g_info.get("samples"),
+                            "f_group": g_info.get("group_factors"),
+                            "f_sample": g_info.get("height_per_sample"),
+                            "annotations": g_info.get("annotations"),
+                            "network_features": network_features,
                         }
                     )
                 self.stats_chromatogram[sample] = feature_data

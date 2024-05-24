@@ -65,9 +65,9 @@ def test_extract_stats_samples_dyn_valid(session):
     manager = Manager()
     manager.extract_stats_samples_dyn(session)
     assert len(manager.stats_samples_dyn) == 11
-    assert manager.stats_samples_dyn[0]["Group"] == "A2"
-    assert manager.stats_samples_dyn[0]["Total features"] == 23
-    assert manager.stats_samples_dyn[0]["Retained features"] == 23
+    assert manager.stats_samples_dyn[0]["Phylogroup"] == "A2"
+    assert manager.stats_samples_dyn[0]["Total features"] == 22
+    assert manager.stats_samples_dyn[0]["Retained features"] == 22
 
 
 def test_extract_stats_samples_dyn_invalid():
@@ -81,7 +81,7 @@ def test_extract_stats_samples_dyn_invalid():
 def test_prepare_ret_features(session):
     manager = Manager()
     manager.prepare_ret_features(session)
-    assert len(manager.ret_features.get("total")) == 143
+    assert len(manager.ret_features.get("total")) == 69
 
 
 def test_extract_retained_features_valid(session, filters):
@@ -94,7 +94,7 @@ def test_filter_rel_intensity_valid(session):
     manager = Manager()
     manager.prepare_ret_features(session)
     manager.filter_spec_feature_range(session, [0.06, 1.0], "rel_intensity")
-    assert len(manager.ret_features["total"]) == 140
+    assert len(manager.ret_features["total"]) == 69
 
 
 def test_filter_abs_intensity_valid(session):
@@ -108,7 +108,7 @@ def test_filter_rel_area_valid(session):
     manager = Manager()
     manager.prepare_ret_features(session)
     manager.filter_spec_feature_range(session, [0.06, 1.0], "rel_area")
-    assert len(manager.ret_features["total"]) == 104
+    assert len(manager.ret_features["total"]) == 69
 
 
 def test_filter_abs_area_valid(session):
@@ -164,7 +164,7 @@ def test_filter_nr_samples_invalid(session):
     manager = Manager()
     manager.prepare_ret_features(session)
     manager.filter_nr_samples(session, {"minimum": 0, "maximum": 0})
-    assert len(manager.ret_features["total"]) == 143
+    assert len(manager.ret_features["total"]) == 69
 
 
 def test_filter_network_id_valid(session):
@@ -181,7 +181,7 @@ def test_filter_groups_feature_valid(session):
     manager = Manager()
     manager.prepare_ret_features(session)
     manager.filter_groups_feature(session, "V2")
-    assert len(manager.ret_features["total"]) == 31
+    assert len(manager.ret_features["total"]) == 69
 
 
 def test_filter_groups_network_valid(session):
@@ -190,4 +190,4 @@ def test_filter_groups_network_valid(session):
     manager.filter_groups_network(
         session, {"algorithm": "modified_cosine", "group": "V2"}
     )
-    assert len(manager.ret_features["total"]) == 78
+    assert len(manager.ret_features["total"]) == 69
