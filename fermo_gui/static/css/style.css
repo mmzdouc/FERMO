@@ -25,7 +25,6 @@ a:not(.footer a) {
   height: auto; /* Maintain aspect ratio */
 }
 
-
 /* input forms */
 .btn-primary {
     --bs-btn-bg: #116789;
@@ -39,100 +38,6 @@ input[type="file"]::file-selector-button {
     background-color: #116789;
     color: white;
 }
-
-/* remove arrows from number fields */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-     margin: 0;
-}
-input[type=number] {
-    -moz-appearance: textfield;
-  }
-
-
-/* multi range slider
-adjusted from https://medium.com/@predragdavidovic10/native-dual-range-slider-html-css-javascript-91e778134816 */
-.range_container {
-    display: flex;
-    flex-direction: column;
-    margin-top: 3%;
-}
-
-.sliders_control {
-    position: relative;
-    min-height: 15px;
-}
-
-.form_control_slider {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-}
-
-input[type=range]::-webkit-slider-thumb { /* pseudoelement for the knob of the
-    slider on webkit based browsers (e.g. chrome, safari, opera) */
-    -webkit-appearance: none;
-    pointer-events: all;
-    width: 18px;
-    height: 18px;
-    background-color: #116789;
-    border: none;
-    border-radius: 50%;
-    box-shadow: 0 0 0 1px #C6C6C6;
-    cursor: pointer;
-}
-
-input[type=range]::-moz-range-thumb { /* pseudoelement for the knob of the
-    slider on Gecko based browsers (firefox) */
-    -webkit-appearance: none;
-    pointer-events: all;
-    width: 18px;
-    height: 18px;
-    background-color: #116789;
-    border: none;
-    border-radius: 50%;
-    box-shadow: 0 0 0 1px #C6C6C6;
-    cursor: pointer;
-}
-
-input[type=range]::-webkit-slider-thumb:hover {
-    background: #0e526e;
-}
-
-input[type=range]::-moz-range-thumb:hover {
-    background: #0e526e;
-}
-
-input[type=range]::-webkit-slider-thumb:active {
-    box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
-    -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
-}
-
-
-.form_control_slider > .form_control_container > input[type=number] {
-/*  selector for number input fields that belong to range sliders */
-    width: 50px;
-    padding: .1rem .3rem;
-}
-
-input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 2px;
-    width: 100%;
-    position: absolute;
-    background-color: #C6C6C6;
-    pointer-events: none;
-}
-
-#fromSlider, #fromSliderMS2Q, #fromSliderNovel, #fromSliderRelInt, #fromSliderPeak {
-/*  elements must be accessed individually because otherwise styling of
-    toSlider breaks... */
-    height: 0;
-    z-index: 1;
-}
-
 
 /* tables */
 thead {
@@ -155,11 +60,11 @@ th {
 }
 
 table th:first-child{
-  border-radius:5px 0px 0px 0px;
+  border-radius: 5px 0px 0px 0px;
 }
 
 table th:last-child{
-  border-radius:0px 5px 0px 0px;
+  border-radius: 0px 5px 0px 0px;
 }
 
 #sampleTableGeneral{
@@ -169,6 +74,21 @@ table th:last-child{
 .chromDiv{
     font-size: 13px;
     padding: 0.6rem;
+}
+
+/* Fixate the width of the feature annotation tables in the dashboard */
+.fixed-width-table td:first-child {
+    width: 70%;
+}
+.fixed-width-table td:last-child {
+    width: 30%;
+}
+
+.fixed-width-table-extra td:first-child {
+    width: 200px;
+}
+.fixed-width-table-extra td:last-child {
+    width: 400px;
 }
 
 /* Drop zone layout. Active layout in dashboard.js */
@@ -207,20 +127,6 @@ table th:last-child{
 
 .accordion-button {
     color: #fff;
-}
-
-
-#filters input[type="search"] {
-    padding: 0.2rem 0.5rem;
-    font-size: 14px;
-}
-
-#filters input[type="number"] {
-    font-size: 14px;
-}
-
-#filters button[type="submit"] {
-    font-size: 14px;
 }
 
 

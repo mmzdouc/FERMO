@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       updateTableWithFeatureData(i, sampleData);
                       updateTableWithGroupData(sampleData.fGroupData[i]);
                       updateTableWithSampleData(sampleData.fSampleData[i]);
-                      updateTableWithAnnotationData(sampleData.annotations[i]);
+                      updateTableWithAnnotationData(sampleData.annotations[i], sampleName);
                   }
               }
           });
@@ -455,105 +455,204 @@ function updateTableWithSampleData(sampleData) {
         tableBody.appendChild(row);
     });
 }
+// TODO: remove feature data after sample switch
+function updateTableWithAnnotationData(annotations, sample) {
+    // Define headers and columns for each section
+    let matchHeaders = ["Match id", "Score"];
+    let matchColumns = ["id", "score"];
+    let matchExtraColumns = [
+        { title: "Algorithm", field: "algorithm" },
+        { title: "Mz", field: "mz" },
+        { title: "Difference in mz", field: "diff_mz" },
+        { title: "SMILES", field: "smiles" },
+        { title: "Link to MIBiG", field: "id" }
+    ];
 
-function updateTableWithAnnotationData(annotations) {
-    let tableBody = document.getElementById("matchTable");
+    let lossHeaders = ["Loss id", "Difference in ppm"];
+    let lossColumns = ["id", "diff_ppm"];
+    let lossExtraColumns = [
+        { title: "Detected loss", field: "det_loss" },
+        { title: "Expected loss", field: "exp_loss" },
+        { title: "Fragment mz", field: "mz_frag" }
+    ];
+
+    let fragmentHeaders = ["Fragment id", "Difference in ppm"];
+    let fragmentColumns = ["id", "diff_ppm"];
+    let fragmentExtraColumns = [
+        { title: "Detected fragment", field: "frag_det" },
+        { title: "Expected fragment", field: "frag_ex" }
+    ];
+
+    let adductHeaders = ["Adduct type", "Difference in ppm"];
+    let adductColumns = ["adduct_type", "diff_ppm"];
+    let adductExtraColumns = [
+        { title: "Partner adduct", field: "partner_adduct" },
+        { title: "Partner mz", field: "partner_mz" },
+        { title: "Partner id", field: "partner_id" },
+        { title: "difference in ppm", field: "diff_ppm" }
+    ];
+
+    // create tables for each section
+    let isAnyDataPresent = false;
+
+    isAnyDataPresent = createAnnotationTable("matchTable", annotations.matches, matchHeaders, matchColumns, matchExtraColumns) || isAnyDataPresent;
+    isAnyDataPresent = createAnnotationTable("lossesTable", annotations.losses, lossHeaders, lossColumns, lossExtraColumns) || isAnyDataPresent;
+    isAnyDataPresent = createAnnotationTable("fragmentTable", annotations.fragments, fragmentHeaders, fragmentColumns, fragmentExtraColumns) || isAnyDataPresent;
+    isAnyDataPresent = createAnnotationTable("adductTable", annotations.adducts, adductHeaders, adductColumns, adductExtraColumns) || isAnyDataPresent;
+
     let annMessage = document.getElementById("feature-annotation");
+    if (!isAnyDataPresent) {
+        annMessage.innerHTML = "No annotation data found for this feature.";
+    }
+}
+
+function createAnnotationTable(sectionId, annotations, headers, columns, extraColumns) {
+    let tableBody = document.getElementById(sectionId);
     tableBody.innerHTML = "";
+
+    let annMessage = document.getElementById("feature-annotation");
     annMessage.innerHTML = "";
 
-    if (annotations['matches'] != []) {
-        // Create table header
-        let tHead = document.createElement("thead");
-        let rowHead = document.createElement("tr");
-
-        let matchIdHead = document.createElement("th");
-        matchIdHead.textContent = "Match id";
-        rowHead.appendChild(matchIdHead);
-
-        let scoreHead = document.createElement("th");
-        scoreHead.textContent = "Score";
-        rowHead.appendChild(scoreHead);
-
-        tHead.appendChild(rowHead);
+    if (annotations.length > 0) {
+        let tHead = createTableHeader(headers);
         tableBody.appendChild(tHead);
 
-        // Create table body
-        let tBody = document.createElement("tbody");
+        let tBody = createTableBody(annotations, columns, extraColumns);
+        tableBody.appendChild(tBody);
 
-        annotations['matches'].forEach(item => {
-            let row = document.createElement("tr");
+        tableBody.style.marginBottom = "1rem";
+        return true;
+    } else {
+        tableBody.style.marginBottom = "0";
+        return false;
+    }
+}
 
-            let sIdCell = document.createElement("td");
-            sIdCell.textContent = item.id.split("|")[0];
-            row.appendChild(sIdCell);
+function createTableHeader(headers) {
+    let tHead = document.createElement("thead");
+    let rowHead = document.createElement("tr");
 
-            let valueCell = document.createElement("td");
-            valueCell.textContent = item.score;
-            row.appendChild(valueCell);
+    headers.forEach(header => {
+        let th = document.createElement("th");
+        th.textContent = header;
+        rowHead.appendChild(th);
+    });
 
-            // Add rows to table body
-            tBody.appendChild(row);
+    tHead.appendChild(rowHead);
+    return tHead;
+}
 
-            // Create extra info row
-            let extraInfoRow = document.createElement("tr");
-            let extraInfoCell = document.createElement("td");
-            extraInfoCell.colSpan = 2;
-            extraInfoCell.style.padding = 0;
+function createTableRow(data, columns) {
+    let row = document.createElement("tr");
 
-            let extraInfo = document.createElement("div");
-            extraInfo.style.display = "none";
-            extraInfo.style.padding = "10px";
-            extraInfo.style.backgroundColor = "#f9f9f9";
+    columns.forEach(column => {
+        let td = document.createElement("td");
+        let cellData = data[column];
+        if (typeof cellData === 'string' && cellData.includes("|")) {
+            td.textContent = cellData.split("|")[0];
+        } else {
+            td.textContent = cellData !== undefined ? cellData : '';
+        }
+        row.appendChild(td);
+    });
 
-            // Create a table for extra information
-            let infoTable = document.createElement("table");
+    return row;
+}
 
-            var mibigLink = document.createElement('a');
-            mibigLink.href = `https://mibig.secondarymetabolites.org/repository/${item.id.split('|')[1]}`;
-            mibigLink.textContent = item.id.split("|")[1];
-            var mibigLinkHtml = mibigLink.outerHTML;
+function createTableBody(dataArray, columns, extraColumns) {
+    let tBody = document.createElement("tbody");
 
-            let infoData = [
-                { title: "Algorithm", value: item.algorithm },
-                { title: "Mz", value: item.mz },
-                { title: "Difference in mz", value: item.diff_mz },
-                { title: "SMILES", value: item.smiles },
-                { title: "Link to MIBiG", value: mibigLinkHtml }
-            ];
+    dataArray.forEach(data => {
+        let row = createTableRow(data, columns);
+        let { extraInfoRow, extraInfo } = createExtraInfoRow(data, extraColumns, columns.length);
 
-            infoData.forEach(info => {
-                let infoRow = document.createElement("tr");
-
-                let titleCell = document.createElement("td");
-                titleCell.textContent = info.title + ":";
-                titleCell.style.fontWeight = "bold";
-                infoRow.appendChild(titleCell);
-
-                let valueCell = document.createElement("td");
-                valueCell.textContent = info.value;
-                infoRow.appendChild(valueCell);
-
-                infoTable.appendChild(infoRow);
-            });
-
-            extraInfo.appendChild(infoTable);
-            extraInfoCell.appendChild(extraInfo);
-            extraInfoRow.appendChild(extraInfoCell);
-
-            // Add event listener to main row to toggle extra info row
-            row.addEventListener("click", function() {
-                if (extraInfo.style.display === "none" || extraInfo.style.display === "") {
-                    extraInfo.style.display = "block";
-                } else {
-                    extraInfo.style.display = "none";
-                }
-            });
-
-            // Add extra info row to table body
-            tBody.appendChild(extraInfoRow);
+        row.addEventListener("click", function() {
+            if (extraInfo.style.display === "none" || extraInfo.style.display === "") {
+                extraInfo.style.display = "block";
+            } else {
+                extraInfo.style.display = "none";
+            }
         });
 
-        tableBody.appendChild(tBody);
-    }
+        tBody.appendChild(row);
+        tBody.appendChild(extraInfoRow);
+    });
+
+    return tBody;
+}
+
+function clickToCopy(data, displayText) {
+    const span = document.createElement("span");
+    span.textContent = displayText;
+    span.style.cursor = "pointer";
+    span.style.color = "rgba(13, 110, 253)";
+
+    span.onclick = function() {
+        const tempInput = document.createElement("input");
+        tempInput.value = data;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+
+        alert("Copied to clipboard: \n" + data);
+    };
+
+    return span;
+}
+
+function createExtraInfoRow(data, extraColumns, colspan) {
+    let extraInfoRow = document.createElement("tr");
+    let extraInfoCell = document.createElement("td");
+    extraInfoCell.colSpan = colspan;
+    extraInfoCell.style.padding = 0;
+
+    let extraInfo = document.createElement("div");
+    extraInfo.style.display = "none";
+    extraInfo.style.padding = "10px";
+    extraInfo.style.backgroundColor = "#ebebeb";
+    extraInfo.style.fontSize = "0.8em";
+
+    let infoTable = document.createElement("table");
+    infoTable.classList.add("fixed-width-table-extra");
+
+    extraColumns.forEach(column => {
+        let cellData = data[column.field];
+        let infoRow = document.createElement("tr");
+
+        let titleCell = document.createElement("td");
+        titleCell.textContent = column.title + ":";
+        titleCell.style.fontWeight = "bold";
+        infoRow.appendChild(titleCell);
+
+        let valueCell = document.createElement("td");
+        if (column.title === "Link to MIBiG") {
+            if (typeof cellData === 'string' && cellData.includes("|")) {
+                let mibigLink = document.createElement('a');
+                mibigLink.href = `https://mibig.secondarymetabolites.org/repository/${cellData.split("|")[1]}`;
+                mibigLink.textContent = cellData.split("|")[1];
+                mibigLink.target = "_blank";
+                valueCell.appendChild(mibigLink);
+            } else {
+                return;
+            }
+        } else {
+            valueCell.textContent = cellData !== undefined ? cellData : '';
+        }
+
+        if (column.title === "SMILES") {
+            let copySpan = clickToCopy(cellData, "Click to copy the SMILES string");
+            valueCell.innerHTML = '';
+            valueCell.appendChild(copySpan);
+        }
+
+        infoRow.appendChild(valueCell);
+        infoTable.appendChild(infoRow);
+    });
+
+    extraInfo.appendChild(infoTable);
+    extraInfoCell.appendChild(extraInfo);
+    extraInfoRow.appendChild(extraInfoCell);
+
+    return { extraInfoRow, extraInfo };
 }
