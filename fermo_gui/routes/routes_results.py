@@ -43,16 +43,14 @@ def job_failed(job_id: str) -> Union[str, Response]:
     Returns:
         The job_failed page for the job ID or a redirect to 'job_not_found' page.
     """
-    # TODO(MMZ 14.2.24): Cover with tests
     try:
         with open(
             Path(current_app.config.get("UPLOAD_FOLDER"))
             .joinpath(job_id)
-            .joinpath(f"{job_id}.log"),
-            "r",
+            .joinpath("results")
+            .joinpath("out.fermo.log"),
         ) as logfile:
             log = logfile.read().split("\n")
-
         return render_template("job_failed.html", data={"task_id": job_id, "log": log})
     except FileNotFoundError:
         return redirect(url_for("routes.job_not_found", job_id=job_id))
@@ -70,7 +68,6 @@ def job_not_found(job_id: str) -> str:
     Returns:
         The job_not_found page for the job ID
     """
-    # TODO(MMZ 14.2.24): Cover with tests
     return render_template("job_not_found.html", data={"task_id": job_id})
 
 
@@ -84,15 +81,14 @@ def task_result(job_id: str) -> Union[str, Response]:
     Returns:
         The dashboard page or the job_not_found page
     """
-    # TODO(MMZ 14.2.24): Cover with tests
-    # TODO(MMZ 14.2.24): For improved speed: use socket-io based updating of only
-    #  parts of the page - see also flask-turbo. Also server-side session cookies
-    #  possible (no size restriction); maybe a mixed approach (keep the GET
-    #  functionality in the cache and only load the POST stuff)
     try:
         f_sess = GeneralManager().read_data_from_json(
-            str(Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id)),
-            f"{job_id}.session.json",
+            location=str(
+                Path(current_app.config.get("UPLOAD_FOLDER"))
+                .joinpath(job_id)
+                .joinpath("results")
+            ),
+            filename="out.fermo.session.json",
         )
     except FileNotFoundError:
         return redirect(url_for("routes.job_not_found", job_id=job_id))

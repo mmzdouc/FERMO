@@ -20,7 +20,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-
 import sys
 from pathlib import Path
 from time import sleep
@@ -30,12 +29,44 @@ import logging
 
 from celery import shared_task
 import coloredlogs
-from fermo_core.config.class_logger import LoggerSetup
 from fermo_core.main import main
 from fermo_core.input_output.class_parameter_manager import ParameterManager
 from fermo_core.input_output.class_file_manager import FileManager
 from fermo_core.input_output.class_validation_manager import ValidationManager
-from pydantic import BaseModel, DirectoryPath, AnyUrl
+from pydantic import BaseModel, DirectoryPath
+from fermo_gui.analysis.general_manager import GeneralManager
+
+
+@shared_task(ignore_result=False)
+def start_fermo_core_manager(metadata: dict) -> bool:
+    """Start fermo_core analysis via FermoAnalysisManager, sends email notification
+
+    Arguments:
+        metadata: a dict containing metadata for running of the job
+
+    Returns:
+        True if job successful, False if error was raised
+    """
+    try:
+        manager = FermoCoreManager(job_id=metadata.get("job_id"))
+        manager.run_fermo_core()
+
+        if metadata.get("email_notify"):
+            GeneralManager().email_notify_success(
+                root_url=metadata.get("root_url"),
+                address=metadata.get("email"),
+                job_id=metadata.get("job_id"),
+            )
+        return True
+    except Exception as e:
+        print(e)  # Due to Celery Error catching, empty "e"
+        if metadata.get("email_notify"):
+            GeneralManager().email_notify_fail(
+                root_url=metadata.get("root_url"),
+                address=metadata.get("email"),
+                job_id=metadata.get("job_id"),
+            )
+        return False
 
 
 class FermoCoreManager(BaseModel):
@@ -69,7 +100,7 @@ class FermoCoreManager(BaseModel):
         )
 
         file_handler = logging.FileHandler(
-            Path(f"{self.uploads_dir}/{self.job_id}/results/{self.job_id}.log"),
+            Path(f"{self.uploads_dir}/{self.job_id}/results/out.fermo.log"),
             mode="w",
         )
         file_handler.setLevel(logging.DEBUG)
@@ -90,19 +121,13 @@ class FermoCoreManager(BaseModel):
         logger.debug(f"Started 'fermo_core' on job_id '{self.job_id}'.")
 
         params_input = FileManager.load_json_file(
-            f"{self.uploads_dir}/{self.job_id}/{self.job_id}.parameters.json"
+            f"{self.uploads_dir}/{self.job_id}/parameters.json"
         )
         ValidationManager().validate_file_vs_jsonschema(
-            params_input, f"{self.job_id}.parameters.json"
+            params_input, f"{self.uploads_dir}/{self.job_id}/parameters.json"
         )
 
         param_manager = ParameterManager()
         param_manager.assign_parameters_cli(params_input)
 
         main(param_manager, start_time)
-
-    # update fermo core
-    # continue writing tests
-    # implement slow and high cpu marks
-    # test
-    # implement in the GUI

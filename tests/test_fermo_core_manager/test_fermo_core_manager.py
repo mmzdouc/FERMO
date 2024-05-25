@@ -27,6 +27,4 @@ def test_run_fermo_core_min_valid():
     m_fermo = FermoCoreManager(
         job_id="example_data_min", uploads_dir=Path("tests/test_fermo_core_manager/")
     )
-    with pytest.raises(SystemExit) as sample:
-        m_fermo.run_fermo_core()
-    assert sample.value.code == 0
+    assert m_fermo.run_fermo_core() is None

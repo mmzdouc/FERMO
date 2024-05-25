@@ -1,12 +1,12 @@
 {
     "files": {
         "peaktable": {
-            "filepath": "tests/test_fermo_core_manager/example_data_min/test.quant_all.csv",
+            "filepath": "fermo_gui/upload/example/quant_all.csv",
             "format": "mzmine3",
             "polarity": "positive"
         },
         "msms": {
-            "filepath": "tests/test_fermo_core_manager/example_data_min/test.msms.mgf",
+            "filepath": "fermo_gui/upload/example/msms.mgf",
             "format": "mgf",
             "rel_int_from": 0.01
         }

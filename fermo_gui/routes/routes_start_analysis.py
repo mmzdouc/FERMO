@@ -34,11 +34,11 @@ from flask import (
     request,
 )
 
-from fermo_gui.analysis.analysis_manager import start_fermo_core
 from fermo_gui.analysis.general_manager import GeneralManager as GenManager
 from fermo_gui.config.extensions import socketio
 from fermo_gui.forms.analysis_input_forms import AnalysisInput
 from fermo_gui.routes import bp
+from fermo_gui.analysis.fermo_core_manager import start_fermo_core_manager
 
 
 @bp.route("/analysis/start_analysis/", methods=["GET", "POST"])
@@ -51,7 +51,6 @@ def start_analysis() -> Union[str, Response]:
     Returns:
         On GET, the "start_analysis" page, on POST a redirect to the "job_submitted" p.
     """
-    # TODO(MMZ 14.2.24): Cover with tests
     form = AnalysisInput()
 
     if request.method == "GET":
@@ -73,26 +72,31 @@ def start_analysis() -> Union[str, Response]:
         )
 
         metadata = {
-            "job_id": session["task_id"],
+            # "job_id": session["task_id"],
+            "job_id": "example",  # TODO(MMZ 25.05.): change back after testing
             "upload_path": session["task_upload_path"],
-            "root_url": request.base_url.partition("/analysis/start_analysis/")[0],
             "email": form.email.data,
             "email_notify": True,
         }
 
-        if "localhost" in metadata["root_url"] or "127.0.0.1" in metadata["root_url"]:
+        root_url = request.base_url.partition("/analysis/start_analysis/")[0]
+        if root_url in ["localhost", "127.0.0.1"]:
             metadata["email_notify"] = False
         elif params.get("email") is None:
-            # TODO(MMZ 13.2.24): change to the correct params data structure
+            # TODO(MMZ 13.2.24): change to the correct params data structure for email
             metadata["email_notify"] = False
         elif current_app.config.get("MAIL_USERNAME") is None:
             metadata["email_notify"] = False
 
-        start_fermo_core.apply_async(
+        start_fermo_core_manager.apply_async(
             kwargs={"metadata": metadata},
-            task_id=session["task_id"],
+            # task_id=session["task_id"],
+            task_id="example",  # TODO(MMZ 25.05.): change back after testing
         )
-        return redirect(url_for("routes.job_submitted", job_id=session["task_id"]))
+        # return redirect(url_for("routes.job_submitted", job_id=session["task_id"]))
+        return redirect(
+            url_for("routes.job_submitted", job_id="example")
+        )  # TODO(MMZ 25.05.): change back after testing
 
 
 @bp.route("/analysis/job_submitted/<job_id>/", methods=["GET"])

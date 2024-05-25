@@ -1,12 +1,12 @@
 {
     "files": {
         "peaktable": {
-            "filepath": "tests/test_fermo_core_manager/example_data_ms2query/test.peak_table_quant_full.csv",
+            "filepath": "tests/test_fermo_core_manager/example_data_min/quant_all.csv",
             "format": "mzmine3",
             "polarity": "positive"
         },
         "msms": {
-            "filepath": "tests/test_fermo_core_manager/example_data_ms2query/test.msms.mgf",
+            "filepath": "tests/test_fermo_core_manager/example_data_min/msms.mgf",
             "format": "mgf",
             "rel_int_from": 0.01
         }
@@ -35,20 +35,14 @@
     "additional_modules": {
         "feature_filtering": {
             "activate_module": true,
+            "filter_rel_int_range": [
+                0.1,
+                1.0
+            ],
             "filter_rel_area_range": [
-                0.8,
+                0.1,
                 1.0
             ]
-        }
-    },
-    "as_kcb_matching": {
-        "modified_cosine": {
-            "activate_module": true,
-            "fragment_tol": 0.1,
-            "min_nr_matched_peaks": 5,
-            "score_cutoff": 0.5,
-            "max_precursor_mass_diff": 600,
-            "maximum_runtime": 1200
         }
     }
 }
