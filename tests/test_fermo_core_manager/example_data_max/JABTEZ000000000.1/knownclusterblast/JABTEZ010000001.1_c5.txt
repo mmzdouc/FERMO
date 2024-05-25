@@ -1,0 +1,48 @@
+ClusterBlast scores for JABTEZ010000001.1
+
+Table of genes, locations, strands and annotations of query cluster:
+HS041_10625	2270927	2271266	+	type I-E CRISPR-associated endoribonuclease Cas2
+HS041_10630	2273500	2274298	-	ATP-binding protein
+HS041_10635	2274297	2275521	-	IS21 family transposase
+HS041_10640	2276107	2276407	+	hypothetical protein
+HS041_10645	2276581	2276839	+	type II toxin-antitoxin system Phd/YefM family antitoxin
+HS041_10650	2276844	2277123	+	type II toxin-antitoxin system RelE/ParE family toxin
+HS041_10655	2277145	2278202	-	IS3 family transposase
+HS041_10660	2278538	2279756	-	CU044_5270 family protein
+HS041_10665	2279752	2280319	-	RNA polymerase sigma factor
+HS041_10670	2280614	2280899	+	hypothetical protein
+HS041_10675	2281118	2281841	-	alpha/beta hydrolase
+HS041_10680	2281943	2282042	+	IS5/IS1182 family transposase
+HS041_10685	2282166	2282949	+	transposase family protein
+HS041_10690	2283012	2284110	+	hypothetical protein
+HS041_10695	2284190	2284973	-	transposase family protein
+HS041_10700	2285701	2286553	-	chromosome condensation regulator
+HS041_10705	2286615	2286753	-	hypothetical protein
+HS041_10710	2286938	2287088	-	hypothetical protein
+HS041_10715	2287742	2288378	-	TetR/AcrR family transcriptional regulator
+HS041_10720	2288521	2289127	+	dihydrofolate reductase
+HS041_10725	2289295	2289601	+	hypothetical protein
+HS041_10730	2289992	2290352	-	DUF1801 domain-containing protein
+HS041_10735	2290694	2291132	+	macromomycin
+HS041_10740	2292003	2292858	-	helix-turn-helix domain-containing protein
+HS041_10745	2292969	2293734	+	SDR family NAD(P)-dependent oxidoreductase
+HS041_10750	2294160	2295372	+	HAMP domain-containing histidine kinase
+HS041_10755	2295538	2295931	+	STAS domain-containing protein
+HS041_10760	2296043	2297261	-	GAF domain-containing sensor histidine kinase
+HS041_10765	2297540	2298737	-	ROK family protein
+HS041_10770	2298799	2299453	+	HAD-IA family hydrolase
+HS041_10775	2299449	2300751	+	MFS transporter
+HS041_10780	2300969	2302031	+	alpha/beta fold hydrolase
+HS041_10785	2302253	2302496	-	substrate-binding domain-containing protein
+HS041_10790	2302516	2302696	+	hypothetical protein
+HS041_10795	2302746	2303805	-	YihY/virulence factor BrkB family protein
+HS041_10800	2303865	2306298	-	DUF4132 domain-containing protein
+HS041_10805	2306676	2308059	+	DUF4331 domain-containing protein
+HS041_10810	2308125	2309424	+	hypothetical protein
+HS041_10815	2309420	2311079	+	High-affinity nickel-transporter
+
+
+Significant hits:
+
+
+Details:

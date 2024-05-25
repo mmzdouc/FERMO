@@ -1,0 +1,50 @@
+ClusterBlast scores for JABTEZ010000008.1
+
+Table of genes, locations, strands and annotations of query cluster:
+HS041_37425	11260	11833	-	hypothetical protein
+HS041_37430	11889	12405	-	M48 family metallopeptidase
+HS041_37435	12546	13332	-	enoyl-CoA hydratase/isomerase family protein
+HS041_37440	13481	14582	+	ThiF family adenylyltransferase
+HS041_37445	14645	15989	+	AarF/ABC1/UbiB kinase family protein
+HS041_37450	16202	16397	-	hypothetical protein
+HS041_37455	16448	16718	-	WhiB family transcriptional regulator
+HS041_37460	17268	18135	-	acyl-CoA thioesterase II
+HS041_37465	18131	20201	-	ATP-dependent DNA helicase UvrD2
+HS041_37470	20379	21360	+	alpha/beta hydrolase
+HS041_37475	21444	21696	+	mycoredoxin
+HS041_37480	21717	22026	-	hypothetical protein
+HS041_37485	22113	22308	-	hypothetical protein
+HS041_37490	22512	23490	-	NAD(+) diphosphatase
+HS041_37495	23772	24933	+	ATP-grasp domain-containing protein
+HS041_37500	24929	26531	+	siderophore biosynthesis protein
+HS041_37505	26527	28204	+	iron transporter
+HS041_37510	28286	31703	-	ATP-dependent helicase
+HS041_37515	31773	35052	-	ATP-dependent helicase
+HS041_37520	35259	36876	-	beta-N-acetylhexosaminidase
+HS041_37525	36956	39743	-	CDP-glycerol glycerophosphotransferase family protein
+HS041_37530	39916	40246	-	MGMT family protein
+HS041_37535	40262	40631	-	hypothetical protein
+HS041_37540	40730	42008	-	S8 family serine peptidase
+
+
+Significant hits:
+1. BGC0002466	peucechelin
+
+
+Details:
+
+>>
+1. BGC0002466
+Source: peucechelin
+Type: NRP
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 741.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+CGZ69_03785	CGZ69_03785	9489	9734	+	hypothetical_protein
+CGZ69_03810	CGZ69_03810	28717	29663	+	methionyl-tRNA_formyltransferase
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_37495	CGZ69_03825	57	389	101.81347150259069	6.78e-134
+HS041_37500	CGZ69_03830	46	352	110.3189493433396	1.41e-114
+

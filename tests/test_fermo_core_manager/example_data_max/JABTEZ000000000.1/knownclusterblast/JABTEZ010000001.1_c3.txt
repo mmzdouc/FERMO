@@ -1,0 +1,24 @@
+ClusterBlast scores for JABTEZ010000001.1
+
+Table of genes, locations, strands and annotations of query cluster:
+HS041_05390	1133454	1134411	-	EamA family transporter
+HS041_05395	1134510	1135800	-	transcriptional regulator
+HS041_05400	1136024	1137293	-	UDP-N-acetylglucosamine 1-carboxyvinyltransferase
+HS041_05405	1137407	1139591	-	phosphoribosylamine--glycine ligase
+HS041_05410	1139966	1141085	+	magnesium/cobalt transporter CorA
+HS041_05415	1141151	1142918	-	ABC transporter ATP-binding protein
+HS041_05420	1143084	1145793	-	protein kinase/lanthionine synthetase C family protein
+HS041_05425	1146125	1147052	-	glycerophosphodiester phosphodiesterase
+HS041_05430	1147128	1148412	-	adenylosuccinate synthase
+HS041_05435	1148538	1148958	-	DUF3151 domain-containing protein
+HS041_05440	1149078	1150101	-	class II fructose-bisphosphate aldolase
+HS041_05445	1150306	1150726	+	hypothetical protein
+HS041_05450	1150762	1151299	-	orotate phosphoribosyltransferase
+HS041_05455	1151495	1153883	+	sigma-70 family RNA polymerase sigma factor
+HS041_05460	1154089	1155472	+	NYN domain-containing protein
+
+
+Significant hits:
+
+
+Details:

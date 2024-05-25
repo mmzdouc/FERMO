@@ -1,0 +1,264 @@
+ClusterBlast scores for JABTEZ010000002.1
+
+Table of genes, locations, strands and annotations of query cluster:
+HS041_13695	216230	217061	+	helix-turn-helix domain-containing protein
+HS041_13700	217141	218551	+	30S ribosomal protein S12 methylthiotransferase RimO
+HS041_13705	218576	219185	+	CDP-diacylglycerol--glycerol-3-phosphate 3-phosphatidyltransferase
+HS041_13710	219181	219703	+	nicotinamide-nucleotide amidohydrolase family protein
+HS041_13715	219910	220306	+	helix-turn-helix transcriptional regulator
+HS041_13720	220355	221135	-	Fpg/Nei family DNA glycosylase
+HS041_13725	221187	221637	-	Rrf2 family transcriptional regulator
+HS041_13730	221824	223003	+	ROK family protein
+HS041_13735	223008	224733	-	glycoside hydrolase family 3 protein
+HS041_13740	224847	226302	-	glycoside hydrolase family 3 protein
+HS041_13745	226399	227305	-	carbohydrate ABC transporter permease
+HS041_13750	227301	228315	-	sugar ABC transporter permease
+HS041_13755	228317	229652	-	extracellular solute-binding protein
+HS041_13760	229856	231017	+	ROK family transcriptional regulator
+HS041_13765	231028	231673	+	M15 family metallopeptidase
+HS041_13770	231712	233524	-	hypothetical protein
+HS041_13775	233573	234935	-	non-ribosomal peptide synthetase condensation domain protein
+HS041_13780	234934	235174	-	acyl carrier protein
+HS041_13785	235166	235403	-	MbtH family protein
+HS041_13790	235399	238519	-	amino acid adenylation domain-containing protein
+HS041_13795	238880	240347	+	acyl--CoA ligase
+HS041_13800	240343	241654	+	hypothetical protein
+HS041_13805	241729	241960	+	hypothetical protein
+HS041_13810	241952	242897	+	thiamine pyrophosphate-dependent dehydrogenase E1 component subunit alpha
+HS041_13815	242887	243877	+	alpha-ketoacid dehydrogenase subunit beta
+HS041_13820	243869	245039	+	2-oxo acid dehydrogenase subunit E2
+HS041_13825	245137	250759	+	amino acid adenylation domain-containing protein
+HS041_13830	250834	255832	-	DEAD/DEAH box helicase
+HS041_13835	255994	257287	+	aspartate aminotransferase family protein
+HS041_13840	257363	257852	+	VOC family protein
+HS041_13845	257935	258151	-	hypothetical protein
+HS041_13850	258345	258540	+	DUF3046 domain-containing protein
+HS041_13855	258663	258939	-	hypothetical protein
+HS041_13860	259234	260344	+	recombinase RecA
+HS041_13865	260719	261361	+	recombination regulator RecX
+HS041_13870	261653	263339	+	ribonuclease Y
+HS041_13875	263345	265307	-	S9 family peptidase
+HS041_13880	265427	266372	-	amino acid ABC transporter permease
+HS041_13885	266368	267037	-	amino acid ABC transporter permease
+HS041_13890	267098	267920	-	glutamate ABC transporter substrate-binding protein
+HS041_13895	267986	268742	-	amino acid ABC transporter ATP-binding protein
+HS041_13900	269057	270566	+	tRNA (N6-isopentenyl adenosine(37)-C2)-methylthiotransferase MiaB
+
+
+Significant hits:
+1. BGC0000163	tetronasin
+2. BGC0000414	quinocarcin
+3. BGC0000394	naphthyridinomycin
+4. BGC0001730	paramagnetoquinone 1/paramagnetoquinone 2
+5. BGC0001771	scleric acid
+
+
+Details:
+
+>>
+1. BGC0000163
+Source: tetronasin
+Type: Polyketide
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 821.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+ACR50750.1	ACR50750.1	1	910	+	putative_ABC_transporter_permease_protein
+ACR50751.1	ACR50751.1	1020	1778	+	putative_ABC_transporter_permease_protein
+ACR50752.1	ACR50752.1	1838	3256	-	conserved_hypothetical_protein
+ACR50753.1	ACR50753.1	3427	4326	-	putative_sugar_kinase
+ACR50754.1	ACR50754.1	4383	5339	-	zinc-binding_dehydrogenase
+ACR50755.1	ACR50755.1	5369	6286	-	integral_membrane_sugar_transport_protein
+ACR50756.1	ACR50756.1	6283	7269	-	putative_ABC_transporter_permease_protein
+ACR50757.1	ACR50757.1	7266	8585	-	putative_multiple_sugar_ABC_transporter_solute-binding_protein
+ACR50758.1	ACR50758.1	8767	9528	-	DeoR_family_transcriptional_regulator
+ACR50759.1	ACR50759.1	10058	11776	-	putative_secreted_protein
+ACR50760.1	ACR50760.1	11993	13090	-	hypothetical_protein
+ACR50761.1	ACR50761.1	13457	14896	+	6-phosphogluconate_1-dehydrogenase
+ACR50762.1	ACR50762.1	15322	15675	-	conserved_hypothetical_protein
+ACR50763.1	ACR50763.1	15861	18077	-	periplasmic_beta-glucosidase
+ACR50764.1	ACR50764.1	18327	18683	-	hypothetical_protein
+ACR50765.1	ACR50765.1	18798	19616	+	hypothetical_protein
+ACR50766.1	ACR50766.1	19520	20401	-	putative_phosphoesterase
+ACR50767.1	ACR50767.1	20581	20994	-	hypothetical_protein
+ACR50768.1	ACR50768.1	21304	22122	+	putative_E2-like_acyltransferase_component_of_pyruvate/2-oxoglutarate_dehydrogenase
+ACR50769.1	ACR50769.1	22160	23455	-	E2_dihydrolipoyl_acyltransferase
+ACR50770.1	ACR50770.1	23448	24464	-	pyruvate_dehydrogenase_E1_beta_subunit
+ACR50771.1	ACR50771.1	24443	25480	-	pyruvate_dehydrogenase_E1_alpha_subunit
+ACR50772.1	ACR50772.1	25477	25803	-	acyl_carrier_protein
+ACR50773.1	ACR50773.1	26101	41511	+	polyketide_synthase
+ACR50774.1	ACR50774.1	41576	58468	+	polyketide_synthase
+ACR50775.1	ACR50775.1	58540	76650	+	polyketide_synthase
+ACR50776.1	ACR50776.1	76643	77062	+	epoxide_hydrolase
+ACR50777.1	ACR50777.1	77059	78327	+	putative_major_facilitator_transporter
+ACR50778.1	ACR50778.1	78441	79313	-	methyltransferase
+ACR50779.1	ACR50779.1	79594	80646	+	putative_3-oxoacyl-ACP_synthase_III
+ACR50780.1	ACR50780.1	80643	82076	+	epoxidase
+ACR50781.1	ACR50781.1	82195	83697	-	putative_FAD-dependent_oxygenase
+ACR50782.1	ACR50782.1	83714	88375	-	polyketide_synthase
+ACR50783.1	ACR50783.1	88582	89766	-	P450_monooxygenase
+ACR50784.1	ACR50784.1	90030	91082	+	putative_3-oxoacyl-ACP_synthase_III
+ACR50785.1	ACR50785.1	91916	107005	-	polyketide_synthase
+ACR50786.1	ACR50786.1	107202	107738	+	putative_regulatory_protein
+ACR50787.1	ACR50787.1	108020	109642	-	putative_ABC_transporter,_membrane_spanning_protein
+ACR50788.1	ACR50788.1	109639	110544	-	putative_ABC_transporter,_ATP_binding_component
+ACR50789.1	ACR50789.1	111072	111842	+	putative_pathway_specific_activator
+ACR50790.1	ACR50790.1	112229	113113	+	putative_oxidoreductase
+ACR50791.1	ACR50791.1	113739	120032	+	putative_polyketide_synthase
+ACR50792.1	ACR50792.1	120029	121591	+	putative_acyl-CoA_synthase
+ACR50793.1	ACR50793.1	121604	122875	+	putative_P450_monooxygenase
+ACR50794.1	ACR50794.1	123140	123907	-	putative_type_II_thioesterase
+ACR50795.1	ACR50795.1	123948	128456	-	putative_polyketide_synthase
+ACR50796.1	ACR50796.1	128581	136011	-	putative_polyketide_synthase
+ACR50797.1	ACR50797.1	136385	138136	+	acyltransferase
+ACR50798.1	ACR50798.1	138180	138929	-	putative_TetR-family_transcriptional_regulator
+ACR50799.1	ACR50799.1	138794	139933	-	putative_membrane_protein
+ACR50800.1	ACR50800.1	140465	143221	-	putative_LuxR-family_transcriptional_regulator
+ACR50801.1	ACR50801.1	143949	144698	-	putative_methyltransferase
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_13810	ACR50771.1	71	435	97.77070063694268	6.82e-154
+HS041_13815	ACR50770.1	61	386	101.21580547112461	1.32e-134
+
+
+
+>>
+2. BGC0000414
+Source: quinocarcin
+Type: NRP
+Number of proteins with BLAST hits to this cluster: 3
+Cumulative BLAST score: 792.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+BAO84850.1	BAO84850.1	5399	6877	+	putative_peptidase
+BAO84851.1	BAO84851.1	6934	9675	+	putative_dehydrogenase
+BAO84852.1	BAO84852.1	9672	10619	+	putative_molybdopterin_dehydrogenase,_FAD-binding_protein
+BAO84853.1	BAO84853.1	10648	11526	-	putative_monooxygenase
+BAO84854.1	BAO84854.1	11612	12241	-	putative_methyltransferase
+BAO84855.1	BAO84855.1	12438	15032	+	putative_UV-repair_protein
+BAO84856.1	BAO84856.1	15148	16092	+	putative_dehydrogenase_alpha_subunit
+BAO84857.1	BAO84857.1	16089	16319	+	putative_phosphopantetheine_binding_protein
+BAO84858.1	BAO84858.1	16316	18499	+	putative_dehydrogenase_beta_subunit
+BAO84859.1	BAO84859.1	18539	19573	+	3-oxoacyl-(acyl-carrier-protein_(acp))_synthase_III_domain-containing_protein
+BAO84860.1	BAO84860.1	19652	20389	-	putative_N-methyltransferase
+BAO84861.1	BAO84861.1	20420	23668	-	putative_non-ribosomal_peptide_synthetase
+BAO84862.1	BAO84862.1	23719	25923	-	putative_long-chain-fatty-acid-CoA_ligase
+BAO84863.1	BAO84863.1	26193	26987	+	thioesterase_domain-containing_protein
+BAO84864.1	BAO84864.1	26984	30355	+	putative_non-ribosomal_peptide_synthetase
+BAO84865.1	BAO84865.1	30437	30646	+	putative_MbtH_like_protein
+BAO84866.1	BAO84866.1	30796	35256	+	putative_non-ribosomal_peptide_synthetase
+BAO84867.1	BAO84867.1	35338	36372	+	putative_dioxygenase
+BAO84868.1	BAO84868.1	36462	39179	+	putative_non-ribosomal_peptide_synthetase
+BAO84869.1	BAO84869.1	39261	40133	-	AfsR/DnrI/RedD_family_transcriptional_regulator
+BAO84870.1	BAO84870.1	40398	40925	+	putative_regulator_component
+BAO84871.1	BAO84871.1	40987	41505	+	putative_regulator_component
+BAO84872.1	BAO84872.1	41495	42739	+	putative_regulator_component
+BAO84873.1	BAO84873.1	42787	44076	+	major_facilitator_transporter
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_13785	BAO84865.1	64	80	70.51282051282051	1.49e-21
+HS041_13810	BAO84856.1	63	365	95.85987261146497	5.21e-127
+HS041_13815	BAO84858.1	53	347	102.43161094224924	5.31e-114
+
+
+
+>>
+3. BGC0000394
+Source: naphthyridinomycin
+Type: NRP
+Number of proteins with BLAST hits to this cluster: 3
+Cumulative BLAST score: 783.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+AGD80606.1	AGD80606.1	1	2493	+	UV-repair_protein
+AGD80607.1	AGD80607.1	2534	3799	-	membrane_protein
+AGD80608.1	AGD80608.1	3812	5290	-	monooxygenase
+AGD80609.1	AGD80609.1	5586	6602	+	thiamin_diphosphate_binding_domain_of_transketolase
+AGD80610.1	AGD80610.1	6590	6847	+	acyl_carrier_protein
+AGD80611.1	AGD80611.1	6844	9018	+	transketolase
+AGD80612.1	AGD80612.1	9114	10118	+	3-oxoacyl-synthase_III
+AGD80613.1	AGD80613.1	10186	10698	+	hypothetical_protein
+AGD80614.1	AGD80614.1	10806	13259	-	peptidase
+AGD80615.1	AGD80615.1	13240	15228	-	regulatory_protein
+AGD80616.1	AGD80616.1	15407	18046	-	amino_acid_adenylation_domain-containing_protein
+AGD80617.1	AGD80617.1	18127	19131	-	non-heme_iron_hydroxylase
+AGD80618.1	AGD80618.1	19203	23657	-	non-ribosomal_peptide_synthetase
+AGD80619.1	AGD80619.1	23690	23890	-	MbtH-like_protein
+AGD80620.1	AGD80620.1	23936	27043	-	non-ribosomal_peptide_synthetase
+AGD80621.1	AGD80621.1	27040	27813	-	thioesterase_II
+AGD80622.1	AGD80622.1	28146	30125	+	AMP-dependent_synthetase_and_ligase
+AGD80623.1	AGD80623.1	30195	39491	+	non-ribosomal_peptide_synthetase
+AGD80633.1	AGD80633.1	39551	40276	+	hypothetical_protein
+AGD80624.1	AGD80624.1	40370	41425	+	hydroxylase
+AGD80625.1	AGD80625.1	41593	42657	+	SAM-dependent_methyltransferase
+AGD80626.1	AGD80626.1	42817	43863	+	SAM-dependent_methyltransferase
+AGD80627.1	AGD80627.1	44009	45598	+	transmembrane-transport_protein
+AGD80628.1	AGD80628.1	45924	47546	+	oxidoreductase
+AGD80629.1	AGD80629.1	47564	48733	+	methyltransferase
+AGD80630.1	AGD80630.1	48891	49826	-	short_chain_dehydrogenase
+AGD80631.1	AGD80631.1	50332	51018	-	phosphopantetheinyl_transferase
+AGD80632.1	AGD80632.1	51312	51977	-	transcriptional_regulator
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_13785	AGD80619.1	61	76	65.38461538461539	4.59e-20
+HS041_13810	AGD80609.1	65	358	91.0828025477707	9.05e-124
+HS041_13815	AGD80611.1	58	349	96.65653495440729	6.28e-115
+
+
+
+>>
+4. BGC0001730
+Source: paramagnetoquinone 1/paramagnetoquinone 2
+Type: Polyketide
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 751.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+ASA49549.1	ASA49549.1	3934	5106	+	oxidoreductase
+ASA49550.1	ASA49550.1	5126	5683	-	hypothetical_protein
+ASA49551.1	ASA49551.1	5722	7326	-	bilirubin_oxidase
+ASA49552.1	ASA49552.1	7390	7845	-	hypothetical_protein
+ASA49553.1	ASA49553.1	7959	8957	+	malonyl_CoA_ACP_transacylase
+ASA49554.1	ASA49554.1	9018	10883	+	drug_resistance_transporter
+ASA49555.1	ASA49555.1	10954	11337	-	hypothetical_protein
+ASA49556.1	ASA49556.1	11345	12640	-	E2_duhyrolipoyl_acyltransferase
+ASA49557.1	ASA49557.1	12618	13652	-	transketolase
+ASA49558.1	ASA49558.1	13619	14602	-	dehydrogenase_E1_component
+ASA49559.1	ASA49559.1	14599	14991	-	monooxygenase
+ASA49560.1	ASA49560.1	14988	15311	-	polyketide_synthesis_cyclase
+ASA49561.1	ASA49561.1	15459	16013	+	PadR_regulatory_protein
+ASA49562.1	ASA49562.1	16151	16897	-	SARP_transcriptional_regulator
+ASA49563.1	ASA49563.1	17473	17844	+	hypothetical_protein
+ASA49564.1	ASA49564.1	17841	19106	+	beta-ketoacyl_synthase
+ASA49565.1	ASA49565.1	19103	20401	+	beta-ketoacyl_synthase
+ASA49566.1	ASA49566.1	20427	20681	+	acyl_carrier_protein
+ASA49567.1	ASA49567.1	20685	21152	+	cyclase
+ASA49568.1	ASA49568.1	21152	22201	+	O-methyltransferase
+ASA49569.1	ASA49569.1	22198	23928	+	acetyl-CoA_carboxylase_carboxyltransferase_subunit
+ASA49570.1	ASA49570.1	23925	24428	+	acetyl-CoA_carboxylase_biotin_carboxylase_subunit
+ASA49571.1	ASA49571.1	24458	25816	+	acetyl-CoA_carboxylase_biotin_carboxylase_subunit
+ASA49572.1	ASA49572.1	25859	26020	+	hypothetical_protein
+ASA49573.1	ASA49573.1	26110	27183	-	O-methyltransferase
+ASA49574.1	ASA49574.1	27186	28874	-	hydroxylase
+ASA49575.1	ASA49575.1	29031	30026	+	O-methyltransferase
+ASA49576.1	ASA49576.1	30043	30942	-	NmrA_family_protein
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_13810	ASA49558.1	66	394	97.45222929936305	3.31e-138
+HS041_13815	ASA49557.1	56	357	101.21580547112461	7.83e-123
+
+
+
+>>
+5. BGC0001771
+Source: scleric acid
+Type: NRP
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 745.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_13810	IG96_RS0135485	67	393	94.26751592356688	6.68e-138
+HS041_13815	IG96_RS0135480	54	352	101.51975683890578	5.99e-121
+

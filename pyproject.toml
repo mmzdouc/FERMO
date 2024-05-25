@@ -22,7 +22,8 @@ dependencies = [
     "Flask-Mail==0.9.1",
     "email-validator==2.1.0.post1",
     "Flask-SocketIO==5.3.6",
-    "pydantic==2.6.1"
+    "pydantic==2.5.2",
+    "fermo_core~=0.1.1"
 ]
 
 [project.optional-dependencies]

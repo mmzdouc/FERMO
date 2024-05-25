@@ -1,0 +1,59 @@
+ClusterBlast scores for JABTEZ010000003.1
+
+Table of genes, locations, strands and annotations of query cluster:
+HS041_25945	972519	973152	+	DUF305 domain-containing protein
+HS041_25950	973164	973581	-	SsgA family sporulation/cell division regulator
+HS041_25960	974579	974999	+	transcription initiation protein
+HS041_25965	975024	976311	+	RNA polymerase subunit sigma-24
+HS041_25970	976402	977365	-	NAD(P)-dependent alcohol dehydrogenase
+HS041_25975	977617	978265	-	maleylpyruvate isomerase family mycothiol-dependent enzyme
+HS041_25980	978353	978803	+	MarR family transcriptional regulator
+HS041_25985	979009	980566	+	FG-GAP repeat protein
+HS041_25990	980967	982074	+	polyprenyl synthetase family protein
+HS041_25995	982256	983309	+	hypothetical protein
+HS041_26000	983351	984872	-	AarF/ABC1/UbiB kinase family protein
+HS041_26005	984868	985207	-	hypothetical protein
+HS041_26010	985228	985648	-	hypothetical protein
+HS041_26015	985940	986168	-	hypothetical protein
+HS041_26020	986292	987597	-	DUF3459 domain-containing protein
+HS041_26025	987920	988817	+	TIGR03564 family F420-dependent LLM class oxidoreductase
+HS041_26030	988800	990633	-	ABC transporter ATP-binding protein
+HS041_26035	990695	992465	-	ABC transporter ATP-binding protein
+HS041_26040	992894	994721	-	prolyl oligopeptidase family serine peptidase
+HS041_26045	994720	997606	-	protein kinase/lanthionine synthetase C family protein
+HS041_26050	997976	998219	-	hypothetical protein
+HS041_26055	998402	1001714	-	AAA family ATPase
+HS041_26060	1001882	1002677	-	PaaX domain-containing protein, C- domain protein
+HS041_26065	1002790	1004542	+	acyl-CoA dehydrogenase family protein
+HS041_26070	1004531	1004681	-	hypothetical protein
+HS041_26075	1004665	1004911	-	hypothetical protein
+HS041_26080	1005021	1005258	+	hypothetical protein
+HS041_26085	1005420	1005837	-	DUF4259 domain-containing protein
+HS041_26090	1005891	1006107	-	cold shock domain-containing protein
+HS041_26095	1006313	1007162	+	ATP-grasp domain-containing protein
+
+
+Significant hits:
+1. BGC0000519	labyrinthopeptin A2/labyrinthopeptin A1/labyrinthopeptin A3
+
+
+Details:
+
+>>
+1. BGC0000519
+Source: labyrinthopeptin A2/labyrinthopeptin A1/labyrinthopeptin A3
+Type: RiPP:Lanthipeptide
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 873.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+CAX48971.1	CAX48971.1	1	2589	+	serine/threonine_kinase
+CAX48972.1	CAX48972.1	2599	2721	+	labyrinthopeptin_A1/A3_prepropeptide
+CAX48973.1	CAX48973.1	2761	2877	+	labyrinthopeptin_A2_prepropeptide
+CAX48974.1	CAX48974.1	2988	4688	+	ABC-transporter
+CAX48975.1	CAX48975.1	4685	6400	+	ABC-transporter
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_26030	CAX48975.1	47	409	97.37704918032787	5.61e-136
+HS041_26035	CAX48974.1	50	464	94.56706281833617	5.49e-158
+

@@ -1,0 +1,124 @@
+ClusterBlast scores for JABTEZ010000001.1
+
+Table of genes, locations, strands and annotations of query cluster:
+HS041_01125	242134	242359	-	hypothetical protein
+HS041_01130	242750	242945	+	hypothetical protein
+HS041_01135	242923	243070	-	hypothetical protein
+HS041_01140	243047	243638	+	dihydrofolate reductase
+HS041_01145	243911	244262	+	hypothetical protein
+HS041_01150	244258	245917	+	caspase family protein
+HS041_01155	246306	246683	+	DNA mismatch endonuclease Vsr
+HS041_01160	246752	246971	-	DUF397 domain-containing protein
+HS041_01165	246963	247290	-	hypothetical protein
+HS041_01170	247484	247883	+	hypothetical protein
+HS041_01175	247905	248874	-	AraC family transcriptional regulator
+HS041_01180	248999	249833	+	NAD(P)H-binding protein
+HS041_01185	249910	250450	+	DUF4262 domain-containing protein
+HS041_01190	250490	251351	-	CPBP family intramembrane metalloprotease
+HS041_01195	251539	252010	+	sigma-70 family RNA polymerase sigma factor
+HS041_01200	252508	253075	-	TetR/AcrR family transcriptional regulator
+HS041_01205	253074	253581	-	SRPBCC domain-containing protein
+HS041_01210	253663	255322	-	alpha-glucosidase C-terminal domain-containing protein
+HS041_01215	255433	255835	+	hypothetical protein
+HS041_01220	255903	258297	+	protein translocase subunit SecD
+HS041_01225	258496	258742	+	EF-hand domain-containing protein
+HS041_01230	258860	260114	+	helix-turn-helix domain-containing protein
+HS041_01235	260210	261521	-	crotonyl-CoA carboxylase/reductase
+HS041_01240	261517	267829	-	SDR family NAD(P)-dependent oxidoreductase
+HS041_01245	268088	269207	+	prolyl oligopeptidase family serine peptidase
+HS041_01250	269260	270604	-	hypothetical protein
+HS041_01255	270719	272042	-	glycosyltransferase family 1 protein
+HS041_01260	272038	273406	-	MFS transporter
+HS041_01265	273426	277311	-	MMPL family transporter
+HS041_01270	277310	279092	-	fatty acyl-AMP ligase
+HS041_01275	279287	279920	+	helix-turn-helix domain-containing protein
+HS041_01280	280160	281408	+	ATP-binding protein
+HS041_01285	281739	282567	-	ErmE/ErmH/ErmO/ErmR family 23S rRNA (adenine(2058)-N(6))-methyltransferase
+HS041_01290	283045	284731	-	putative DNA binding domain-containing protein
+HS041_01295	284898	285762	+	alpha/beta hydrolase
+
+
+Significant hits:
+1. BGC0000813	K-252a
+2. BGC0000814	K-252a
+
+
+Details:
+
+>>
+1. BGC0000813
+Source: K-252a
+Type: Alkaloid
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 458.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+ABD59203.1	ABD59203.1	1	885	-	InkT
+ABD59204.1	ABD59204.1	908	1714	-	InkH
+ABD59205.1	ABD59205.1	1790	2692	+	InkR
+ABD59206.1	ABD59206.1	4113	4961	-	InkL
+ABD59207.1	ABD59207.1	4958	5872	-	InkB
+ABD59208.1	ABD59208.1	5884	6993	-	InkA
+ABD59209.1	ABD59209.1	7007	8140	-	InkM
+ABD59210.1	ABD59210.1	8137	8652	-	InkY
+ABD59211.1	ABD59211.1	9364	10515	-	InkG
+ABD59212.1	ABD59212.1	10937	12397	+	InkO
+ABD59213.1	ABD59213.1	12394	15489	+	InkD
+ABD59214.1	ABD59214.1	15486	17063	+	InkE
+ABD59215.1	ABD59215.1	17063	17590	+	InkP
+ABD59216.1	ABD59216.1	19482	20300	+	InkU
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_01175	ABD59205.1	47	255	100.62111801242236	9.08e-84
+HS041_01180	ABD59204.1	46	203	98.19494584837545	1.65e-64
+
+
+
+>>
+2. BGC0000814
+Source: K-252a
+Type: Alkaloid
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 458.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+ACN29699.1	ACN29699.1	1	314	+	putative_transcriptional_regulator
+ACN29700.1	ACN29700.1	947	2461	-	putative_amidase
+ACN29701.1	ACN29701.1	2635	3483	-	integral_membrane_protein
+ACN29702.1	ACN29702.1	3807	4727	+	putative_threonine_synthase
+ACN29703.1	ACN29703.1	4914	7313	-	ATP-dependent_RNA_helicase
+ACN29704.1	ACN29704.1	7310	7627	-	putative_ArsR_family_transcriptional_regulator
+ACN29705.1	ACN29705.1	7694	8857	+	putative_transmembrane_efflux_protein
+ACN29706.1	ACN29706.1	8811	9644	-	putative_integral_membrane_lipid_kinase
+ACN29707.1	ACN29707.1	9718	10524	-	putative_nucleoside-diphosphate-sugar_epimerase
+ACN29708.1	ACN29708.1	10600	11502	+	putative_transcriptional_regulator
+ACN29709.1	ACN29709.1	11499	12017	+	secreted_protein
+ACN29710.1	ACN29710.1	12273	12920	+	lipoate-protein_ligase_B
+ACN29711.1	ACN29711.1	12923	13771	-	dTDP-dihydrostreptose_synthase
+ACN29712.1	ACN29712.1	13768	14697	-	dTDP-glucose_4,6-dehydratase
+ACN29713.1	ACN29713.1	14694	15758	-	glucose-1-phosphate_thymidylyltransferase
+ACN29714.1	ACN29714.1	15763	16620	-	carboxylate_O-methyltransferase
+ACN29715.1	ACN29715.1	16656	17852	-	cytochrome_P450_hydroxylase
+ACN29716.1	ACN29716.1	17866	18999	-	probable_sugar_O-methyltransferase
+ACN29717.1	ACN29717.1	18996	20192	-	cytochrome_P450_monooxygenase
+ACN29718.1	ACN29718.1	20222	21532	-	N-glycosyltransferase
+ACN29719.1	ACN29719.1	21795	23255	+	L-amino_acid_oxidase
+ACN29720.1	ACN29720.1	23252	26347	+	chromopyrrolic_acid_synthase
+ACN29721.1	ACN29721.1	26344	27921	+	monooxygenase
+ACN29722.1	ACN29722.1	27921	29150	+	cytochrome_P450
+ACN29723.1	ACN29723.1	29104	31992	-	ATP-dependent_transcriptional_regulator
+ACN29724.1	ACN29724.1	32335	33846	-	two-component_system_sensor_kinase
+ACN29725.1	ACN29725.1	34546	34890	-	two-component_system_response_regulator
+ACN29726.1	ACN29726.1	34932	36464	-	amino_acid/metabolite_permease
+ACN29727.1	ACN29727.1	36530	36838	-	putative_integral_membrane_protein
+ACN29728.1	ACN29728.1	36919	38553	+	putative_ABC_transporter
+ACN29729.1	ACN29729.1	38664	40469	+	putative_peptide_transport_system_secreted_peptide_binding_protein
+ACN29730.1	ACN29730.1	40466	41512	+	putative_peptide_transport_system_permease
+ACN29731.1	ACN29731.1	41434	42381	+	putative_peptide_transport_permease
+ACN29732.1	ACN29732.1	42378	43352	+	putative_ABC_transporter_ATP-binding_protein
+ACN29733.1	ACN29733.1	43349	44341	+	putative_peptide_transport_ATP-binding_protein
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_01175	ACN29708.1	47	255	100.62111801242236	9.08e-84
+HS041_01180	ACN29707.1	46	203	98.19494584837545	1.65e-64
+

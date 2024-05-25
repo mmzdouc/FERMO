@@ -1,0 +1,90 @@
+ClusterBlast scores for JABTEZ010000002.1
+
+Table of genes, locations, strands and annotations of query cluster:
+HS041_18780	1372842	1374474	-	hypothetical protein
+HS041_18785	1374624	1375272	+	TetR family transcriptional regulator
+HS041_18790	1375358	1377350	+	methylmalonyl-CoA mutase small subunit
+HS041_18795	1377417	1379625	+	methylmalonyl-CoA mutase
+HS041_18800	1379674	1380646	+	methylmalonyl Co-A mutase-associated GTPase MeaB
+HS041_18805	1381062	1382457	+	cytochrome P450
+HS041_18810	1382492	1383338	+	hypothetical protein
+HS041_18815	1383337	1385053	+	hypothetical protein
+HS041_18820	1385266	1387858	+	nitrate- and nitrite sensing domain-containing protein
+HS041_18825	1387949	1388381	+	roadblock/LC7 domain-containing protein
+HS041_18830	1388377	1388764	+	DUF742 domain-containing protein
+HS041_18835	1388744	1389374	+	ATP/GTP-binding protein
+HS041_18840	1389585	1390020	+	protease inhibitor I42 family protein
+HS041_18845	1390095	1390878	+	UDP-galactose-lipid carrier transferase
+HS041_18850	1391039	1392242	+	hypothetical protein
+HS041_18855	1392322	1392877	-	hemerythrin domain-containing protein
+
+
+Significant hits:
+1. BGC0002671	kendomycin B
+2. BGC0001197	frankiamicin
+
+
+Details:
+
+>>
+1. BGC0002671
+Source: kendomycin B
+Type: Polyketide
+Number of proteins with BLAST hits to this cluster: 3
+Cumulative BLAST score: 1826.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+UHY14116.1	UHY14116.1	1	2337	+	DUF262_domain-containing_protein
+UHY14117.1	UHY14117.1	2725	3012	+	hypothetical_protein
+UHY14139.1	UHY14139.1	3334	3597	-	transposase
+UHY14118.1	UHY14118.1	4409	4645	+	transposase
+UHY14119.1	UHY14119.1	4611	5738	+	transposase
+UHY14120.1	UHY14120.1	6190	8955	+	transcriptional_regulator
+UHY14140.1	UHY14140.1	9015	9839	-	NAD(P)-dependent_oxidoreductase
+UHY14121.1	UHY14121.1	9931	10548	+	transcriptional_regulator
+UHY14122.1	UHY14122.1	10685	10909	+	hypothetical_protein
+UHY14123.1	UHY14123.1	10964	11413	+	hypothetical_protein
+UHY14124.1	UHY14124.1	11413	12966	+	FAD-dependent_oxidoreductase
+UHY14125.1	UHY14125.1	13067	24646	+	PKS_I
+UHY14126.1	UHY14126.1	24683	31114	+	PKS_I
+UHY14127.1	UHY14127.1	31139	41179	+	PKS_I
+UHY14128.1	UHY14128.1	41208	42380	+	FAD-dependent_monooxygenase
+UHY14141.1	UHY14141.1	42448	43908	-	benzaldehyde_dehydrogenase
+UHY14142.1	UHY14142.1	43929	45584	-	benzoylformate_decarboxylase
+UHY14143.1	UHY14143.1	45589	46923	-	dioxygenase
+UHY14144.1	UHY14144.1	46920	47603	-	enoyl-CoA_hydratase/isomerase
+UHY14145.1	UHY14145.1	47655	48773	-	PKS_III
+UHY14129.1	UHY14129.1	49095	62579	+	PKS_I
+UHY14130.1	UHY14130.1	62585	67507	+	PKS_I
+UHY14131.1	UHY14131.1	67539	68324	+	thioesterase
+UHY14132.1	UHY14132.1	68324	70258	+	methylmalonyl-CoA_mutase
+UHY14133.1	UHY14133.1	70255	72426	+	methylmalonyl-CoA_mutase
+UHY14134.1	UHY14134.1	72429	73460	+	methylmalonyl-CoA_mutase-associated_GTPase
+UHY14135.1	UHY14135.1	73594	74895	+	propionyl_CoA_carboxylase
+UHY14146.1	UHY14146.1	74974	76617	-	PQQ-dependent_enzyme
+UHY14147.1	UHY14147.1	76757	77281	-	hypothetical_protein
+UHY14148.1	UHY14148.1	77401	77778	-	DoxX_family_protein
+UHY14138.1	UHY14138.1	77898	78704	-	enoyl-CoA_hydratase/isomerase
+UHY14136.1	UHY14136.1	79095	79718	+	hypothetical_protein
+UHY14137.1	UHY14137.1	79734	79937	+	hypothetical_protein
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_18790	UHY14132.1	49	481	100.90497737556561	1.86e-162
+HS041_18795	UHY14133.1	75	1046	99.8639455782313	0.0
+HS041_18800	UHY14134.1	55	299	98.14241486068111	2.23e-100
+
+
+
+>>
+2. BGC0001197
+Source: frankiamicin
+Type: Polyketide
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 365.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_18825	Franean1_2385	52	123	88.11188811188812	1.2e-36
+HS041_18835	Franean1_2387	62	242	91.86602870813397	1.51e-81
+

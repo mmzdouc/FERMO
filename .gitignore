@@ -1,5 +1,7 @@
 ### CUSTOM START ###
 
+tests/test_fermo_core_manager/*/results/*
+
 # pycharm
 .idea/
 

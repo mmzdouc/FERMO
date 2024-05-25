@@ -1,0 +1,179 @@
+ClusterBlast scores for JABTEZ010000004.1
+
+Table of genes, locations, strands and annotations of query cluster:
+HS041_27805	245383	246052	-	response regulator
+HS041_27810	246048	248610	-	sensor histidine kinase KdpD
+HS041_27815	249100	249919	-	DUF4259 domain-containing protein
+HS041_27820	250121	250718	+	recombinase family protein
+HS041_27825	250714	251635	+	hypothetical protein
+HS041_27830	251627	251816	+	hypothetical protein
+HS041_27835	251911	252229	-	hypothetical protein
+HS041_27840	252389	253569	+	IS30 family transposase
+HS041_27845	253580	254021	-	hypothetical protein
+HS041_27850	254489	255065	+	recombinase family protein
+HS041_27855	255168	255576	+	hypothetical protein
+HS041_27860	255590	256628	+	IS3 family transposase
+HS041_27865	256664	257045	-	MerR family transcriptional regulator
+HS041_27870	257199	257730	+	hypothetical protein
+HS041_27875	257781	258864	+	hypothetical protein
+HS041_27880	258877	259858	+	aminoglycoside phosphotransferase family protein
+HS041_27885	259854	260604	+	SDR family oxidoreductase
+HS041_27890	260622	261627	+	aminotransferase class III-fold pyridoxal phosphate-dependent enzyme
+HS041_27895	261542	261935	+	hypothetical protein
+HS041_27900	261946	262237	-	NUDIX hydrolase
+HS041_27905	262273	263350	-	LLM class flavin-dependent oxidoreductase
+HS041_27910	263456	263687	-	DUF2277 domain-containing protein
+HS041_27915	263779	264034	+	hypothetical protein
+HS041_27920	264099	265164	-	hypothetical protein
+HS041_27925	265590	266523	+	hypothetical protein
+HS041_27930	266519	267173	+	isoprenylcysteine carboxylmethyltransferase family protein
+HS041_27935	267172	269875	+	phosphoenolpyruvate synthase
+HS041_27940	269919	270783	+	hypothetical protein
+HS041_27945	270779	271979	+	cytochrome P450
+HS041_27950	272001	272703	+	nitroreductase family protein
+HS041_27955	273323	273629	-	hypothetical protein
+HS041_27960	273622	274234	-	3'-5' exonuclease
+HS041_27965	274244	274418	-	radical SAM protein
+HS041_27970	274776	275628	-	helix-turn-helix domain-containing protein
+HS041_27975	275641	276157	-	hypothetical protein
+HS041_27980	276137	276365	-	hypothetical protein
+HS041_27985	276597	277350	+	SAM-dependent methyltransferase
+HS041_27990	277346	277712	+	hypothetical protein
+HS041_27995	277708	278359	+	hypothetical protein
+HS041_28000	278684	278897	+	hypothetical protein
+HS041_28005	279139	279721	-	dihydrofolate reductase family protein
+HS041_28010	279808	280630	-	AraC family transcriptional regulator
+HS041_28015	280677	281186	+	hypothetical protein
+HS041_28020	281229	281448	+	hypothetical protein
+HS041_28025	281691	283671	+	hypothetical protein
+HS041_28030	283897	284620	-	DUF4328 domain-containing protein
+
+
+Significant hits:
+1. BGC0002098	ECO-0501
+2. BGC0002359	dudomycin A
+3. BGC0000078	incednine
+
+
+Details:
+
+>>
+1. BGC0002098
+Source: ECO-0501
+Type: Polyketide
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 817.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_28005	AORI_2955	83	347	100.0	1.63e-123
+HS041_28010	AORI_2956	82	470	100.0	1.81e-169
+
+
+
+>>
+2. BGC0002359
+Source: dudomycin A
+Type: NRP
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 420.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+FM076_21110	FM076_21110	19	1329	+	acylneuraminate_cytidylyltransferase
+FM076_21190	FM076_21190	17697	18049	+	metallopeptidase_family_protein
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_27970	FM076_21170	47	273	97.87985865724382	2.02e-91
+HS041_27975	FM076_21165	48	147	95.90643274853801	3.8e-45
+
+
+
+>>
+3. BGC0000078
+Source: incednine
+Type: Polyketide
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 311.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+BAP34699.1	BAP34699.1	1	2069	+	superfamily_I_DNA_and_RNA_helicase-like_protein
+BAP34700.1	BAP34700.1	2126	2521	-	hypothetical_protein
+BAP34701.1	BAP34701.1	2644	3135	-	hypothetical_protein
+BAP34702.1	BAP34702.1	3362	3583	-	MbtH-like_protein
+BAP34703.1	BAP34703.1	4554	5216	+	LmbE_family_protein
+BAP34704.1	BAP34704.1	5408	6820	+	UDP-glucose/GDP-mannose_dehydrogenase
+BAP34705.1	BAP34705.1	6885	7841	+	NAD-dependent_epimerase/dehydratase
+BAP34706.1	BAP34706.1	8085	10994	+	LuxR-family_transcriptional_regulator
+BAP34707.1	BAP34707.1	11307	12905	+	AMP-dependent_synthetase_and_ligase
+BAP34708.1	BAP34708.1	13073	14182	-	malonyl-CoA-ACP_transacylase
+BAP34709.1	BAP34709.1	14197	15483	-	(PLP)-dependent_aspartate_aminotransferase_superfamily
+BAP34710.1	BAP34710.1	15517	16878	-	radical-SAM_L-lysine_2,3-aminomutase
+BAP34711.1	BAP34711.1	17000	17929	-	proline_iminopeptidase
+BAP34712.1	BAP34712.1	18316	19644	+	glycosyltransferase
+BAP34713.1	BAP34713.1	19828	21036	-	methyltransferase
+BAP34714.1	BAP34714.1	21287	22261	-	dTDP-glucose_4,6-dehydratase
+BAP34715.1	BAP34715.1	22258	23325	-	glucose-1-phosphate_thymidylyltransferase
+BAP34716.1	BAP34716.1	23395	24132	-	N-methyltransferase
+BAP34717.1	BAP34717.1	24577	24816	-	acyl_carrier_protein
+BAP34718.1	BAP34718.1	24954	26522	+	AMP-dependent_synthetase_and_ligase
+BAP34719.1	BAP34719.1	26677	27882	+	cytochrome_P450
+BAP34720.1	BAP34720.1	28673	29308	+	transcriptional_regulator
+BAP34721.1	BAP34721.1	29779	30123	+	hypothetical_protein
+BAP34722.1	BAP34722.1	30120	31583	+	hypothetical_protein
+BAP34723.1	BAP34723.1	31628	32032	+	hypothetical_protein
+BAP34724.1	BAP34724.1	32138	32599	+	Putative_hydrolase
+BAP34725.1	BAP34725.1	32596	32952	+	hypothetical_protein
+BAP34726.1	BAP34726.1	32960	33982	+	thymidylate_synthase
+BAP34727.1	BAP34727.1	33979	35007	+	nucleoside_diphosphate_kinase
+BAP34728.1	BAP34728.1	34997	36175	+	hypothetical_protein
+BAP34729.1	BAP34729.1	36172	36774	+	DNA_polymerase_III
+BAP34730.1	BAP34730.1	36768	37376	+	hypothetical_protein
+BAP34731.1	BAP34731.1	37373	38023	+	oxidoreductase
+BAP34732.1	BAP34732.1	38154	38669	+	hypothetical_protein
+BAP34733.1	BAP34733.1	39077	50023	-	type_I_polyketide_synthase
+BAP34734.1	BAP34734.1	50108	66139	-	type_I_polyketide_synthase
+BAP34735.1	BAP34735.1	66380	67210	+	thioesterase_involved_in_non-ribosomal_peptide_biosynthesis
+BAP34736.1	BAP34736.1	67450	68247	-	ABC-type_multidrug_transport_system
+BAP34737.1	BAP34737.1	68244	69200	-	ABC-type_multidrug_transport_system
+BAP34738.1	BAP34738.1	69310	70158	+	regulatory_protein_TetR
+BAP34739.1	BAP34739.1	70616	82201	-	type_I_polyketide_synthase
+BAP34740.1	BAP34740.1	82241	87412	-	type_I_polyketide_synthase
+BAP34741.1	BAP34741.1	88093	89280	-	glycosyltransferase
+BAP34742.1	BAP34742.1	89781	91136	+	NDP-hexose_2,3-dehydratase
+BAP34743.1	BAP34743.1	91214	92230	+	NDP-hexose-3-ketoreductase
+BAP34744.1	BAP34744.1	92233	93567	+	NDP-hexose-3,4-dehydratase
+BAP34745.1	BAP34745.1	93557	94852	+	aminotransferase
+BAP34746.1	BAP34746.1	94907	96184	-	glycosyltransferase
+BAP34747.1	BAP34747.1	96199	97470	-	cytochrome_P450
+BAP34748.1	BAP34748.1	97467	98396	-	glycosyltransferase
+BAP34749.1	BAP34749.1	100768	102102	-	glutamate-1-semialdehyde_aminotransferase
+BAP34750.1	BAP34750.1	102204	102950	+	dehydrogenase
+BAP34751.1	BAP34751.1	102813	103463	-	hypothetical_protein
+BAP34752.1	BAP34752.1	103460	104269	-	phytanoyl-CoA_dioxygenase
+BAP34753.1	BAP34753.1	106414	107517	-	hypothetical_protein
+BAP34754.1	BAP34754.1	107471	108973	-	hypothetical_protein
+BAP34755.1	BAP34755.1	109004	109738	+	hypothetical_protein
+BAP34756.1	BAP34756.1	109890	110147	-	hypothetical_protein
+BAP34757.1	BAP34757.1	112262	112504	-	hypothetical_protein
+BAP34758.1	BAP34758.1	112454	112819	+	hypothetical_protein
+BAP34759.1	BAP34759.1	113029	113415	+	hypothetical_protein
+BAP34760.1	BAP34760.1	113419	114375	+	hypothetical_protein
+BAP34761.1	BAP34761.1	114372	115568	+	O-methyltransferase
+BAP34762.1	BAP34762.1	116103	116555	-	secreted_protein
+BAP34763.1	BAP34763.1	116795	128485	-	type_I_polyketide_synthase
+BAP34764.1	BAP34764.1	129343	130209	+	glyceryl-ACP_oxidoreductase
+BAP34765.1	BAP34765.1	130206	130502	+	acyl_carrier_protein
+BAP34766.1	BAP34766.1	130495	131727	+	acyl-CoA_dehydrogenase
+BAP34767.1	BAP34767.1	131744	132865	+	FkbH-like_protein
+BAP34768.1	BAP34768.1	133147	133809	-	O-methyltransferase
+BAP34769.1	BAP34769.1	134104	134511	+	hypothetical_protein
+BAP34770.1	BAP34770.1	134598	136205	-	spermidine_synthase
+BAP34771.1	BAP34771.1	136213	136650	-	hypothetical_protein
+BAP34772.1	BAP34772.1	136709	137125	-	hypothetical_protein
+BAP34773.1	BAP34773.1	137122	137706	-	hypothetical_protein
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_27960	BAP34729.1	53	225	100.0	3.25e-75
+HS041_27965	BAP34728.1	73	86	91.22807017543859	1.52e-21
+

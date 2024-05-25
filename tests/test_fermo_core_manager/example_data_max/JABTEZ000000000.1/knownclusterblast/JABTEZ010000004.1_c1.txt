@@ -1,0 +1,113 @@
+ClusterBlast scores for JABTEZ010000004.1
+
+Table of genes, locations, strands and annotations of query cluster:
+HS041_26975	86753	87146	+	hypothetical protein
+HS041_26980	87148	88129	+	MoxR family ATPase
+HS041_26985	88125	89373	+	DUF58 domain-containing protein
+HS041_26990	89428	89992	+	hypothetical protein
+HS041_26995	89984	90767	-	amidohydrolase
+HS041_27000	90880	91789	+	LysR family transcriptional regulator
+HS041_27005	91927	92101	+	hypothetical protein
+HS041_27010	92133	92898	-	methyltransferase domain-containing protein
+HS041_27015	92922	93492	-	TrmH family RNA methyltransferase
+HS041_27020	93562	94174	-	methyltransferase
+HS041_27025	94391	95339	-	VWA domain-containing protein
+HS041_27030	95335	96325	-	DUF58 domain-containing protein
+HS041_27035	96321	97326	-	MoxR family ATPase
+HS041_27040	97430	98192	+	hypothetical protein
+HS041_27045	98284	99184	+	peptidase
+HS041_27050	99153	99795	-	response regulator transcription factor
+HS041_27055	100000	100366	+	hypothetical protein
+HS041_27060	100670	102092	-	MFS transporter
+HS041_27065	102216	103098	+	helix-turn-helix domain-containing protein
+HS041_27070	103740	105042	+	MFS transporter
+HS041_27075	105071	106319	+	non-ribosomal peptide synthetase
+HS041_27080	106407	109521	+	amino acid adenylation domain-containing protein
+HS041_27085	109517	110669	+	acyl-CoA dehydrogenase family protein
+HS041_27090	110687	112571	+	non-ribosomal peptide synthetase
+HS041_27095	112593	114411	+	non-ribosomal peptide synthetase
+HS041_27100	114394	117007	+	NAD(P)H-binding protein
+HS041_27105	117212	117389	+	hypothetical protein
+HS041_27110	117408	118191	-	transposase family protein
+HS041_27115	118558	121153	-	phosphoenolpyruvate synthase
+HS041_27120	122181	122760	-	hypothetical protein
+HS041_27125	123056	124592	+	isocitrate lyase/phosphoenolpyruvate mutase family protein
+HS041_27130	124977	125973	-	winged helix-turn-helix transcriptional regulator
+HS041_27135	126572	128975	+	hypothetical protein
+HS041_27140	129257	129392	-	IS5/IS1182 family transposase
+HS041_27145	129528	130227	-	helix-turn-helix domain-containing protein
+HS041_27150	130455	131430	+	hypothetical protein
+HS041_27155	131896	132178	+	hypothetical protein
+HS041_27160	132444	132759	-	helix-turn-helix transcriptional regulator
+HS041_27165	132977	133451	+	hypothetical protein
+HS041_27170	133462	133933	+	GNAT family N-acetyltransferase
+
+
+Significant hits:
+1. BGC0002051	antipain
+2. BGC0001570	deimino-antipain
+3. BGC0002434	clifednamide D/clifednamide E/clifednamide F/clifednamide G/clifednamide H/clifednamide I/clifednamide J
+
+
+Details:
+
+>>
+1. BGC0002051
+Source: antipain
+Type: NRP
+Number of proteins with BLAST hits to this cluster: 6
+Cumulative BLAST score: 4316.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_27070	NAI38-460	72	530	93.53348729792148	6.39e-188
+HS041_27075	NAI38-461	54	405	102.40963855421687	3.87e-139
+HS041_27080	NAI38-462	66	1291	102.12150433944069	0.0
+HS041_27090	NAI38-463	56	600	97.60765550239235	3.1e-209
+HS041_27095	NAI38-464	61	695	100.6611570247934	4.14e-247
+HS041_27100	NAI38-465	51	795	105.86206896551724	1.15e-277
+
+
+
+>>
+2. BGC0001570
+Source: deimino-antipain
+Type: NRP
+Number of proteins with BLAST hits to this cluster: 6
+Cumulative BLAST score: 4342.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_27070	A4V12_31630	72	512	93.0715935334873	4.83e-181
+HS041_27075	A4V12_31635	51	397	108.67469879518072	1.58e-135
+HS041_27080	A4V12_31645	65	1306	106.75024108003856	0.0
+HS041_27090	A4V12_31650	58	642	97.92663476874003	4.64e-226
+HS041_27095	A4V12_31655	63	712	98.67768595041322	2.75e-254
+HS041_27100	A4V12_31660	50	773	110.91954022988506	8.02e-269
+
+
+
+>>
+3. BGC0002434
+Source: clifednamide D/clifednamide E/clifednamide F/clifednamide G/clifednamide H/clifednamide I/clifednamide J
+Type: Polyketide+NRP
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 406.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+QWM97859.1	QWM97859.1	1	1530	-	MFS_transporter
+QWM97860.1	QWM97860.1	1668	2705	+	AsnC_family_transcriptional_regulator
+QWM97861.1	QWM97861.1	2886	3764	+	fatty_acid_hydroxylase_family_protein
+QWM97862.1	QWM97862.1	3998	13540	+	hybrid_non-ribosomal_peptide_synthetase/type_I_polyketide_synthase
+QWM97863.1	QWM97863.1	13530	14789	+	cytochrome_P450
+QWM97864.1	QWM97864.1	14876	16702	+	NAD(P)/FAD-dependent_oxidoreductase
+QWM97865.1	QWM97865.1	16699	17757	+	NADP-dependent_oxidoreductase
+QWM97866.1	QWM97866.1	17836	18417	-	TrmH_family_RNA_methyltransferase
+QWM97867.1	QWM97867.1	18414	19058	-	methyltransferase_domain-containing_protein
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_27015	QWM97866.1	49	160	91.005291005291	6.51e-50
+HS041_27020	QWM97867.1	62	246	97.53694581280789	2.27e-83
+

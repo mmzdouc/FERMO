@@ -1,0 +1,174 @@
+ClusterBlast scores for JABTEZ010000003.1
+
+Table of genes, locations, strands and annotations of query cluster:
+HS041_24960	753374	753986	-	hypothetical protein
+HS041_24965	754683	755901	-	hypothetical protein
+HS041_24970	756095	756752	+	response regulator transcription factor
+HS041_24975	756733	758476	-	ABC transporter ATP-binding protein
+HS041_24980	758472	760203	-	ABC transporter ATP-binding protein
+HS041_24985	760296	760410	-	SapB/AmfS family lantipeptide
+HS041_24990	760480	763255	-	protein kinase/lanthionine synthetase C family protein
+HS041_24995	763401	764133	-	hypothetical protein
+HS041_25000	764287	765001	-	M50 family metallopeptidase
+HS041_25005	765160	767371	-	MFS transporter
+HS041_25010	767581	768694	+	hypothetical protein
+HS041_25015	768787	769642	-	ABC transporter permease
+HS041_25020	769729	770704	-	ATP-binding cassette domain-containing protein
+HS041_25025	770968	771568	-	TetR/AcrR family transcriptional regulator
+HS041_25030	771657	773226	+	methylcrotonoyl-CoA carboxylase
+
+
+Significant hits:
+1. BGC0000501	catenulipeptin
+2. BGC0000551	SapB
+3. BGC0000519	labyrinthopeptin A2/labyrinthopeptin A1/labyrinthopeptin A3
+4. BGC0000546	SAL-2242
+5. BGC0002284	corynecin III/corynecin I/corynecin II
+6. BGC0001579	duramycin
+7. BGC0000503	cinnamycin
+
+
+Details:
+
+>>
+1. BGC0000501
+Source: catenulipeptin
+Type: RiPP:Lanthipeptide
+Number of proteins with BLAST hits to this cluster: 3
+Cumulative BLAST score: 1633.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_24975	Caci_4243	49	414	93.44827586206897	7.69e-138
+HS041_24980	Caci_4242	49	441	94.44444444444444	4.04e-149
+HS041_24990	Caci_4239	49	778	93.83116883116884	2.11e-271
+
+
+
+>>
+2. BGC0000551
+Source: SapB
+Type: RiPP:Lanthipeptide
+Number of proteins with BLAST hits to this cluster: 3
+Cumulative BLAST score: 1587.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+CAA19960.1	CAA19960.1	1	2793	+	putative_serine/threonine_protein_kinase
+CAA19961.1	CAA19961.1	2831	2959	+	hypothetical_protein_SC5A7.32
+CAA19962.1	CAA19962.1	2995	4905	+	putative_ABC_transporter
+CAA19963.1	CAA19963.1	4902	6728	+	putative_ABC_transporter
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_24975	CAA19963.1	46	425	102.24137931034483	4.71e-142
+HS041_24980	CAA19962.1	49	400	92.88194444444444	2.63e-132
+HS041_24990	CAA19960.1	48	762	97.2943722943723	2.35e-264
+
+
+
+>>
+3. BGC0000519
+Source: labyrinthopeptin A2/labyrinthopeptin A1/labyrinthopeptin A3
+Type: RiPP:Lanthipeptide
+Number of proteins with BLAST hits to this cluster: 3
+Cumulative BLAST score: 1511.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+CAX48971.1	CAX48971.1	1	2589	+	serine/threonine_kinase
+CAX48972.1	CAX48972.1	2599	2721	+	labyrinthopeptin_A1/A3_prepropeptide
+CAX48973.1	CAX48973.1	2761	2877	+	labyrinthopeptin_A2_prepropeptide
+CAX48974.1	CAX48974.1	2988	4688	+	ABC-transporter
+CAX48975.1	CAX48975.1	4685	6400	+	ABC-transporter
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_24975	CAX48975.1	47	390	96.03448275862068	6.71e-129
+HS041_24980	CAX48974.1	49	434	97.39583333333334	2.77e-146
+HS041_24990	CAX48971.1	46	687	94.48051948051948	5.72e-236
+
+
+
+>>
+4. BGC0000546
+Source: SAL-2242
+Type: RiPP:Lanthipeptide
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 2192.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+SSHG_03588	SSHG_03588	1	2712	+	serine/threonine_protein_kinase
+SSHG_03589	SSHG_03589	2763	2933	+	predicted_protein
+SSHG_03590	SSHG_03590	3164	4987	+	ABC_transporter_ATP-binding_protein
+SSHG_03592	SSHG_03592	7566	7976	-	two-component_system_response_regulator
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_24980	SSHG_03590	50	416	96.18055555555556	1.6e-138
+HS041_24980	SSHG_RS17995	50	400	91.49305555555556	6.78e-133
+HS041_24990	SSHG_RS17985	47	689	94.26406926406926	9.19e-237
+HS041_24990	SSHG_03588	47	687	94.26406926406926	1.52e-235
+
+
+
+>>
+5. BGC0002284
+Source: corynecin III/corynecin I/corynecin II
+Type: Other
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 971.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_25025	CPI83_20030	50	166	94.47236180904522	8.5e-52
+HS041_25030	CPI83_20025	78	805	97.89272030651341	1.13e-293
+
+
+
+>>
+6. BGC0001579
+Source: duramycin
+Type: RiPP:Lanthipeptide
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 574.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_25015	BLK03_RS04575	48	224	94.01408450704226	2.99e-72
+HS041_25020	BLK03_RS04570	59	350	95.67901234567901	4.56e-120
+
+
+
+>>
+7. BGC0000503
+Source: cinnamycin
+Type: RiPP:Lanthipeptide
+Number of proteins with BLAST hits to this cluster: 2
+Cumulative BLAST score: 550.0
+
+Table of genes, locations, strands and annotations of subject cluster:
+CAD60516.1	CAD60516.1	1	346	-	Cinorf3_protein
+CAD60517.1	CAD60517.1	454	1026	+	Cinorf4_protein
+CAD60518.1	CAD60518.1	1109	1198	+	hypothetical_protein
+CAD60519.1	CAD60519.1	1267	1626	+	Cin_orf7_protein
+CAD60520.1	CAD60520.1	1671	1907	+	preprocinnamycin
+CAD60521.1	CAD60521.1	2059	5325	+	CinM_protein
+CAD60522.1	CAD60522.1	5340	6317	+	CinX_protein
+CAD60523.1	CAD60523.1	6543	7472	+	CinT_protein
+CAD60524.1	CAD60524.1	7469	8341	+	CinH_protein
+CAD60525.1	CAD60525.1	8444	9466	+	CinY_protein
+CAD60526.1	CAD60526.1	9545	10171	-	CinZ_protein
+CAD60527.1	CAD60527.1	10246	10665	+	Cinorf8_protein
+CAD60528.1	CAD60528.1	10758	11078	+	Cinorf9_protein
+CAD60529.1	CAD60529.1	11111	11761	-	CinR_protein
+CAD60530.1	CAD60530.1	11758	12822	-	CinK_protein
+CAD60531.1	CAD60531.1	13257	13754	+	Cinorf10_protein
+CAD60532.1	CAD60532.1	13754	14944	+	Cinorf11_protein
+CAD60533.1	CAD60533.1	14375	15160	-	CinR1_protein
+CAD60534.1	CAD60534.1	15381	15872	+	Cinorf12_protein
+CAD60535.1	CAD60535.1	15912	16496	+	Cinorf13_protein
+CAD60536.1	CAD60536.1	16549	17083	+	Cinorf14_protein
+
+Table of Blast hits (query gene, subject gene, %identity, blast score, %coverage, e-value):
+HS041_25015	CAD60524.1	46	223	100.70422535211267	5.98e-72
+HS041_25020	CAD60523.1	58	327	90.74074074074075	9.47e-112
+

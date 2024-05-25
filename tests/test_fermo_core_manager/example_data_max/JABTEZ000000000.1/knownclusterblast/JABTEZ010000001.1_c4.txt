@@ -1,0 +1,42 @@
+ClusterBlast scores for JABTEZ010000001.1
+
+Table of genes, locations, strands and annotations of query cluster:
+HS041_08370	1742361	1743240	+	alpha/beta fold hydrolase
+HS041_08375	1743236	1744061	+	NAD(P)H-binding protein
+HS041_08380	1744103	1744454	+	holo-ACP synthase
+HS041_08385	1744464	1746096	+	NAD(P)H-hydrate dehydratase
+HS041_08390	1746160	1747276	+	alanine racemase
+HS041_08395	1747287	1748358	+	alpha/beta hydrolase
+HS041_08400	1748380	1748824	+	tRNA (adenosine(37)-N6)-threonylcarbamoyltransferase complex ATPase subunit type 1 TsaE
+HS041_08405	1749048	1749705	+	hypothetical protein
+HS041_08410	1749711	1750272	+	class F sortase
+HS041_08415	1750378	1751362	+	ABC transporter ATP-binding protein
+HS041_08420	1751358	1752153	+	ABC transporter permease
+HS041_08425	1752149	1753481	+	YcaO-like family protein
+HS041_08430	1753496	1754147	+	TOMM precursor leader peptide-binding protein
+HS041_08435	1754155	1755817	+	TOMM precursor leader peptide-binding protein
+HS041_08440	1755813	1756545	+	hypothetical protein
+HS041_08445	1756607	1756787	+	thiocillin family RiPP
+HS041_08450	1757008	1757179	+	thiocillin family RiPP
+HS041_08455	1757196	1757370	+	thiocillin family RiPP
+HS041_08460	1757388	1757580	+	thiocillin family RiPP
+HS041_08465	1757671	1757857	+	thiocillin family RiPP
+HS041_08470	1758061	1759132	+	PqqD family peptide modification chaperone
+HS041_08475	1759128	1761633	+	lantibiotic dehydratase
+HS041_08480	1761616	1762558	+	hypothetical protein
+HS041_08485	1762572	1762932	+	hypothetical protein
+HS041_08490	1763084	1763282	+	hypothetical protein
+HS041_08495	1763371	1766272	-	winged helix-turn-helix domain-containing protein
+HS041_08500	1766550	1767243	+	tRNA (adenosine(37)-N6)-threonylcarbamoyltransferase complex dimerization subunit type 1 TsaB
+HS041_08505	1767296	1767728	+	ribosomal protein S18-alanine N-acetyltransferase
+HS041_08510	1767720	1768752	+	tRNA (adenosine(37)-N6)-threonylcarbamoyltransferase complex transferase subunit TsaD
+HS041_08515	1768787	1769858	-	alkene reductase
+HS041_08520	1769967	1770462	+	MarR family transcriptional regulator
+HS041_08525	1770650	1770905	+	hypothetical protein
+HS041_08530	1771061	1772492	-	hypothetical protein
+
+
+Significant hits:
+
+
+Details:

@@ -86,7 +86,7 @@ class FermoAnalysisManager(BaseModel):
         params: user-defined parameters, matching the parameter file by fermo_core.
         upload_path: the upload-path containing user-provided files.
         job_id: The job-specific ID.
-        root_url: The root URL of the running fermo_gui instance.
+        root_url: The root URL of fermo_gui instance (local or remote)
 
     Raise:
         pydantic.ValidationError: Pydantic validation failed during instantiation.
