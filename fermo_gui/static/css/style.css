@@ -78,10 +78,10 @@ table th:last-child{
 
 /* Fixate the width of the feature annotation tables in the dashboard */
 .fixed-width-table td:first-child {
-    width: 70%;
+    width: 60%;
 }
 .fixed-width-table td:last-child {
-    width: 30%;
+    width: 20%;
 }
 
 .fixed-width-table-extra td:first-child {
@@ -127,6 +127,30 @@ table th:last-child{
 
 .accordion-button {
     color: #fff;
+}
+
+.accordion-button-info:not(.collapsed)::after {
+    background-image: url("/static/images/collapse_icon_info.svg");
+    transform: rotate(-45deg);
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+}
+
+.accordion-button-info {
+    color: #000;
+    background-color: transparent;
+    border: none;
+}
+
+.accordion-button-info::after {
+    order: -1;
+    background-image: url("/static/images/collapse_icon_info.svg");
+    background-color: none;
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
 }
 
 

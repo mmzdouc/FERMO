@@ -458,7 +458,7 @@ function updateTableWithSampleData(sampleData) {
 // TODO: remove feature data after sample switch
 function updateTableWithAnnotationData(annotations, sample) {
     // Define headers and columns for each section
-    let matchHeaders = ["Match id", "Score"];
+    let matchHeaders = ["Match id", "Score", "More info"];
     let matchColumns = ["id", "score"];
     let matchExtraColumns = [
         { title: "Algorithm", field: "algorithm" },
@@ -468,7 +468,7 @@ function updateTableWithAnnotationData(annotations, sample) {
         { title: "Link to MIBiG", field: "id" }
     ];
 
-    let lossHeaders = ["Loss id", "Difference in ppm"];
+    let lossHeaders = ["Loss id", "Difference in ppm", "More info"];
     let lossColumns = ["id", "diff_ppm"];
     let lossExtraColumns = [
         { title: "Detected loss", field: "det_loss" },
@@ -476,14 +476,14 @@ function updateTableWithAnnotationData(annotations, sample) {
         { title: "Fragment mz", field: "mz_frag" }
     ];
 
-    let fragmentHeaders = ["Fragment id", "Difference in ppm"];
+    let fragmentHeaders = ["Fragment id", "Difference in ppm", "More info"];
     let fragmentColumns = ["id", "diff_ppm"];
     let fragmentExtraColumns = [
         { title: "Detected fragment", field: "frag_det" },
         { title: "Expected fragment", field: "frag_ex" }
     ];
 
-    let adductHeaders = ["Adduct type", "Difference in ppm"];
+    let adductHeaders = ["Adduct type", "Difference in ppm", "More info"];
     let adductColumns = ["adduct_type", "diff_ppm"];
     let adductExtraColumns = [
         { title: "Partner adduct", field: "partner_adduct" },
@@ -495,10 +495,14 @@ function updateTableWithAnnotationData(annotations, sample) {
     // create tables for each section
     let isAnyDataPresent = false;
 
-    isAnyDataPresent = createAnnotationTable("matchTable", annotations.matches, matchHeaders, matchColumns, matchExtraColumns) || isAnyDataPresent;
-    isAnyDataPresent = createAnnotationTable("lossesTable", annotations.losses, lossHeaders, lossColumns, lossExtraColumns) || isAnyDataPresent;
-    isAnyDataPresent = createAnnotationTable("fragmentTable", annotations.fragments, fragmentHeaders, fragmentColumns, fragmentExtraColumns) || isAnyDataPresent;
-    isAnyDataPresent = createAnnotationTable("adductTable", annotations.adducts, adductHeaders, adductColumns, adductExtraColumns) || isAnyDataPresent;
+    isAnyDataPresent = createAnnotationTable("matchTable", annotations.matches, matchHeaders,
+    matchColumns, matchExtraColumns, "match") || isAnyDataPresent;
+    isAnyDataPresent = createAnnotationTable("lossesTable", annotations.losses, lossHeaders,
+    lossColumns, lossExtraColumns, "loss") || isAnyDataPresent;
+    isAnyDataPresent = createAnnotationTable("fragmentTable", annotations.fragments, fragmentHeaders,
+    fragmentColumns, fragmentExtraColumns, "fragment") || isAnyDataPresent;
+    isAnyDataPresent = createAnnotationTable("adductTable", annotations.adducts, adductHeaders,
+    adductColumns, adductExtraColumns, "adduct") || isAnyDataPresent;
 
     let annMessage = document.getElementById("feature-annotation");
     if (!isAnyDataPresent) {
@@ -506,7 +510,7 @@ function updateTableWithAnnotationData(annotations, sample) {
     }
 }
 
-function createAnnotationTable(sectionId, annotations, headers, columns, extraColumns) {
+function createAnnotationTable(sectionId, annotations, headers, columns, extraColumns, tableId) {
     let tableBody = document.getElementById(sectionId);
     tableBody.innerHTML = "";
 
@@ -517,7 +521,7 @@ function createAnnotationTable(sectionId, annotations, headers, columns, extraCo
         let tHead = createTableHeader(headers);
         tableBody.appendChild(tHead);
 
-        let tBody = createTableBody(annotations, columns, extraColumns);
+        let tBody = createTableBody(annotations, columns, extraColumns, tableId);
         tableBody.appendChild(tBody);
 
         tableBody.style.marginBottom = "1rem";
@@ -542,7 +546,7 @@ function createTableHeader(headers) {
     return tHead;
 }
 
-function createTableRow(data, columns) {
+function createTableRow(data, columns, rowId, tableId) {
     let row = document.createElement("tr");
 
     columns.forEach(column => {
@@ -556,25 +560,46 @@ function createTableRow(data, columns) {
         row.appendChild(td);
     });
 
+    // Add the collapse button for expanding extra info
+    let expandCell = document.createElement("td");
+    expandCell.className = "text-center";
+    let expandButton = document.createElement("button");
+    expandButton.className = "accordion-button-info collapsed";
+    expandButton.type = "button";
+    expandButton.setAttribute("data-bs-toggle", "collapse");
+    expandButton.setAttribute("data-bs-target", `#collapse-${tableId}-${rowId}`);
+    expandButton.setAttribute("aria-expanded", "false");
+    expandButton.setAttribute("aria-controls", `collapse-${tableId}-${rowId}`);
+
+    expandCell.appendChild(expandButton);
+    row.appendChild(expandCell);
+
     return row;
 }
 
-function createTableBody(dataArray, columns, extraColumns) {
+function createTableBody(dataArray, columns, extraColumns, tableId) {
     let tBody = document.createElement("tbody");
 
-    dataArray.forEach(data => {
-        let row = createTableRow(data, columns);
-        let { extraInfoRow, extraInfo } = createExtraInfoRow(data, extraColumns, columns.length);
-
-        row.addEventListener("click", function() {
-            if (extraInfo.style.display === "none" || extraInfo.style.display === "") {
-                extraInfo.style.display = "block";
-            } else {
-                extraInfo.style.display = "none";
-            }
-        });
-
+    dataArray.forEach((data, index) => {
+        let row = createTableRow(data, columns, index, tableId);
         tBody.appendChild(row);
+
+        // Create the extra info row
+        let extraInfoRow = document.createElement("tr");
+        let extraInfoCell = document.createElement("td");
+        extraInfoCell.colSpan = columns.length + 4;
+        extraInfoCell.style.padding = "0px";
+
+        let collapseDiv = document.createElement("div");
+        collapseDiv.id = `collapse-${tableId}-${index}`;
+        collapseDiv.className = "collapse";
+
+        let { extraInfo } = createExtraInfoRow(data, extraColumns, columns.length + 1);
+        collapseDiv.appendChild(extraInfo);
+
+        extraInfoCell.appendChild(collapseDiv);
+        extraInfoRow.appendChild(extraInfoCell);
+
         tBody.appendChild(extraInfoRow);
     });
 
@@ -602,15 +627,9 @@ function clickToCopy(data, displayText) {
 }
 
 function createExtraInfoRow(data, extraColumns, colspan) {
-    let extraInfoRow = document.createElement("tr");
-    let extraInfoCell = document.createElement("td");
-    extraInfoCell.colSpan = colspan;
-    extraInfoCell.style.padding = 0;
-
     let extraInfo = document.createElement("div");
-    extraInfo.style.display = "none";
     extraInfo.style.padding = "10px";
-    extraInfo.style.backgroundColor = "#ebebeb";
+    extraInfo.style.backgroundColor = "#f9f9f9";
     extraInfo.style.fontSize = "0.8em";
 
     let infoTable = document.createElement("table");
@@ -641,7 +660,8 @@ function createExtraInfoRow(data, extraColumns, colspan) {
         }
 
         if (column.title === "SMILES") {
-            let copySpan = clickToCopy(cellData, "Click to copy the SMILES string");
+            let displayText = "Copy SMILES";
+            let copySpan = clickToCopy(cellData, displayText);
             valueCell.innerHTML = '';
             valueCell.appendChild(copySpan);
         }
@@ -651,8 +671,6 @@ function createExtraInfoRow(data, extraColumns, colspan) {
     });
 
     extraInfo.appendChild(infoTable);
-    extraInfoCell.appendChild(extraInfo);
-    extraInfoRow.appendChild(extraInfoCell);
 
-    return { extraInfoRow, extraInfo };
+    return { extraInfo };
 }
