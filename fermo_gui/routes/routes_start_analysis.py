@@ -22,6 +22,8 @@ SOFTWARE.
 """
 from pathlib import Path
 from typing import Union
+import shutil
+import json
 
 from celery.result import AsyncResult
 from flask import (
@@ -39,6 +41,63 @@ from fermo_gui.config.extensions import socketio
 from fermo_gui.forms.analysis_input_forms import AnalysisInput
 from fermo_gui.routes import bp
 from fermo_gui.analysis.fermo_core_manager import start_fermo_core_manager
+
+
+def prepare_dummy_run(job_id: str):
+    """Write dummy data to see if logic works"""
+    shutil.copy(
+        src=Path("fermo_gui/upload/example/data/quant_all.csv"),
+        dst=Path(f"fermo_gui/upload/{job_id}/quant_all.csv"),
+    )
+
+    shutil.copy(
+        src=Path("fermo_gui/upload/example/data/msms.mgf"),
+        dst=Path(f"fermo_gui/upload/{job_id}/msms.mgf"),
+    )
+
+    data = {
+        "files": {
+            "peaktable": {
+                "filepath": f"fermo_gui/upload/{job_id}/quant_all.csv",
+                "format": "mzmine3",
+                "polarity": "positive",
+            },
+            "msms": {
+                "filepath": f"fermo_gui/upload/{job_id}/msms.mgf",
+                "format": "mgf",
+                "rel_int_from": 0.01,
+            },
+        },
+        "core_modules": {
+            "adduct_annotation": {"activate_module": False},
+            "neutral_loss_annotation": {"activate_module": False},
+            "fragment_annotation": {"activate_module": False},
+            "spec_sim_networking": {
+                "modified_cosine": {
+                    "activate_module": True,
+                    "msms_min_frag_nr": 5,
+                    "fragment_tol": 0.1,
+                    "score_cutoff": 0.7,
+                    "max_nr_links": 10,
+                    "maximum_runtime": 200,
+                }
+            },
+        },
+        "additional_modules": {
+            "feature_filtering": {
+                "activate_module": True,
+                "filter_rel_area_range": [0.9, 1.0],
+            }
+            # },
+            # "ms2query_annotation": {
+            #     "activate_module": True,
+            #     "score_cutoff": 0.7,
+            #     "maximum_runtime": 1200
+            # }
+        },
+    }
+    with open(Path(f"fermo_gui/upload/{job_id}/parameters.json"), "w") as outfile:
+        outfile.write(json.dumps(data, indent=4, ensure_ascii=False))
 
 
 @bp.route("/analysis/start_analysis/", methods=["GET", "POST"])
@@ -63,40 +122,28 @@ def start_analysis() -> Union[str, Response]:
         return render_template("start_analysis.html", form=form)
 
     if form.validate_on_submit():
-        params = {"email": form.email.data}
-
-        GenManager.store_data_as_json(
-            session["task_upload_path"],
-            f"{session['task_id']}.params.json",
-            params,
-        )
-
         metadata = {
-            # "job_id": session["task_id"],
-            "job_id": "example",  # TODO(MMZ 25.05.): change back after testing
-            "upload_path": session["task_upload_path"],
-            "email": form.email.data,
-            "email_notify": True,
+            "job_id": session["task_id"],
+            "email": "mmzdouc@gmail.com",
+            "email_notify": False,
         }
 
-        root_url = request.base_url.partition("/analysis/start_analysis/")[0]
-        if root_url in ["localhost", "127.0.0.1"]:
-            metadata["email_notify"] = False
-        elif params.get("email") is None:
-            # TODO(MMZ 13.2.24): change to the correct params data structure for email
-            metadata["email_notify"] = False
-        elif current_app.config.get("MAIL_USERNAME") is None:
-            metadata["email_notify"] = False
+        prepare_dummy_run(session["task_id"])
+
+        # TODO(MMZ 26.05.): turn on email notification
+        # root_url = request.base_url.partition("/analysis/start_analysis/")[0]
+        # if "localhost" in root_url or "127.0.0.1" in root_url:
+        #     metadata["email_notify"] = False
+        # elif metadata.get("email") is None:
+        #     metadata["email_notify"] = False
+        # elif current_app.config.get("MAIL_USERNAME") is None:
+        #     metadata["email_notify"] = False
 
         start_fermo_core_manager.apply_async(
             kwargs={"metadata": metadata},
-            # task_id=session["task_id"],
-            task_id="example",  # TODO(MMZ 25.05.): change back after testing
+            task_id=metadata["job_id"],
         )
-        # return redirect(url_for("routes.job_submitted", job_id=session["task_id"]))
-        return redirect(
-            url_for("routes.job_submitted", job_id="example")
-        )  # TODO(MMZ 25.05.): change back after testing
+        return redirect(url_for("routes.job_submitted", job_id=metadata["job_id"]))
 
 
 @bp.route("/analysis/job_submitted/<job_id>/", methods=["GET"])
@@ -128,7 +175,7 @@ def handle_startup_message(data: dict):
 
 
 @socketio.on("get_status")
-def check_job_status(data: str):
+def check_job_status(data: dict):
     """Serve job status upon request.
 
     Note: Celery does not differentiate between non-existing and non-running jobs.

@@ -7,7 +7,7 @@ from fermo_gui.analysis.general_manager import GeneralManager
 @pytest.fixture
 def session():
     return GeneralManager().read_data_from_json(
-        "fermo_gui/upload/example", "example.session.json"
+        "fermo_gui/upload/example/results", "out.fermo.session.json"
     )
 
 

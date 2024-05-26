@@ -35,14 +35,15 @@
     "additional_modules": {
         "feature_filtering": {
             "activate_module": true,
-            "filter_rel_int_range": [
-                0.1,
-                1.0
-            ],
             "filter_rel_area_range": [
-                0.1,
+                0.9,
                 1.0
             ]
+        },
+        "ms2query_annotation": {
+            "activate_module": true,
+            "score_cutoff": 0.7,
+            "maximum_runtime": 1200
         }
     }
 }

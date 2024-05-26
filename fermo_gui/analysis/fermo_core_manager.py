@@ -22,7 +22,6 @@ SOFTWARE.
 """
 import sys
 from pathlib import Path
-from time import sleep
 from datetime import datetime
 from typing import Self
 import logging
@@ -130,4 +129,4 @@ class FermoCoreManager(BaseModel):
         param_manager = ParameterManager()
         param_manager.assign_parameters_cli(params_input)
 
-        main(param_manager, start_time)
+        main(param_manager, start_time, logger)
