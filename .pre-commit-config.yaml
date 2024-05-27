@@ -1,24 +1,28 @@
-default_language_version:
-    python: python3.11
+fail_fast: true
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
-    hooks:
-    -   id: check-yaml
-    -   id: trailing-whitespace
--   repo: https://github.com/psf/black
-    rev: 23.3.0
-    hooks:
-    -   id: black
--   repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
-    hooks:
-    -   id: flake8
--   repo: local
-    hooks:
-    -   id: pytest-check
-        name: pytest-check
-        entry: pytest
-        language: system
-        pass_filenames: false
-        always_run: true
+- repo: local
+  hooks:
+    - id: black
+      name: black
+      entry: black
+      language: system
+      types: [file, python]
+    - id: isort
+      name: isort
+      entry: isort
+      language: system
+      types: [file, python]
+    - id: ruff-check
+      name: ruff-check
+      entry: ruff check
+      language: system
+      types: [ file, python ]
+    - id: pytest
+      name: pytest
+      entry: pytest tests/
+      language: system
+      types: [ file, python ]
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
+  hooks:
+      - id: check-yaml

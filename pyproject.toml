@@ -1,38 +1,61 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
 [project]
 name = "fermo_gui"
-description = "Visalization part of program FERMO"
 version = "0.10.0"
+description = "Visalization part of program FERMO"
 readme = "README.md"
+requires-python = ">=3.11,<3.12"
 license = {file = "LICENSE.md"}
 authors = [
     { name = "Mitja M. Zdouc", email = "zdoucmm@gmail.com" },
     { name = "Hannah E. Augustijn", email = "hannah.augustijn@gmail.com"}
 ]
+keywords = [
+    "cheminformatics",
+    "metabolomics",
+    "genomics"
+]
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Development Status :: 4 - Beta",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Chemistry"
+]
 
 dependencies = [
-    "jsonschema==4.19.0",
+    "celery[redis]==5.2.7",
+    "email-validator==2.1.0.post1",
+    "fermo_core==0.2.1",
     "Flask==3.0.1",
     "Flask-WTF==1.2.1",
-    "celery[redis]==5.2.7",
     "Flask-Session==0.6.0",
     "Flask-Mail==0.9.1",
-    "email-validator==2.1.0.post1",
     "Flask-SocketIO==5.3.6",
-    "pydantic==2.5.2",
-    "fermo_core==0.2.0"
+    "jsonschema==4.19.0",
+    "pydantic==2.5.2"
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pre-commit==3.4.0",
-    "pytest==7.4.2",
-    "pytest-cov==4.1.0",
-    "pytest-flask==1.3.0"
+    "black~=24.4.2",
+    "isort~=5.13.2",
+    "pre-commit~=3.4.0",
+    "pytest~=7.4.2",
+    "pytest-cov~=4.1.0",
+    "pytest-flask~=1.3.0",
+    "ruff~=0.4.4"
 ]
+
+[project.urls]
+"Website" = "https://fermo.bioinformatics.nl/"
+"Repository" = "https://github.com/fermo-met/fermo_gui"
+Documentation = "https://mmzdouc.github.io/fermo_docs/"
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -42,4 +65,96 @@ testpaths = [
 ]
 pythonpath = [
   "fermo_gui"
+]
+filterwarnings = [
+    'ignore:Please use \`get_index_dtype\` from the \`scipy.sparse\` namespace:DeprecationWarning'
+]
+
+[tool.coverage.run]
+omit = [
+    "tests/*"
+]
+
+[tool.coverage.report]
+show_missing = true
+ignore_errors = true
+
+
+[tool.coverage.html]
+directory = "coverage_html_report"
+
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+exclude = '''
+/(
+    \.git
+  | \.lib
+)/
+'''
+
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+include_trailing_comma = true
+reverse_relative = true
+
+
+[tool.ruff]
+line-length = 88
+
+
+[tool.ruff.lint]
+select = [
+    # flake8-bugbear
+    "B",
+    # flake8-comprehensions
+    "C4",
+    # flake8-eradicate/eradicate
+    "ERA",
+    # isort
+    "I",
+    # pep8-naming
+    "N",
+    # flake8-pie
+    "PIE",
+    # pygrep
+    "PGH",
+    # ruff checks
+    "RUF",
+    # flake8-simplify
+    "SIM",
+    # flake8-type-checking
+    "TCH",
+    # flake8-tidy-imports
+    "TID",
+    # pyupgrade
+    "UP",
+]
+ignore = [
+    # whitespace-before-punctuation
+#    "E203",
+    # percent-format-invalid-format
+#    "E501",
+    # needless-bool
+#    "SIM103",
+    # if-with-same-arms
+#    "SIM114",
+    # if-expr-with-true-false
+#    "SIM210",
+    # non-pep604-annotation
+    "UP007",
+    # unnecessary-placeholder
+#    "PIE790",
+    # unnecessary-comprehension
+#    "C416",
+    # unnecessary-comprehension-in-call
+#    "C419",
+    # function-uses-loop-variable
+#    "B023"
+    # commented-out code
+    "ERA001"
 ]

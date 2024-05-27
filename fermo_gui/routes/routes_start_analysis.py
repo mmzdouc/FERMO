@@ -20,27 +20,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
+import json
+import shutil
 from pathlib import Path
 from typing import Union
-import shutil
-import json
 
 from celery.result import AsyncResult
 from flask import (
-    render_template,
-    redirect,
-    url_for,
-    session,
     Response,
     current_app,
+    redirect,
+    render_template,
     request,
+    session,
+    url_for,
 )
 
+from fermo_gui.analysis.fermo_core_manager import start_fermo_core_manager
 from fermo_gui.analysis.general_manager import GeneralManager as GenManager
 from fermo_gui.config.extensions import socketio
 from fermo_gui.forms.analysis_input_forms import AnalysisInput
 from fermo_gui.routes import bp
-from fermo_gui.analysis.fermo_core_manager import start_fermo_core_manager
 
 
 def prepare_dummy_run(job_id: str):
@@ -87,13 +88,12 @@ def prepare_dummy_run(job_id: str):
             "feature_filtering": {
                 "activate_module": True,
                 "filter_rel_area_range": [0.9, 1.0],
-            }
-            # },
-            # "ms2query_annotation": {
-            #     "activate_module": True,
-            #     "score_cutoff": 0.7,
-            #     "maximum_runtime": 1200
-            # }
+            },
+            "ms2query_annotation": {
+                "activate_module": True,
+                "score_cutoff": 0.7,
+                "maximum_runtime": 1200,
+            },
         },
     }
     with open(Path(f"fermo_gui/upload/{job_id}/parameters.json"), "w") as outfile:
