@@ -1,8 +1,16 @@
+import { getSampleData, getFeatureData } from './parsing.js';
+
+import { visualizeData, addBoxVisualization } from './chromatogram.js';
+
+import { updateTableWithFeatureData, updateTableWithGroupData,
+    updateTableWithSampleData, updateTableWithAnnotationData
+} from './dynamic_tables.js';
+
 document.addEventListener('DOMContentLoaded', function() {
     var dragged;
 
-    document.addEventListener("drag", function(event) {
-    }, false);
+    // Drag and Drop functionality
+    document.addEventListener("drag", function(event) {}, false);
 
     document.addEventListener("dragstart", function(event) {
         dragged = event.target;
@@ -73,5 +81,67 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }, false);
-});
 
+    // Load all chromatogram data
+    var chromatogramElement = document.getElementById('mainChromatogram');
+    var statsChromatogram = JSON.parse(chromatogramElement.getAttribute('data-stats-chromatogram'));
+
+    // Automatically visualize the first sample on page load
+    var firstSample = document.querySelector('.select-sample');
+    if (firstSample) {
+        var firstSampleName = firstSample.getAttribute('data-sample-name');
+        var sampleData = getSampleData(firstSampleName, statsChromatogram);
+        visualizeData(sampleData, false);
+        document.getElementById('activeSample').textContent = 'Sample: ' + firstSampleName;
+
+        // Update the feature table
+        chromatogramElement.on('plotly_click', function(data) {
+            var featureId = data.points[0].data.name;
+            document.getElementById('activeFeature').textContent = 'Network visualization of feature: ' + featureId;
+            for (var i = 0; i < sampleData.featureId.length; i++) {
+                if (sampleData.featureId[i] == featureId) {
+                    addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
+                    var filteredSampleData = getFeatureData(featureId, sampleData);
+                    visualizeData(filteredSampleData, true);
+                    updateTableWithFeatureData(i, sampleData);
+                    updateTableWithGroupData(sampleData.fGroupData[i]);
+                    updateTableWithSampleData(sampleData.fSampleData[i]);
+                    updateTableWithAnnotationData(sampleData.annotations[i]);
+                }
+            }
+        });
+    }
+
+    // Activate the clicked sample of the 'Sample overview'
+    var rows = document.querySelectorAll('.select-sample');
+    rows.forEach(function(row) {
+        row.addEventListener('click', function() {
+            var sampleName = this.getAttribute('data-sample-name');
+            sampleData = getSampleData(sampleName, statsChromatogram);
+            visualizeData(sampleData, false);
+            document.getElementById('activeSample').textContent = 'Sample: ' + sampleName;
+            Plotly.purge('featureChromatogram');
+            document.getElementById('feature-general-info').textContent = 'Click on any feature in the main chromatogram overview.'
+            Plotly.purge('heatmap-container');
+            document.getElementById("sampleCell").innerHTML =
+            "<tr><td>Click on any feature in the main chromatogram overview.</td><td></td></tr>";
+
+            // Update the feature table
+            chromatogramElement.on('plotly_click', function(data) {
+                var featureId = data.points[0].data.name;
+                document.getElementById('activeFeature').textContent = 'Network visualization of feature: ' + featureId;
+                for (var i = 0; i < sampleData.featureId.length; i++) {
+                    if (sampleData.featureId[i] == featureId) {
+                        addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
+                        var filteredSampleData = getFeatureData(featureId, sampleData);
+                        visualizeData(filteredSampleData, true);
+                        updateTableWithFeatureData(i, sampleData);
+                        updateTableWithGroupData(sampleData.fGroupData[i]);
+                        updateTableWithSampleData(sampleData.fSampleData[i]);
+                        updateTableWithAnnotationData(sampleData.annotations[i], sampleName);
+                    }
+                }
+            });
+        });
+    });
+});
