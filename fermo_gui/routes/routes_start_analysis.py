@@ -121,55 +121,39 @@ def start_analysis() -> Union[str, Response]:
         task_path.mkdir()
 
         try:
-            input_processor = InputProcessor(form=form, task_dir=Path(task_path))
-            input_processor.run_processor()
-            parameters_dict = input_processor.return_params()
+            processor = InputProcessor(
+                form=form,
+                task_dir=Path(task_path),
+                root_url=request.base_url.partition("/analysis/start_analysis/")[0],
+            )
+            processor.run_processor()
+            parameters_dict = processor.return_params()
             with open(f"{task_path}/{task_id}.parameters.json", "w") as outfile:
                 outfile.write(json.dumps(parameters_dict, indent=2, ensure_ascii=False))
-
-            metadata = {
-                "job_id": task_id,
-                "task_path": str(task_path.resolve()),
-                "email": form.email.data if len(form.email.data) != 0 else None,
-                "email_notify": True if len(form.email.data) != 0 else False,
-                "root_url": request.base_url.partition("/analysis/start_analysis/")[0],
-            }
         except Exception as e:
             flash(str(e))
             if task_path.exists():
                 shutil.rmtree(task_path, ignore_errors=True)
             return render_template("start_analysis.html", form=form)
 
-        # TODO: Add the whole fermo_core running
-        return redirect(url_for("routes.job_submitted"))
+        metadata = {
+            "job_id": task_id,
+            "task_path": str(task_path.resolve()),
+            "email": form.email.data if len(form.email.data) != 0 else None,
+            "email_notify": (
+                True if (len(form.email.data) != 0 and processor.online) else False
+            ),
+            "root_url": request.base_url.partition("/analysis/start_analysis/")[0],
+        }
+
+        start_fermo_core_manager.apply_async(
+            kwargs={"metadata": metadata},
+            task_id=metadata["job_id"],
+        )
+
+        return redirect(url_for("routes.job_submitted", job_id=metadata["job_id"]))
 
     return render_template("start_analysis.html", form=form)
-
-    #
-    # if form.validate_on_submit():
-    #     metadata = {
-    #         "job_id": session["task_id"],
-    #         "task_upload_path": session["task_upload_path"],
-    #         "email": "mmzdouc@gmail.com",
-    #         "email_notify": False,
-    #         "root_url": request.base_url.partition("/analysis/start_analysis/")[0]
-    #     }
-    #
-    #     prepare_dummy_run(session["task_id"])
-
-    # TODO(MMZ 26.05.): turn on email notification
-    # if "localhost" in metadata["root_url"] or "127.0.0.1" in metadata["root_url"]:
-    #     metadata["email_notify"] = False
-    # elif metadata.get("email") is None:
-    #     metadata["email_notify"] = False
-    # elif current_app.config.get("MAIL_USERNAME") is None:
-    #     metadata["email_notify"] = False
-
-    # start_fermo_core_manager.apply_async(
-    #     kwargs={"metadata": metadata},
-    #     task_id=metadata["job_id"],
-    # )
-    # return redirect(url_for("routes.job_submitted", job_id=metadata["job_id"]))
 
 
 @bp.route("/analysis/job_submitted/<job_id>/", methods=["GET"])

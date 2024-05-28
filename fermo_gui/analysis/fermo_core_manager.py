@@ -20,19 +20,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-import sys
-from pathlib import Path
-from datetime import datetime
-from typing import Self
-import logging
 
-from celery import shared_task
+import logging
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Self
+
 import coloredlogs
-from fermo_core.main import main
-from fermo_core.input_output.class_parameter_manager import ParameterManager
+from celery import shared_task
 from fermo_core.input_output.class_file_manager import FileManager
+from fermo_core.input_output.class_parameter_manager import ParameterManager
 from fermo_core.input_output.class_validation_manager import ValidationManager
+from fermo_core.main import main
 from pydantic import BaseModel, DirectoryPath
+
 from fermo_gui.analysis.general_manager import GeneralManager
 
 
@@ -47,7 +49,9 @@ def start_fermo_core_manager(metadata: dict) -> bool:
         True if job successful, False if error was raised
     """
     try:
-        manager = FermoCoreManager(job_id=metadata.get("job_id"))
+        manager = FermoCoreManager(
+            job_id=metadata.get("job_id"), uploads_dir=metadata.get("task_path")
+        )
         manager.run_fermo_core()
 
         if metadata.get("email_notify"):
@@ -79,11 +83,11 @@ class FermoCoreManager(BaseModel):
     """
 
     job_id: str
-    uploads_dir: DirectoryPath = Path(__file__).parent.parent.joinpath("upload")
+    uploads_dir: DirectoryPath
 
     def create_results_folder(self: Self):
         """Create results folder for the respective run"""
-        Path(f"{self.uploads_dir}/{self.job_id}/results/").mkdir(exist_ok=True)
+        Path(f"{self.uploads_dir}/results/").mkdir(exist_ok=True)
 
     def configure_logger(self: Self) -> logging.Logger:
         """Set up logging parameters"""
@@ -99,7 +103,7 @@ class FermoCoreManager(BaseModel):
         )
 
         file_handler = logging.FileHandler(
-            Path(f"{self.uploads_dir}/{self.job_id}/results/out.fermo.log"),
+            Path(f"{self.uploads_dir}/results/out.fermo.log"),
             mode="w",
         )
         file_handler.setLevel(logging.DEBUG)
@@ -120,10 +124,10 @@ class FermoCoreManager(BaseModel):
         logger.debug(f"Started 'fermo_core' on job_id '{self.job_id}'.")
 
         params_input = FileManager.load_json_file(
-            f"{self.uploads_dir}/{self.job_id}/parameters.json"
+            f"{self.uploads_dir}/{self.job_id}.parameters.json"
         )
         ValidationManager().validate_file_vs_jsonschema(
-            params_input, f"{self.uploads_dir}/{self.job_id}/parameters.json"
+            params_input, f"{self.uploads_dir}/{self.job_id}.parameters.json"
         )
 
         param_manager = ParameterManager()

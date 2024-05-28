@@ -1,7 +1,7 @@
 from pathlib import Path
 
-import pytest
 import jsonschema
+import pytest
 
 from fermo_gui.analysis.fermo_core_manager import FermoCoreManager
 
@@ -17,7 +17,7 @@ def test_run_fermo_core_min_jobid_invalid():
 def test_run_fermo_core_min_json_invalid():
     m_fermo = FermoCoreManager(
         job_id="example_invalid_input_data",
-        uploads_dir=Path("tests/test_fermo_core_manager/"),
+        uploads_dir=Path("tests/test_fermo_core_manager/example_invalid_input_data"),
     )
     with pytest.raises(jsonschema.exceptions.ValidationError):
         m_fermo.run_fermo_core()
@@ -25,6 +25,7 @@ def test_run_fermo_core_min_json_invalid():
 
 def test_run_fermo_core_min_valid():
     m_fermo = FermoCoreManager(
-        job_id="example_data_min", uploads_dir=Path("tests/test_fermo_core_manager/")
+        job_id="example_data_min",
+        uploads_dir=Path("tests/test_fermo_core_manager/example_data_min"),
     )
     assert m_fermo.run_fermo_core() is None

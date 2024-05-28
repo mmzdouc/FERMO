@@ -24,10 +24,11 @@ SOFTWARE.
 """
 
 from pathlib import Path
-from typing import Any, Self
+from typing import Any, Optional, Self
 
+import pandas as pd
 from fermo_core.input_output.class_validation_manager import ValidationManager
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
@@ -41,11 +42,27 @@ class InputProcessor(BaseModel):
         task_dir: the upload folder + task ID Path
         form: AnalysisForm object containing the form data
         params: a dict to assemble the parameters.json file
+        online: bool to indicate if application is running online (not local)
+        root_url: to determine if online or offline running
+        n_features: the number of features in the dataframe
+        max_features: the maximum allowed number of features in web-version
     """
 
     task_dir: Path
     form: Any
     params: dict = {}
+    root_url: str
+    online: Optional[bool] = None
+    n_features: Optional[int] = None
+    max_features: int = 1000
+
+    @model_validator(mode="after")
+    def det_online_offline(self):
+        if "localhost" in self.root_url or "127.0.0.1" in self.root_url:
+            self.online = False
+        else:
+            self.online = True
+        return self
 
     def return_params(self: Self):
         """Returns the params dict for writing"""
@@ -70,17 +87,29 @@ class InputProcessor(BaseModel):
 
         Raises:
             ValueError: peaktable file is empty
+            ValueError: too many features in peaktable
         """
         if self.form.peaktable_file.data is None:
             raise ValueError("No peaktable file was provided.")
-        f_name = self.save_file(self.form.peaktable_file.data)
-        f_path = self.task_dir.joinpath(f_name)
 
+        f_name = self.save_file(self.form.peaktable_file.data)
+
+        f_path = self.task_dir.joinpath(f_name)
         if self.form.peaktable_format.data == "mzmine3":
             ValidationManager.validate_csv_file(f_path)
             ValidationManager.validate_csv_has_rows(f_path)
             ValidationManager.validate_peaktable_mzmine3(f_path)
             ValidationManager.validate_no_duplicate_entries_csv_column(f_path, "id")
+
+        df = pd.read_csv(f_path, sep=",")
+        if self.online and len(df) > self.max_features:
+            raise ValueError(
+                f"Peaktable contains too many features (maximum allowed number: "
+                f"'{self.max_features}'. Please reduce the number of features or run "
+                f"FERMO offline."
+            )
+        else:
+            self.n_features = len(df)
 
         self.check_key_params("files")
         self.params["files"]["peaktable"] = {
@@ -89,6 +118,25 @@ class InputProcessor(BaseModel):
             "polarity": self.form.peaktable_polarity.data,
         }
 
+    def process_form_msms(self: Self):
+        """Processes the msms input form data if any"""
+        if self.form.msms_file.data is None:
+            return
+
+        f_name = self.save_file(self.form.msms_file.data)
+
+        f_path = self.task_dir.joinpath(f_name)
+        if self.form.msms_format.data == "mgf":
+            ValidationManager.validate_mgf_file(f_path)
+
+        self.check_key_params("files")
+        self.params["files"]["msms"] = {
+            "filepath": str(f_path.resolve()),
+            "format": self.form.msms_format.data,
+            "rel_int_from": float(self.form.msms_rel_int_from.data),
+        }
+
     def run_processor(self: Self):
         """Runs the processor steps"""
         self.process_form_peaktable()
+        self.process_form_msms()
