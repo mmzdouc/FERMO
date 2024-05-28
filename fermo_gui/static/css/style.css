@@ -177,6 +177,13 @@ table th:last-child{
     margin-left: 6px;
 }
 
-.row {
-
+#tooltip {
+    position: absolute;
+    display: none;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border-radius: 5px;
+    font-size: 12px;
+    pointer-events: none;
 }

@@ -1,8 +1,16 @@
+import { getUniqueFeatureIds, getFeatureDetails } from './parsing.js';
 
-export function visualizeNetwork(fId, statsNetwork, filteredSampleData, cos_id, ms2_id) {
-    console.log(statsNetwork.modified_cosine[cos_id])
-
+export function visualizeNetwork(fId, statsNetwork, filteredSampleData, cos_id, ms2_id, sampleData) {
     var filteredFeatureIds = filteredSampleData.featureId.filter(id => id.toString() !== fId);
+
+    // Get all feature info for tool tips and table information
+    const uniqueNIds = [];
+    var networkNodes = statsNetwork.modified_cosine[cos_id].elements.nodes;
+    for (var i = 0; i < networkNodes.length; i++) {
+        uniqueNIds.push(networkNodes[i].data.id);
+    }
+    const uniqueFIds = getUniqueFeatureIds(sampleData);
+    const featureDetails = getFeatureDetails(uniqueNIds, sampleData);
 
     var cy = cytoscape({
         container: document.getElementById('cy'),
@@ -47,6 +55,13 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, cos_id, 
                 }
             },
             {
+                selector: uniqueFIds.map(id => 'node[id = "' + id + '"]').join(', '),
+                style: {
+                    "border-color": "#000",
+                    "border-width": 4
+                }
+            },
+            {
                 selector: 'node:selected',
                 style: {
                   'background-color': '#83a688',
@@ -64,4 +79,62 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, cos_id, 
 
     });
 
+    var tooltip = document.createElement('div');
+    tooltip.id = 'tooltip';
+    document.body.appendChild(tooltip);
+
+    // Show tooltip on mouseover
+    cy.on('mouseover', 'node', function (event) {
+        var node = event.target;
+        var featureId = node.id();
+        var featureDetail = featureDetails.find(feature => feature.f_id.toString() === featureId);
+
+        tooltip.innerHTML =
+        'Feature ID: ' + node.id() + '<br>' +
+        'Precursor m/z: ' + featureDetail.mz + '<br>' +
+        'Average rt: ' + featureDetail.rt_avg + '<br>';
+        tooltip.style.display = 'block';
+    });
+
+    cy.on('mousemove', 'node', function (event) {
+        tooltip.style.left = event.originalEvent.pageX + 10 + 'px';
+        tooltip.style.top = event.originalEvent.pageY + 10 + 'px';
+    });
+
+    cy.on('mouseout', 'node', function () {
+        tooltip.style.display = 'none';
+    });
+    document.getElementById('cy').addEventListener('mouseleave', function () {
+        tooltip.style.display = 'none';
+    });
+
+
+    cy.on('mouseover', 'edge', function (event) {
+        var edge = event.target;
+        var edgeWeight = edge.data('weight').toFixed(2);
+
+        var sourceId = edge.data('source').toString();
+        var targetId = edge.data('target').toString();
+
+        var sourceFeature = featureDetails.find(feature => feature.f_id.toString() === sourceId);
+        var targetFeature = featureDetails.find(feature => feature.f_id.toString() === targetId);
+
+        if (sourceFeature && targetFeature) {
+            var mzDifference = Math.abs(sourceFeature.mz - targetFeature.mz).toFixed(4);
+
+            tooltip.innerHTML =
+            'Edge Weight: ' + edgeWeight + '<br>' +
+            'm/z Difference: ' + mzDifference + '<br>';
+            tooltip.style.display = 'block';
+        }
+    });
+
+    cy.on('mousemove', 'edge', function (event) {
+        tooltip.style.left = event.originalEvent.pageX + 10 + 'px';
+        tooltip.style.top = event.originalEvent.pageY + 10 + 'px';
+    });
+
+    cy.on('mouseout', 'edge', function () {
+        tooltip.style.display = 'none';
+    });
 }

@@ -26,6 +26,7 @@ export function getSampleData(sampleName, statsChromatogram) {
         fGroupData: activeSampleData.map(obj => obj.f_group),
         fSampleData: activeSampleData.map(obj => obj.f_sample),
         annotations: activeSampleData.map(obj => obj.annotations),
+        retTimeAvg: activeSampleData.map(obj => obj.rt_avg),
         upLowRange: [minRt - minRt * 0.05, maxRt + maxRt * 0.02]
     }
 }
@@ -71,4 +72,53 @@ export function getFeatureData(featureId, sampleData) {
         }
     }
     return filteredData;
+}
+
+export function getUniqueFeatureIds(sampleData) {
+    const fIdCounts = {};
+
+    for (const sampleName in sampleData) {
+        if (sampleData.hasOwnProperty(sampleName)) {
+            const sampleFeatures = sampleData[sampleName];
+            sampleFeatures.forEach(feature => {
+                const fId = feature.f_id;
+                if (fIdCounts[fId]) {
+                    fIdCounts[fId]++;
+                } else {
+                    fIdCounts[fId] = 1;
+                }
+            });
+        }
+    }
+
+    const uniqueFIds = [];
+    for (const fId in fIdCounts) {
+        if (fIdCounts[fId] === 1) {
+            uniqueFIds.push(fId);
+        }
+    }
+
+    return uniqueFIds;
+}
+
+export function getFeatureDetails(uniqueNIds, sampleData) {
+    const result = [];
+    const seenIds = new Set();
+
+    const uniqueNIdsStr = uniqueNIds.map(id => id.toString());
+
+    for (const sampleName in sampleData) {
+        if (sampleData.hasOwnProperty(sampleName)) {
+            const features = sampleData[sampleName];
+            for (const feature of features) {
+                const featureIdStr = feature.f_id.toString();
+                if (uniqueNIdsStr.includes(featureIdStr) && !seenIds.has(featureIdStr)) {
+                    result.push(feature);
+                    seenIds.add(featureIdStr);
+                }
+            }
+        }
+    }
+
+    return result;
 }

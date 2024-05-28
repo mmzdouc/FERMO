@@ -494,6 +494,7 @@ class DashboardManager(BaseModel):
                         {
                             "f_id": f_info.get("f_id"),
                             "rt": f_info.get("rt"),
+                            "rt_avg": g_info.get("rt"),
                             "trace_rt": f_info.get("trace_rt"),
                             "trace_int": f_info.get("trace_int"),
                             "abs_int": f_info.get("intensity"),

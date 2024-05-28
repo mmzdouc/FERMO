@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateTableWithAnnotationData(sampleData.annotations[i]);
 
                     visualizeNetwork(featureId, statsNetwork, filteredSampleData,
-                    sampleData.idNetCos[i], sampleData.idNetMs[i])
+                    sampleData.idNetCos[i], sampleData.idNetMs[i], statsChromatogram)
                 }
             }
         });
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         updateTableWithAnnotationData(sampleData.annotations[i], sampleName);
 
                         visualizeNetwork(featureId, statsNetwork, filteredSampleData,
-                        sampleData.idNetCos[i], sampleData.idNetMs[i])
+                        sampleData.idNetCos[i], sampleData.idNetMs[i], statsChromatogram)
                     }
                 }
             });
