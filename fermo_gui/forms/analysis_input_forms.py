@@ -20,21 +20,74 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField
-from wtforms.validators import Email, DataRequired
+from flask_wtf.file import FileAllowed, FileField, FileRequired, FileSize
+from wtforms import DecimalField, EmailField, SelectField, SubmitField
+from wtforms.validators import Email, NumberRange, Optional
 
-# TODO(MMZ 14.2.24): Cover with tests
 
+class NotificationForm:
+    """Handles the notification related fields."""
 
-class AnalysisInput(FlaskForm):
-    """Set class variables to act as fields of data input form."""
-
-    email = StringField(
+    email = EmailField(
         label="Email Address",
-        validators=[
-            Email(),
-            DataRequired(),
-        ],
+        description="An optional e-mail address for job notification.",
+        validators=[Optional(), Email()],
     )
-    submit = SubmitField("Submit")
+
+
+class PeaktableForm:
+    """Handles the peaktable related fields."""
+
+    peaktable_file = FileField(
+        label="File",
+        description="Upload the peaktable file.",
+        validators=[FileRequired(), FileAllowed(["csv"]), FileSize(max_size=5000000)],
+    )
+    peaktable_format = SelectField(
+        label="Format",
+        description="Specify formatting of the peaktable file.",
+        validators=[Optional()],
+        choices=[("mzmine3", "mzmine3")],
+        default="mzmine3",
+    )
+    peaktable_polarity = SelectField(
+        label="Polarity",
+        description="Specify ion mode polarity of the peaktable file.",
+        validators=[Optional()],
+        choices=[("positive", "positive"), ("negative", "negative")],
+        default="positive",
+    )
+
+
+class MsmsForm:
+    """Handles the msms related fields."""
+
+    msms_file = FileField(
+        label="File",
+        description="Upload the MS/MS file.",
+        validators=[Optional(), FileAllowed(["mgf"]), FileSize(max_size=5000000)],
+    )
+    msms_format = SelectField(
+        label="Format",
+        description="Specify formatting of the MS/MS file.",
+        validators=[Optional()],
+        choices=[("mgf", "mgf")],
+        default="mgf",
+    )
+    msms_rel_int_from = DecimalField(
+        label="Filter",
+        description=(
+            "Removes MS/MS fragments with lower relative intensity than "
+            "the specified value"
+        ),
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
+        default=0.01,
+    )
+
+
+class AnalysisForm(FlaskForm, NotificationForm, PeaktableForm, MsmsForm):
+    """Organizes forms for data input"""
+
+    start_analysis = SubmitField("Start analysis")

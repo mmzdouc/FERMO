@@ -26,7 +26,7 @@ classifiers = [
 dependencies = [
     "celery[redis]==5.2.7",
     "email-validator==2.1.0.post1",
-    "fermo_core==0.2.1",
+    "fermo_core==0.2.2",
     "Flask==3.0.1",
     "Flask-WTF==1.2.1",
     "Flask-Session==0.6.0",
@@ -144,7 +144,7 @@ ignore = [
     # if-with-same-arms
 #    "SIM114",
     # if-expr-with-true-false
-#    "SIM210",
+    "SIM210",
     # non-pep604-annotation
     "UP007",
     # unnecessary-placeholder

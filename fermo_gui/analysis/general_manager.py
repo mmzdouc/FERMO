@@ -20,6 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
 import json
 from pathlib import Path
 
@@ -46,34 +47,6 @@ class GeneralManager:
             task_id = uuid()
             if not Path(location).joinpath(task_id).exists():
                 return task_id
-
-    @staticmethod
-    def create_upload_dir(location: str, task_id: str) -> str:
-        """Create a task-specific directory for data upload
-
-        Arguments:
-            location: the location of the upload dir
-            task_id: the task identifier
-
-        Returns:
-            A string indicating the specific upload dir path
-        """
-        path = Path(location).joinpath(task_id)
-        path.mkdir()
-        return str(path.resolve())
-
-    @staticmethod
-    def store_data_as_json(location: str, filename: str, data: dict):
-        """Stores data as a json file under the filename in the specified location.
-
-        Arguments:
-            location: the location of the upload dir
-            filename: the filename identifier
-            data: the specified user-provided parameters
-        """
-        location = Path(location)
-        with open(location.joinpath(filename), "w") as outfile:
-            outfile.write(json.dumps(data, indent=4, ensure_ascii=False))
 
     @staticmethod
     def read_data_from_json(location: str, filename: str) -> dict:

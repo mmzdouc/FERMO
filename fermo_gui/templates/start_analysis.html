@@ -1,16 +1,58 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <span class="title"><h1>{% block title %} Start Analysis {% endblock %}</h1></span>
-    <div class="content">
-        <h2>This is the start analysis page with a bunch of forms for data input</h2>
-        {% from "_formhelpers.html" import render_field %}
-        <form method=post action="{{ url_for('routes.start_analysis') }}">
-          {{ form.hidden_tag() }}
-          <dl>
-            {{ render_field(form.email) }}
-          </dl>
-          {{ form.submit() }}
-        </form>
-    </div>
+  {% from "_formhelpers.html" import render_field %}
+  <div class="container mt-5">
+    <h3>Start new analysis</h3>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <h4 style="color: red">Error during input validation</h4>
+        <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form method="post" action="{{ url_for('routes.start_analysis') }}" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <fieldset class="border p-4 my-2">
+        <h5 class="col-md-auto">Notification settings (optional)</h5>
+        <hr>
+        {{ render_field(form.email, "notification", 'd-block') }}
+      </fieldset>
+      <fieldset class="border p-4 my-2">
+        <h5 class="col-md-auto">Peaktable parameters</h5>
+        <hr>
+        {{ render_field(form.peaktable_file, "peaktable", 'd-block') }}
+        {{ render_field(form.peaktable_format, "peaktable", 'd-block') }}
+        {{ render_field(form.peaktable_polarity, "peaktable", 'd-block') }}
+      </fieldset>
+      <fieldset class="border p-4 my-2">
+        <h5 class="col-md-auto">MS/MS parameters (optional)</h5>
+        <hr>
+        {{ render_field(form.msms_file, "msms", 'd-none') }}
+        {{ render_field(form.msms_format, "msms", 'd-none') }}
+        {{ render_field(form.msms_rel_int_from, "msms", 'd-none') }}
+        <button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplayMsms()">Show parameters</button>
+      </fieldset>
+      <fieldset class="p-4 my-2">
+        <button type="submit" class="btn btn-primary">Start Analysis</button>
+      </fieldset>
+    </form>
+  </div>
+  <script>
+    function toggleDisplayMsms() {
+      const elements = document.querySelectorAll('#msms');
+      elements.forEach(el => {
+        if (el.classList.contains('d-none')) {
+          el.classList.remove('d-none');
+          el.classList.add('d-block');
+        } else {
+          el.classList.remove('d-block');
+          el.classList.add('d-none');
+        }
+       });
+    }
+  </script>
 {% endblock %}

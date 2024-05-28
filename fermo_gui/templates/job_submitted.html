@@ -30,7 +30,7 @@
             }
         });
 
-        // Polling function; triggered every n seconds. Requests status update.
+        // Polling function; triggered every n milliseconds. Requests status update.
         function getStatus() {
             socket.emit('get_status', {task_id: {{ job_data.get("task_id")|tojson|safe }}});
         }
