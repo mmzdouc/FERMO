@@ -153,35 +153,30 @@ table th:last-child{
     height: 16px;
 }
 
-
 #cy {
-/* cytoscape graph */
-    position: relative;
-    min-height: 250px;
-    border: rgb(187, 187, 187) solid 2px;
+  height: 250px;
 }
 
-.popover {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 9;
-    font-size: smaller;
-    max-width: 30vw;
+.legend-dot {
+  height: 12px;
+  width: 12px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid red;
 }
 
-.popoverHeader {
-    z-index: 10;
-    text-align: center;
-  }
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
 
-#cy ul {
+.legend-text {
     margin: 0;
-    padding-left: 0.3rem;
+    margin-left: 6px;
 }
 
-.tooltip-inner ul {
-    margin: 0;
-    padding-left: 0.8rem;
-    text-align: start;
+.row {
+
 }

@@ -20,6 +20,8 @@ export function getSampleData(sampleName, statsChromatogram) {
         novScore: activeSampleData.map(obj => obj.novelty),
         blankAs: activeSampleData.map(obj => obj.blank),
         fNetwork: activeSampleData.map(obj => obj.network_features),
+        idNetCos: activeSampleData.map(obj => obj.n_cos_id),
+        idNetMs: activeSampleData.map(obj => obj.n_ms2d_id),
         samples: activeSampleData.map(obj => obj.samples),
         fGroupData: activeSampleData.map(obj => obj.f_group),
         fSampleData: activeSampleData.map(obj => obj.f_sample),

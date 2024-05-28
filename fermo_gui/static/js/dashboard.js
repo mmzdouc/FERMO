@@ -6,6 +6,8 @@ import { updateTableWithFeatureData, updateTableWithGroupData,
     updateTableWithSampleData, updateTableWithAnnotationData
 } from './dynamic_tables.js';
 
+import { visualizeNetwork } from './network.js'
+
 document.addEventListener('DOMContentLoaded', function() {
     var dragged;
 
@@ -84,7 +86,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load all chromatogram data
     var chromatogramElement = document.getElementById('mainChromatogram');
+    var networkElement = document.getElementById('cy');
     var statsChromatogram = JSON.parse(chromatogramElement.getAttribute('data-stats-chromatogram'));
+    var statsNetwork = JSON.parse(networkElement.getAttribute('data-stats-network'));
 
     // Automatically visualize the first sample on page load
     var firstSample = document.querySelector('.select-sample');
@@ -107,6 +111,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateTableWithGroupData(sampleData.fGroupData[i]);
                     updateTableWithSampleData(sampleData.fSampleData[i]);
                     updateTableWithAnnotationData(sampleData.annotations[i]);
+
+                    visualizeNetwork(featureId, statsNetwork, filteredSampleData,
+                    sampleData.idNetCos[i], sampleData.idNetMs[i])
                 }
             }
         });
@@ -121,7 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
             visualizeData(sampleData, false);
             document.getElementById('activeSample').textContent = 'Sample: ' + sampleName;
             Plotly.purge('featureChromatogram');
-            document.getElementById('feature-general-info').textContent = 'Click on any feature in the main chromatogram overview.'
+            document.getElementById('feature-general-info').textContent =
+            'Click on any feature in the main chromatogram overview.'
             Plotly.purge('heatmap-container');
             document.getElementById("sampleCell").innerHTML =
             "<tr><td>Click on any feature in the main chromatogram overview.</td><td></td></tr>";
@@ -129,7 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update the feature table
             chromatogramElement.on('plotly_click', function(data) {
                 var featureId = data.points[0].data.name;
-                document.getElementById('activeFeature').textContent = 'Network visualization of feature: ' + featureId;
+                document.getElementById('activeFeature').textContent =
+                'Network visualization of feature: ' + featureId;
                 for (var i = 0; i < sampleData.featureId.length; i++) {
                     if (sampleData.featureId[i] == featureId) {
                         addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
@@ -139,6 +148,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         updateTableWithGroupData(sampleData.fGroupData[i]);
                         updateTableWithSampleData(sampleData.fSampleData[i]);
                         updateTableWithAnnotationData(sampleData.annotations[i], sampleName);
+
+                        visualizeNetwork(featureId, statsNetwork, filteredSampleData,
+                        sampleData.idNetCos[i], sampleData.idNetMs[i])
                     }
                 }
             });
