@@ -1,6 +1,29 @@
+import { visualizeData, addBoxVisualization } from './chromatogram.js';
+import { visualizeNetwork } from './network.js'
+import { getFeatureData } from './parsing.js';
+
 // Functions to dynamically update tables after feature or sample selection //
+export function updateFeatureTables(featureId, sampleData, statsNetwork) {
+    for (var i = 0; i < sampleData.featureId.length; i++) {
+        if (sampleData.featureId[i] == featureId) {
+            document.getElementById('activeFeature').textContent =
+            'Network visualization of feature: ' + featureId;
+            addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
+            var filteredSampleData = getFeatureData(featureId, sampleData);
+            visualizeData(filteredSampleData, true);
+            updateTableWithFeatureData(i, sampleData);
+            updateTableWithGroupData(sampleData.fGroupData[i]);
+            updateTableWithSampleData(sampleData.fSampleData[i], sampleData.aSampleData[i]);
+            updateTableWithAnnotationData(sampleData.annotations[i]);
+
+            visualizeNetwork(featureId, statsNetwork, filteredSampleData,
+                sampleData, i, statsChromatogram);
+        }
+    }
+}
+
 // TODO: remove general feature data after sample switch
-export function updateTableWithFeatureData(fId, sampleData) {
+function updateTableWithFeatureData(fId, sampleData) {
     document.getElementById('featureIdCell').textContent = sampleData.featureId[fId];
     document.getElementById('precMzCell').textContent = sampleData.precMz[fId];
     document.getElementById('retTimeCell').textContent = sampleData.retTime[fId];
@@ -11,7 +34,7 @@ export function updateTableWithFeatureData(fId, sampleData) {
 }
 
 // TODO: test multiple groups
-export function updateTableWithGroupData(groupData){
+function updateTableWithGroupData(groupData){
     var featureData = Object.entries(groupData);
     if (Object.keys(featureData).length === 0) {
         document.getElementById('feature-general-info').textContent = 'No group data available for this feature.'
@@ -24,7 +47,7 @@ export function updateTableWithGroupData(groupData){
     }
 }
 
-export function updateTableWithSampleData(sampleIntensity, sampleArea) {
+function updateTableWithSampleData(sampleIntensity, sampleArea) {
     let tableBody = document.getElementById("sampleCell");
     tableBody.innerHTML = "";
 
@@ -65,7 +88,7 @@ export function updateTableWithSampleData(sampleIntensity, sampleArea) {
 }
 
 // TODO: remove feature data after sample switch
-export function updateTableWithAnnotationData(annotations, sample) {
+function updateTableWithAnnotationData(annotations, sample) {
     // Define headers and columns for each section
     let matchHeaders = ["Match id", "Score", "More info"];
     let matchColumns = ["id", "score"];

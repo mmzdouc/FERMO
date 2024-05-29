@@ -1,7 +1,10 @@
 import { getUniqueFeatureIds, getFeatureDetails } from './parsing.js';
+import { updateFeatureTables } from './dynamic_tables.js';
 
-export function visualizeNetwork(fId, statsNetwork, filteredSampleData, cos_id, ms2_id, sampleData) {
+export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram) {
     var filteredFeatureIds = filteredSampleData.featureId.filter(id => id.toString() !== fId);
+    var cos_id = sampleData.idNetCos[sampleId]
+    var ms_id = sampleData.idNetMs[sampleId]
 
     // Get all feature info for tool tips and table information
     const uniqueNIds = [];
@@ -9,8 +12,8 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, cos_id, 
     for (var i = 0; i < networkNodes.length; i++) {
         uniqueNIds.push(networkNodes[i].data.id);
     }
-    const uniqueFIds = getUniqueFeatureIds(sampleData);
-    const featureDetails = getFeatureDetails(uniqueNIds, sampleData);
+    const uniqueFIds = getUniqueFeatureIds(statsChromatogram);
+    const featureDetails = getFeatureDetails(uniqueNIds, statsChromatogram);
 
     var cy = cytoscape({
         container: document.getElementById('cy'),
@@ -59,13 +62,6 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, cos_id, 
                 style: {
                     "border-color": "#000",
                     "border-width": 4
-                }
-            },
-            {
-                selector: 'node:selected',
-                style: {
-                  'background-color': '#83a688',
-                  'border-color': '#485c4b',
                 }
             },
             {
@@ -137,4 +133,12 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, cos_id, 
     cy.on('mouseout', 'edge', function () {
         tooltip.style.display = 'none';
     });
+
+    cy.on('select', 'node', function(event) {
+        tooltip.style.display = 'none';
+        var node = event.target;
+        var featureId = node.id();
+        updateFeatureTables(featureId, sampleData, statsNetwork);
+    });
+
 }

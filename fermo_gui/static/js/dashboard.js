@@ -1,12 +1,6 @@
 import { getSampleData, getFeatureData } from './parsing.js';
-
-import { visualizeData, addBoxVisualization } from './chromatogram.js';
-
-import { updateTableWithFeatureData, updateTableWithGroupData,
-    updateTableWithSampleData, updateTableWithAnnotationData
-} from './dynamic_tables.js';
-
-import { visualizeNetwork } from './network.js'
+import { updateFeatureTables } from './dynamic_tables.js';
+import { visualizeData } from './chromatogram.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dragged;
@@ -90,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var statsChromatogram = JSON.parse(chromatogramElement.getAttribute('data-stats-chromatogram'));
     var statsNetwork = JSON.parse(networkElement.getAttribute('data-stats-network'));
 
-    // Automatically visualize the first sample on page load
     var firstSample = document.querySelector('.select-sample');
     if (firstSample) {
         var firstSampleName = firstSample.getAttribute('data-sample-name');
@@ -98,24 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
         visualizeData(sampleData, false);
         document.getElementById('activeSample').textContent = 'Sample: ' + firstSampleName;
 
-        // Update the feature table
+        // Update the feature table on chromatogram click
         chromatogramElement.on('plotly_click', function(data) {
             var featureId = data.points[0].data.name;
-            document.getElementById('activeFeature').textContent = 'Network visualization of feature: ' + featureId;
-            for (var i = 0; i < sampleData.featureId.length; i++) {
-                if (sampleData.featureId[i] == featureId) {
-                    addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
-                    var filteredSampleData = getFeatureData(featureId, sampleData);
-                    visualizeData(filteredSampleData, true);
-                    updateTableWithFeatureData(i, sampleData);
-                    updateTableWithGroupData(sampleData.fGroupData[i]);
-                    updateTableWithSampleData(sampleData.fSampleData[i], sampleData.aSampleData[i]);
-                    updateTableWithAnnotationData(sampleData.annotations[i]);
-
-                    visualizeNetwork(featureId, statsNetwork, filteredSampleData,
-                    sampleData.idNetCos[i], sampleData.idNetMs[i], statsChromatogram)
-                }
-            }
+            updateFeatureTables(featureId, sampleData, statsNetwork);
         });
     }
 
@@ -129,30 +108,15 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('activeSample').textContent = 'Sample: ' + sampleName;
             Plotly.purge('featureChromatogram');
             document.getElementById('feature-general-info').textContent =
-            'Click on any feature in the main chromatogram overview.'
+            'Click on any feature in the main chromatogram overview.';
             Plotly.purge('heatmap-container');
             document.getElementById("sampleCell").innerHTML =
             "<tr><td>Click on any feature in the main chromatogram overview.</td><td></td></tr>";
 
-            // Update the feature table
+            // Update the feature table on chromatogram click
             chromatogramElement.on('plotly_click', function(data) {
                 var featureId = data.points[0].data.name;
-                document.getElementById('activeFeature').textContent =
-                'Network visualization of feature: ' + featureId;
-                for (var i = 0; i < sampleData.featureId.length; i++) {
-                    if (sampleData.featureId[i] == featureId) {
-                        addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
-                        var filteredSampleData = getFeatureData(featureId, sampleData);
-                        visualizeData(filteredSampleData, true);
-                        updateTableWithFeatureData(i, sampleData);
-                        updateTableWithGroupData(sampleData.fGroupData[i]);
-                        updateTableWithSampleData(sampleData.fSampleData[i], sampleData.aSampleData[i]);
-                        updateTableWithAnnotationData(sampleData.annotations[i], sampleName);
-
-                        visualizeNetwork(featureId, statsNetwork, filteredSampleData,
-                        sampleData.idNetCos[i], sampleData.idNetMs[i], statsChromatogram)
-                    }
-                }
+                updateFeatureTables(featureId, sampleData, statsNetwork);
             });
         });
     });
