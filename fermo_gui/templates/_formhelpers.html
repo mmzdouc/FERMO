@@ -1,15 +1,19 @@
 {% macro render_field(field, fieldname, visibility) %}
-  <div id="{{ fieldname }}" class="row my-2 {{ visibility }}">
-    <div class="col-md-auto"><b>{{ field.label }}</b> {{ field(**kwargs)|safe }} </div>
-    <div class="col-md-auto"><i>{{ field.description }}</i></div>
+  <div class="container-fluid">
+    <div id="{{ fieldname }}" class="row my-2 {{ visibility }} d-flex align-items-center">
+      <div class="col-auto"><p><b>{{ field.label }}</b> {{ field(**kwargs)|safe }}</p></div>
+      <div class="col-auto ms-auto"><p><i>{{ field.description }}</i></p></div>
+    </div>
   </div>
-  {% if field.errors %}
-  <div class="form-group row">
-    <ul class=errors>
-    {% for error in field.errors %}
-      <li style="color: red">{{ error }}</li>
-    {% endfor %}
-    </ul>
+  <div class="container-fluid">
+    {% if field.errors %}
+    <div class="form-group row">
+      <ul class=errors>
+      {% for error in field.errors %}
+        <li style="color: red">{{ error }}</li>
+      {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
   </div>
-  {% endif %}
 {% endmacro %}
