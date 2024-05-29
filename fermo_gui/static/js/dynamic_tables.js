@@ -53,6 +53,15 @@ export function updateTableWithAnnotationData(annotations, sample) {
         { title: "Link to MIBiG", field: "id" }
     ];
 
+    let phenoHeaders = ["Phenotype description", "Score", "More info"];
+    let phenoColumns = ["descr", "score"];
+    let phenoExtraColumns = [
+        { title: "Format", field: "format" },
+        { title: "Category", field: "category" },
+        { title: "P value", field: "p_value" },
+        { title: "Corrected p value", field: "p_value_corr" }
+    ];
+
     let lossHeaders = ["Loss id", "Difference in ppm", "More info"];
     let lossColumns = ["id", "diff_ppm"];
     let lossExtraColumns = [
@@ -82,6 +91,8 @@ export function updateTableWithAnnotationData(annotations, sample) {
 
     isAnyDataPresent = createAnnotationTable("matchTable", annotations.matches, matchHeaders,
     matchColumns, matchExtraColumns, "match") || isAnyDataPresent;
+    isAnyDataPresent = createAnnotationTable("phenotypeTable", annotations.phenotypes, phenoHeaders,
+    phenoColumns, phenoExtraColumns, "phenotype") || isAnyDataPresent;
     isAnyDataPresent = createAnnotationTable("lossesTable", annotations.losses, lossHeaders,
     lossColumns, lossExtraColumns, "loss") || isAnyDataPresent;
     isAnyDataPresent = createAnnotationTable("fragmentTable", annotations.fragments, fragmentHeaders,
