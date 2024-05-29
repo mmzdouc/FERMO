@@ -82,6 +82,32 @@ class InputProcessor(BaseModel):
         if self.params.get(key) is None:
             self.params[key] = {}
 
+    def process_form_feature_filtering(self: Self):
+        """Processes the feature filtering form (part of peaktable forms)"""
+        if self.form.peaktable_filter_toggle.data == "False":
+            return
+
+        heights = [
+            float(self.form.peaktable_filter_height_lower.data),
+            float(self.form.peaktable_filter_height_upper.data),
+        ]
+        ordered_heights = [min(heights), max(heights)]
+        ValidationManager.validate_range_zero_one(ordered_heights)
+
+        areas = [
+            float(self.form.peaktable_filter_area_lower.data),
+            float(self.form.peaktable_filter_area_upper.data),
+        ]
+        ordered_areas = [min(areas), max(areas)]
+        ValidationManager.validate_range_zero_one(ordered_areas)
+
+        self.check_key_params("additional_modules")
+        self.params["additional_modules"]["feature_filtering"] = {
+            "activate_module": True,
+            "filter_rel_int_range": ordered_heights,
+            "filter_rel_area_range": ordered_areas,
+        }
+
     def process_form_peaktable(self: Self):
         """Processes the peaktable input form data if any
 
@@ -117,6 +143,8 @@ class InputProcessor(BaseModel):
             "format": self.form.peaktable_format.data,
             "polarity": self.form.peaktable_polarity.data,
         }
+
+        self.process_form_feature_filtering()
 
     def process_form_msms(self: Self):
         """Processes the msms input form data if any"""

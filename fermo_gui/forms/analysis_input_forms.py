@@ -59,6 +59,48 @@ class PeaktableForm:
         choices=[("positive", "positive"), ("negative", "negative")],
         default="positive",
     )
+    peaktable_filter_toggle = SelectField(
+        label="Module",
+        description="Activate feature filtering for area and/or height.",
+        validators=[Optional()],
+        choices=[("False", "deactivate"), ("True", "activate")],
+        default="False",
+    )
+    peaktable_filter_height_lower = DecimalField(
+        label="Filter Height (lower)",
+        description=(
+            "Set the minimal relative height (=intensity) of a feature. To include "
+            "all, set to '0'."
+        ),
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
+        default=0.00,
+    )
+    peaktable_filter_height_upper = DecimalField(
+        label="Filter Height (upper)",
+        description=(
+            "Set the maximum relative height (=intensity) of a feature. To include "
+            "all, set to '1.0'."
+        ),
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
+        default=1.00,
+    )
+    peaktable_filter_area_lower = DecimalField(
+        label="Filter Area (lower)",
+        description=(
+            "Set the minimal relative area of a feature. To include " "all, set to '0'."
+        ),
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
+        default=0.00,
+    )
+    peaktable_filter_area_upper = DecimalField(
+        label="Filter Area (upper)",
+        description=(
+            "Set the maximum relative area of a feature. To include "
+            "all, set to '1.0'."
+        ),
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
+        default=1.00,
+    )
 
 
 class MsmsForm:

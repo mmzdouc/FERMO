@@ -34,7 +34,6 @@ from flask import (
     redirect,
     render_template,
     request,
-    session,
     url_for,
 )
 
@@ -44,63 +43,6 @@ from fermo_gui.analysis.input_processor import InputProcessor
 from fermo_gui.config.extensions import socketio
 from fermo_gui.forms.analysis_input_forms import AnalysisForm
 from fermo_gui.routes import bp
-
-
-def prepare_dummy_run(job_id: str):
-    """Write dummy data to see if logic works"""
-    shutil.copy(
-        src=Path("fermo_gui/upload/example/data/quant_all.csv"),
-        dst=Path(f"fermo_gui/upload/{job_id}/quant_all.csv"),
-    )
-
-    shutil.copy(
-        src=Path("fermo_gui/upload/example/data/msms.mgf"),
-        dst=Path(f"fermo_gui/upload/{job_id}/msms.mgf"),
-    )
-
-    data = {
-        "files": {
-            "peaktable": {
-                "filepath": f"fermo_gui/upload/{job_id}/quant_all.csv",
-                "format": "mzmine3",
-                "polarity": "positive",
-            },
-            "msms": {
-                "filepath": f"fermo_gui/upload/{job_id}/msms.mgf",
-                "format": "mgf",
-                "rel_int_from": 0.01,
-            },
-        },
-        "core_modules": {
-            "adduct_annotation": {"activate_module": False},
-            "neutral_loss_annotation": {"activate_module": False},
-            "fragment_annotation": {"activate_module": False},
-            "spec_sim_networking": {
-                "modified_cosine": {
-                    "activate_module": True,
-                    "msms_min_frag_nr": 5,
-                    "fragment_tol": 0.1,
-                    "score_cutoff": 0.7,
-                    "max_nr_links": 10,
-                    "maximum_runtime": 200,
-                }
-            },
-        },
-        "additional_modules": {
-            "feature_filtering": {
-                "activate_module": True,
-                "filter_rel_area_range": [0.9, 1.0],
-            }
-            # },
-            # "ms2query_annotation": {
-            #     "activate_module": True,
-            #     "score_cutoff": 0.7,
-            #     "maximum_runtime": 1200,
-            # },
-        },
-    }
-    with open(Path(f"fermo_gui/upload/{job_id}/parameters.json"), "w") as outfile:
-        outfile.write(json.dumps(data, indent=4, ensure_ascii=False))
 
 
 @bp.route("/analysis/start_analysis/", methods=["GET", "POST"])
@@ -146,9 +88,6 @@ def start_analysis() -> Union[str, Response]:
             "root_url": request.base_url.partition("/analysis/start_analysis/")[0],
         }
 
-        print("REMOVE AFTER FORM IMPLEMENTATION")
-        return redirect(url_for("routes.job_submitted", job_id=metadata["job_id"]))
-
         start_fermo_core_manager.apply_async(
             kwargs={"metadata": metadata},
             task_id=metadata["job_id"],
@@ -168,7 +107,6 @@ def job_submitted(job_id: str) -> str:
     Returns:
         The rendered "job_submitted.html" page
     """
-    # TODO(MMZ 14.2.24): Cover with tests
     job_data = {
         "task_id": job_id,
         "root_url": request.base_url.partition("/analysis/job_submitted/")[0],
@@ -197,7 +135,6 @@ def check_job_status(data: dict):
     Arguments:
         data: JSON-derived dict with job ID to check status of
     """
-    # TODO(MMZ 14.2.24): Cover with tests
     if (
         not Path(current_app.config.get("UPLOAD_FOLDER"))
         .joinpath(data.get("task_id"))

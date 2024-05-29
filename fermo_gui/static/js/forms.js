@@ -58,6 +58,16 @@ function togglePhenotypeFormat() {
     }
 }
 
+function togglePeaktableFilter() {
+    var choice = document.getElementById('peaktable_filter_toggle').value;
+    if (choice === 'True') {
+        toggleShow("#peaktable-filter");
+    } else {
+        toggleHide("#peaktable-filter");
+    }
+}
+
 window.onload = function() {
+    document.getElementById('peaktable_filter_toggle').addEventListener('change', togglePeaktableFilter);
     document.getElementById('phenotype_format').addEventListener('change', togglePhenotypeFormat);
 };

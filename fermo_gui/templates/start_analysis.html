@@ -27,6 +27,16 @@
         {{ render_field(form.peaktable_file, "peaktable", 'd-block') }}
         {{ render_field(form.peaktable_format, "peaktable", 'd-block') }}
         {{ render_field(form.peaktable_polarity, "peaktable", 'd-block') }}
+        <hr>
+        <h6 class="col-md-auto">Feature filter parameters (optional)</h6>
+        {{ render_field(form.peaktable_filter_toggle, "peaktable", 'd-block') }}
+        <div id="peaktable-filter" class="d-none">
+          {{ render_field(form.peaktable_filter_height_lower, "peaktable-filter", 'd-none') }}
+          {{ render_field(form.peaktable_filter_height_upper, "peaktable-filter", 'd-none') }}
+          <hr>
+          {{ render_field(form.peaktable_filter_area_lower, "peaktable-filter", 'd-none') }}
+          {{ render_field(form.peaktable_filter_area_upper, "peaktable-filter", 'd-none') }}
+        </div>
       </fieldset>
       <fieldset class="border p-4 my-2">
         <h5 class="col-md-auto">MS/MS parameters (optional)</h5>
