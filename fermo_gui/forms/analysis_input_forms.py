@@ -23,7 +23,7 @@ SOFTWARE.
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, FileRequired, FileSize
-from wtforms import DecimalField, EmailField, SelectField, SubmitField
+from wtforms import DecimalField, EmailField, IntegerField, SelectField, SubmitField
 from wtforms.validators import Email, NumberRange, Optional
 
 
@@ -67,7 +67,7 @@ class MsmsForm:
     msms_file = FileField(
         label="File",
         description="Upload the MS/MS file.",
-        validators=[Optional(), FileAllowed(["mgf"]), FileSize(max_size=5000000)],
+        validators=[Optional(), FileAllowed(["mgf"]), FileSize(max_size=10000000)],
     )
     msms_format = SelectField(
         label="Format",
@@ -87,7 +87,99 @@ class MsmsForm:
     )
 
 
-class AnalysisForm(FlaskForm, NotificationForm, PeaktableForm, MsmsForm):
+class PhenotypeForm:
+    """Handles the phenotype related fields"""
+
+    phenotype_file = FileField(
+        label="File",
+        description="Upload the phenotype file.",
+        validators=[Optional(), FileAllowed(["csv"]), FileSize(max_size=1000000)],
+    )
+    phenotype_format = SelectField(
+        label="Format",
+        description="Specify formatting of the phenotype file.",
+        validators=[Optional()],
+        choices=[
+            ("", ""),
+            ("qualitative", "qualitative"),
+            ("quantitative-percentage", "quantitative-percentage"),
+            ("quantitative-concentration", "quantitative-concentration"),
+        ],
+        default="",
+    )
+    phenotype_qualit_factor = IntegerField(
+        label="Factor",
+        description="Fold difference for molecular feature differentiation.",
+        validators=[Optional(), NumberRange(min=1)],
+        default=10.0,
+    )
+    phenotype_qualit_algorithm = SelectField(
+        label="Algorithm",
+        description="Specify algorithm to calculate fold difference.",
+        validators=[Optional()],
+        choices=[("minmax", "minmax"), ("mean", "mean"), ("median", "median")],
+        default="minmax",
+    )
+    phenotype_qualit_value = SelectField(
+        label="Value",
+        description="Specify value to use for calculation.",
+        validators=[Optional()],
+        choices=[
+            ("area", "area"),
+            ("height", "height"),
+        ],
+        default="area",
+    )
+    phenotype_quant_average = SelectField(
+        label="Averaging",
+        description=(
+            "Specify the measure of central tendency to summarize duplicate "
+            "measurements per sample."
+        ),
+        validators=[Optional()],
+        choices=[("mean", "mean"), ("median", "median")],
+        default="mean",
+    )
+    phenotype_quant_value = SelectField(
+        label="Value",
+        description="Specify value to use for calculation.",
+        validators=[Optional()],
+        choices=[("area", "area")],
+        default="area",
+    )
+    phenotype_quant_algorithm = SelectField(
+        label="Algorithm",
+        description="Specify the statistical algorithm to determine correlation.",
+        validators=[Optional()],
+        choices=[("pearson", "Pearson (Bonferroni-correction)")],
+        default="pearson",
+    )
+    phenotype_quant_p_val = DecimalField(
+        label="p-Value",
+        description=(
+            "Maximum corrected p-value to consider (set to '0' to disable filtering)."
+        ),
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
+        default=0.05,
+    )
+    phenotype_quant_coeff = DecimalField(
+        label="Coefficient",
+        description=(
+            "Minimum correlation coefficient to consider (set to '0' to disable "
+            "filtering)."
+        ),
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
+        default=0.7,
+    )
+
+
+class AnalysisForm(
+    FlaskForm,
+    NotificationForm,
+    PeaktableForm,
+    MsmsForm,
+    PhenotypeForm,
+):
     """Organizes forms for data input"""
 
     start_analysis = SubmitField("Start analysis")

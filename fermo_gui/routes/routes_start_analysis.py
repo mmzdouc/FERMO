@@ -146,11 +146,13 @@ def start_analysis() -> Union[str, Response]:
             "root_url": request.base_url.partition("/analysis/start_analysis/")[0],
         }
 
+        print("REMOVE AFTER FORM IMPLEMENTATION")
+        return redirect(url_for("routes.job_submitted", job_id=metadata["job_id"]))
+
         start_fermo_core_manager.apply_async(
             kwargs={"metadata": metadata},
             task_id=metadata["job_id"],
         )
-
         return redirect(url_for("routes.job_submitted", job_id=metadata["job_id"]))
 
     return render_template("start_analysis.html", form=form)

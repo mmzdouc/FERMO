@@ -93,8 +93,8 @@ class InputProcessor(BaseModel):
             raise ValueError("No peaktable file was provided.")
 
         f_name = self.save_file(self.form.peaktable_file.data)
-
         f_path = self.task_dir.joinpath(f_name)
+
         if self.form.peaktable_format.data == "mzmine3":
             ValidationManager.validate_csv_file(f_path)
             ValidationManager.validate_csv_has_rows(f_path)
@@ -124,19 +124,80 @@ class InputProcessor(BaseModel):
             return
 
         f_name = self.save_file(self.form.msms_file.data)
-
         f_path = self.task_dir.joinpath(f_name)
+
         if self.form.msms_format.data == "mgf":
             ValidationManager.validate_mgf_file(f_path)
 
-        self.check_key_params("files")
         self.params["files"]["msms"] = {
             "filepath": str(f_path.resolve()),
             "format": self.form.msms_format.data,
             "rel_int_from": float(self.form.msms_rel_int_from.data),
         }
 
+    def process_form_phenotype(self: Self):
+        """Processes the phenotype input form data if any
+
+        Raises:
+            ValueError: format not specified
+        """
+        if self.form.phenotype_file.data is None:
+            return
+
+        f_name = self.save_file(self.form.phenotype_file.data)
+        f_path = self.task_dir.joinpath(f_name)
+
+        ValidationManager.validate_csv_file(f_path)
+        ValidationManager.validate_csv_has_rows(f_path)
+        self.params["files"]["phenotype"] = {
+            "filepath": str(f_path.resolve()),
+            "format": self.form.phenotype_format.data,
+        }
+
+        self.check_key_params("additional_modules")
+        self.params["additional_modules"]["phenotype_assignment"] = {}
+        if self.form.phenotype_format.data == "":
+            raise ValueError("Phenotype 'Format' parameter was not specified.")
+        elif self.form.phenotype_format.data == "qualitative":
+            ValidationManager.validate_pheno_qualitative(f_path)
+            ValidationManager.validate_no_duplicate_entries_csv_column(
+                f_path, "sample_name"
+            )
+            self.params["additional_modules"]["phenotype_assignment"]["qualitative"] = {
+                "activate_module": True,
+                "factor": int(self.form.phenotype_qualit_factor.data),
+                "algorithm": self.form.phenotype_qualit_algorithm.data,
+                "value": self.form.phenotype_qualit_value.data,
+            }
+        elif self.form.phenotype_format.data == "quantitative-percentage":
+            ValidationManager.validate_pheno_quant_percentage(f_path)
+            ValidationManager.validate_no_duplicate_entries_csv_column(f_path, "well")
+            self.params["additional_modules"]["phenotype_assignment"][
+                "quantitative-percentage"
+            ] = {
+                "activate_module": True,
+                "sample_avg": self.form.phenotype_quant_average.data,
+                "value": self.form.phenotype_quant_value.data,
+                "algorithm": self.form.phenotype_quant_algorithm.data,
+                "p_val_cutoff": float(self.form.phenotype_quant_p_val.data),
+                "coeff_cutoff": float(self.form.phenotype_quant_coeff.data),
+            }
+        elif self.form.phenotype_format.data == "quantitative-concentration":
+            ValidationManager.validate_pheno_quant_concentration(f_path)
+            ValidationManager.validate_no_duplicate_entries_csv_column(f_path, "well")
+            self.params["additional_modules"]["phenotype_assignment"][
+                "quantitative-concentration"
+            ] = {
+                "activate_module": True,
+                "sample_avg": self.form.phenotype_quant_average.data,
+                "value": self.form.phenotype_quant_value.data,
+                "algorithm": self.form.phenotype_quant_algorithm.data,
+                "p_val_cutoff": float(self.form.phenotype_quant_p_val.data),
+                "coeff_cutoff": float(self.form.phenotype_quant_coeff.data),
+            }
+
     def run_processor(self: Self):
         """Runs the processor steps"""
         self.process_form_peaktable()
         self.process_form_msms()
+        self.process_form_phenotype()

@@ -36,23 +36,27 @@
         {{ render_field(form.msms_rel_int_from, "msms", 'd-none') }}
         <button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplayMsms()">Show parameters</button>
       </fieldset>
+      <fieldset class="border p-4 my-2">
+        <h5 class="col-md-auto">Phenotype parameters (optional)</h5>
+        <hr>
+        {{ render_field(form.phenotype_file, "phenotype", 'd-none') }}
+        {{ render_field(form.phenotype_format, "phenotype", 'd-none') }}
+        <div id="phenotype" class="d-none">
+          {{ render_field(form.phenotype_qualit_factor, "phenotype-qualit", 'd-none') }}
+          {{ render_field(form.phenotype_qualit_algorithm, "phenotype-qualit", 'd-none') }}
+          {{ render_field(form.phenotype_qualit_value, "phenotype-qualit", 'd-none') }}
+          {{ render_field(form.phenotype_quant_average, "phenotype-quant", 'd-none') }}
+          {{ render_field(form.phenotype_quant_value, "phenotype-quant", 'd-none') }}
+          {{ render_field(form.phenotype_quant_algorithm, "phenotype-quant", 'd-none') }}
+          {{ render_field(form.phenotype_quant_p_val, "phenotype-quant", 'd-none') }}
+          {{ render_field(form.phenotype_quant_coeff, "phenotype-quant", 'd-none') }}
+        </div>
+        <button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplayPhenotype()">Show parameters</button>
+      </fieldset>
       <fieldset class="p-4 my-2">
         <button type="submit" class="btn btn-primary">Start Analysis</button>
       </fieldset>
     </form>
   </div>
-  <script>
-    function toggleDisplayMsms() {
-      const elements = document.querySelectorAll('#msms');
-      elements.forEach(el => {
-        if (el.classList.contains('d-none')) {
-          el.classList.remove('d-none');
-          el.classList.add('d-block');
-        } else {
-          el.classList.remove('d-block');
-          el.classList.add('d-none');
-        }
-       });
-    }
-  </script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/forms.js') }}"></script>
 {% endblock %}
