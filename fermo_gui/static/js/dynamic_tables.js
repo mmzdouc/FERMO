@@ -24,19 +24,43 @@ export function updateTableWithGroupData(groupData){
     }
 }
 
-export function updateTableWithSampleData(sampleData) {
+export function updateTableWithSampleData(sampleIntensity, sampleArea) {
     let tableBody = document.getElementById("sampleCell");
     tableBody.innerHTML = "";
-    let dataArray = sampleData;
-    dataArray.forEach(item => {
-        let row = document.createElement("tr");
-        let sIdCell = document.createElement("td");
-        sIdCell.textContent = item.s_id;
-        row.appendChild(sIdCell);
-        let valueCell = document.createElement("td");
-        valueCell.textContent = item.value;
-        row.appendChild(valueCell);
-        tableBody.appendChild(row);
+
+    // Create maps for quick lookup by s_id
+    let intensityMap = new Map();
+    sampleIntensity.forEach(item => {
+        intensityMap.set(item.s_id, item.value);
+    });
+
+    let areaMap = new Map();
+    sampleArea.forEach(item => {
+        areaMap.set(item.s_id, item.value);
+    });
+
+    // Iterate over the sampleIntensity array and match with sampleArea
+    sampleIntensity.forEach(intensityItem => {
+        let s_id = intensityItem.s_id;
+        if (areaMap.has(s_id)) {
+            let row = document.createElement("tr");
+
+            // Sample Intensity Data
+            let sIdIntensityCell = document.createElement("td");
+            sIdIntensityCell.textContent = s_id;
+            row.appendChild(sIdIntensityCell);
+
+            let valueIntensityCell = document.createElement("td");
+            valueIntensityCell.textContent = intensityItem.value;
+            row.appendChild(valueIntensityCell);
+
+            // Sample Area Data
+            let valueAreaCell = document.createElement("td");
+            valueAreaCell.textContent = areaMap.get(s_id);
+            row.appendChild(valueAreaCell);
+
+            tableBody.appendChild(row);
+        }
     });
 }
 
@@ -47,6 +71,7 @@ export function updateTableWithAnnotationData(annotations, sample) {
     let matchColumns = ["id", "score"];
     let matchExtraColumns = [
         { title: "Algorithm", field: "algorithm" },
+        { title: "Library", field: "library" },
         { title: "Mz", field: "mz" },
         { title: "Difference in mz", field: "diff_mz" },
         { title: "SMILES", field: "smiles" },

@@ -73,7 +73,7 @@ class DashboardManager(BaseModel):
         try:
             self.stats_analysis = {
                 "Total Samples": len(f_sess.get("stats", {}).get("samples")),
-                "Sample Groups": (len(f_sess.get("stats", {}).get("groups")) - 1),
+                # "Sample Groups": (len(f_sess.get("stats", {}).get("groups")) - 1),
                 "Molecular Features": f_sess.get("stats", {}).get("features"),
                 "Removed Mol. Features": len(
                     f_sess.get("stats", {}).get("inactive_features")
@@ -81,6 +81,9 @@ class DashboardManager(BaseModel):
                 "FERMO-CORE Version": f_sess.get("metadata", {}).get(
                     "fermo_core_version"
                 ),
+                "Run date (YYYY-MM-DD)": (
+                    f_sess.get("metadata", {}).get("file_created_isoformat")
+                ).split("T")[0],
             }
         except TypeError:
             self.stats_analysis = {"error": "error during parsing of session file"}
@@ -505,6 +508,7 @@ class DashboardManager(BaseModel):
                             "samples": g_info.get("samples"),
                             "f_group": g_info.get("group_factors"),
                             "f_sample": g_info.get("height_per_sample"),
+                            "a_sample": g_info.get("area_per_sample"),
                             "annotations": g_info.get("annotations"),
                             "n_cos_id": g_info.get("networks", {})
                             .get("modified_cosine", {})

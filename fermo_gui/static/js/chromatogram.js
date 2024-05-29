@@ -50,10 +50,10 @@ export function visualizeData(sampleData, isFeatureVisualization = false) {
 
     // Axis layout
     var layout = {
-        height: isFeatureVisualization ? 150 : 300,
+        height: isFeatureVisualization ? 125 : 227,
         margin: {
             l: 50, r: 0, t: 0,
-            b: isFeatureVisualization ? 50 : 30,
+            b: isFeatureVisualization ? 35 : 30,
             },
         xaxis: {
             autorange: false,

@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     visualizeData(filteredSampleData, true);
                     updateTableWithFeatureData(i, sampleData);
                     updateTableWithGroupData(sampleData.fGroupData[i]);
-                    updateTableWithSampleData(sampleData.fSampleData[i]);
+                    updateTableWithSampleData(sampleData.fSampleData[i], sampleData.aSampleData[i]);
                     updateTableWithAnnotationData(sampleData.annotations[i]);
 
                     visualizeNetwork(featureId, statsNetwork, filteredSampleData,
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         visualizeData(filteredSampleData, true);
                         updateTableWithFeatureData(i, sampleData);
                         updateTableWithGroupData(sampleData.fGroupData[i]);
-                        updateTableWithSampleData(sampleData.fSampleData[i]);
+                        updateTableWithSampleData(sampleData.fSampleData[i], sampleData.aSampleData[i]);
                         updateTableWithAnnotationData(sampleData.annotations[i], sampleName);
 
                         visualizeNetwork(featureId, statsNetwork, filteredSampleData,

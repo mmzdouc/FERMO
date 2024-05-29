@@ -51,7 +51,6 @@ def test_get_stats_analysis_valid(session):
     manager.extract_stats_analysis(session)
     assert isinstance(manager.stats_analysis, dict)
     assert manager.stats_analysis["Total Samples"] == 11
-    assert manager.stats_analysis["Sample Groups"] == 5
     assert manager.stats_analysis["Molecular Features"] == 143
 
 

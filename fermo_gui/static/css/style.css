@@ -114,7 +114,7 @@ table th:last-child{
     --bs-accordion-active-bg: #116789;
 }
 
-.accordion-body{
+.accordion-body {
     background: #fff;
     max-height: 62vh;
 }
@@ -129,12 +129,10 @@ table th:last-child{
     color: #fff;
 }
 
-.accordion-button-info:not(.collapsed)::after {
-    background-image: url("/static/images/collapse_icon_info.svg");
-    transform: rotate(-45deg);
-    display: inline-block;
-    width: 16px;
-    height: 16px;
+/* Add these styles to ensure corners are consistent */
+.accordion-subheader .accordion-button {
+    font-size: 0.875rem !important;
+    padding: 0.25rem 0.5rem !important;
 }
 
 .accordion-button-info {
@@ -154,7 +152,7 @@ table th:last-child{
 }
 
 #cy {
-  height: 250px;
+  height: 200px;
 }
 
 .legend-dot {
@@ -186,4 +184,16 @@ table th:last-child{
     border-radius: 5px;
     font-size: 12px;
     pointer-events: none;
+}
+
+#mainChromatogram .modebar-container {
+    margin-top: -30px;
+}
+
+#featureChromatogram .modebar-container {
+    margin-top: 100px;
+}
+
+#heatmap-container .modebar-container {
+    margin-top: -15px;
 }

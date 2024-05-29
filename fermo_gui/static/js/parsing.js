@@ -25,6 +25,7 @@ export function getSampleData(sampleName, statsChromatogram) {
         samples: activeSampleData.map(obj => obj.samples),
         fGroupData: activeSampleData.map(obj => obj.f_group),
         fSampleData: activeSampleData.map(obj => obj.f_sample),
+        aSampleData: activeSampleData.map(obj => obj.a_sample),
         annotations: activeSampleData.map(obj => obj.annotations),
         retTimeAvg: activeSampleData.map(obj => obj.rt_avg),
         upLowRange: [minRt - minRt * 0.05, maxRt + maxRt * 0.02]
