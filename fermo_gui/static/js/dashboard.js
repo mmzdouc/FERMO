@@ -96,20 +96,27 @@ document.addEventListener('DOMContentLoaded', function() {
         let sampleId = null;
 
         // Update the feature table on chromatogram click
-        chromatogramElement.on('plotly_click', function(data) {
-            var featureId = data.points[0].data.name;
-            var filteredSampleData = getFeatureData(featureId, sampleData);
-            sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
-            visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
-        });
-
+        chromatogramElement.on('plotly_click', handleChromatogramClick);
         // Add event listener for network type selection
-        document.getElementById('networkSelect').addEventListener('change', function() {
-            networkType = this.value;
-            var featureId = document.getElementById('activeFeature').textContent.split(': ')[1];
-            var filteredSampleData = getFeatureData(featureId, sampleData);
-            visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
-        });
+        document.getElementById('networkSelect').addEventListener('change', handleNetworkTypeChange);
+    }
+
+    // Handle chromatogram click event
+    function handleChromatogramClick(data) {
+        var networkType = document.getElementById('networkSelect').value;
+        var featureId = data.points[0].data.name;
+        var filteredSampleData = getFeatureData(featureId, sampleData);
+        var sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
+        visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
+    }
+
+    // Handle network type selection change event
+    function handleNetworkTypeChange() {
+        var networkType = document.getElementById('networkSelect').value;
+        var featureId = document.getElementById('activeFeature').textContent.split(': ')[1];
+        var filteredSampleData = getFeatureData(featureId, sampleData);
+        var sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
+        visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
     }
 
     // Activate the clicked sample of the 'Sample overview'
@@ -134,21 +141,15 @@ document.addEventListener('DOMContentLoaded', function() {
             let networkType = 'modified_cosine';
             let sampleId = null;
 
-            // Update the feature table on chromatogram click
-            chromatogramElement.on('plotly_click', function(data) {
-                var featureId = data.points[0].data.name;
-                var filteredSampleData = getFeatureData(featureId, sampleData);
-                sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
-                visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
-            });
+            // Remove previous Plotly click event listeners
+            chromatogramElement.removeAllListeners('plotly_click');
 
-            // Add event listener for network type selection
-            document.getElementById('networkSelect').addEventListener('change', function() {
-                networkType = this.value;
-                var featureId = document.getElementById('activeFeature').textContent.split(': ')[1];
-                var filteredSampleData = getFeatureData(featureId, sampleData);
-                visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
-            });
+            // Attach event listeners again
+            chromatogramElement.on('plotly_click', handleChromatogramClick);
+            document.getElementById('networkSelect').removeEventListener('change', handleNetworkTypeChange);
+            document.getElementById('networkSelect').addEventListener('change', handleNetworkTypeChange);
         });
     });
+
+
 });
