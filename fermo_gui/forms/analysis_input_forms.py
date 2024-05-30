@@ -23,7 +23,14 @@ SOFTWARE.
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, FileRequired, FileSize
-from wtforms import DecimalField, EmailField, IntegerField, SelectField, SubmitField
+from wtforms import (
+    DecimalField,
+    EmailField,
+    IntegerField,
+    SelectField,
+    StringField,
+    SubmitField,
+)
 from wtforms.validators import Email, NumberRange, Optional
 
 
@@ -43,7 +50,7 @@ class PeaktableForm:
     peaktable_file = FileField(
         label="File",
         description="Upload the peaktable file.",
-        validators=[FileRequired(), FileAllowed(["csv"]), FileSize(max_size=5000000)],
+        validators=[FileRequired(), FileAllowed(["csv"]), FileSize(max_size=2000000)],
     )
     peaktable_format = SelectField(
         label="Format",
@@ -59,6 +66,16 @@ class PeaktableForm:
         choices=[("positive", "positive"), ("negative", "negative")],
         default="positive",
     )
+    peaktable_ppm = DecimalField(
+        label="Mass Deviation",
+        description=(
+            "Specify the estimated mass accuracy of the data in ppm (=mass "
+            "deviation). Used for ion adduct, MS/MS neutral loss and fragment "
+            "annotation."
+        ),
+        validators=[Optional(), NumberRange(min=0.0)],
+        default=10,
+    )
     peaktable_filter_toggle = SelectField(
         label="Module",
         description="Activate feature filtering for area and/or height.",
@@ -69,8 +86,8 @@ class PeaktableForm:
     peaktable_filter_height_lower = DecimalField(
         label="Filter Height (lower)",
         description=(
-            "Set the minimal relative height (=intensity) of a feature. To include "
-            "all, set to '0'."
+            "Set the minimal relative height (=intensity) of a molecular feature. To "
+            "include all, set to '0'."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
         default=0.00,
@@ -78,8 +95,8 @@ class PeaktableForm:
     peaktable_filter_height_upper = DecimalField(
         label="Filter Height (upper)",
         description=(
-            "Set the maximum relative height (=intensity) of a feature. To include "
-            "all, set to '1.0'."
+            "Set the maximum relative height (=intensity) of a molecular feature. To "
+            "include all, set to '1.0'."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
         default=1.00,
@@ -87,7 +104,8 @@ class PeaktableForm:
     peaktable_filter_area_lower = DecimalField(
         label="Filter Area (lower)",
         description=(
-            "Set the minimal relative area of a feature. To include " "all, set to '0'."
+            "Set the minimal relative area of a molecular feature. To include all, "
+            "set to '0'."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
         default=0.00,
@@ -95,7 +113,7 @@ class PeaktableForm:
     peaktable_filter_area_upper = DecimalField(
         label="Filter Area (upper)",
         description=(
-            "Set the maximum relative area of a feature. To include "
+            "Set the maximum relative area of a molecular feature. To include "
             "all, set to '1.0'."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
@@ -109,7 +127,7 @@ class MsmsForm:
     msms_file = FileField(
         label="File",
         description="Upload the MS/MS file.",
-        validators=[Optional(), FileAllowed(["mgf"]), FileSize(max_size=10000000)],
+        validators=[Optional(), FileAllowed(["mgf"]), FileSize(max_size=8000000)],
     )
     msms_format = SelectField(
         label="Format",
@@ -122,10 +140,70 @@ class MsmsForm:
         label="Filter",
         description=(
             "Removes MS/MS fragments with lower relative intensity than "
-            "the specified value"
+            "the specified value."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
         default=0.01,
+    )
+    msms_cosine_toggle = SelectField(
+        label="Module",
+        description="Activate modified cosine-based spectral (=molecular) networking.",
+        validators=[Optional()],
+        choices=[("True", "activate"), ("False", "deactivate")],
+        default="True",
+    )
+    msms_cosine_minfrag = IntegerField(
+        label="MS/MS fragments",
+        description=(
+            "Minimum number of fragments per spectrum to consider in " "networking"
+        ),
+        validators=[Optional(), NumberRange(min=1)],
+        default=5,
+    )
+    msms_cosine_tolerance = DecimalField(
+        label="Fragment tolerance",
+        description="Tolerance in matching two MS/MS fragments, in m/z units.",
+        validators=[Optional(), NumberRange(min=0.0)],
+        default=0.1,
+    )
+    msms_cosine_score = DecimalField(
+        label="Score",
+        description="Score cutoff to match two MS/MS spectra.",
+        validators=[Optional(), NumberRange(min=0.1, max=1.0)],
+        default=0.7,
+    )
+    msms_cosine_links = IntegerField(
+        label="Edges",
+        description="Maximum number of edges any node is allowed to have.",
+        validators=[Optional(), NumberRange(min=1)],
+        default=10,
+    )
+    msms_deepscore_toggle = SelectField(
+        label="Module",
+        description="Activate MS2DeepScore-based spectral (=molecular) networking.",
+        validators=[Optional()],
+        choices=[("True", "activate"), ("False", "deactivate")],
+        default="True",
+    )
+    msms_deepscore_minfrag = IntegerField(
+        label="MS/MS fragments",
+        description=(
+            "Minimum number of fragments per spectrum to consider in " "networking"
+        ),
+        validators=[Optional(), NumberRange(min=1)],
+        default=5,
+    )
+    msms_deepscore_score = DecimalField(
+        label="Score",
+        description="Score cutoff to match two MS/MS spectra.",
+        validators=[Optional(), NumberRange(min=0.1, max=1.0)],
+        default=0.8,
+    )
+    msms_deepscore_links = IntegerField(
+        label="Edges",
+        description="Maximum number of edges any node is allowed to have.",
+        validators=[Optional(), NumberRange(min=1)],
+        default=10,
     )
 
 
@@ -135,7 +213,7 @@ class PhenotypeForm:
     phenotype_file = FileField(
         label="File",
         description="Upload the phenotype file.",
-        validators=[Optional(), FileAllowed(["csv"]), FileSize(max_size=1000000)],
+        validators=[Optional(), FileAllowed(["csv"]), FileSize(max_size=2000000)],
     )
     phenotype_format = SelectField(
         label="Format",
@@ -149,11 +227,11 @@ class PhenotypeForm:
         ],
         default="",
     )
-    phenotype_qualit_factor = IntegerField(
+    phenotype_qualit_factor = DecimalField(
         label="Factor",
         description="Fold difference for molecular feature differentiation.",
         validators=[Optional(), NumberRange(min=1)],
-        default=10.0,
+        default=10,
     )
     phenotype_qualit_algorithm = SelectField(
         label="Algorithm",
@@ -215,12 +293,247 @@ class PhenotypeForm:
     )
 
 
+class GroupForm:
+    """Handles the group metadata related fields"""
+
+    group_file = FileField(
+        label="File",
+        description="Upload the group metadata file.",
+        validators=[Optional(), FileAllowed(["csv"]), FileSize(max_size=2000000)],
+    )
+    group_format = SelectField(
+        label="Format",
+        description="Specify the format of the group metadata file.",
+        validators=[Optional()],
+        choices=[
+            ("fermo", "fermo"),
+        ],
+        default="fermo",
+    )
+    group_blank_toggle = SelectField(
+        label="Module",
+        description=(
+            "Activate feature blank assignment (requires samples marked as 'BLANK')."
+        ),
+        validators=[Optional()],
+        choices=[("True", "activate"), ("False", "deactivate")],
+        default="True",
+    )
+    group_blank_factor = IntegerField(
+        label="Factor",
+        description="Fold difference for blank assignment of molecular feature.",
+        validators=[Optional(), NumberRange(min=1)],
+        default=10,
+    )
+    group_blank_algorithm = SelectField(
+        label="Algorithm",
+        description="Specify the algorithm to calculate fold difference.",
+        validators=[Optional()],
+        choices=[("mean", "mean"), ("median", "median"), ("maximum", "maximum")],
+        default="mean",
+    )
+    group_blank_value = SelectField(
+        label="Value",
+        description="Value to consider for the calculation.",
+        validators=[Optional()],
+        choices=[("area", "area"), ("height", "height")],
+        default="area",
+    )
+    group_factor_toggle = SelectField(
+        label="Module",
+        description=(
+            "Activate the calculation of fold-changes between groups of a category."
+        ),
+        validators=[Optional()],
+        choices=[("True", "activate"), ("False", "deactivate")],
+        default="True",
+    )
+    group_factor_algorithm = SelectField(
+        label="Algorithm",
+        description="Specify the algorithm to calculate the fold changes.",
+        validators=[Optional()],
+        choices=[("mean", "mean"), ("median", "median"), ("maximum", "maximum")],
+        default="mean",
+    )
+    group_factor_value = SelectField(
+        label="Value",
+        description="Value to consider for the calculation.",
+        validators=[Optional()],
+        choices=[("area", "area"), ("height", "height")],
+        default="area",
+    )
+
+
+class LibraryForm:
+    """Handles the spectral library related fields"""
+
+    library_file = FileField(
+        label="File",
+        description="Upload an MS/MS spectral library file.",
+        validators=[Optional(), FileAllowed(["mgf"]), FileSize(max_size=8000000)],
+    )
+    library_format = SelectField(
+        label="Format",
+        description="Specify the format of the spectral library file.",
+        validators=[Optional()],
+        choices=[("mgf", "mgf")],
+        default="mgf",
+    )
+    library_cosine_toggle = SelectField(
+        label="Module",
+        description="Activate modified cosine-based spectral library matching.",
+        validators=[Optional()],
+        choices=[("True", "activate"), ("False", "deactivate")],
+        default="True",
+    )
+    library_cosine_tolerance = DecimalField(
+        label="Fragment tolerance",
+        description="Tolerance in matching two MS/MS fragments, in m/z units.",
+        validators=[Optional(), NumberRange(min=0.0)],
+        default=0.1,
+    )
+    library_cosine_matches = IntegerField(
+        label="Matched fragments",
+        description="Minimum number of fragment matches",
+        validators=[Optional(), NumberRange(min=1)],
+        default=5,
+    )
+    library_cosine_score = DecimalField(
+        label="Score",
+        description="Score cutoff to match two MS/MS spectra.",
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
+        default=0.7,
+    )
+    library_cosine_mzdiff = IntegerField(
+        label="Precursor Difference",
+        description=(
+            "Maximum tolerated difference between two precursor masses (in m/z)."
+        ),
+        validators=[Optional(), NumberRange(min=0)],
+        default=600,
+    )
+    library_deepscore_toggle = SelectField(
+        label="Module",
+        description="Activate MS2DeepScore-based spectral library matching.",
+        validators=[Optional()],
+        choices=[("True", "activate"), ("False", "deactivate")],
+        default="True",
+    )
+    library_deepscore_score = DecimalField(
+        label="Score",
+        description="Score cutoff to match two MS/MS spectra.",
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
+        default=0.8,
+    )
+    library_deepscore_mzdiff = IntegerField(
+        label="Precursor Difference",
+        description=(
+            "Maximum tolerated difference between two precursor masses (in m/z)."
+        ),
+        validators=[Optional(), NumberRange(min=0)],
+        default=600,
+    )
+
+
+class Ms2queryForm:
+    """Handles the MS2Query matching related fields"""
+
+    ms2query_file = FileField(
+        label="File",
+        description="Upload a pre-calulated MS2Query results file.",
+        validators=[Optional(), FileAllowed(["csv"]), FileSize(max_size=2000000)],
+    )
+    ms2query_score = DecimalField(
+        label="Score",
+        description="Score cutoff for MS2Query model matches.",
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
+        default=0.7,
+    )
+    ms2query_toggle = SelectField(
+        label="New Calculation",
+        description=(
+            "Activate de novo MS2Query annotation (Note: computationally intense - "
+            "safeguards are in place to limit calculation time to '15' minutes)."
+        ),
+        validators=[Optional()],
+        choices=[("False", "deactivate"), ("True", "activate")],
+        default="False",
+    )
+
+
+class ASKCBForm:
+    """Handles the antiSMASH Knownclusterblast matching related fields"""
+
+    askcb_jobid = StringField(
+        label="antiSMASH JobID",
+        description=("The antiSMASH job to use for integrated analysis with FERMO."),
+        validators=[Optional()],
+    )
+    askcb_cosine_toggle = SelectField(
+        label="Module",
+        description="Activate modified cosine-based MIBiG spectral library matching.",
+        validators=[Optional()],
+        choices=[("True", "activate"), ("False", "deactivate")],
+        default="True",
+    )
+    askcb_cosine_tolerance = DecimalField(
+        label="Fragment tolerance",
+        description="Tolerance in matching two MS/MS fragments, in m/z units.",
+        validators=[Optional(), NumberRange(min=0.0)],
+        default=0.1,
+    )
+    askcb_cosine_matches = IntegerField(
+        label="Matched fragments",
+        description="Minimum number of fragment matches",
+        validators=[Optional(), NumberRange(min=1)],
+        default=5,
+    )
+    askcb_cosine_score = DecimalField(
+        label="Score",
+        description="Score cutoff to match two MS/MS spectra.",
+        validators=[Optional(), NumberRange(min=0.1, max=1.0)],
+        default=0.5,
+    )
+    askcb_cosine_mzdiff = IntegerField(
+        label="Precursor Difference",
+        description=(
+            "Maximum tolerated difference between two precursor masses (in m/z)."
+        ),
+        validators=[Optional(), NumberRange(min=0)],
+        default=600,
+    )
+    askcb_deepscore_toggle = SelectField(
+        label="Module",
+        description="Activate MS2DeepScore-based MIBiG spectral library matching.",
+        validators=[Optional()],
+        choices=[("True", "activate"), ("False", "deactivate")],
+        default="True",
+    )
+    askcb_deepscore_score = DecimalField(
+        label="Score",
+        description="Score cutoff to match two MS/MS spectra.",
+        validators=[Optional(), NumberRange(min=0.1, max=1.0)],
+        default=0.7,
+    )
+    askcb_deepscore_mzdiff = IntegerField(
+        label="Precursor Difference",
+        description=(
+            "Maximum tolerated difference between two precursor masses (in m/z)."
+        ),
+        validators=[Optional(), NumberRange(min=0)],
+        default=600,
+    )
+
+
 class AnalysisForm(
     FlaskForm,
     NotificationForm,
     PeaktableForm,
     MsmsForm,
     PhenotypeForm,
+    GroupForm,
+    Ms2queryForm,
+    ASKCBForm,
 ):
     """Organizes forms for data input"""
 
