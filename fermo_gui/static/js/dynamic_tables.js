@@ -3,23 +3,20 @@ import { visualizeNetwork } from './network.js'
 import { getFeatureData } from './parsing.js';
 
 // Functions to dynamically update tables after feature or sample selection //
-export function updateFeatureTables(featureId, sampleData, statsNetwork) {
+export function updateFeatureTables(featureId, sampleData, filteredSampleData) {
     for (var i = 0; i < sampleData.featureId.length; i++) {
         if (sampleData.featureId[i] == featureId) {
             showTables()
             document.getElementById('activeFeature').textContent =
             'Network visualization of feature: ' + featureId;
             addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
-            var filteredSampleData = getFeatureData(featureId, sampleData);
             visualizeData(filteredSampleData, true);
-
             updateTableWithFeatureData(i, sampleData);
             updateTableWithGroupData(sampleData.fGroupData[i]);
             updateTableWithSampleData(sampleData.fSampleData[i], sampleData.aSampleData[i]);
             updateTableWithAnnotationData(sampleData.annotations[i]);
-
-            visualizeNetwork(featureId, statsNetwork, filteredSampleData,
-                sampleData, i, statsChromatogram);
+            return i;
+            break;
         }
     }
 }
@@ -91,6 +88,18 @@ function updateTableWithSampleData(sampleIntensity, sampleArea) {
 
 // TODO: remove feature data after sample switch
 function updateTableWithAnnotationData(annotations, sample) {
+    // Check if annotations is empty
+    if (Object.keys(annotations).length === 0) {
+        let annMessage = document.getElementById("feature-annotation");
+        annMessage.innerHTML = "No annotation data found for this feature.";
+        document.getElementById('matchTable').style.display = 'none';
+        document.getElementById('phenotypeTable').style.display = 'none';
+        document.getElementById('adductTable').style.display = 'none';
+        document.getElementById('fragmentTable').style.display = 'none';
+        document.getElementById('lossesTable').style.display = 'none';
+        return;
+    }
+
     // Define headers and columns for each section
     let matchHeaders = ["Match id", "Score", "More info"];
     let matchColumns = ["id", "score"];
@@ -136,24 +145,12 @@ function updateTableWithAnnotationData(annotations, sample) {
         { title: "difference in ppm", field: "diff_ppm" }
     ];
 
-    // create tables for each section
-    let isAnyDataPresent = false;
 
-    isAnyDataPresent = createAnnotationTable("matchTable", annotations.matches, matchHeaders,
-    matchColumns, matchExtraColumns, "match") || isAnyDataPresent;
-    isAnyDataPresent = createAnnotationTable("phenotypeTable", annotations.phenotypes, phenoHeaders,
-    phenoColumns, phenoExtraColumns, "phenotype") || isAnyDataPresent;
-    isAnyDataPresent = createAnnotationTable("lossesTable", annotations.losses, lossHeaders,
-    lossColumns, lossExtraColumns, "loss") || isAnyDataPresent;
-    isAnyDataPresent = createAnnotationTable("fragmentTable", annotations.fragments, fragmentHeaders,
-    fragmentColumns, fragmentExtraColumns, "fragment") || isAnyDataPresent;
-    isAnyDataPresent = createAnnotationTable("adductTable", annotations.adducts, adductHeaders,
-    adductColumns, adductExtraColumns, "adduct") || isAnyDataPresent;
-
-    let annMessage = document.getElementById("feature-annotation");
-    if (!isAnyDataPresent) {
-        annMessage.innerHTML = "No annotation data found for this feature.";
-    }
+    createAnnotationTable("matchTable", annotations.matches, matchHeaders, matchColumns, matchExtraColumns, "match");
+    createAnnotationTable("phenotypeTable", annotations.phenotypes, phenoHeaders, phenoColumns, phenoExtraColumns, "phenotype");
+    createAnnotationTable("lossesTable", annotations.losses, lossHeaders, lossColumns, lossExtraColumns, "loss");
+    createAnnotationTable("fragmentTable", annotations.fragments, fragmentHeaders, fragmentColumns, fragmentExtraColumns, "fragment");
+    createAnnotationTable("adductTable", annotations.adducts, adductHeaders, adductColumns, adductExtraColumns, "adduct");
 }
 
 function createAnnotationTable(sectionId, annotations, headers, columns, extraColumns, tableId) {

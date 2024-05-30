@@ -203,3 +203,7 @@ table th:last-child{
 #heatmap-container .modebar-container {
     margin-top: -15px;
 }
+
+.form-select {
+    font-size: 14px;
+}

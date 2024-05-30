@@ -1,24 +1,20 @@
-import { getUniqueFeatureIds, getFeatureDetails } from './parsing.js';
+import { getUniqueFeatureIds, getFeatureDetails, getFeatureData } from './parsing.js';
 import { updateFeatureTables } from './dynamic_tables.js';
 
-export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram) {
-    var filteredFeatureIds = filteredSampleData.featureId.filter(id => id.toString() !== fId);
-    var cos_id = sampleData.idNetCos[sampleId]
-    var ms_id = sampleData.idNetMs[sampleId]
+export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType) {
+    const cos_id = sampleData.idNetCos[sampleId];
+    const ms_id = sampleData.idNetMs[sampleId];
+    const networkId = (networkType === 'modified_cosine') ? cos_id : ms_id;
 
-    // Get all feature info for tool tips and table information
-    const uniqueNIds = [];
-    var networkNodes = statsNetwork.modified_cosine[cos_id].elements.nodes;
-    for (var i = 0; i < networkNodes.length; i++) {
-        uniqueNIds.push(networkNodes[i].data.id);
-    }
+    const filteredFeatureIds = filteredSampleData.featureId.filter(id => id.toString() !== fId);
+    let networkData = statsNetwork[networkType][networkId].elements;
+    const uniqueNIds = networkData.nodes.map(node => node.data.id);
     const uniqueFIds = getUniqueFeatureIds(statsChromatogram);
     const featureDetails = getFeatureDetails(uniqueNIds, statsChromatogram);
 
     var cy = cytoscape({
         container: document.getElementById('cy'),
-        elements: statsNetwork.modified_cosine[cos_id].elements,
-
+        elements: networkData,
         layout: {
             name: 'cose',
             rows: 1
@@ -72,7 +68,6 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleDa
                 }
             },
         ],
-
     });
 
     var tooltip = document.createElement('div');
@@ -86,9 +81,9 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleDa
         var featureDetail = featureDetails.find(feature => feature.f_id.toString() === featureId);
 
         tooltip.innerHTML =
-        'Feature ID: ' + node.id() + '<br>' +
-        'Precursor m/z: ' + featureDetail.mz + '<br>' +
-        'Average rt: ' + featureDetail.rt_avg + '<br>';
+            'Feature ID: ' + node.id() + '<br>' +
+            'Precursor m/z: ' + featureDetail.mz + '<br>' +
+            'Average rt: ' + featureDetail.rt_avg + '<br>';
         tooltip.style.display = 'block';
     });
 
@@ -100,10 +95,10 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleDa
     cy.on('mouseout', 'node', function () {
         tooltip.style.display = 'none';
     });
+
     document.getElementById('cy').addEventListener('mouseleave', function () {
         tooltip.style.display = 'none';
     });
-
 
     cy.on('mouseover', 'edge', function (event) {
         var edge = event.target;
@@ -119,8 +114,8 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleDa
             var mzDifference = Math.abs(sourceFeature.mz - targetFeature.mz).toFixed(4);
 
             tooltip.innerHTML =
-            'Edge Weight: ' + edgeWeight + '<br>' +
-            'm/z Difference: ' + mzDifference + '<br>';
+                'Edge Weight: ' + edgeWeight + '<br>' +
+                'm/z Difference: ' + mzDifference + '<br>';
             tooltip.style.display = 'block';
         }
     });
@@ -138,7 +133,9 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleDa
         tooltip.style.display = 'none';
         var node = event.target;
         var featureId = node.id();
-        updateFeatureTables(featureId, sampleData, statsNetwork);
+        var filteredSampleData = getFeatureData(featureId, sampleData);
+        sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
+        visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
     });
     showNetwork();
 }

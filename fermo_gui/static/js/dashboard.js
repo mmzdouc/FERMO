@@ -1,7 +1,7 @@
 import { getSampleData, getFeatureData } from './parsing.js';
 import { updateFeatureTables, hideTables } from './dynamic_tables.js';
 import { visualizeData } from './chromatogram.js';
-import { hideNetwork } from './network.js';
+import { visualizeNetwork, hideNetwork } from './network.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dragged;
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, false);
 
-    // Load all chromatogram data
+    // Load all data
     var chromatogramElement = document.getElementById('mainChromatogram');
     var networkElement = document.getElementById('cy');
     var statsChromatogram = JSON.parse(chromatogramElement.getAttribute('data-stats-chromatogram'));
@@ -92,10 +92,23 @@ document.addEventListener('DOMContentLoaded', function() {
         visualizeData(sampleData, false);
         document.getElementById('activeSample').textContent = 'Sample: ' + firstSampleName;
 
+        let networkType = 'modified_cosine';
+        let sampleId = null;
+
         // Update the feature table on chromatogram click
         chromatogramElement.on('plotly_click', function(data) {
             var featureId = data.points[0].data.name;
-            updateFeatureTables(featureId, sampleData, statsNetwork);
+            var filteredSampleData = getFeatureData(featureId, sampleData);
+            sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
+            visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
+        });
+
+        // Add event listener for network type selection
+        document.getElementById('networkSelect').addEventListener('change', function() {
+            networkType = this.value;
+            var featureId = document.getElementById('activeFeature').textContent.split(': ')[1];
+            var filteredSampleData = getFeatureData(featureId, sampleData);
+            visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
         });
     }
 
@@ -118,10 +131,23 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById("sampleCell").innerHTML =
             "<tr><td>Click on any feature in the main chromatogram overview.</td><td></td></tr>";
 
+            let networkType = 'modified_cosine';
+            let sampleId = null;
+
             // Update the feature table on chromatogram click
             chromatogramElement.on('plotly_click', function(data) {
                 var featureId = data.points[0].data.name;
-                updateFeatureTables(featureId, sampleData, statsNetwork);
+                var filteredSampleData = getFeatureData(featureId, sampleData);
+                sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
+                visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
+            });
+
+            // Add event listener for network type selection
+            document.getElementById('networkSelect').addEventListener('change', function() {
+                networkType = this.value;
+                var featureId = document.getElementById('activeFeature').textContent.split(': ')[1];
+                var filteredSampleData = getFeatureData(featureId, sampleData);
+                visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
             });
         });
     });
