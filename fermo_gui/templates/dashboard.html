@@ -158,11 +158,11 @@
                                          aria-labelledby="featureTableGeneral">
                                         <div class="accordion-body overflow-auto">
                                             <p id="feature-annotation">Click on any feature in the main chromatogram overview.</p>
-                                            <table id="matchTable" class="table table-hover fixed-width-table"></table>
-                                            <table id="phenotypeTable" class="table table-hover fixed-width-table"></table>
-                                            <table id="adductTable" class="table table-hover fixed-width-table"></table>
-                                            <table id="fragmentTable" class="table table-hover fixed-width-table"></table>
-                                            <table id="lossesTable" class="table table-hover fixed-width-table"></table>
+                                            <table id="matchTable" class="table table-hover fixed-width-table" style="display: none;"></table>
+                                            <table id="phenotypeTable" class="table table-hover fixed-width-table" style="display: none;"></table>
+                                            <table id="adductTable" class="table table-hover fixed-width-table" style="display: none;"></table>
+                                            <table id="fragmentTable" class="table table-hover fixed-width-table" style="display: none;"></table>
+                                            <table id="lossesTable" class="table table-hover fixed-width-table" style="display: none;"></table>
                                         </div>
                                     </div>
                                 </div>
@@ -295,10 +295,12 @@
                                         <div class="container-fluid">
                                             <div class="row">
                                                 <div class="col-xs-12 col-sm-12 col-md-8">
-                                                    <div id="cy" data-stats-network='{{ data.stats_network | tojson | safe }}'></div>
+                                                    <div id="cy-container" style="display: none;">
+                                                        <div id="cy" data-stats-network='{{ data.stats_network | tojson | safe }}'></div>
+                                                    </div>
                                                 </div>
                                                 <div class="col-xs-12 col-sm-12 col-md-4">
-                                                    <div id="legend">
+                                                    <div id="legend" style="display: none;">
                                                         <div class="legend-item">
                                                             <div class="legend-dot" style="background-color: #f4aaa7; border: 2px solid #960303;"></div>
                                                             <p class="legend-text">Selected feature</p>

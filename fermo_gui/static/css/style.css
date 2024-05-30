@@ -76,6 +76,12 @@ table th:last-child{
     padding: 0.6rem;
 }
 
+.custom-row-padding {
+    padding-top: 0.2rem !important;
+    padding-bottom: 0.2rem !important;
+    vertical-align: middle;
+}
+
 /* Fixate the width of the feature annotation tables in the dashboard */
 .fixed-width-table td:first-child {
     width: 60%;

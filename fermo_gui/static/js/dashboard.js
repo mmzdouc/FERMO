@@ -1,6 +1,7 @@
 import { getSampleData, getFeatureData } from './parsing.js';
-import { updateFeatureTables } from './dynamic_tables.js';
+import { updateFeatureTables, hideTables } from './dynamic_tables.js';
 import { visualizeData } from './chromatogram.js';
+import { hideNetwork } from './network.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dragged;
@@ -105,9 +106,13 @@ document.addEventListener('DOMContentLoaded', function() {
             var sampleName = this.getAttribute('data-sample-name');
             sampleData = getSampleData(sampleName, statsChromatogram);
             visualizeData(sampleData, false);
+            hideNetwork();
+            hideTables();
             document.getElementById('activeSample').textContent = 'Sample: ' + sampleName;
             Plotly.purge('featureChromatogram');
             document.getElementById('feature-general-info').textContent =
+            'Click on any feature in the main chromatogram overview.';
+            document.getElementById('feature-annotation').textContent =
             'Click on any feature in the main chromatogram overview.';
             Plotly.purge('heatmap-container');
             document.getElementById("sampleCell").innerHTML =

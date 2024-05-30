@@ -6,11 +6,13 @@ import { getFeatureData } from './parsing.js';
 export function updateFeatureTables(featureId, sampleData, statsNetwork) {
     for (var i = 0; i < sampleData.featureId.length; i++) {
         if (sampleData.featureId[i] == featureId) {
+            showTables()
             document.getElementById('activeFeature').textContent =
             'Network visualization of feature: ' + featureId;
             addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
             var filteredSampleData = getFeatureData(featureId, sampleData);
             visualizeData(filteredSampleData, true);
+
             updateTableWithFeatureData(i, sampleData);
             updateTableWithGroupData(sampleData.fGroupData[i]);
             updateTableWithSampleData(sampleData.fSampleData[i], sampleData.aSampleData[i]);
@@ -180,9 +182,12 @@ function createTableHeader(headers) {
     let tHead = document.createElement("thead");
     let rowHead = document.createElement("tr");
 
-    headers.forEach(header => {
+    headers.forEach((header, index) => {
         let th = document.createElement("th");
         th.textContent = header;
+        if (index === headers.length - 1) {
+            th.className = "text-center";
+        }
         rowHead.appendChild(th);
     });
 
@@ -195,6 +200,7 @@ function createTableRow(data, columns, rowId, tableId) {
 
     columns.forEach(column => {
         let td = document.createElement("td");
+        td.className = "custom-row-padding";
         let cellData = data[column];
         if (typeof cellData === 'string' && cellData.includes("|")) {
             td.textContent = cellData.split("|")[0];
@@ -206,7 +212,7 @@ function createTableRow(data, columns, rowId, tableId) {
 
     // Add the collapse button for expanding extra info
     let expandCell = document.createElement("td");
-    expandCell.className = "text-center";
+    expandCell.className = "text-center custom-row-padding";
     let expandButton = document.createElement("button");
     expandButton.className = "accordion-button-info collapsed";
     expandButton.type = "button";
@@ -395,4 +401,28 @@ function createHeatmap(data, groupName) {
 
 	// Create the heatmap
 	Plotly.newPlot('heatmap-container', [trace], layout);
+}
+
+function showTables() {
+    document.getElementById('matchTable').style.display = '';
+    document.getElementById('phenotypeTable').style.display = '';
+    document.getElementById('adductTable').style.display = '';
+    document.getElementById('fragmentTable').style.display = '';
+    document.getElementById('lossesTable').style.display = '';
+}
+
+export function hideTables() {
+    document.getElementById('matchTable').style.display = 'none';
+    document.getElementById('phenotypeTable').style.display = 'none';
+    document.getElementById('adductTable').style.display = 'none';
+    document.getElementById('fragmentTable').style.display = 'none';
+    document.getElementById('lossesTable').style.display = 'none';
+    document.getElementById('featureIdCell').textContent = 'none';
+    document.getElementById('precMzCell').textContent = 'none';
+    document.getElementById('retTimeCell').textContent = 'none';
+    document.getElementById('relIntCell').innerHTML =
+    'Click on any feature in the main chromatogram overview.';
+    document.getElementById('absIntCell').textContent = 'none';
+    document.getElementById('NovScore').textContent = 'none';
+    document.getElementById('BlankAs').textContent = 'none';
 }

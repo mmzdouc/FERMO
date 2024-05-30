@@ -140,5 +140,17 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleDa
         var featureId = node.id();
         updateFeatureTables(featureId, sampleData, statsNetwork);
     });
+    showNetwork();
+}
 
+function showNetwork() {
+    document.getElementById('cy-container').style.display = '';
+    document.getElementById('legend').style.display = '';
+}
+
+export function hideNetwork() {
+    document.getElementById('cy-container').style.display = 'none';
+    document.getElementById('activeFeature').innerHTML =
+    'Select any feature in the main chromatogram to visualize its network.';
+    document.getElementById('legend').style.display = 'none';
 }
