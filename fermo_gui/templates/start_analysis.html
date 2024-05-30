@@ -3,10 +3,10 @@
 {% block content %}
   {% from "_formhelpers.html" import render_field %}
   <div class="container mt-5">
-    <h3>Start new analysis</h3>
+    <h1>Start new analysis</h1>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
-        <h4 style="color: red">Error during input validation</h4>
+        <h2 style="color: red">Error during input validation</h2>
         <ul class=flashes>
         {% for message in messages %}
           <li>{{ message }}</li>
@@ -16,53 +16,193 @@
     {% endwith %}
     <form method="post" action="{{ url_for('routes.start_analysis') }}" enctype="multipart/form-data">
       {{ form.hidden_tag() }}
-      <fieldset class="border p-4 my-2">
-        <h5 class="col-md-auto">Notification settings (optional)</h5>
-        <hr>
-        {{ render_field(form.email, "notification", 'd-block') }}
-      </fieldset>
-      <fieldset class="border p-4 my-2">
-        <h5 class="col-md-auto">Peaktable parameters</h5>
-        <hr>
-        {{ render_field(form.peaktable_file, "peaktable", 'd-block') }}
-        {{ render_field(form.peaktable_format, "peaktable", 'd-block') }}
-        {{ render_field(form.peaktable_polarity, "peaktable", 'd-block') }}
-        <hr>
-        <h6 class="col-md-auto">Feature filter parameters (optional)</h6>
-        {{ render_field(form.peaktable_filter_toggle, "peaktable", 'd-block') }}
-        <div id="peaktable-filter" class="d-none">
-          {{ render_field(form.peaktable_filter_height_lower, "peaktable-filter", 'd-none') }}
-          {{ render_field(form.peaktable_filter_height_upper, "peaktable-filter", 'd-none') }}
+
+      <div class="border p-4 my-2">
+        <fieldset id="notification-form">
+          <h3 class="col-md-auto">Notification settings</h3>
           <hr>
-          {{ render_field(form.peaktable_filter_area_lower, "peaktable-filter", 'd-none') }}
-          {{ render_field(form.peaktable_filter_area_upper, "peaktable-filter", 'd-none') }}
-        </div>
-      </fieldset>
-      <fieldset class="border p-4 my-2">
-        <h5 class="col-md-auto">MS/MS parameters (optional)</h5>
-        <hr>
-        {{ render_field(form.msms_file, "msms", 'd-none') }}
-        {{ render_field(form.msms_format, "msms", 'd-none') }}
-        {{ render_field(form.msms_rel_int_from, "msms", 'd-none') }}
-        <button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplayMsms()">Show parameters</button>
-      </fieldset>
-      <fieldset class="border p-4 my-2">
-        <h5 class="col-md-auto">Phenotype parameters (optional)</h5>
-        <hr>
-        {{ render_field(form.phenotype_file, "phenotype", 'd-none') }}
-        {{ render_field(form.phenotype_format, "phenotype", 'd-none') }}
-        <div id="phenotype" class="d-none">
-          {{ render_field(form.phenotype_qualit_factor, "phenotype-qualit", 'd-none') }}
-          {{ render_field(form.phenotype_qualit_algorithm, "phenotype-qualit", 'd-none') }}
-          {{ render_field(form.phenotype_qualit_value, "phenotype-qualit", 'd-none') }}
-          {{ render_field(form.phenotype_quant_average, "phenotype-quant", 'd-none') }}
-          {{ render_field(form.phenotype_quant_value, "phenotype-quant", 'd-none') }}
-          {{ render_field(form.phenotype_quant_algorithm, "phenotype-quant", 'd-none') }}
-          {{ render_field(form.phenotype_quant_p_val, "phenotype-quant", 'd-none') }}
-          {{ render_field(form.phenotype_quant_coeff, "phenotype-quant", 'd-none') }}
-        </div>
-        <button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplayPhenotype()">Show parameters</button>
-      </fieldset>
+          <div class="notification-field">
+            {{ render_field(form.email) }}
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="border p-4 my-2">
+        <fieldset id="peaktable-form">
+          <h3 class="col-md-auto">Peaktable*</h3>
+          <hr>
+          <div class="peaktable-field d-block">
+            {{ render_field(form.peaktable_file) }}
+            {{ render_field(form.peaktable_format) }}
+            {{ render_field(form.peaktable_polarity) }}
+            {{ render_field(form.peaktable_ppm) }}
+            <h4 class="col-md-auto">Feature filter parameters</h4>
+            <hr>
+            {{ render_field(form.peaktable_filter_toggle) }}
+            <div class="peaktable-filter d-none">
+              {{ render_field(form.peaktable_filter_height_lower) }}
+              {{ render_field(form.peaktable_filter_height_upper) }}
+              <hr>
+              {{ render_field(form.peaktable_filter_area_lower) }}
+              {{ render_field(form.peaktable_filter_area_upper) }}
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="border p-4 my-2">
+        <fieldset id="msms-form">
+          <h3 class="col-md-auto">MS/MS</h3>
+          <hr>
+          <div class="msms-field d-none">
+            {{ render_field(form.msms_file) }}
+            {{ render_field(form.msms_format) }}
+            {{ render_field(form.msms_rel_int_from) }}
+            {{ render_field(form.msms_fragment_toggle) }}
+            {{ render_field(form.msms_loss_toggle) }}
+            <h4 class="col-md-auto">Spectral networking: modified cosine</h4>
+            <hr>
+            {{ render_field(form.msms_cosine_toggle) }}
+            <div class="msms-cosine d-block">
+              {{ render_field(form.msms_cosine_minfrag) }}
+              {{ render_field(form.msms_cosine_tolerance) }}
+              {{ render_field(form.msms_cosine_score) }}
+              {{ render_field(form.msms_cosine_links) }}
+            </div>
+            <h4 class="col-md-auto">Spectral networking: MS2DeepScore</h4>
+            <hr>
+            {{ render_field(form.msms_deepscore_toggle) }}
+            <div class="msms-deepscore d-block">
+              {{ render_field(form.msms_deepscore_minfrag) }}
+              {{ render_field(form.msms_deepscore_score) }}
+              {{ render_field(form.msms_deepscore_links) }}
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleDisplay('.msms-field')">Modify parameters</button>
+        </fieldset>
+      </div>
+
+      <div class="border p-4 my-2">
+        <fieldset id="group-form">
+          <h3 class="col-md-auto">Group Metadata Parameter</h3>
+          <hr>
+          <div class="group-field d-none">
+            {{ render_field(form.group_file) }}
+            {{ render_field(form.group_format) }}
+            <h4 class="col-md-auto">Blank Assignment</h4>
+            <hr>
+            {{ render_field(form.group_blank_toggle) }}
+            <div class="group-blank d-none">
+              {{ render_field(form.group_blank_factor) }}
+              {{ render_field(form.group_blank_algorithm) }}
+              {{ render_field(form.group_blank_value) }}
+              <hr>
+            </div>
+            <h4 class="col-md-auto">Group Factor Assignment</h4>
+            <hr>
+            {{ render_field(form.group_factor_toggle) }}
+            <div class="group-factor d-none">
+              {{ render_field(form.group_factor_algorithm) }}
+              {{ render_field(form.group_factor_value) }}
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleDisplay('.group-field')">Modify parameters</button>
+        </fieldset>
+      </div>
+
+      <div class="border p-4 my-2">
+        <fieldset id="phenotype-form">
+          <h3 class="col-md-auto">Phenotype Data</h3>
+          <hr>
+          <div class="phenotype-field d-none">
+            {{ render_field(form.phenotype_file) }}
+            {{ render_field(form.phenotype_format) }}
+            <hr>
+            <div class="phenotype-qualitative d-none">
+              {{ render_field(form.phenotype_qualit_factor) }}
+              {{ render_field(form.phenotype_qualit_algorithm) }}
+              {{ render_field(form.phenotype_qualit_value) }}
+            </div>
+            <div class="phenotype-quantitative d-none">
+              {{ render_field(form.phenotype_quant_average) }}
+              {{ render_field(form.phenotype_quant_value) }}
+              {{ render_field(form.phenotype_quant_algorithm) }}
+              {{ render_field(form.phenotype_quant_p_val) }}
+              {{ render_field(form.phenotype_quant_coeff) }}
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleDisplay('.phenotype-field')">Modify parameters</button>
+        </fieldset>
+      </div>
+
+      <div class="border p-4 my-2">
+        <fieldset id="library-form">
+          <h3 class="col-md-auto">Spectral Library</h3>
+          <hr>
+          <div class="library-field d-none">
+            {{ render_field(form.library_file) }}
+            {{ render_field(form.library_format) }}
+            <h4 class="col-md-auto">Matching: modified cosine</h4>
+            <hr>
+            {{ render_field(form.library_cosine_toggle) }}
+            <div class="library-cosine d-none">
+              {{ render_field(form.library_cosine_tolerance) }}
+              {{ render_field(form.library_cosine_matches) }}
+              {{ render_field(form.library_cosine_score) }}
+              {{ render_field(form.library_cosine_mzdiff) }}
+            </div>
+            <h4 class="col-md-auto">Matching: MS2DeepScore</h4>
+            <hr>
+            {{ render_field(form.library_deepscore_toggle) }}
+            <div class="library-deepscore d-none">
+              {{ render_field(form.library_deepscore_score) }}
+              {{ render_field(form.library_deepscore_mzdiff) }}
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleDisplay('.library-field')">Modify parameters</button>
+        </fieldset>
+      </div>
+
+      <div class="border p-4 my-2">
+        <fieldset id="ms2query-form">
+          <h3 class="col-md-auto">MS2Query Annotation</h3>
+          <hr>
+          <div class="ms2query-field d-none">
+            {{ render_field(form.ms2query_file) }}
+            {{ render_field(form.ms2query_toggle) }}
+            <hr>
+            {{ render_field(form.ms2query_score) }}
+          </div>
+          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleDisplay('.ms2query-field')">Modify parameters</button>
+        </fieldset>
+      </div>
+
+      <div class="border p-4 my-2">
+        <fieldset id="askcb-form">
+          <h3 class="col-md-auto">antiSMASH Job Integration</h3>
+          <hr>
+          <div class="askcb-field d-none">
+            {{ render_field(form.askcb_jobid) }}
+            <h4 class="col-md-auto">Matching: modified cosine</h4>
+            <hr>
+            {{ render_field(form.askcb_cosine_toggle) }}
+            <div class="askcb-cosine d-none">
+              {{ render_field(form.askcb_cosine_tolerance) }}
+              {{ render_field(form.askcb_cosine_matches) }}
+              {{ render_field(form.askcb_cosine_score) }}
+              {{ render_field(form.askcb_cosine_mzdiff) }}
+            </div>
+            <h4 class="col-md-auto">Matching: MS2DeepScore</h4>
+            <hr>
+            {{ render_field(form.askcb_deepscore_toggle) }}
+            <div class="askcb-deepscore d-none">
+              {{ render_field(form.askcb_deepscore_score) }}
+              {{ render_field(form.askcb_deepscore_mzdiff) }}
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleDisplay('.askcb-field')">Modify parameters</button>
+        </fieldset>
+      </div>
       <fieldset class="p-4 my-2">
         <button type="submit" class="btn btn-primary">Start Analysis</button>
       </fieldset>

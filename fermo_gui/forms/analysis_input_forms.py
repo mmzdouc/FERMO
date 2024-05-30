@@ -69,9 +69,8 @@ class PeaktableForm:
     peaktable_ppm = DecimalField(
         label="Mass Deviation",
         description=(
-            "Specify the estimated mass accuracy of the data in ppm (=mass "
-            "deviation). Used for ion adduct, MS/MS neutral loss and fragment "
-            "annotation."
+            "Estimated mass accuracy of data in ppm. Used for annotation of ion "
+            "adducts, MS/MS neutral losses, and MS/MS fragments."
         ),
         validators=[Optional(), NumberRange(min=0.0)],
         default=10,
@@ -140,10 +139,24 @@ class MsmsForm:
         label="Filter",
         description=(
             "Removes MS/MS fragments with lower relative intensity than "
-            "the specified value."
+            "the specified value. Set to 0.0 to retain all fragments."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
         default=0.01,
+    )
+    msms_fragment_toggle = SelectField(
+        label="Fragment Annotation",
+        description="Activate MS/MS fragment annotation.",
+        validators=[Optional()],
+        choices=[("True", "activate"), ("False", "deactivate")],
+        default="True",
+    )
+    msms_loss_toggle = SelectField(
+        label="Loss annotation",
+        description="Activate MS/MS neutral loss annotation.",
+        validators=[Optional()],
+        choices=[("True", "activate"), ("False", "deactivate")],
+        default="True",
     )
     msms_cosine_toggle = SelectField(
         label="Module",
@@ -316,8 +329,8 @@ class GroupForm:
             "Activate feature blank assignment (requires samples marked as 'BLANK')."
         ),
         validators=[Optional()],
-        choices=[("True", "activate"), ("False", "deactivate")],
-        default="True",
+        choices=[("False", "deactivate"), ("True", "activate")],
+        default="False",
     )
     group_blank_factor = IntegerField(
         label="Factor",
@@ -345,8 +358,8 @@ class GroupForm:
             "Activate the calculation of fold-changes between groups of a category."
         ),
         validators=[Optional()],
-        choices=[("True", "activate"), ("False", "deactivate")],
-        default="True",
+        choices=[("False", "deactivate"), ("True", "activate")],
+        default="False",
     )
     group_factor_algorithm = SelectField(
         label="Algorithm",
@@ -383,8 +396,8 @@ class LibraryForm:
         label="Module",
         description="Activate modified cosine-based spectral library matching.",
         validators=[Optional()],
-        choices=[("True", "activate"), ("False", "deactivate")],
-        default="True",
+        choices=[("False", "deactivate"), ("True", "activate")],
+        default="False",
     )
     library_cosine_tolerance = DecimalField(
         label="Fragment tolerance",
@@ -416,8 +429,8 @@ class LibraryForm:
         label="Module",
         description="Activate MS2DeepScore-based spectral library matching.",
         validators=[Optional()],
-        choices=[("True", "activate"), ("False", "deactivate")],
-        default="True",
+        choices=[("False", "deactivate"), ("True", "activate")],
+        default="False",
     )
     library_deepscore_score = DecimalField(
         label="Score",
@@ -439,7 +452,7 @@ class Ms2queryForm:
     """Handles the MS2Query matching related fields"""
 
     ms2query_file = FileField(
-        label="File",
+        label="Existing File",
         description="Upload a pre-calulated MS2Query results file.",
         validators=[Optional(), FileAllowed(["csv"]), FileSize(max_size=2000000)],
     )
@@ -453,7 +466,7 @@ class Ms2queryForm:
         label="New Calculation",
         description=(
             "Activate de novo MS2Query annotation (Note: computationally intense - "
-            "safeguards are in place to limit calculation time to '15' minutes)."
+            "takes about 2 seconds per spectrum. Calculation time is restricted.)"
         ),
         validators=[Optional()],
         choices=[("False", "deactivate"), ("True", "activate")],
@@ -473,8 +486,8 @@ class ASKCBForm:
         label="Module",
         description="Activate modified cosine-based MIBiG spectral library matching.",
         validators=[Optional()],
-        choices=[("True", "activate"), ("False", "deactivate")],
-        default="True",
+        choices=[("False", "deactivate"), ("True", "activate")],
+        default="False",
     )
     askcb_cosine_tolerance = DecimalField(
         label="Fragment tolerance",
@@ -506,8 +519,8 @@ class ASKCBForm:
         label="Module",
         description="Activate MS2DeepScore-based MIBiG spectral library matching.",
         validators=[Optional()],
-        choices=[("True", "activate"), ("False", "deactivate")],
-        default="True",
+        choices=[("False", "deactivate"), ("True", "activate")],
+        default="False",
     )
     askcb_deepscore_score = DecimalField(
         label="Score",
@@ -532,6 +545,7 @@ class AnalysisForm(
     MsmsForm,
     PhenotypeForm,
     GroupForm,
+    LibraryForm,
     Ms2queryForm,
     ASKCBForm,
 ):

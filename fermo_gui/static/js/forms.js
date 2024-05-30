@@ -11,14 +11,6 @@ function toggleDisplay(selector) {
    });
 }
 
-function toggleDisplayMsms() {
-  toggleDisplay('#msms');
-}
-
-function toggleDisplayPhenotype() {
-  toggleDisplay('#phenotype');
-}
-
 
 function toggleShow(selector) {
     const elements = document.querySelectorAll(selector);
@@ -44,30 +36,57 @@ function toggleHide(selector) {
    });
 }
 
-function togglePhenotypeFormat() {
-    var choice = document.getElementById('phenotype_format').value;
-    if (choice === 'qualitative') {
-        toggleShow("#phenotype-qualit");
-        toggleHide("#phenotype-quant");
-    } else if (choice === '') {
-        toggleHide("#phenotype-quant");
-        toggleHide("#phenotype-qualit");
+
+function toggleGenericModule(element_id, class_selector) {
+    var choice = document.getElementById(element_id).value;
+    if (choice === 'True') {
+        toggleShow(class_selector);
     } else {
-        toggleShow("#phenotype-quant");
-        toggleHide("#phenotype-qualit");
+        toggleHide(class_selector);
     }
 }
 
-function togglePeaktableFilter() {
-    var choice = document.getElementById('peaktable_filter_toggle').value;
-    if (choice === 'True') {
-        toggleShow("#peaktable-filter");
+function togglePhenotypeFormat() {
+    var choice = document.getElementById('phenotype_format').value;
+    if (choice === 'qualitative') {
+        toggleShow(".phenotype-qualitative");
+        toggleHide(".phenotype-quantitative");
+    } else if (choice === '') {
+        toggleHide(".phenotype-quantitative");
+        toggleHide(".phenotype-qualitative");
     } else {
-        toggleHide("#peaktable-filter");
+        toggleShow(".phenotype-quantitative");
+        toggleHide(".phenotype-qualitative");
     }
 }
 
 window.onload = function() {
-    document.getElementById('peaktable_filter_toggle').addEventListener('change', togglePeaktableFilter);
+    document.getElementById('peaktable_filter_toggle').addEventListener('change', function() {
+        toggleGenericModule('peaktable_filter_toggle', '.peaktable-filter');
+    });
+    document.getElementById('msms_cosine_toggle').addEventListener('change', function() {
+        toggleGenericModule('msms_cosine_toggle', '.msms-cosine');
+    });
+    document.getElementById('msms_deepscore_toggle').addEventListener('change', function() {
+        toggleGenericModule('msms_deepscore_toggle', '.msms-deepscore');
+    });
+    document.getElementById('group_blank_toggle').addEventListener('change', function() {
+        toggleGenericModule('group_blank_toggle', '.group-blank');
+    });
+    document.getElementById('group_factor_toggle').addEventListener('change', function() {
+        toggleGenericModule('group_factor_toggle', '.group-factor');
+    });
     document.getElementById('phenotype_format').addEventListener('change', togglePhenotypeFormat);
+    document.getElementById('library_cosine_toggle').addEventListener('change', function() {
+        toggleGenericModule('library_cosine_toggle', '.library-cosine');
+    });
+    document.getElementById('library_deepscore_toggle').addEventListener('change', function() {
+        toggleGenericModule('library_deepscore_toggle', '.library-deepscore');
+    });
+    document.getElementById('askcb_cosine_toggle').addEventListener('change', function() {
+        toggleGenericModule('askcb_cosine_toggle', '.askcb-cosine');
+    });
+    document.getElementById('askcb_deepscore_toggle').addEventListener('change', function() {
+        toggleGenericModule('askcb_deepscore_toggle', '.askcb-deepscore');
+    });
 };
