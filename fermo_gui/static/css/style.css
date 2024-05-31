@@ -207,3 +207,13 @@ table th:last-child{
 .form-select {
     font-size: 13px;
 }
+
+.form-check-input {
+    width: 1.5rem;
+    height: 1rem;
+}
+
+.form-check-input:checked {
+    background-color: rgba(153, 191, 159, 0.70);
+    border-color: #5a755e;
+}

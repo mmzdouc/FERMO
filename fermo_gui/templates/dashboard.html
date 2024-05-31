@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-4 pe-md-0 pe-sm-3">
                 <div class="dropzone">
-                    <div class="accordion accordion-item" draggable="true" id="sample">
+                    <div class="accordion accordion-item" id="sample">
                         <h2 class="accordion-header" id="sampleTableHeader">
                             <button class="accordion-button"
                                     type="button"
@@ -36,7 +36,7 @@
                 </div>
 
                 <div class="dropzone">
-                    <div class="accordion accordion-item" draggable="true" id="sampleInfo">
+                    <div class="accordion accordion-item" id="sampleInfo">
                         <h2 class="accordion-header" id="sampleInfoHeader">
                             <button class="accordion-button collapsed"
                                     type="button"
@@ -77,7 +77,7 @@
                 </div>
 
                 <div class="dropzone">
-                    <div class="accordion accordion-item" draggable="true" id="feature">
+                    <div class="accordion accordion-item" id="feature">
                         <h2 class="accordion-header" id="featureTableHeader">
                             <button class="accordion-button collapsed"
                                     type="button"
@@ -92,7 +92,7 @@
                             class="accordion-collapse collapse"
                             aria-labelledby="featureTableHeader">
                             <div class="accordion-body overflow-auto">
-                                <div class="accordion-subheader accordion-item" draggable="false" id="genFeature">
+                                <div class="accordion-subheader accordion-item" id="genFeature">
                                     <h2 class="accordion-header" id="featureTableGeneral">
                                         <button class="accordion-button collapsed"
                                                 type="button"
@@ -142,7 +142,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-subheader accordion-item" draggable="false" id="annotationFeature">
+                                <div class="accordion-subheader accordion-item" id="annotationFeature">
                                     <h2 class="accordion-header" id="featureTableAnnotation">
                                         <button class="accordion-button collapsed"
                                                 type="button"
@@ -166,7 +166,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-subheader accordion-item" draggable="false" id="groupFeature">
+                                <div class="accordion-subheader accordion-item" id="groupFeature">
                                     <h2 class="accordion-header" id="featureTableGroups">
                                         <button class="accordion-button collapsed"
                                                 type="button"
@@ -186,7 +186,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-subheader accordion-item" draggable="false" id="sampleFeature">
+                                <div class="accordion-subheader accordion-item" id="sampleFeature">
                                     <h2 class="accordion-header" id="featureTableSamples">
                                         <button class="accordion-button collapsed"
                                                 type="button"
@@ -226,7 +226,7 @@
                 </div>
 
                 <div class="dropzone">
-                    <div class="accordion accordion-item" draggable="true" id="filter">
+                    <div class="accordion accordion-item" id="filter">
                         <h2 class="accordion-header" id="filtersHeader">
                             <button class="accordion-button collapsed"
                                     type="button"
@@ -249,7 +249,7 @@
             </div>
             <div class="col-xs-12 col-sm-12 col-md-8 ps-md-0 pe-sm-3">
                 <div class="dropzone">
-                    <div class="accordion accordion-item" draggable="true" id="chromatogram">
+                    <div class="accordion accordion-item" id="chromatogram">
                         <h2 class="accordion-header" id="ChromatogramHeader">
                             <button class="accordion-button"
                                     type="button"
@@ -278,47 +278,48 @@
                         </div>
                     </div>
                 </div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-6 pe-md-0 ps-md-0 pe-sm-3">
+                            <div class="dropzone">
+                                <div class="accordion accordion-item" id="cyto">
+                                    <h2 class="accordion-header" id="cytoscapeHeader">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cytoscape" aria-expanded="true" aria-controls="Cytoscape">
+                                            Spectral similarity networking
+                                        </button>
+                                    </h2>
+                                    <div class="accordion-collapse collapse" id="cytoscape" aria-labelledby="CytoscapeHeader">
+                                        <div class="accordion-body overflow-auto">
+                                            <p id="activeFeature">Select any feature in the main chromatogram to visualize its network.</p>
 
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6">
-                        <div class="dropzone">
-                            <div class="accordion accordion-item" draggable="true" id="cyto">
-                                <h2 class="accordion-header" id="cytoscapeHeader">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cytoscape" aria-expanded="true" aria-controls="Cytoscape">
-                                        Spectral similarity networking
-                                    </button>
-                                </h2>
-                                <div class="accordion-collapse collapse" id="cytoscape" aria-labelledby="CytoscapeHeader">
-                                    <div class="accordion-body overflow-auto">
-                                        <p id="activeFeature">Select any feature in the main chromatogram to visualize its network.</p>
-
-                                        <div class="container-fluid">
-                                            <div class="row">
-                                                <div class="col-xs-12 col-sm-12 col-md-8">
-                                                    <div id="cy-container" style="display: none;">
-                                                        <div id="cy" data-stats-network='{{ data.stats_network | tojson | safe }}'></div>
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-12 col-md-8">
+                                                        <div id="cy-container" style="display: none;">
+                                                            <div id="cy" data-stats-network='{{ data.stats_network | tojson | safe }}'></div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-xs-12 col-sm-12 col-md-4">
-                                                    <div id="legend" style="display: none;">
-                                                        <div class="legend-item">
-                                                            <div class="legend-dot" style="background-color: #f4aaa7; border: 2px solid #960303;"></div>
-                                                            <p class="legend-text">Selected feature</p>
+                                                    <div class="col-xs-12 col-sm-12 col-md-4">
+                                                        <div id="legend" style="display: none;">
+                                                            <div class="legend-item">
+                                                                <div class="legend-dot" style="background-color: #f4aaa7; border: 2px solid #960303;"></div>
+                                                                <p class="legend-text">Selected feature</p>
+                                                            </div>
+                                                            <div class="legend-item">
+                                                                <div class="legend-dot" style="background-color: #c6dcfb; border: 2px solid #227aa0;"></div>
+                                                                <p class="legend-text">Related feature</p>
+                                                            </div>
+                                                            <div class="legend-item">
+                                                                <div class="legend-dot" style="background-color: #fff; border: 2px solid black;"></div>
+                                                                <p class="legend-text">Unique to sample</p>
+                                                            </div>
+                                                            <br>
+                                                            <label for="networkSelect" class="form-label">Select network type</label>
+                                                            <select class="form-select" id="networkSelect">
+                                                                  <option value="modified_cosine" selected>Modified Cosine</option>
+                                                                  <option value="ms2deepscore">MS2DeepScore</option>
+                                                            </select>
                                                         </div>
-                                                        <div class="legend-item">
-                                                            <div class="legend-dot" style="background-color: #c6dcfb; border: 2px solid #227aa0;"></div>
-                                                            <p class="legend-text">Related feature</p>
-                                                        </div>
-                                                        <div class="legend-item">
-                                                            <div class="legend-dot" style="background-color: #fff; border: 2px solid black;"></div>
-                                                            <p class="legend-text">Unique to sample</p>
-                                                        </div>
-                                                        <br>
-                                                        <label for="networkSelect" class="form-label">Select network type</label>
-                                                        <select class="form-select" id="networkSelect">
-                                                              <option value="modified_cosine" selected>Modified Cosine</option>
-                                                              <option value="ms2deepscore">MS2DeepScore</option>
-                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -327,25 +328,30 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-6">
-                        <div class="dropzone">
-                            <div class="accordion accordion-item" draggable="true" id="dashboardSettings">
-                                <h2 class="accordion-header" id="settingsHeader">
-                                    <button class="accordion-button collapsed"
-                                            type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#settings"
-                                            aria-expanded="false"
-                                            aria-controls="settings">
-                                        Dashboard settings
-                                    </button>
-                                </h2>
-                                <div id="settings"
-                                     class="accordion-collapse collapse"
-                                     aria-labelledby="filtersHeader">
-                                    <div class="accordion-body overflow-auto">
-
+                        <div class="col-xs-12 col-sm-12 col-md-6 pe-md-0 ps-md-0 pe-sm-3">
+                            <div class="dropzone">
+                                <div class="accordion accordion-item" id="dashboardSettings">
+                                    <h2 class="accordion-header" id="settingsHeader">
+                                        <button class="accordion-button collapsed"
+                                                type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#settings"
+                                                aria-expanded="false"
+                                                aria-controls="settings">
+                                            Dashboard settings
+                                        </button>
+                                    </h2>
+                                    <div id="settings"
+                                         class="accordion-collapse collapse"
+                                         aria-labelledby="filtersHeader">
+                                        <div class="accordion-body overflow-auto">
+                                            <div class="form-check form-switch">
+                                              <input class="form-check-input" type="checkbox" id="allowDragAndDrop">
+                                              <label class="form-check-label" for="allowDragAndDrop">
+                                                  Drag and drop the dashboard elements to reorganise the layout.
+                                              </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -353,19 +359,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-4">
-            <div class="dropzone"></div>
-        </div>
-        <div class="col-xs-12 col-sm-12 col-md-4">
-            <div class="dropzone"></div>
-        </div>
-        <div class="col-xs-12 col-sm-12 col-md-4">
-            <div class="dropzone"></div>
         </div>
     </div>
 </div>
