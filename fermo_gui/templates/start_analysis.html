@@ -3,31 +3,63 @@
 {% block content %}
   {% from "_formhelpers.html" import render_field %}
   <div class="container mt-5">
-    <h1>Start new analysis</h1>
+    {% if jobload %}
+      <h1>Start new analysis</h1>
+    {% else %}
+      <h1>Start new analysis with loaded parameters</h1>
+    {% endif %}
     {% with messages = get_flashed_messages() %}
       {% if messages %}
-        <h2 style="color: red">Error during input validation</h2>
-        <ul class=flashes>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
+        <div class="container-fluid">
+          <h2 style="color: red">Error during input validation</h2>
+          <ul class=flashes>
+          {% for message in messages %}
+            <li style="color: red">{{ message }}</li>
+          {% endfor %}
+          </ul>
+        </div>
       {% endif %}
     {% endwith %}
-    <form method="post" action="{{ url_for('routes.start_analysis') }}" enctype="multipart/form-data">
+    {% if jobload %}
+      <form method="post" action="{{ url_for('routes.start_analysis') }}" enctype="multipart/form-data">
+    {% else %}
+      <form method="post" action="{{ url_for('routes.load_settings', job_id=job_id) }}" enctype="multipart/form-data">
+    {% endif %}
       {{ form.hidden_tag() }}
 
+      {% if jobload %}
+        <div class="border p-4 my-2">
+          <fieldset id="reloadjob-form">
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h3>Load parameters</h3></div>
+              </div>
+            </div>
+            <hr>
+            <div class="reloadjob-field">
+              {{ render_field(form.reload_jobid) }}
+              <div class="container-fluid">
+              <div class="row">
+                <div class="col-auto mx-auto">
+                  <button type="submit" class="btn btn-primary">Reload Settings</button>
+                </div>
+              </div>
+            </div>
+            </div>
+          </fieldset>
+        </div>
+      {% endif %}
+
       <div class="border p-4 my-2">
-        <fieldset id="general-form">
+        <fieldset id="notification-form">
           <div class="container-fluid">
             <div class="row my-2 d-flex align-items-center">
-              <div class="col-auto"><h3>General settings</h3></div>
+              <div class="col-auto"><h3>Notification settings</h3></div>
             </div>
           </div>
           <hr>
-          <div class="general-field">
+          <div class="notification-field">
             {{ render_field(form.email) }}
-            {{ render_field(form.reload_jobid) }}
           </div>
         </fieldset>
       </div>

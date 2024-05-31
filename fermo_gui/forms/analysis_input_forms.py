@@ -21,8 +21,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from typing import Self
+
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileAllowed, FileField, FileRequired, FileSize
+from flask_wtf.file import FileAllowed, FileField, FileSize
 from wtforms import (
     DecimalField,
     EmailField,
@@ -63,21 +65,19 @@ class PeaktableForm:
     peaktable_file = FileField(
         label="File",
         description="Upload the peaktable file.",
-        validators=[FileRequired(), FileAllowed(["csv"]), FileSize(max_size=2000000)],
+        validators=[Optional(), FileAllowed(["csv"]), FileSize(max_size=2000000)],
     )
     peaktable_format = SelectField(
         label="Format",
         description="Specify formatting of the peaktable file.",
         validators=[Optional()],
         choices=[("mzmine3", "mzmine3")],
-        default="mzmine3",
     )
     peaktable_polarity = SelectField(
         label="Polarity",
         description="Specify ion mode polarity of the peaktable file.",
         validators=[Optional()],
         choices=[("positive", "positive"), ("negative", "negative")],
-        default="positive",
     )
     peaktable_ppm = DecimalField(
         label="Mass Deviation",
@@ -86,7 +86,6 @@ class PeaktableForm:
             "adducts, MS/MS neutral losses, and MS/MS fragments."
         ),
         validators=[Optional(), NumberRange(min=0.0)],
-        default=10,
     )
     peaktable_filter_toggle = SelectField(
         label="Module",
@@ -560,6 +559,12 @@ class ASKCBForm:
     )
 
 
+class SubmitForm:
+    """Handles the submit analysis form field"""
+
+    start_analysis = SubmitField("Start analysis")
+
+
 class AnalysisForm(
     FlaskForm,
     NotificationForm,
@@ -571,7 +576,29 @@ class AnalysisForm(
     LibraryForm,
     Ms2queryForm,
     ASKCBForm,
+    SubmitForm,
 ):
     """Organizes forms for data input"""
 
-    start_analysis = SubmitField("Start analysis")
+    def apply_defaults(self: Self, p: dict):
+        """Dynamically sets defaults for form fields
+
+        Arguments:
+            p: the parameters dict
+        """
+
+        self.peaktable_format.default = (
+            p.get("files", {}).get("peaktable", {}).get("format", "mzmine3")
+        )
+        self.peaktable_polarity.default = (
+            p.get("files", {}).get("peaktable", {}).get("polarity", "positive")
+        )
+        self.peaktable_ppm.default = (
+            p.get("core_modules", {})
+            .get("adduct_annotation", {})
+            .get("mass_dev_ppm", 10)
+        )
+        # TODO(MMZ 31.5.):expand here for other defaults
+
+        for field in self._fields.values():
+            field.process(formdata=None)
