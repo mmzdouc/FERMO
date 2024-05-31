@@ -92,7 +92,6 @@ class PeaktableForm:
         description="Activate feature filtering for area and/or height.",
         validators=[Optional()],
         choices=[("False", "inactive"), ("True", "active")],
-        default="False",
     )
     peaktable_filter_height_lower = DecimalField(
         label="Filter Height (lower)",
@@ -101,7 +100,6 @@ class PeaktableForm:
             "include all, set to '0'."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
-        default=0.00,
     )
     peaktable_filter_height_upper = DecimalField(
         label="Filter Height (upper)",
@@ -110,7 +108,6 @@ class PeaktableForm:
             "include all, set to '1.0'."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
-        default=1.00,
     )
     peaktable_filter_area_lower = DecimalField(
         label="Filter Area (lower)",
@@ -119,7 +116,6 @@ class PeaktableForm:
             "set to '0'."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
-        default=0.00,
     )
     peaktable_filter_area_upper = DecimalField(
         label="Filter Area (upper)",
@@ -128,7 +124,6 @@ class PeaktableForm:
             "all, set to '1.0'."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
-        default=1.00,
     )
 
 
@@ -598,6 +593,36 @@ class AnalysisForm(
             .get("adduct_annotation", {})
             .get("mass_dev_ppm", 10)
         )
+        self.peaktable_filter_toggle.default = str(
+            p.get("additional_modules", {})
+            .get("feature_filtering", {})
+            .get("activate_module", False)
+        )
+        try:
+            r_list = (
+                p.get("additional_modules", {})
+                .get("feature_filtering", {})
+                .get("filter_rel_int_range")
+            )
+            self.peaktable_filter_height_lower.default = min(r_list)
+            self.peaktable_filter_height_upper.default = max(r_list)
+        except TypeError:
+            self.peaktable_filter_height_lower.default = 0.0
+            self.peaktable_filter_height_upper.default = 1.0
+        try:
+            r_list = (
+                p.get("additional_modules", {})
+                .get("feature_filtering", {})
+                .get("filter_rel_area_range")
+            )
+            self.peaktable_filter_area_lower.default = min(r_list)
+            self.peaktable_filter_area_upper.default = max(r_list)
+        except TypeError:
+            self.peaktable_filter_area_lower.default = 0.0
+            self.peaktable_filter_area_upper.default = 1.0
+
+        # TODO: continue with msms etc.
+
         # TODO(MMZ 31.5.):expand here for other defaults
 
         for field in self._fields.values():
