@@ -134,10 +134,19 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleDa
         var node = event.target;
         var featureId = node.id();
         var filteredSampleData = getFeatureData(featureId, sampleData);
-        sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
-        visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
+
+        if (isEmpty(filteredSampleData)) {
+            alert('This feature is not found in this sample.');
+        } else {
+            sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
+            visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
+        }
     });
     showNetwork();
+}
+
+function isEmpty(data) {
+    return Object.values(data).every(array => Array.isArray(array) && array.length === 0);
 }
 
 function showNetwork() {
