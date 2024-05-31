@@ -581,22 +581,38 @@ class AnalysisForm(
         Arguments:
             p: the parameters dict
         """
+        dflt = {
+            "peaktable_format": "mzmine3",
+            "peaktable_polarity": "positive",
+            "peaktable_ppm": 10,
+            "peaktable_filter_toggle": False,
+            "peaktable_filter_height_lower": 0.0,
+            "peaktable_filter_height_upper": 1.0,
+            "peaktable_filter_area_lower": 0.0,
+            "peaktable_filter_area_upper": 1.0,
+        }
+
+        # TODO: Continue putting every hardcoded param in dict
 
         self.peaktable_format.default = (
-            p.get("files", {}).get("peaktable", {}).get("format", "mzmine3")
+            p.get("files", {})
+            .get("peaktable", {})
+            .get("format", dflt["peaktable_format"])
         )
         self.peaktable_polarity.default = (
-            p.get("files", {}).get("peaktable", {}).get("polarity", "positive")
+            p.get("files", {})
+            .get("peaktable", {})
+            .get("polarity", dflt["peaktable_polarity"])
         )
         self.peaktable_ppm.default = (
             p.get("core_modules", {})
             .get("adduct_annotation", {})
-            .get("mass_dev_ppm", 10)
+            .get("mass_dev_ppm", dflt["peaktable_ppm"])
         )
         self.peaktable_filter_toggle.default = str(
             p.get("additional_modules", {})
             .get("feature_filtering", {})
-            .get("activate_module", False)
+            .get("activate_module", dflt["peaktable_filter_toggle"])
         )
         try:
             r_list = (
@@ -607,8 +623,12 @@ class AnalysisForm(
             self.peaktable_filter_height_lower.default = min(r_list)
             self.peaktable_filter_height_upper.default = max(r_list)
         except TypeError:
-            self.peaktable_filter_height_lower.default = 0.0
-            self.peaktable_filter_height_upper.default = 1.0
+            self.peaktable_filter_height_lower.default = dflt[
+                "peaktable_filter_height_lower"
+            ]
+            self.peaktable_filter_height_upper.default = dflt[
+                "peaktable_filter_height_upper"
+            ]
         try:
             r_list = (
                 p.get("additional_modules", {})
@@ -618,8 +638,12 @@ class AnalysisForm(
             self.peaktable_filter_area_lower.default = min(r_list)
             self.peaktable_filter_area_upper.default = max(r_list)
         except TypeError:
-            self.peaktable_filter_area_lower.default = 0.0
-            self.peaktable_filter_area_upper.default = 1.0
+            self.peaktable_filter_area_lower.default = dflt[
+                "peaktable_filter_area_lower"
+            ]
+            self.peaktable_filter_area_upper.default = dflt[
+                "peaktable_filter_area_upper"
+            ]
 
         # TODO: continue with msms etc.
 
