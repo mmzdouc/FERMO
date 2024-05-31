@@ -38,9 +38,22 @@ class NotificationForm:
     """Handles the notification related fields."""
 
     email = EmailField(
-        label="Email Address",
+        label="Email Notification",
         description="An optional e-mail address for job notification.",
         validators=[Optional(), Email()],
+    )
+
+
+class ReloadJobForm:
+    """Handles the job settings reloading related fields."""
+
+    reload_jobid = StringField(
+        label="FERMO JobID",
+        description=(
+            "Reload parameter settings from a previous FERMO job. 'File' uploads are "
+            "not retained and must be newly uploaded."
+        ),
+        validators=[Optional()],
     )
 
 
@@ -550,6 +563,7 @@ class ASKCBForm:
 class AnalysisForm(
     FlaskForm,
     NotificationForm,
+    ReloadJobForm,
     PeaktableForm,
     MsmsForm,
     PhenotypeForm,

@@ -18,15 +18,16 @@
       {{ form.hidden_tag() }}
 
       <div class="border p-4 my-2">
-        <fieldset id="notification-form">
+        <fieldset id="general-form">
           <div class="container-fluid">
             <div class="row my-2 d-flex align-items-center">
-              <div class="col-auto"><h3>Notification settings</h3></div>
+              <div class="col-auto"><h3>General settings</h3></div>
             </div>
           </div>
           <hr>
-          <div class="notification-field">
+          <div class="general-field">
             {{ render_field(form.email) }}
+            {{ render_field(form.reload_jobid) }}
           </div>
         </fieldset>
       </div>
