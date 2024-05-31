@@ -20,24 +20,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
+import json
+import shutil
 from pathlib import Path
 from typing import Union
 
 from celery.result import AsyncResult
 from flask import (
-    render_template,
-    redirect,
-    url_for,
-    session,
     Response,
     current_app,
+    flash,
+    redirect,
+    render_template,
     request,
+    url_for,
 )
 
-from fermo_gui.analysis.analysis_manager import start_fermo_core
+from fermo_gui.analysis.fermo_core_manager import start_fermo_core_manager
 from fermo_gui.analysis.general_manager import GeneralManager as GenManager
+from fermo_gui.analysis.input_processor import InputProcessor
 from fermo_gui.config.extensions import socketio
-from fermo_gui.forms.analysis_input_forms import AnalysisInput
+from fermo_gui.forms.analysis_input_forms import AnalysisForm
 from fermo_gui.routes import bp
 
 
@@ -51,48 +55,46 @@ def start_analysis() -> Union[str, Response]:
     Returns:
         On GET, the "start_analysis" page, on POST a redirect to the "job_submitted" p.
     """
-    # TODO(MMZ 14.2.24): Cover with tests
-    form = AnalysisInput()
-
-    if request.method == "GET":
-        task_id = GenManager().create_uuid(current_app.config.get("UPLOAD_FOLDER"))
-        task_upload_path = GenManager().create_upload_dir(
-            current_app.config.get("UPLOAD_FOLDER"), task_id
-        )
-        session["task_id"] = task_id
-        session["task_upload_path"] = task_upload_path
-        return render_template("start_analysis.html", form=form)
+    form = AnalysisForm()
 
     if form.validate_on_submit():
-        params = {"email": form.email.data}
+        task_id = GenManager().create_uuid(current_app.config.get("UPLOAD_FOLDER"))
+        task_path = Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(task_id)
+        task_path.mkdir()
 
-        GenManager.store_data_as_json(
-            session["task_upload_path"],
-            f"{session['task_id']}.params.json",
-            params,
-        )
+        try:
+            processor = InputProcessor(
+                form=form,
+                task_dir=Path(task_path),
+                root_url=request.base_url.partition("/analysis/start_analysis/")[0],
+            )
+            processor.run_processor()
+            parameters_dict = processor.return_params()
+            with open(f"{task_path}/{task_id}.parameters.json", "w") as outfile:
+                outfile.write(json.dumps(parameters_dict, indent=2, ensure_ascii=False))
+        except Exception as e:
+            flash(str(e))
+            if task_path.exists():
+                shutil.rmtree(task_path, ignore_errors=True)
+            return render_template("start_analysis.html", form=form)
 
         metadata = {
-            "job_id": session["task_id"],
-            "upload_path": session["task_upload_path"],
+            "job_id": task_id,
+            "task_path": str(task_path.resolve()),
+            "email": form.email.data if len(form.email.data) != 0 else None,
+            "email_notify": (
+                True if (len(form.email.data) != 0 and processor.online) else False
+            ),
             "root_url": request.base_url.partition("/analysis/start_analysis/")[0],
-            "email": form.email.data,
-            "email_notify": True,
         }
 
-        if "localhost" in metadata["root_url"] or "127.0.0.1" in metadata["root_url"]:
-            metadata["email_notify"] = False
-        elif params.get("email") is None:
-            # TODO(MMZ 13.2.24): change to the correct params data structure
-            metadata["email_notify"] = False
-        elif current_app.config.get("MAIL_USERNAME") is None:
-            metadata["email_notify"] = False
-
-        start_fermo_core.apply_async(
+        start_fermo_core_manager.apply_async(
             kwargs={"metadata": metadata},
-            task_id=session["task_id"],
+            task_id=metadata["job_id"],
         )
-        return redirect(url_for("routes.job_submitted", job_id=session["task_id"]))
+        return redirect(url_for("routes.job_submitted", job_id=metadata["job_id"]))
+
+    return render_template("start_analysis.html", form=form)
 
 
 @bp.route("/analysis/job_submitted/<job_id>/", methods=["GET"])
@@ -105,7 +107,6 @@ def job_submitted(job_id: str) -> str:
     Returns:
         The rendered "job_submitted.html" page
     """
-    # TODO(MMZ 14.2.24): Cover with tests
     job_data = {
         "task_id": job_id,
         "root_url": request.base_url.partition("/analysis/job_submitted/")[0],
@@ -124,7 +125,7 @@ def handle_startup_message(data: dict):
 
 
 @socketio.on("get_status")
-def check_job_status(data: str):
+def check_job_status(data: dict):
     """Serve job status upon request.
 
     Note: Celery does not differentiate between non-existing and non-running jobs.
@@ -134,7 +135,6 @@ def check_job_status(data: str):
     Arguments:
         data: JSON-derived dict with job ID to check status of
     """
-    # TODO(MMZ 14.2.24): Cover with tests
     if (
         not Path(current_app.config.get("UPLOAD_FOLDER"))
         .joinpath(data.get("task_id"))

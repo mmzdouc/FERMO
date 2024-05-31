@@ -1,5 +1,7 @@
 ### CUSTOM START ###
 
+tests/test_fermo_core_manager/*/results/*
+
 # pycharm
 .idea/
 
@@ -7,6 +9,7 @@
 instance/
 fermo_gui/upload/*
 !fermo_gui/upload/example
+!fermo_gui/upload/defaults
 
 ### CUSTOM STOP ###
 
