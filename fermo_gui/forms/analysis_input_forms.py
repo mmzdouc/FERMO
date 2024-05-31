@@ -79,7 +79,7 @@ class PeaktableForm:
         label="Module",
         description="Activate feature filtering for area and/or height.",
         validators=[Optional()],
-        choices=[("False", "deactivate"), ("True", "activate")],
+        choices=[("False", "inactive"), ("True", "active")],
         default="False",
     )
     peaktable_filter_height_lower = DecimalField(
@@ -148,21 +148,21 @@ class MsmsForm:
         label="Fragment Annotation",
         description="Activate MS/MS fragment annotation.",
         validators=[Optional()],
-        choices=[("True", "activate"), ("False", "deactivate")],
+        choices=[("True", "active"), ("False", "inactive")],
         default="True",
     )
     msms_loss_toggle = SelectField(
         label="Loss annotation",
         description="Activate MS/MS neutral loss annotation.",
         validators=[Optional()],
-        choices=[("True", "activate"), ("False", "deactivate")],
+        choices=[("True", "active"), ("False", "inactive")],
         default="True",
     )
     msms_cosine_toggle = SelectField(
         label="Module",
         description="Activate modified cosine-based spectral (=molecular) networking.",
         validators=[Optional()],
-        choices=[("True", "activate"), ("False", "deactivate")],
+        choices=[("True", "active"), ("False", "inactive")],
         default="True",
     )
     msms_cosine_minfrag = IntegerField(
@@ -195,7 +195,7 @@ class MsmsForm:
         label="Module",
         description="Activate MS2DeepScore-based spectral (=molecular) networking.",
         validators=[Optional()],
-        choices=[("True", "activate"), ("False", "deactivate")],
+        choices=[("True", "active"), ("False", "inactive")],
         default="True",
     )
     msms_deepscore_minfrag = IntegerField(
@@ -329,7 +329,7 @@ class GroupForm:
             "Activate feature blank assignment (requires samples marked as 'BLANK')."
         ),
         validators=[Optional()],
-        choices=[("False", "deactivate"), ("True", "activate")],
+        choices=[("False", "inactive"), ("True", "active")],
         default="False",
     )
     group_blank_factor = IntegerField(
@@ -358,7 +358,7 @@ class GroupForm:
             "Activate the calculation of fold-changes between groups of a category."
         ),
         validators=[Optional()],
-        choices=[("False", "deactivate"), ("True", "activate")],
+        choices=[("False", "inactive"), ("True", "active")],
         default="False",
     )
     group_factor_algorithm = SelectField(
@@ -396,7 +396,7 @@ class LibraryForm:
         label="Module",
         description="Activate modified cosine-based spectral library matching.",
         validators=[Optional()],
-        choices=[("False", "deactivate"), ("True", "activate")],
+        choices=[("False", "inactive"), ("True", "active")],
         default="False",
     )
     library_cosine_tolerance = DecimalField(
@@ -429,7 +429,7 @@ class LibraryForm:
         label="Module",
         description="Activate MS2DeepScore-based spectral library matching.",
         validators=[Optional()],
-        choices=[("False", "deactivate"), ("True", "activate")],
+        choices=[("False", "inactive"), ("True", "active")],
         default="False",
     )
     library_deepscore_score = DecimalField(
@@ -469,7 +469,7 @@ class Ms2queryForm:
             "takes about 2 seconds per spectrum. Calculation time is restricted.)"
         ),
         validators=[Optional()],
-        choices=[("False", "deactivate"), ("True", "activate")],
+        choices=[("False", "inactive"), ("True", "active")],
         default="False",
     )
 
@@ -482,11 +482,20 @@ class ASKCBForm:
         description=("The antiSMASH job to use for integrated analysis with FERMO."),
         validators=[Optional()],
     )
+    askcb_score = DecimalField(
+        label="Similarity score",
+        description=(
+            "Similarity (%) cutoff for KnownClusterBlast matches against "
+            "MIBiG to consider in analysis."
+        ),
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
+        default=0.7,
+    )
     askcb_cosine_toggle = SelectField(
         label="Module",
         description="Activate modified cosine-based MIBiG spectral library matching.",
         validators=[Optional()],
-        choices=[("False", "deactivate"), ("True", "activate")],
+        choices=[("False", "inactive"), ("True", "active")],
         default="False",
     )
     askcb_cosine_tolerance = DecimalField(
@@ -519,7 +528,7 @@ class ASKCBForm:
         label="Module",
         description="Activate MS2DeepScore-based MIBiG spectral library matching.",
         validators=[Optional()],
-        choices=[("False", "deactivate"), ("True", "activate")],
+        choices=[("False", "inactive"), ("True", "active")],
         default="False",
     )
     askcb_deepscore_score = DecimalField(
