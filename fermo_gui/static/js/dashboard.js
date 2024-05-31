@@ -3,6 +3,7 @@ import { updateFeatureTables, hideTables } from './dynamic_tables.js';
 import { visualizeData } from './chromatogram.js';
 import { visualizeNetwork, hideNetwork } from './network.js';
 import { enableDragAndDrop, disableDragAndDrop } from './dragdrop.js';
+import { updateRangeFromSlider, updateRangeFromInput, enforceConstraints } from './filters.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dragged;
@@ -95,4 +96,22 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('networkSelect').addEventListener('change', handleNetworkTypeChange);
         });
     });
+
+    const range1 = document.getElementById('range1');
+    const range2 = document.getElementById('range2');
+    const range1Input = document.getElementById('range1Input');
+    const range2Input = document.getElementById('range2Input');
+
+    // Add event listeners for input events
+    range1.addEventListener('input', updateRangeFromSlider);
+    range2.addEventListener('input', updateRangeFromSlider);
+    range1Input.addEventListener('input', updateRangeFromInput);
+    range2Input.addEventListener('input', updateRangeFromInput);
+
+    // Add event listeners for blur events to enforce constraints on loss of focus
+    range1Input.addEventListener('blur', enforceConstraints);
+    range2Input.addEventListener('blur', enforceConstraints);
+
+    // Initial synchronization
+    updateRangeFromSlider();
 });

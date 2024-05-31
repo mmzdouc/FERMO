@@ -241,7 +241,28 @@
                              class="accordion-collapse collapse"
                              aria-labelledby="filtersHeader">
                             <div class="accordion-body overflow-auto">
-
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-12 col-md-6">
+                                            <div class="slidecontainer">
+                                                <label class="form-label">Novelty score</label>
+                                                <div class="multirange">
+                                                    <div class="track"></div>
+                                                    <input type="range" min="0.0" max="1.0" value="0.0" step="0.05" class="slider" id="range1">
+                                                    <input type="range" min="0.0" max="1.0" value="1.0" step="0.05" class="slider" id="range2">
+                                                </div>
+                                                <div class="range-inputs">
+                                                    <div class="form-outline">
+                                                        <input type="number" id="range1Input" min="0.0" max="1.0" value="0.0" step="0.05" class="form-control form-icon-trailing" />
+                                                    </div>
+                                                    <div class="form-outline">
+                                                        <input type="number" id="range2Input" min="0.0" max="1.0" value="1.0" step="0.05" class="form-control form-icon-trailing" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
