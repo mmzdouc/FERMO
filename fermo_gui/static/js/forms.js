@@ -64,12 +64,6 @@ window.onload = function() {
     document.getElementById('peaktable_filter_toggle').addEventListener('change', function() {
         toggleGenericModule('peaktable_filter_toggle', '.peaktable-filter');
     });
-    document.getElementById('msms_cosine_toggle').addEventListener('change', function() {
-        toggleGenericModule('msms_cosine_toggle', '.msms-cosine');
-    });
-    document.getElementById('msms_deepscore_toggle').addEventListener('change', function() {
-        toggleGenericModule('msms_deepscore_toggle', '.msms-deepscore');
-    });
     document.getElementById('group_blank_toggle').addEventListener('change', function() {
         toggleGenericModule('group_blank_toggle', '.group-blank');
     });

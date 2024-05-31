@@ -19,7 +19,11 @@
 
       <div class="border p-4 my-2">
         <fieldset id="notification-form">
-          <h3 class="col-md-auto">Notification settings</h3>
+          <div class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>Notification settings</h3></div>
+            </div>
+          </div>
           <hr>
           <div class="notification-field">
             {{ render_field(form.email) }}
@@ -29,17 +33,25 @@
 
       <div class="border p-4 my-2">
         <fieldset id="peaktable-form">
-          <h3 class="col-md-auto">Peaktable*</h3>
+          <div class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>Peaktable*</h3></div>
+            </div>
+          </div>
           <hr>
           <div class="peaktable-field d-block">
             {{ render_field(form.peaktable_file) }}
             {{ render_field(form.peaktable_format) }}
             {{ render_field(form.peaktable_polarity) }}
             {{ render_field(form.peaktable_ppm) }}
-            <h4 class="col-md-auto">Feature filter parameters</h4>
-            <hr>
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Feature filter parameters</h4></div>
+              </div>
+            </div>
             {{ render_field(form.peaktable_filter_toggle) }}
             <div class="peaktable-filter d-none">
+              <hr>
               {{ render_field(form.peaktable_filter_height_lower) }}
               {{ render_field(form.peaktable_filter_height_upper) }}
               <hr>
@@ -52,7 +64,12 @@
 
       <div class="border p-4 my-2">
         <fieldset id="msms-form">
-          <h3 class="col-md-auto">MS/MS</h3>
+          <div class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>MS/MS</h3></div>
+              <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.msms-field')">Modify parameters</button></div>
+            </div>
+          </div>
           <hr>
           <div class="msms-field d-none">
             {{ render_field(form.msms_file) }}
@@ -60,31 +77,45 @@
             {{ render_field(form.msms_rel_int_from) }}
             {{ render_field(form.msms_fragment_toggle) }}
             {{ render_field(form.msms_loss_toggle) }}
-            <h4 class="col-md-auto">Spectral networking: modified cosine</h4>
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Spectral networking: modified cosine</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.msms-cosine')">Modify parameters</button></div>
+              </div>
+            </div>
             <hr>
-            {{ render_field(form.msms_cosine_toggle) }}
-            <div class="msms-cosine d-block">
+            <div class="msms-cosine d-none">
+              {{ render_field(form.msms_cosine_toggle) }}
               {{ render_field(form.msms_cosine_minfrag) }}
               {{ render_field(form.msms_cosine_tolerance) }}
               {{ render_field(form.msms_cosine_score) }}
               {{ render_field(form.msms_cosine_links) }}
             </div>
-            <h4 class="col-md-auto">Spectral networking: MS2DeepScore</h4>
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Spectral networking: MS2DeepScore</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.msms-deepscore')">Modify parameters</button></div>
+              </div>
+            </div>
             <hr>
-            {{ render_field(form.msms_deepscore_toggle) }}
-            <div class="msms-deepscore d-block">
+            <div class="msms-deepscore d-none">
+              {{ render_field(form.msms_deepscore_toggle) }}
               {{ render_field(form.msms_deepscore_minfrag) }}
               {{ render_field(form.msms_deepscore_score) }}
               {{ render_field(form.msms_deepscore_links) }}
             </div>
           </div>
-          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleDisplay('.msms-field')">Modify parameters</button>
         </fieldset>
       </div>
 
       <div class="border p-4 my-2">
         <fieldset id="group-form">
-          <h3 class="col-md-auto">Group Metadata Parameter</h3>
+          <div class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>Group Metadata</h3></div>
+              <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.group-field')">Modify parameters</button></div>
+            </div>
+          </div>
           <hr>
           <div class="group-field d-none">
             {{ render_field(form.group_file) }}
@@ -106,13 +137,17 @@
               {{ render_field(form.group_factor_value) }}
             </div>
           </div>
-          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleDisplay('.group-field')">Modify parameters</button>
         </fieldset>
       </div>
 
       <div class="border p-4 my-2">
         <fieldset id="phenotype-form">
-          <h3 class="col-md-auto">Phenotype Data</h3>
+          <div class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>Phenotype Data</h3></div>
+              <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.phenotype-field')">Modify parameters</button></div>
+            </div>
+          </div>
           <hr>
           <div class="phenotype-field d-none">
             {{ render_field(form.phenotype_file) }}
@@ -131,13 +166,17 @@
               {{ render_field(form.phenotype_quant_coeff) }}
             </div>
           </div>
-          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleDisplay('.phenotype-field')">Modify parameters</button>
         </fieldset>
       </div>
 
       <div class="border p-4 my-2">
         <fieldset id="library-form">
-          <h3 class="col-md-auto">Spectral Library</h3>
+          <div class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>Spectral Library</h3></div>
+              <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.library-field')">Modify parameters</button></div>
+            </div>
+          </div>
           <hr>
           <div class="library-field d-none">
             {{ render_field(form.library_file) }}
@@ -159,13 +198,17 @@
               {{ render_field(form.library_deepscore_mzdiff) }}
             </div>
           </div>
-          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleDisplay('.library-field')">Modify parameters</button>
         </fieldset>
       </div>
 
       <div class="border p-4 my-2">
         <fieldset id="ms2query-form">
-          <h3 class="col-md-auto">MS2Query Annotation</h3>
+          <div class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>MS2Query Annotation</h3></div>
+              <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.ms2query-field')">Modify parameters</button></div>
+            </div>
+          </div>
           <hr>
           <div class="ms2query-field d-none">
             {{ render_field(form.ms2query_file) }}
@@ -173,13 +216,17 @@
             <hr>
             {{ render_field(form.ms2query_score) }}
           </div>
-          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleDisplay('.ms2query-field')">Modify parameters</button>
         </fieldset>
       </div>
 
       <div class="border p-4 my-2">
         <fieldset id="askcb-form">
-          <h3 class="col-md-auto">antiSMASH Job Integration</h3>
+          <div class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>antiSMASH Job Integration</h3></div>
+              <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.askcb-field')">Modify parameters</button></div>
+            </div>
+          </div>
           <hr>
           <div class="askcb-field d-none">
             {{ render_field(form.askcb_jobid) }}
@@ -201,11 +248,16 @@
               {{ render_field(form.askcb_deepscore_mzdiff) }}
             </div>
           </div>
-          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleDisplay('.askcb-field')">Modify parameters</button>
         </fieldset>
       </div>
       <fieldset class="p-4 my-2">
-        <button type="submit" class="btn btn-primary">Start Analysis</button>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-auto mx-auto">
+              <button type="submit" class="btn btn-primary">Start Analysis</button>
+            </div>
+          </div>
+        </div>
       </fieldset>
     </form>
   </div>
