@@ -29,7 +29,6 @@ from typing import Union
 from celery.result import AsyncResult
 from flask import (
     Response,
-    abort,
     current_app,
     flash,
     redirect,
