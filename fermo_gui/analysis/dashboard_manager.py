@@ -38,6 +38,7 @@ class DashboardManager(BaseModel):
     stats_analysis: dict = {}
     stats_samples_dyn: list = []
     stats_chromatogram: dict = {}
+    stats_network: dict = {}
     ret_features: dict = {}
 
     def prepare_data_get(self: Self, f_sess: dict):
@@ -48,6 +49,7 @@ class DashboardManager(BaseModel):
         """
         self.extract_stats_analysis(f_sess)
         self.extract_stats_samples_dyn(f_sess)
+        self.extract_network(f_sess)
         self.create_chromatogram(f_sess)
 
     def provide_data_get(self: Self) -> dict:
@@ -59,6 +61,7 @@ class DashboardManager(BaseModel):
             "stats_analysis": self.stats_analysis,
             "stats_samples_dyn": self.stats_samples_dyn,
             "stats_chromatogram": self.stats_chromatogram,
+            "stats_network": self.stats_network,
         }
 
     def extract_stats_analysis(self: Self, f_sess: dict):
@@ -70,7 +73,7 @@ class DashboardManager(BaseModel):
         try:
             self.stats_analysis = {
                 "Total Samples": len(f_sess.get("stats", {}).get("samples")),
-                "Sample Groups": (len(f_sess.get("stats", {}).get("groups")) - 1),
+                # "Sample Groups": (len(f_sess.get("stats", {}).get("groups")) - 1),
                 "Molecular Features": f_sess.get("stats", {}).get("features"),
                 "Removed Mol. Features": len(
                     f_sess.get("stats", {}).get("inactive_features")
@@ -78,6 +81,9 @@ class DashboardManager(BaseModel):
                 "FERMO-CORE Version": f_sess.get("metadata", {}).get(
                     "fermo_core_version"
                 ),
+                "Run date (YYYY-MM-DD)": (
+                    f_sess.get("metadata", {}).get("file_created_isoformat")
+                ).split("T")[0],
             }
         except TypeError:
             self.stats_analysis = {"error": "error during parsing of session file"}
@@ -491,6 +497,7 @@ class DashboardManager(BaseModel):
                         {
                             "f_id": f_info.get("f_id"),
                             "rt": f_info.get("rt"),
+                            "rt_avg": g_info.get("rt"),
                             "trace_rt": f_info.get("trace_rt"),
                             "trace_int": f_info.get("trace_int"),
                             "abs_int": f_info.get("intensity"),
@@ -501,7 +508,14 @@ class DashboardManager(BaseModel):
                             "samples": g_info.get("samples"),
                             "f_group": g_info.get("group_factors"),
                             "f_sample": g_info.get("height_per_sample"),
+                            "a_sample": g_info.get("area_per_sample"),
                             "annotations": g_info.get("annotations"),
+                            "n_cos_id": g_info.get("networks", {})
+                            .get("modified_cosine", {})
+                            .get("network_id", {}),
+                            "n_ms2d_id": g_info.get("networks", {})
+                            .get("ms2deepscore", {})
+                            .get("network_id", {}),
                             "network_features": network_features,
                         }
                     )
@@ -509,3 +523,23 @@ class DashboardManager(BaseModel):
 
         except TypeError:
             self.stats_chromatogram = {"error": "error during parsing of session file"}
+
+    def extract_network(self: Self, f_sess: dict):
+        """Extracts network data from fermo.session file
+
+        Arguments:
+            f_sess: fermo session file
+        """
+        try:
+            networks = f_sess.get("stats", {}).get("networks") or []
+
+            for network in networks:
+                n_info = networks.get(network, {})
+                network_data = {}
+                for n_id in n_info.get("subnetworks", {}):
+                    network_data[n_id] = n_info.get("subnetworks", {}).get(n_id)
+
+                self.stats_network[network] = network_data
+
+        except TypeError:
+            self.stats_network = {"error": "error during parsing of session file"}
