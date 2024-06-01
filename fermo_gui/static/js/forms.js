@@ -36,51 +36,27 @@ function toggleHide(selector) {
    });
 }
 
-
-function toggleGenericModule(element_id, class_selector) {
-    var choice = document.getElementById(element_id).value;
-    if (choice === 'True') {
-        toggleShow(class_selector);
-    } else {
-        toggleHide(class_selector);
-    }
-}
-
 function togglePhenotypeFormat() {
     var choice = document.getElementById('phenotype_format').value;
     if (choice === 'qualitative') {
         toggleShow(".phenotype-qualitative");
-        toggleHide(".phenotype-quantitative");
-    } else if (choice === '') {
-        toggleHide(".phenotype-quantitative");
+        toggleHide(".phenotype-quantitative-perc");
+        toggleHide(".phenotype-quantitative-conc");
+    } else if (choice === 'quantitative-percentage') {
         toggleHide(".phenotype-qualitative");
+        toggleShow(".phenotype-quantitative-perc");
+        toggleHide(".phenotype-quantitative-conc");
+    } else if (choice === 'quantitative-concentration') {
+        toggleHide(".phenotype-qualitative");
+        toggleHide(".phenotype-quantitative-perc");
+        toggleShow(".phenotype-quantitative-conc");
     } else {
-        toggleShow(".phenotype-quantitative");
         toggleHide(".phenotype-qualitative");
+        toggleHide(".phenotype-quantitative-perc");
+        toggleHide(".phenotype-quantitative-conc");
     }
 }
 
 window.onload = function() {
-    document.getElementById('peaktable_filter_toggle').addEventListener('change', function() {
-        toggleGenericModule('peaktable_filter_toggle', '.peaktable-filter');
-    });
-    document.getElementById('group_blank_toggle').addEventListener('change', function() {
-        toggleGenericModule('group_blank_toggle', '.group-blank');
-    });
-    document.getElementById('group_factor_toggle').addEventListener('change', function() {
-        toggleGenericModule('group_factor_toggle', '.group-factor');
-    });
     document.getElementById('phenotype_format').addEventListener('change', togglePhenotypeFormat);
-    document.getElementById('library_cosine_toggle').addEventListener('change', function() {
-        toggleGenericModule('library_cosine_toggle', '.library-cosine');
-    });
-    document.getElementById('library_deepscore_toggle').addEventListener('change', function() {
-        toggleGenericModule('library_deepscore_toggle', '.library-deepscore');
-    });
-    document.getElementById('askcb_cosine_toggle').addEventListener('change', function() {
-        toggleGenericModule('askcb_cosine_toggle', '.askcb-cosine');
-    });
-    document.getElementById('askcb_deepscore_toggle').addEventListener('change', function() {
-        toggleGenericModule('askcb_deepscore_toggle', '.askcb-deepscore');
-    });
 };

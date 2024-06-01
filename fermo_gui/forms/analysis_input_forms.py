@@ -40,8 +40,8 @@ class NotificationForm:
     """Handles the notification related fields."""
 
     email = EmailField(
-        label="Email Notification",
-        description="An optional e-mail address for job notification.",
+        label="Email Address",
+        description="Provide an email address to be notified about the outcome of the job.",
         validators=[Optional(), Email()],
     )
 
@@ -100,7 +100,7 @@ class PeaktableForm:
         choices=[("False", "inactive"), ("True", "active")],
     )
     peaktable_filter_height_lower = DecimalField(
-        label="Filter Height (lower)",
+        label="Filter Height (min)",
         description=(
             "Set the minimal relative height (=intensity) of a molecular feature. To "
             "include all, set to '0'."
@@ -108,7 +108,7 @@ class PeaktableForm:
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
     )
     peaktable_filter_height_upper = DecimalField(
-        label="Filter Height (upper)",
+        label="Filter Height (max)",
         description=(
             "Set the maximum relative height (=intensity) of a molecular feature. To "
             "include all, set to '1.0'."
@@ -116,7 +116,7 @@ class PeaktableForm:
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
     )
     peaktable_filter_area_lower = DecimalField(
-        label="Filter Area (lower)",
+        label="Filter Area (min)",
         description=(
             "Set the minimal relative area of a molecular feature. To include all, "
             "set to '0'."
@@ -124,7 +124,7 @@ class PeaktableForm:
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
     )
     peaktable_filter_area_upper = DecimalField(
-        label="Filter Area (upper)",
+        label="Filter Area (max)",
         description=(
             "Set the maximum relative area of a molecular feature. To include "
             "all, set to '1.0'."
@@ -834,3 +834,6 @@ class AnalysisForm(
 
         for key, value in params.items():
             setattr(getattr(self, key), "default", value)
+
+        for field in self._fields.values():
+            field.process(formdata=None)

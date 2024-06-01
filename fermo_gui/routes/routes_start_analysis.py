@@ -124,7 +124,7 @@ def start_analysis() -> Union[str, Response]:
 
         return setup_fermo_run(form=form)
 
-    form.apply_defaults(p={})
+    form.apply_defaults(pars={})
     return render_template("start_analysis.html", form=form, jobload=True, job_id=None)
 
 
@@ -153,7 +153,7 @@ def load_settings(job_id: str) -> Union[str, Response]:
     if form.validate_on_submit():
         return setup_fermo_run(form=form)
 
-    form.apply_defaults(p=parameters)
+    form.apply_defaults(pars=parameters)
     return render_template(
         "start_analysis.html", form=form, jobload=False, job_id=exist_job_id
     )

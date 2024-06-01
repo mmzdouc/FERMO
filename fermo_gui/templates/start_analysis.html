@@ -6,7 +6,8 @@
     {% if jobload %}
       <h1>Start new analysis</h1>
     {% else %}
-      <h1>Start new analysis with loaded parameters</h1>
+      <h1>Start new analysis</h1>
+      <h2>Loaded parameters of job ID: {{ job_id }}</h2>
     {% endif %}
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -51,20 +52,6 @@
       {% endif %}
 
       <div class="border p-4 my-2">
-        <fieldset id="notification-form">
-          <div class="container-fluid">
-            <div class="row my-2 d-flex align-items-center">
-              <div class="col-auto"><h3>Notification settings</h3></div>
-            </div>
-          </div>
-          <hr>
-          <div class="notification-field">
-            {{ render_field(form.email) }}
-          </div>
-        </fieldset>
-      </div>
-
-      <div class="border p-4 my-2">
         <fieldset id="peaktable-form">
           <div class="container-fluid">
             <div class="row my-2 d-flex align-items-center">
@@ -77,17 +64,18 @@
             {{ render_field(form.peaktable_format) }}
             {{ render_field(form.peaktable_polarity) }}
             {{ render_field(form.peaktable_ppm) }}
+            {{ render_field(form.peaktable_adduct_toggle) }}
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
                 <div class="col-auto"><h4>Feature filter parameters</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.peaktable-filter')">Modify parameters</button></div>
               </div>
             </div>
-            {{ render_field(form.peaktable_filter_toggle) }}
+            <hr>
             <div class="peaktable-filter d-none">
-              <hr>
+              {{ render_field(form.peaktable_filter_toggle) }}
               {{ render_field(form.peaktable_filter_height_lower) }}
               {{ render_field(form.peaktable_filter_height_upper) }}
-              <hr>
               {{ render_field(form.peaktable_filter_area_lower) }}
               {{ render_field(form.peaktable_filter_area_upper) }}
             </div>
@@ -153,19 +141,29 @@
           <div class="group-field d-none">
             {{ render_field(form.group_file) }}
             {{ render_field(form.group_format) }}
-            <h4 class="col-md-auto">Blank Assignment</h4>
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Blank Assignment</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.group-blank')">Modify parameters</button></div>
+              </div>
+            </div>
             <hr>
-            {{ render_field(form.group_blank_toggle) }}
             <div class="group-blank d-none">
+              {{ render_field(form.group_blank_toggle) }}
               {{ render_field(form.group_blank_factor) }}
               {{ render_field(form.group_blank_algorithm) }}
               {{ render_field(form.group_blank_value) }}
-              <hr>
             </div>
-            <h4 class="col-md-auto">Group Factor Assignment</h4>
+
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Group Factor Assignment</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.group-factor')">Modify parameters</button></div>
+              </div>
+            </div>
             <hr>
-            {{ render_field(form.group_factor_toggle) }}
             <div class="group-factor d-none">
+              {{ render_field(form.group_factor_toggle) }}
               {{ render_field(form.group_factor_algorithm) }}
               {{ render_field(form.group_factor_value) }}
             </div>
@@ -185,18 +183,24 @@
           <div class="phenotype-field d-none">
             {{ render_field(form.phenotype_file) }}
             {{ render_field(form.phenotype_format) }}
-            <hr>
             <div class="phenotype-qualitative d-none">
               {{ render_field(form.phenotype_qualit_factor) }}
               {{ render_field(form.phenotype_qualit_algorithm) }}
               {{ render_field(form.phenotype_qualit_value) }}
             </div>
-            <div class="phenotype-quantitative d-none">
-              {{ render_field(form.phenotype_quant_average) }}
-              {{ render_field(form.phenotype_quant_value) }}
-              {{ render_field(form.phenotype_quant_algorithm) }}
-              {{ render_field(form.phenotype_quant_p_val) }}
-              {{ render_field(form.phenotype_quant_coeff) }}
+            <div class="phenotype-quantitative-perc d-none">
+              {{ render_field(form.phenotype_quant_average_perc) }}
+              {{ render_field(form.phenotype_quant_value_perc) }}
+              {{ render_field(form.phenotype_quant_algorithm_perc) }}
+              {{ render_field(form.phenotype_quant_p_val_perc) }}
+              {{ render_field(form.phenotype_quant_coeff_perc) }}
+            </div>
+            <div class="phenotype-quantitative-conc d-none">
+              {{ render_field(form.phenotype_quant_average_conc) }}
+              {{ render_field(form.phenotype_quant_value_conc) }}
+              {{ render_field(form.phenotype_quant_algorithm_conc) }}
+              {{ render_field(form.phenotype_quant_p_val_conc) }}
+              {{ render_field(form.phenotype_quant_coeff_conc) }}
             </div>
           </div>
         </fieldset>
@@ -214,19 +218,29 @@
           <div class="library-field d-none">
             {{ render_field(form.library_file) }}
             {{ render_field(form.library_format) }}
-            <h4 class="col-md-auto">Matching: modified cosine</h4>
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Matching: modified cosine</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.library-cosine')">Modify parameters</button></div>
+              </div>
+            </div>
             <hr>
-            {{ render_field(form.library_cosine_toggle) }}
             <div class="library-cosine d-none">
+              {{ render_field(form.library_cosine_toggle) }}
               {{ render_field(form.library_cosine_tolerance) }}
               {{ render_field(form.library_cosine_matches) }}
               {{ render_field(form.library_cosine_score) }}
               {{ render_field(form.library_cosine_mzdiff) }}
             </div>
-            <h4 class="col-md-auto">Matching: MS2DeepScore</h4>
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Matching: MS2DeepScore</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.library-deepscore')">Modify parameters</button></div>
+              </div>
+            </div>
             <hr>
-            {{ render_field(form.library_deepscore_toggle) }}
             <div class="library-deepscore d-none">
+              {{ render_field(form.library_deepscore_toggle) }}
               {{ render_field(form.library_deepscore_score) }}
               {{ render_field(form.library_deepscore_mzdiff) }}
             </div>
@@ -246,7 +260,6 @@
           <div class="ms2query-field d-none">
             {{ render_field(form.ms2query_file) }}
             {{ render_field(form.ms2query_toggle) }}
-            <hr>
             {{ render_field(form.ms2query_score) }}
           </div>
         </fieldset>
@@ -264,22 +277,45 @@
           <div class="askcb-field d-none">
             {{ render_field(form.askcb_jobid) }}
             {{ render_field(form.askcb_score) }}
-            <h4 class="col-md-auto">Matching: modified cosine</h4>
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Matching: modified cosine</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.askcb-cosine')">Modify parameters</button></div>
+              </div>
+            </div>
             <hr>
-            {{ render_field(form.askcb_cosine_toggle) }}
             <div class="askcb-cosine d-none">
+              {{ render_field(form.askcb_cosine_toggle) }}
               {{ render_field(form.askcb_cosine_tolerance) }}
               {{ render_field(form.askcb_cosine_matches) }}
               {{ render_field(form.askcb_cosine_score) }}
               {{ render_field(form.askcb_cosine_mzdiff) }}
             </div>
-            <h4 class="col-md-auto">Matching: MS2DeepScore</h4>
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Matching: MS2DeepScore</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.askcb-deepscore')">Modify parameters</button></div>
+              </div>
+            </div>
             <hr>
-            {{ render_field(form.askcb_deepscore_toggle) }}
             <div class="askcb-deepscore d-none">
+              {{ render_field(form.askcb_deepscore_toggle) }}
               {{ render_field(form.askcb_deepscore_score) }}
               {{ render_field(form.askcb_deepscore_mzdiff) }}
             </div>
+          </div>
+        </fieldset>
+      </div>
+      <div class="border p-4 my-2">
+        <fieldset id="notification-form">
+          <div class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>Notification settings</h3></div>
+            </div>
+          </div>
+          <hr>
+          <div class="notification-field">
+            {{ render_field(form.email) }}
           </div>
         </fieldset>
       </div>
