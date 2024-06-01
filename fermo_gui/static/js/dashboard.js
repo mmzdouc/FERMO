@@ -1,12 +1,13 @@
 import { getSampleData, getFeatureData } from './parsing.js';
 import { updateFeatureTables, hideTables } from './dynamic_tables.js';
-import { visualizeData } from './chromatogram.js';
+import { visualizeData, addBoxVisualization } from './chromatogram.js';
 import { visualizeNetwork, hideNetwork } from './network.js';
 import { enableDragAndDrop, disableDragAndDrop } from './dragdrop.js';
 import { updateRangeFromSlider, updateRangeFromInput, enforceConstraints } from './filters.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dragged;
+    var currentBoxParams = null;
     // Initial state of drag and drop based on checkbox
     var allowDragAndDropCheckbox = document.getElementById('allowDragAndDrop');
     if (allowDragAndDropCheckbox.checked) {
@@ -24,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-
     // Load all data
     var chromatogramElement = document.getElementById('mainChromatogram');
     var networkElement = document.getElementById('cy');
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (firstSample) {
         var firstSampleName = firstSample.getAttribute('data-sample-name');
         var sampleData = getSampleData(firstSampleName, statsChromatogram);
-        visualizeData(sampleData, false);
+        visualizeData(sampleData, false, 0, 1);
         document.getElementById('activeSample').textContent = 'Sample: ' + firstSampleName;
 
         let networkType = 'modified_cosine';
@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var filteredSampleData = getFeatureData(featureId, sampleData);
         var sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
         visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
+        currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
     }
 
     // Handle network type selection change event
@@ -63,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var filteredSampleData = getFeatureData(featureId, sampleData);
         var sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
         visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
+        currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
     }
 
     // Activate the clicked sample of the 'Sample overview'
@@ -71,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
         row.addEventListener('click', function() {
             var sampleName = this.getAttribute('data-sample-name');
             sampleData = getSampleData(sampleName, statsChromatogram);
-            visualizeData(sampleData, false);
+            visualizeData(sampleData, false, parseFloat(range1.value), parseFloat(range2.value));
             hideNetwork();
             hideTables();
             document.getElementById('activeSample').textContent = 'Sample: ' + sampleName;
@@ -103,15 +105,46 @@ document.addEventListener('DOMContentLoaded', function() {
     const range2Input = document.getElementById('range2Input');
 
     // Add event listeners for input events
-    range1.addEventListener('input', updateRangeFromSlider);
-    range2.addEventListener('input', updateRangeFromSlider);
-    range1Input.addEventListener('input', updateRangeFromInput);
-    range2Input.addEventListener('input', updateRangeFromInput);
+    range1.addEventListener('input', () => {
+        range1Input.value = range1.value;
+        updateRange();
+    });
+    range2.addEventListener('input', () => {
+        range2Input.value = range2.value;
+        updateRange();
+    });
+    range1Input.addEventListener('input', () => {
+        range1.value = range1Input.value;
+        updateRange();
+    });
+    range2Input.addEventListener('input', () => {
+        range2.value = range2Input.value;
+        updateRange();
+    });
 
     // Add event listeners for blur events to enforce constraints on loss of focus
     range1Input.addEventListener('blur', enforceConstraints);
     range2Input.addEventListener('blur', enforceConstraints);
 
-    // Initial synchronization
-    updateRangeFromSlider();
+
+    function updateRange() {
+        var minScore = parseFloat(range1.value);
+        var maxScore = parseFloat(range2.value);
+        visualizeData(sampleData, false, minScore, maxScore);
+        chromatogramElement.on('plotly_click', handleChromatogramClick);
+        // Reapply the box visualization if it was previously set
+        if (currentBoxParams) {
+            addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
+        }
+    }
+
+    function enforceConstraints() {
+        if (parseFloat(range1Input.value) > parseFloat(range2Input.value)) {
+            range1Input.value = range2Input.value;
+        }
+        if (parseFloat(range2Input.value) < parseFloat(range1Input.value)) {
+            range2Input.value = range1Input.value;
+        }
+        updateRange();
+    }
 });

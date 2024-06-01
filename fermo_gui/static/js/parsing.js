@@ -44,6 +44,7 @@ export function getFeatureData(featureId, sampleData) {
         absInt: [],
         upLowRange: [],
         blankAs: [],
+        novScore: [],
         target: []
     };
 
@@ -65,6 +66,7 @@ export function getFeatureData(featureId, sampleData) {
                     filteredData.traceRt.push(sampleData.traceRt[index]);
                     filteredData.blankAs.push(sampleData.blankAs[index]);
                     filteredData.precMz.push(sampleData.precMz[index]);
+                    filteredData.precMz.push(sampleData.novScore[index]);
                     filteredData.retTime.push(sampleData.retTime[index]);
                     filteredData.absInt.push(sampleData.absInt[index]);
                     filteredData.relInt.push(sampleData.relInt[index]);

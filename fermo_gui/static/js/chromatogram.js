@@ -1,7 +1,8 @@
 // Chromatogram visualization functions //
-export function visualizeData(sampleData, isFeatureVisualization = false) {
+export function visualizeData(sampleData, isFeatureVisualization = false, minScore = 0, maxScore = 10) {
     var data = [];
     var maxPeaksPerSample = sampleData.traceInt.map(trace => Math.max(...trace));
+    var featuresWithinRange = 0;
 
     var combinedData = sampleData.traceRt.map((rt, i) => ({
         traceRt: rt,
@@ -9,7 +10,8 @@ export function visualizeData(sampleData, isFeatureVisualization = false) {
         featureId: sampleData.featureId[i],
         maxPeak: maxPeaksPerSample[i],
         chromColors: getChromColors(sampleData, i, isFeatureVisualization),
-        toolTip: getToolTip(sampleData, i)
+        toolTip: getToolTip(sampleData, i),
+        novScore: sampleData.novScore[i]
     }));
 
     combinedData.sort((a, b) => b.maxPeak - a.maxPeak);  // sort peaks so the smallest peaks are to the front
@@ -35,9 +37,20 @@ export function visualizeData(sampleData, isFeatureVisualization = false) {
                 smoothing: 0.8,
             },
         };
+
+        if ( isFeatureVisualization === false ) {
+            if (dataItem.novScore >= minScore && dataItem.novScore <= maxScore) {
+                featuresWithinRange++;
+            } else {
+                result.line.color = 'rgba(212, 212, 212, 0.8)';
+                result.fillcolor = 'rgba(212, 212, 212, 0.3)';
+            }
+        }
+
         data.push(result);
     });
 
+    console.log(`Features within the range ${minScore}-${maxScore}: ${featuresWithinRange}`);
     // Legend layout
     const { legLab, lineCol, fillCol } = getChromColors(sampleData, false, isFeatureVisualization);
     for (var i = 0; i < legLab.length; i++) {

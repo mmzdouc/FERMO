@@ -10,7 +10,7 @@ export function updateFeatureTables(featureId, sampleData, filteredSampleData) {
             document.getElementById('activeFeature').textContent =
             'Network visualization of feature: ' + featureId;
             addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
-            visualizeData(filteredSampleData, true);
+            visualizeData(filteredSampleData, true, 0, 1);
             updateTableWithFeatureData(i, sampleData);
             updateTableWithGroupData(sampleData.fGroupData[i]);
             updateTableWithSampleData(sampleData.fSampleData[i], sampleData.aSampleData[i]);
@@ -21,7 +21,6 @@ export function updateFeatureTables(featureId, sampleData, filteredSampleData) {
     }
 }
 
-// TODO: remove general feature data after sample switch
 function updateTableWithFeatureData(fId, sampleData) {
     document.getElementById('featureIdCell').textContent = sampleData.featureId[fId];
     document.getElementById('precMzCell').textContent = sampleData.precMz[fId];
@@ -86,7 +85,6 @@ function updateTableWithSampleData(sampleIntensity, sampleArea) {
     });
 }
 
-// TODO: remove feature data after sample switch
 function updateTableWithAnnotationData(annotations, sample) {
     // Check if annotations is empty
     if (Object.keys(annotations).length === 0) {

@@ -289,10 +289,13 @@ table th:last-child{
     margin-top: 2px;
 }
 
-.range-inputs input[type=number] {
-    width: 5rem;
+.range-inputs input[type=text] {
+    width: 3.5rem;
     font-family: Verdana, sans-serif;
     font-size: 13px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    align-items: center;
 }
 
 
