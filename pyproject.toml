@@ -154,7 +154,9 @@ ignore = [
     # unnecessary-comprehension-in-call
 #    "C419",
     # function-uses-loop-variable
-#    "B023"
+#    "B023",
     # commented-out code
-    "ERA001"
+    "ERA001",
+    # set-attr-with-constant
+    "B010"
 ]

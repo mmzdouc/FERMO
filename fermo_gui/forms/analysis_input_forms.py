@@ -87,6 +87,12 @@ class PeaktableForm:
         ),
         validators=[Optional(), NumberRange(min=0.0)],
     )
+    peaktable_adduct_toggle = SelectField(
+        label="Adduct Annotation",
+        description="Activate ion adduct annotation.",
+        validators=[Optional()],
+        choices=[("True", "active"), ("False", "inactive")],
+    )
     peaktable_filter_toggle = SelectField(
         label="Module",
         description="Activate feature filtering for area and/or height.",
@@ -140,7 +146,6 @@ class MsmsForm:
         description="Specify formatting of the MS/MS file.",
         validators=[Optional()],
         choices=[("mgf", "mgf")],
-        default="mgf",
     )
     msms_rel_int_from = DecimalField(
         label="Filter",
@@ -149,61 +154,52 @@ class MsmsForm:
             "the specified value. Set to 0.0 to retain all fragments."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
-        default=0.01,
     )
     msms_fragment_toggle = SelectField(
         label="Fragment Annotation",
         description="Activate MS/MS fragment annotation.",
         validators=[Optional()],
         choices=[("True", "active"), ("False", "inactive")],
-        default="True",
     )
     msms_loss_toggle = SelectField(
         label="Loss annotation",
         description="Activate MS/MS neutral loss annotation.",
         validators=[Optional()],
         choices=[("True", "active"), ("False", "inactive")],
-        default="True",
     )
     msms_cosine_toggle = SelectField(
         label="Module",
         description="Activate modified cosine-based spectral (=molecular) networking.",
         validators=[Optional()],
         choices=[("True", "active"), ("False", "inactive")],
-        default="True",
     )
     msms_cosine_minfrag = IntegerField(
         label="MS/MS fragments",
         description=(
-            "Minimum number of fragments per spectrum to consider in " "networking"
+            "Minimum number of fragments per spectrum to consider in networking"
         ),
         validators=[Optional(), NumberRange(min=1)],
-        default=5,
     )
     msms_cosine_tolerance = DecimalField(
         label="Fragment tolerance",
         description="Tolerance in matching two MS/MS fragments, in m/z units.",
         validators=[Optional(), NumberRange(min=0.0)],
-        default=0.1,
     )
     msms_cosine_score = DecimalField(
         label="Score",
         description="Score cutoff to match two MS/MS spectra.",
         validators=[Optional(), NumberRange(min=0.1, max=1.0)],
-        default=0.7,
     )
     msms_cosine_links = IntegerField(
         label="Edges",
         description="Maximum number of edges any node is allowed to have.",
         validators=[Optional(), NumberRange(min=1)],
-        default=10,
     )
     msms_deepscore_toggle = SelectField(
         label="Module",
         description="Activate MS2DeepScore-based spectral (=molecular) networking.",
         validators=[Optional()],
         choices=[("True", "active"), ("False", "inactive")],
-        default="True",
     )
     msms_deepscore_minfrag = IntegerField(
         label="MS/MS fragments",
@@ -211,19 +207,16 @@ class MsmsForm:
             "Minimum number of fragments per spectrum to consider in " "networking"
         ),
         validators=[Optional(), NumberRange(min=1)],
-        default=5,
     )
     msms_deepscore_score = DecimalField(
         label="Score",
         description="Score cutoff to match two MS/MS spectra.",
         validators=[Optional(), NumberRange(min=0.1, max=1.0)],
-        default=0.8,
     )
     msms_deepscore_links = IntegerField(
         label="Edges",
         description="Maximum number of edges any node is allowed to have.",
         validators=[Optional(), NumberRange(min=1)],
-        default=10,
     )
 
 
@@ -245,20 +238,17 @@ class PhenotypeForm:
             ("quantitative-percentage", "quantitative-percentage"),
             ("quantitative-concentration", "quantitative-concentration"),
         ],
-        default="",
     )
     phenotype_qualit_factor = DecimalField(
         label="Factor",
         description="Fold difference for molecular feature differentiation.",
         validators=[Optional(), NumberRange(min=1)],
-        default=10,
     )
     phenotype_qualit_algorithm = SelectField(
         label="Algorithm",
         description="Specify algorithm to calculate fold difference.",
         validators=[Optional()],
         choices=[("minmax", "minmax"), ("mean", "mean"), ("median", "median")],
-        default="minmax",
     )
     phenotype_qualit_value = SelectField(
         label="Value",
@@ -268,9 +258,8 @@ class PhenotypeForm:
             ("area", "area"),
             ("height", "height"),
         ],
-        default="area",
     )
-    phenotype_quant_average = SelectField(
+    phenotype_quant_average_perc = SelectField(
         label="Averaging",
         description=(
             "Specify the measure of central tendency to summarize duplicate "
@@ -278,38 +267,71 @@ class PhenotypeForm:
         ),
         validators=[Optional()],
         choices=[("mean", "mean"), ("median", "median")],
-        default="mean",
     )
-    phenotype_quant_value = SelectField(
+    phenotype_quant_value_perc = SelectField(
         label="Value",
         description="Specify value to use for calculation.",
         validators=[Optional()],
         choices=[("area", "area")],
         default="area",
     )
-    phenotype_quant_algorithm = SelectField(
+    phenotype_quant_algorithm_perc = SelectField(
         label="Algorithm",
         description="Specify the statistical algorithm to determine correlation.",
         validators=[Optional()],
         choices=[("pearson", "Pearson (Bonferroni-correction)")],
-        default="pearson",
     )
-    phenotype_quant_p_val = DecimalField(
+    phenotype_quant_p_val_perc = DecimalField(
         label="p-Value",
         description=(
             "Maximum corrected p-value to consider (set to '0' to disable filtering)."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
-        default=0.05,
     )
-    phenotype_quant_coeff = DecimalField(
+    phenotype_quant_coeff_perc = DecimalField(
         label="Coefficient",
         description=(
             "Minimum correlation coefficient to consider (set to '0' to disable "
             "filtering)."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
-        default=0.7,
+    )
+    phenotype_quant_average_conc = SelectField(
+        label="Averaging",
+        description=(
+            "Specify the measure of central tendency to summarize duplicate "
+            "measurements per sample."
+        ),
+        validators=[Optional()],
+        choices=[("mean", "mean"), ("median", "median")],
+    )
+    phenotype_quant_value_conc = SelectField(
+        label="Value",
+        description="Specify value to use for calculation.",
+        validators=[Optional()],
+        choices=[("area", "area")],
+        default="area",
+    )
+    phenotype_quant_algorithm_conc = SelectField(
+        label="Algorithm",
+        description="Specify the statistical algorithm to determine correlation.",
+        validators=[Optional()],
+        choices=[("pearson", "Pearson (Bonferroni-correction)")],
+    )
+    phenotype_quant_p_val_conc = DecimalField(
+        label="p-Value",
+        description=(
+            "Maximum corrected p-value to consider (set to '0' to disable filtering)."
+        ),
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
+    )
+    phenotype_quant_coeff_conc = DecimalField(
+        label="Coefficient",
+        description=(
+            "Minimum correlation coefficient to consider (set to '0' to disable "
+            "filtering)."
+        ),
+        validators=[Optional(), NumberRange(min=0.0, max=1.0)],
     )
 
 
@@ -328,7 +350,6 @@ class GroupForm:
         choices=[
             ("fermo", "fermo"),
         ],
-        default="fermo",
     )
     group_blank_toggle = SelectField(
         label="Module",
@@ -337,27 +358,23 @@ class GroupForm:
         ),
         validators=[Optional()],
         choices=[("False", "inactive"), ("True", "active")],
-        default="False",
     )
     group_blank_factor = IntegerField(
         label="Factor",
         description="Fold difference for blank assignment of molecular feature.",
         validators=[Optional(), NumberRange(min=1)],
-        default=10,
     )
     group_blank_algorithm = SelectField(
         label="Algorithm",
         description="Specify the algorithm to calculate fold difference.",
         validators=[Optional()],
         choices=[("mean", "mean"), ("median", "median"), ("maximum", "maximum")],
-        default="mean",
     )
     group_blank_value = SelectField(
         label="Value",
         description="Value to consider for the calculation.",
         validators=[Optional()],
         choices=[("area", "area"), ("height", "height")],
-        default="area",
     )
     group_factor_toggle = SelectField(
         label="Module",
@@ -366,21 +383,18 @@ class GroupForm:
         ),
         validators=[Optional()],
         choices=[("False", "inactive"), ("True", "active")],
-        default="False",
     )
     group_factor_algorithm = SelectField(
         label="Algorithm",
         description="Specify the algorithm to calculate the fold changes.",
         validators=[Optional()],
         choices=[("mean", "mean"), ("median", "median"), ("maximum", "maximum")],
-        default="mean",
     )
     group_factor_value = SelectField(
         label="Value",
         description="Value to consider for the calculation.",
         validators=[Optional()],
         choices=[("area", "area"), ("height", "height")],
-        default="area",
     )
 
 
@@ -397,32 +411,27 @@ class LibraryForm:
         description="Specify the format of the spectral library file.",
         validators=[Optional()],
         choices=[("mgf", "mgf")],
-        default="mgf",
     )
     library_cosine_toggle = SelectField(
         label="Module",
         description="Activate modified cosine-based spectral library matching.",
         validators=[Optional()],
         choices=[("False", "inactive"), ("True", "active")],
-        default="False",
     )
     library_cosine_tolerance = DecimalField(
         label="Fragment tolerance",
         description="Tolerance in matching two MS/MS fragments, in m/z units.",
         validators=[Optional(), NumberRange(min=0.0)],
-        default=0.1,
     )
     library_cosine_matches = IntegerField(
         label="Matched fragments",
         description="Minimum number of fragment matches",
         validators=[Optional(), NumberRange(min=1)],
-        default=5,
     )
     library_cosine_score = DecimalField(
         label="Score",
         description="Score cutoff to match two MS/MS spectra.",
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
-        default=0.7,
     )
     library_cosine_mzdiff = IntegerField(
         label="Precursor Difference",
@@ -430,20 +439,17 @@ class LibraryForm:
             "Maximum tolerated difference between two precursor masses (in m/z)."
         ),
         validators=[Optional(), NumberRange(min=0)],
-        default=600,
     )
     library_deepscore_toggle = SelectField(
         label="Module",
         description="Activate MS2DeepScore-based spectral library matching.",
         validators=[Optional()],
         choices=[("False", "inactive"), ("True", "active")],
-        default="False",
     )
     library_deepscore_score = DecimalField(
         label="Score",
         description="Score cutoff to match two MS/MS spectra.",
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
-        default=0.8,
     )
     library_deepscore_mzdiff = IntegerField(
         label="Precursor Difference",
@@ -451,7 +457,6 @@ class LibraryForm:
             "Maximum tolerated difference between two precursor masses (in m/z)."
         ),
         validators=[Optional(), NumberRange(min=0)],
-        default=600,
     )
 
 
@@ -467,7 +472,6 @@ class Ms2queryForm:
         label="Score",
         description="Score cutoff for MS2Query model matches.",
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
-        default=0.7,
     )
     ms2query_toggle = SelectField(
         label="New Calculation",
@@ -477,7 +481,6 @@ class Ms2queryForm:
         ),
         validators=[Optional()],
         choices=[("False", "inactive"), ("True", "active")],
-        default="False",
     )
 
 
@@ -496,32 +499,27 @@ class ASKCBForm:
             "MIBiG to consider in analysis."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
-        default=0.7,
     )
     askcb_cosine_toggle = SelectField(
         label="Module",
         description="Activate modified cosine-based MIBiG spectral library matching.",
         validators=[Optional()],
         choices=[("False", "inactive"), ("True", "active")],
-        default="False",
     )
     askcb_cosine_tolerance = DecimalField(
         label="Fragment tolerance",
         description="Tolerance in matching two MS/MS fragments, in m/z units.",
         validators=[Optional(), NumberRange(min=0.0)],
-        default=0.1,
     )
     askcb_cosine_matches = IntegerField(
         label="Matched fragments",
         description="Minimum number of fragment matches",
         validators=[Optional(), NumberRange(min=1)],
-        default=5,
     )
     askcb_cosine_score = DecimalField(
         label="Score",
         description="Score cutoff to match two MS/MS spectra.",
         validators=[Optional(), NumberRange(min=0.1, max=1.0)],
-        default=0.5,
     )
     askcb_cosine_mzdiff = IntegerField(
         label="Precursor Difference",
@@ -529,20 +527,17 @@ class ASKCBForm:
             "Maximum tolerated difference between two precursor masses (in m/z)."
         ),
         validators=[Optional(), NumberRange(min=0)],
-        default=600,
     )
     askcb_deepscore_toggle = SelectField(
         label="Module",
         description="Activate MS2DeepScore-based MIBiG spectral library matching.",
         validators=[Optional()],
         choices=[("False", "inactive"), ("True", "active")],
-        default="False",
     )
     askcb_deepscore_score = DecimalField(
         label="Score",
         description="Score cutoff to match two MS/MS spectra.",
         validators=[Optional(), NumberRange(min=0.1, max=1.0)],
-        default=0.7,
     )
     askcb_deepscore_mzdiff = IntegerField(
         label="Precursor Difference",
@@ -550,7 +545,6 @@ class ASKCBForm:
             "Maximum tolerated difference between two precursor masses (in m/z)."
         ),
         validators=[Optional(), NumberRange(min=0)],
-        default=600,
     )
 
 
@@ -575,79 +569,268 @@ class AnalysisForm(
 ):
     """Organizes forms for data input"""
 
-    def apply_defaults(self: Self, p: dict):
-        """Dynamically sets defaults for form fields
+    def apply_defaults(self: Self, pars: dict):
+        """Try to get vals from pars dict or fall back to defaults
 
         Arguments:
-            p: the parameters dict
+            pars: the parameters dict (can be also an empty dict)
         """
-        dflt = {
-            "peaktable_format": "mzmine3",
-            "peaktable_polarity": "positive",
-            "peaktable_ppm": 10,
-            "peaktable_filter_toggle": False,
-            "peaktable_filter_height_lower": 0.0,
-            "peaktable_filter_height_upper": 1.0,
-            "peaktable_filter_area_lower": 0.0,
-            "peaktable_filter_area_upper": 1.0,
+        params = {
+            "peaktable_format": pars.get("files", {})
+            .get("peaktable", {})
+            .get("format", "mzmine3"),
+            "peaktable_polarity": pars.get("files", {})
+            .get("peaktable", {})
+            .get("polarity", "positive"),
+            "peaktable_ppm": pars.get("core_modules", {})
+            .get("adduct_annotation", {})
+            .get("mass_dev_ppm", 10),
+            "peaktable_adduct_toggle": str(
+                pars.get("core_modules", {})
+                .get("adduct_annotation", {})
+                .get("activate_module", True)
+            ),
+            "peaktable_filter_toggle": str(
+                pars.get("additional_modules", {})
+                .get("feature_filtering", {})
+                .get("activate_module", False)
+            ),
+            "peaktable_filter_height_lower": pars.get("additional_modules", {})
+            .get("feature_filtering", {})
+            .get("filter_rel_int_range_min", 0.0),
+            "peaktable_filter_height_upper": pars.get("additional_modules", {})
+            .get("feature_filtering", {})
+            .get("filter_rel_int_range_max", 1.0),
+            "peaktable_filter_area_lower": pars.get("additional_modules", {})
+            .get("feature_filtering", {})
+            .get("filter_rel_area_range_min", 0.0),
+            "peaktable_filter_area_upper": pars.get("additional_modules", {})
+            .get("feature_filtering", {})
+            .get("filter_rel_int_range_max", 1.0),
+            "msms_format": pars.get("files", {}).get("msms", {}).get("format", "mgf"),
+            "msms_rel_int_from": pars.get("files", {})
+            .get("msms", {})
+            .get("rel_int_from", 0.01),
+            "msms_fragment_toggle": str(
+                pars.get("core_modules", {})
+                .get("fragment_annotation", {})
+                .get("activate_module", True)
+            ),
+            "msms_loss_toggle": str(
+                pars.get("core_modules", {})
+                .get("neutral_loss_annotation", {})
+                .get("activate_module", True)
+            ),
+            "msms_cosine_toggle": str(
+                pars.get("core_modules", {})
+                .get("spec_sim_networking", {})
+                .get("modified_cosine", {})
+                .get("activate_module", True)
+            ),
+            "msms_cosine_minfrag": pars.get("core_modules", {})
+            .get("spec_sim_networking", {})
+            .get("modified_cosine", {})
+            .get("msms_min_frag_nr", 5),
+            "msms_cosine_tolerance": pars.get("core_modules", {})
+            .get("spec_sim_networking", {})
+            .get("modified_cosine", {})
+            .get("fragment_tol", 0.1),
+            "msms_cosine_score": pars.get("core_modules", {})
+            .get("spec_sim_networking", {})
+            .get("modified_cosine", {})
+            .get("score_cutoff", 0.7),
+            "msms_cosine_links": pars.get("core_modules", {})
+            .get("spec_sim_networking", {})
+            .get("modified_cosine", {})
+            .get("max_nr_links", 10),
+            "msms_deepscore_toggle": str(
+                pars.get("core_modules", {})
+                .get("spec_sim_networking", {})
+                .get("ms2deepscore", {})
+                .get("activate_module", True)
+            ),
+            "msms_deepscore_minfrag": pars.get("core_modules", {})
+            .get("spec_sim_networking", {})
+            .get("ms2deepscore", {})
+            .get("msms_min_frag_nr", 5),
+            "msms_deepscore_score": pars.get("core_modules", {})
+            .get("spec_sim_networking", {})
+            .get("ms2deepscore", {})
+            .get("score_cutoff", 0.8),
+            "msms_deepscore_links": pars.get("core_modules", {})
+            .get("spec_sim_networking", {})
+            .get("ms2deepscore", {})
+            .get("max_nr_links", 10),
+            "phenotype_format": pars.get("files", {})
+            .get("phenotype", {})
+            .get("format", ""),
+            "phenotype_qualit_factor": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("qualitative", {})
+            .get("factor", 10),
+            "phenotype_qualit_algorithm": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("qualitative", {})
+            .get("algorithm", "minmax"),
+            "phenotype_qualit_value": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("qualitative", {})
+            .get("value", "area"),
+            "phenotype_quant_average_conc": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("quantitative-concentration", {})
+            .get("sample_avg", "mean"),
+            "phenotype_quant_value_conc": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("quantitative-concentration", {})
+            .get("value", "area"),
+            "phenotype_quant_algorithm_conc": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("quantitative-concentration", {})
+            .get("algorithm", "pearson"),
+            "phenotype_quant_p_val_conc": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("quantitative-concentration", {})
+            .get("p_val_cutoff", 0.05),
+            "phenotype_quant_coeff_conc": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("quantitative-concentration", {})
+            .get("coeff_cutoff", 0.7),
+            "phenotype_quant_average_perc": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("quantitative-percentage", {})
+            .get("sample_avg", "mean"),
+            "phenotype_quant_value_perc": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("quantitative-percentage", {})
+            .get("value", "area"),
+            "phenotype_quant_algorithm_perc": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("quantitative-percentage", {})
+            .get("algorithm", "pearson"),
+            "phenotype_quant_p_val_perc": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("quantitative-percentage", {})
+            .get("p_val_cutoff", 0.05),
+            "phenotype_quant_coeff_perc": pars.get("additional_modules", {})
+            .get("phenotype_assignment", {})
+            .get("quantitative-percentage", {})
+            .get("coeff_cutoff", 0.7),
+            "group_format": pars.get("files", {})
+            .get("group_metadata", {})
+            .get("format", "fermo"),
+            "group_blank_toggle": str(
+                pars.get("additional_modules", {})
+                .get("blank_assignment", {})
+                .get("activate_module", False)
+            ),
+            "group_blank_factor": pars.get("additional_modules", {})
+            .get("blank_assignment", {})
+            .get("factor", 10),
+            "group_blank_algorithm": pars.get("additional_modules", {})
+            .get("blank_assignment", {})
+            .get("algorithm", "mean"),
+            "group_blank_value": pars.get("additional_modules", {})
+            .get("blank_assignment", {})
+            .get("value", "area"),
+            "group_factor_toggle": str(
+                pars.get("additional_modules", {})
+                .get("group_factor_assignment", {})
+                .get("activate_module", False)
+            ),
+            "group_factor_algorithm": pars.get("additional_modules", {})
+            .get("group_factor_assignment", {})
+            .get("algorithm", "mean"),
+            "group_factor_value": pars.get("additional_modules", {})
+            .get("group_factor_assignment", {})
+            .get("value", "area"),
+            "library_format": pars.get("files", {})
+            .get("spectral_library", {})
+            .get("format", "mgf"),
+            "library_cosine_toggle": str(
+                pars.get("additional_modules", {})
+                .get("spectral_library_matching", {})
+                .get("modified_cosine", {})
+                .get("activate_module", False)
+            ),
+            "library_cosine_tolerance": pars.get("additional_modules", {})
+            .get("spectral_library_matching", {})
+            .get("modified_cosine", {})
+            .get("fragment_tol", 0.1),
+            "library_cosine_matches": pars.get("additional_modules", {})
+            .get("spectral_library_matching", {})
+            .get("modified_cosine", {})
+            .get("min_nr_matched_peaks", 5),
+            "library_cosine_score": pars.get("additional_modules", {})
+            .get("spectral_library_matching", {})
+            .get("modified_cosine", {})
+            .get("score_cutoff", 0.7),
+            "library_cosine_mzdiff": pars.get("additional_modules", {})
+            .get("spectral_library_matching", {})
+            .get("modified_cosine", {})
+            .get("max_precursor_mass_diff", 600),
+            "library_deepscore_toggle": str(
+                pars.get("additional_modules", {})
+                .get("spectral_library_matching", {})
+                .get("ms2deepscore", {})
+                .get("activate_module", False)
+            ),
+            "library_deepscore_score": pars.get("additional_modules", {})
+            .get("spectral_library_matching", {})
+            .get("ms2deepscore", {})
+            .get("score_cutoff", 0.8),
+            "library_deepscore_mzdiff": pars.get("additional_modules", {})
+            .get("spectral_library_matching", {})
+            .get("ms2deepscore", {})
+            .get("max_precursor_mass_diff", 600),
+            "ms2query_score": pars.get("additional_modules", {})
+            .get("ms2query_annotation", {})
+            .get("score_cutoff", 0.7),
+            "ms2query_toggle": str(
+                pars.get("additional_modules", {})
+                .get("ms2query_annotation", {})
+                .get("activate_module", False)
+            ),
+            "askcb_score": pars.get("files", {})
+            .get("as_results", {})
+            .get("similarity_cutoff", 0.7),
+            "askcb_cosine_toggle": str(
+                pars.get("additional_modules", {})
+                .get("as_kcb_matching", {})
+                .get("modified_cosine", {})
+                .get("activate_module", False)
+            ),
+            "askcb_cosine_tolerance": pars.get("additional_modules", {})
+            .get("as_kcb_matching", {})
+            .get("modified_cosine", {})
+            .get("fragment_tol", 0.1),
+            "askcb_cosine_matches": pars.get("additional_modules", {})
+            .get("as_kcb_matching", {})
+            .get("modified_cosine", {})
+            .get("min_nr_matched_peaks", 5),
+            "askcb_cosine_score": pars.get("additional_modules", {})
+            .get("as_kcb_matching", {})
+            .get("modified_cosine", {})
+            .get("score_cutoff", 0.5),
+            "askcb_cosine_mzdiff": pars.get("additional_modules", {})
+            .get("as_kcb_matching", {})
+            .get("modified_cosine", {})
+            .get("max_precursor_mass_diff", 600),
+            "askcb_deepscore_toggle": str(
+                pars.get("additional_modules", {})
+                .get("as_kcb_matching", {})
+                .get("ms2deepscore", {})
+                .get("activate_module", False)
+            ),
+            "askcb_deepscore_score": pars.get("additional_modules", {})
+            .get("as_kcb_matching", {})
+            .get("ms2deepscore", {})
+            .get("score_cutoff", 0.7),
+            "askcb_deepscore_mzdiff": pars.get("additional_modules", {})
+            .get("as_kcb_matching", {})
+            .get("ms2deepscore", {})
+            .get("max_precursor_mass_diff", 600),
         }
 
-        # TODO: Continue putting every hardcoded param in dict
-
-        self.peaktable_format.default = (
-            p.get("files", {})
-            .get("peaktable", {})
-            .get("format", dflt["peaktable_format"])
-        )
-        self.peaktable_polarity.default = (
-            p.get("files", {})
-            .get("peaktable", {})
-            .get("polarity", dflt["peaktable_polarity"])
-        )
-        self.peaktable_ppm.default = (
-            p.get("core_modules", {})
-            .get("adduct_annotation", {})
-            .get("mass_dev_ppm", dflt["peaktable_ppm"])
-        )
-        self.peaktable_filter_toggle.default = str(
-            p.get("additional_modules", {})
-            .get("feature_filtering", {})
-            .get("activate_module", dflt["peaktable_filter_toggle"])
-        )
-        try:
-            r_list = (
-                p.get("additional_modules", {})
-                .get("feature_filtering", {})
-                .get("filter_rel_int_range")
-            )
-            self.peaktable_filter_height_lower.default = min(r_list)
-            self.peaktable_filter_height_upper.default = max(r_list)
-        except TypeError:
-            self.peaktable_filter_height_lower.default = dflt[
-                "peaktable_filter_height_lower"
-            ]
-            self.peaktable_filter_height_upper.default = dflt[
-                "peaktable_filter_height_upper"
-            ]
-        try:
-            r_list = (
-                p.get("additional_modules", {})
-                .get("feature_filtering", {})
-                .get("filter_rel_area_range")
-            )
-            self.peaktable_filter_area_lower.default = min(r_list)
-            self.peaktable_filter_area_upper.default = max(r_list)
-        except TypeError:
-            self.peaktable_filter_area_lower.default = dflt[
-                "peaktable_filter_area_lower"
-            ]
-            self.peaktable_filter_area_upper.default = dflt[
-                "peaktable_filter_area_upper"
-            ]
-
-        # TODO: continue with msms etc.
-
-        # TODO(MMZ 31.5.):expand here for other defaults
-
-        for field in self._fields.values():
-            field.process(formdata=None)
+        for key, value in params.items():
+            setattr(getattr(self, key), "default", value)
