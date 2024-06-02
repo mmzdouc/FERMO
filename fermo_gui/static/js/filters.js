@@ -1,3 +1,63 @@
+export function initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures, sampleData, chromatogramElement, currentBoxParams) {
+    const range1 = document.getElementById('range1');
+    const range2 = document.getElementById('range2');
+    const range1Input = document.getElementById('range1Input');
+    const range2Input = document.getElementById('range2Input');
+
+    // Add event listeners for input events
+    range1.addEventListener('input', () => {
+        range1Input.value = range1.value;
+        updateRange();
+    });
+    range2.addEventListener('input', () => {
+        range2Input.value = range2.value;
+        updateRange();
+    });
+    range1Input.addEventListener('input', () => {
+        range1.value = range1Input.value;
+        updateRange();
+    });
+    range2Input.addEventListener('input', () => {
+        range2.value = range2Input.value;
+        updateRange();
+    });
+
+    // Add event listeners for blur events to enforce constraints on loss of focus
+    range1Input.addEventListener('blur', enforceConstraints);
+    range2Input.addEventListener('blur', enforceConstraints);
+
+    function updateRange() {
+        var minScore = parseFloat(range1.value);
+        var maxScore = parseFloat(range2.value);
+        visualizeData(sampleData, false, minScore, maxScore);
+        chromatogramElement.on('plotly_click', handleChromatogramClick);
+        // Reapply the box visualization if it was previously set
+        if (currentBoxParams) {
+            addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
+        }
+        updateRetainedFeatures(minScore, maxScore);
+    }
+
+    function enforceConstraints() {
+        if (parseFloat(range1Input.value) > parseFloat(range2Input.value)) {
+            range1Input.value = range2Input.value;
+        }
+        if (parseFloat(range2Input.value) < parseFloat(range1Input.value)) {
+            range2Input.value = range1Input.value;
+        }
+        updateRange();
+    }
+}
+
+export function getFeaturesWithinRange(sampleData, minScore, maxScore) {
+    var featuresWithinRange = 0;
+    sampleData.novScore.forEach(function(score) {
+        if (score >= minScore && score <= maxScore) {
+            featuresWithinRange++;
+        }
+    });
+    return featuresWithinRange;
+}
 
 export function getSliderRanges() {
     // Get elements

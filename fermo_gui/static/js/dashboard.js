@@ -3,7 +3,8 @@ import { updateFeatureTables, hideTables } from './dynamic_tables.js';
 import { visualizeData, addBoxVisualization } from './chromatogram.js';
 import { visualizeNetwork, hideNetwork } from './network.js';
 import { enableDragAndDrop, disableDragAndDrop } from './dragdrop.js';
-import { updateRangeFromSlider, updateRangeFromInput, enforceConstraints } from './filters.js';
+import { updateRangeFromSlider, updateRangeFromInput,
+         enforceConstraints, initializeFilters, getFeaturesWithinRange } from './filters.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dragged;
@@ -99,52 +100,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    const range1 = document.getElementById('range1');
-    const range2 = document.getElementById('range2');
-    const range1Input = document.getElementById('range1Input');
-    const range2Input = document.getElementById('range2Input');
-
-    // Add event listeners for input events
-    range1.addEventListener('input', () => {
-        range1Input.value = range1.value;
-        updateRange();
-    });
-    range2.addEventListener('input', () => {
-        range2Input.value = range2.value;
-        updateRange();
-    });
-    range1Input.addEventListener('input', () => {
-        range1.value = range1Input.value;
-        updateRange();
-    });
-    range2Input.addEventListener('input', () => {
-        range2.value = range2Input.value;
-        updateRange();
-    });
-
-    // Add event listeners for blur events to enforce constraints on loss of focus
-    range1Input.addEventListener('blur', enforceConstraints);
-    range2Input.addEventListener('blur', enforceConstraints);
-
-
-    function updateRange() {
-        var minScore = parseFloat(range1.value);
-        var maxScore = parseFloat(range2.value);
-        visualizeData(sampleData, false, minScore, maxScore);
-        chromatogramElement.on('plotly_click', handleChromatogramClick);
-        // Reapply the box visualization if it was previously set
-        if (currentBoxParams) {
-            addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
-        }
+    function updateRetainedFeatures(minScore, maxScore) {
+        rows.forEach(function(row) {
+            var sampleName = row.getAttribute('data-sample-name');
+            var sampleData = getSampleData(sampleName, statsChromatogram);
+            var featuresWithinRange = getFeaturesWithinRange(sampleData, minScore, maxScore);
+            row.children[2].textContent = featuresWithinRange;
+        });
     }
 
-    function enforceConstraints() {
-        if (parseFloat(range1Input.value) > parseFloat(range2Input.value)) {
-            range1Input.value = range2Input.value;
-        }
-        if (parseFloat(range2Input.value) < parseFloat(range1Input.value)) {
-            range2Input.value = range1Input.value;
-        }
-        updateRange();
-    }
+    // Initialize filters
+    initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures,
+                      sampleData, chromatogramElement, currentBoxParams);
+
 });

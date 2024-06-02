@@ -50,7 +50,6 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
         data.push(result);
     });
 
-    console.log(`Features within the range ${minScore}-${maxScore}: ${featuresWithinRange}`);
     // Legend layout
     const { legLab, lineCol, fillCol } = getChromColors(sampleData, false, isFeatureVisualization);
     for (var i = 0; i < legLab.length; i++) {
