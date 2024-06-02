@@ -27,7 +27,6 @@ import os
 import zipfile
 from pathlib import Path
 from typing import Any, Optional, Self
-from urllib.error import URLError
 
 import pandas as pd
 import requests
@@ -48,7 +47,6 @@ class InputProcessor(BaseModel):
         params: a dict to assemble the parameters.json file
         online: bool to indicate if application is running online (not local)
         n_features: the number of features in the dataframe
-        maximum_runtime: The maximum allowed runtime of modules in web-version
         max_features: the maximum allowed number of features in web-version
         maxsize_csv: the maximum accepted size of csv files in bytes in web-version
         maxsize_mgf: the maximum accepted size of mgf files in bytes in web-version
@@ -59,7 +57,6 @@ class InputProcessor(BaseModel):
     online: bool
     params: dict = {}
     n_features: Optional[int] = None
-    maximum_runtime: int = 600
     max_features: int = 1000
     maxsize_csv: int = 2000000
     maxsize_mgf: int = 8000000
@@ -344,7 +341,6 @@ class InputProcessor(BaseModel):
             "fragment_tol": float(self.form.msms_cosine_tolerance.data),
             "score_cutoff": float(self.form.msms_cosine_score.data),
             "max_nr_links": int(self.form.msms_cosine_links.data),
-            "maximum_runtime": (self.maximum_runtime if self.online else 0),
         }
         self.params["core_modules"]["spec_sim_networking"]["ms2deepscore"] = {
             "activate_module": (
@@ -353,7 +349,6 @@ class InputProcessor(BaseModel):
             "msms_min_frag_nr": int(self.form.msms_deepscore_minfrag.data),
             "score_cutoff": float(self.form.msms_deepscore_score.data),
             "max_nr_links": int(self.form.msms_deepscore_links.data),
-            "maximum_runtime": (self.maximum_runtime if self.online else 0),
         }
 
     def process_forms_phenotype(self: Self):
@@ -479,7 +474,6 @@ class InputProcessor(BaseModel):
             "min_nr_matched_peaks": int(self.form.library_cosine_matches.data),
             "score_cutoff": float(self.form.library_cosine_score.data),
             "max_precursor_mass_diff": int(self.form.library_cosine_mzdiff.data),
-            "maximum_runtime": (self.maximum_runtime if self.online else 0),
         }
         self.params["additional_modules"]["spectral_library_matching"][
             "ms2deepscore"
@@ -489,7 +483,6 @@ class InputProcessor(BaseModel):
             ),
             "score_cutoff": float(self.form.library_deepscore_score.data),
             "max_precursor_mass_diff": int(self.form.library_deepscore_mzdiff.data),
-            "maximum_runtime": (self.maximum_runtime if self.online else 0),
         }
 
     def process_forms_ms2query(self: Self):
@@ -511,7 +504,6 @@ class InputProcessor(BaseModel):
             self.params["additional_modules"]["ms2query_annotation"] = {
                 "activate_module": False,
                 "score_cutoff": float(self.form.ms2query_score.data),
-                "maximum_runtime": (self.maximum_runtime if self.online else 0),
             }
         else:
             self.check_key_in_params("additional_modules")
@@ -520,7 +512,6 @@ class InputProcessor(BaseModel):
                     True if self.form.ms2query_toggle.data == "True" else False
                 ),
                 "score_cutoff": float(self.form.ms2query_score.data),
-                "maximum_runtime": (self.maximum_runtime if self.online else 0),
             }
 
     def process_forms_askcb(self: Self):
@@ -549,7 +540,6 @@ class InputProcessor(BaseModel):
             "min_nr_matched_peaks": int(self.form.askcb_cosine_matches.data),
             "score_cutoff": float(self.form.askcb_cosine_score.data),
             "max_precursor_mass_diff": int(self.form.askcb_cosine_mzdiff.data),
-            "maximum_runtime": (self.maximum_runtime if self.online else 0),
         }
         self.params["additional_modules"]["as_kcb_matching"]["ms2deepscore"] = {
             "activate_module": (
@@ -557,7 +547,6 @@ class InputProcessor(BaseModel):
             ),
             "score_cutoff": float(self.form.askcb_deepscore_score.data),
             "max_precursor_mass_diff": int(self.form.askcb_deepscore_mzdiff.data),
-            "maximum_runtime": (self.maximum_runtime if self.online else 0),
         }
 
     def run_processor(self: Self):

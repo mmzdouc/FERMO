@@ -71,6 +71,7 @@ def configure_app(app: Flask, test_config: Optional[dict] = None) -> Flask:
     app.config["UPLOAD_FOLDER"] = "fermo_gui/upload/"
     app.config["ALLOWED_EXTENSIONS"] = {"json", "csv", "mgf", "session"}
     app.config["ONLINE"] = False
+    app.config["MAX_RUN_TIME"] = None
 
     if test_config is None:
         app.config.from_pyfile("config.py", silent=True)
