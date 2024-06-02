@@ -84,7 +84,10 @@ def start_fermo_core_manager(metadata: dict) -> bool:
             )
         return True
     except SoftTimeLimitExceeded as e:
-        _write_to_log(f"Job surpassed maximum time limit: {e}")
+        _write_to_log(
+            f"Job surpassed maximum time limit of '{metadata.get('max_runtime')}' "
+            f"seconds: {e}"
+        )
         _send_mail_fail()
         return False
 

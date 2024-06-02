@@ -83,6 +83,7 @@ def setup_fermo_run(form: AnalysisForm) -> Union[str, Response]:
     metadata = {
         "job_id": task_id,
         "task_path": str(task_path.resolve()),
+        "max_runtime": current_app.config.get("MAX_RUN_TIME"),
         "email": form.email.data if len(form.email.data) != 0 else None,
         "email_notify": (
             True if (len(form.email.data) != 0 and processor.online) else False
