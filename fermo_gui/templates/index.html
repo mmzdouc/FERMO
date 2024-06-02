@@ -1,8 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <span class="title"><h3>{% block title %} The Home Page of FERMO {% endblock %}</h3></span>
-    <div class="content">
-        <a class="btn btn-primary" href="{{ url_for('routes.start_analysis') }}" role="button">Start Analysis</a>
+    <div class="container mt-5">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-auto">
+                    <h2>About Us</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+                    <a href="#" class="btn btn-secondary">Read More</a>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

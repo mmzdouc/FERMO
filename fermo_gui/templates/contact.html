@@ -1,7 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <span class="title"><h3>{% block title %} Placeholder for the Contact page {% endblock %}</h3></span>
-    <div class="content">
+    <div class="container mt-5">
+        <div class="container-fluid">
+            <div class="row p-4 my-2">
+                <div class="col-auto">
+                    <h1>Contact Us</h1>
+                </div>
+            </div>
+            <div class="row p-4 my-2">
+                <div class="col-auto">
+                    <p>You can also reach us via the following contact details:</p>
+                    <ul class="list-unstyled">
+                        <li><strong>GitHub:</strong><a href="https://github.com/mmzdouc/fermo"> FERMO</a></li>
+                        <li><strong>Address:</strong> Bioinformatics Group, Wageningen University & Resaerch,	Droevendaalsesteeg 1, 6708PB Wageningen, the Netherlands </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
 {% endblock %}
