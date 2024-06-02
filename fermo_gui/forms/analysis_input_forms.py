@@ -24,7 +24,7 @@ SOFTWARE.
 from typing import Self
 
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileAllowed, FileField, FileSize
+from flask_wtf.file import FileAllowed, FileField
 from wtforms import (
     DecimalField,
     EmailField,
@@ -65,7 +65,7 @@ class PeaktableForm:
     peaktable_file = FileField(
         label="File",
         description="Upload the peaktable file.",
-        validators=[Optional(), FileAllowed(["csv"]), FileSize(max_size=2000000)],
+        validators=[Optional(), FileAllowed(["csv"])],
     )
     peaktable_format = SelectField(
         label="Format",
@@ -139,7 +139,7 @@ class MsmsForm:
     msms_file = FileField(
         label="File",
         description="Upload the MS/MS file.",
-        validators=[Optional(), FileAllowed(["mgf"]), FileSize(max_size=8000000)],
+        validators=[Optional(), FileAllowed(["mgf"])],
     )
     msms_format = SelectField(
         label="Format",
@@ -226,7 +226,7 @@ class PhenotypeForm:
     phenotype_file = FileField(
         label="File",
         description="Upload the phenotype file.",
-        validators=[Optional(), FileAllowed(["csv"]), FileSize(max_size=2000000)],
+        validators=[Optional(), FileAllowed(["csv"])],
     )
     phenotype_format = SelectField(
         label="Format",
@@ -341,7 +341,7 @@ class GroupForm:
     group_file = FileField(
         label="File",
         description="Upload the group metadata file.",
-        validators=[Optional(), FileAllowed(["csv"]), FileSize(max_size=2000000)],
+        validators=[Optional(), FileAllowed(["csv"])],
     )
     group_format = SelectField(
         label="Format",
@@ -404,7 +404,7 @@ class LibraryForm:
     library_file = FileField(
         label="File",
         description="Upload an MS/MS spectral library file.",
-        validators=[Optional(), FileAllowed(["mgf"]), FileSize(max_size=8000000)],
+        validators=[Optional(), FileAllowed(["mgf"])],
     )
     library_format = SelectField(
         label="Format",
@@ -466,7 +466,7 @@ class Ms2queryForm:
     ms2query_file = FileField(
         label="Existing File",
         description="Upload a pre-calulated MS2Query results file.",
-        validators=[Optional(), FileAllowed(["csv"]), FileSize(max_size=2000000)],
+        validators=[Optional(), FileAllowed(["csv"])],
     )
     ms2query_score = DecimalField(
         label="Score",

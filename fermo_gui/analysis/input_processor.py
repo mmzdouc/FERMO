@@ -43,26 +43,16 @@ class InputProcessor(BaseModel):
         form: AnalysisForm object containing the form data
         params: a dict to assemble the parameters.json file
         online: bool to indicate if application is running online (not local)
-        root_url: to determine if online or offline running
         n_features: the number of features in the dataframe
         max_features: the maximum allowed number of features in web-version
     """
 
     task_dir: Path
     form: Any
+    online: bool
     params: dict = {}
-    root_url: str
-    online: Optional[bool] = None
     n_features: Optional[int] = None
     max_features: int = 1000
-
-    @model_validator(mode="after")
-    def det_online_offline(self):
-        if "localhost" in self.root_url or "127.0.0.1" in self.root_url:
-            self.online = False
-        else:
-            self.online = True
-        return self
 
     def return_params(self: Self):
         """Returns the params dict for writing"""

@@ -21,16 +21,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from importlib import metadata
+import contextlib
 import os
+from importlib import metadata
 from typing import Optional
 
 from flask import Flask
 
-from fermo_gui.config.extensions import mail, session, socketio
 from fermo_gui.config.config_celery import configure_celery
 from fermo_gui.config.config_mail import configure_mail
 from fermo_gui.config.config_session import configure_session
+from fermo_gui.config.extensions import mail, session, socketio
 from fermo_gui.routes import bp
 
 
@@ -69,6 +70,7 @@ def configure_app(app: Flask, test_config: Optional[dict] = None) -> Flask:
     app.config["SECRET_KEY"] = "dev"
     app.config["UPLOAD_FOLDER"] = "fermo_gui/upload/"
     app.config["ALLOWED_EXTENSIONS"] = {"json", "csv", "mgf", "session"}
+    app.config["ONLINE"] = False
 
     if test_config is None:
         app.config.from_pyfile("config.py", silent=True)
@@ -83,10 +85,8 @@ def create_instance_path(app: Flask):
     Arguments:
         app: The Flask app instance
     """
-    try:
+    with contextlib.suppress(OSError):
         os.makedirs(app.instance_path)
-    except OSError:
-        pass
 
 
 def register_context_processors(app: Flask):
@@ -98,4 +98,4 @@ def register_context_processors(app: Flask):
 
     @app.context_processor
     def set_version() -> dict:
-        return dict(version=metadata.version("fermo_gui"))
+        return {"version": metadata.version("fermo_gui")}

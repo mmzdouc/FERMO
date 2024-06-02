@@ -64,7 +64,7 @@ def setup_fermo_run(form: AnalysisForm) -> Union[str, Response]:
         processor = InputProcessor(
             form=form,
             task_dir=Path(task_path),
-            root_url=request.base_url.partition("/analysis/start_analysis/")[0],
+            online=current_app.config.get("ONLINE"),
         )
         processor.run_processor()
         parameters_dict = processor.return_params()
