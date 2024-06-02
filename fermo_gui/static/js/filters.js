@@ -1,58 +1,95 @@
 export function initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures, sampleData, chromatogramElement, currentBoxParams) {
-    const range1 = document.getElementById('range1');
-    const range2 = document.getElementById('range2');
-    const range1Input = document.getElementById('range1Input');
-    const range2Input = document.getElementById('range2Input');
-
-    // Add event listeners for input events
-    range1.addEventListener('input', () => {
-        range1Input.value = range1.value;
-        updateRange();
-    });
-    range2.addEventListener('input', () => {
-        range2Input.value = range2.value;
-        updateRange();
-    });
-    range1Input.addEventListener('input', () => {
-        range1.value = range1Input.value;
-        updateRange();
-    });
-    range2Input.addEventListener('input', () => {
-        range2.value = range2Input.value;
-        updateRange();
-    });
-
-    // Add event listeners for blur events to enforce constraints on loss of focus
-    range1Input.addEventListener('blur', enforceConstraints);
-    range2Input.addEventListener('blur', enforceConstraints);
+    const noveltyRange1 = document.getElementById('noveltyRange1');
+    const noveltyRange2 = document.getElementById('noveltyRange2');
+    const noveltyRange1Input = document.getElementById('noveltyRange1Input');
+    const noveltyRange2Input = document.getElementById('noveltyRange2Input');
+    const phenotypeRange1 = document.getElementById('phenotypeRange1');
+    const phenotypeRange2 = document.getElementById('phenotypeRange2');
+    const phenotypeRange1Input = document.getElementById('phenotypeRange1Input');
+    const phenotypeRange2Input = document.getElementById('phenotypeRange2Input');
+    const showPhenotypeFeatures = document.getElementById('showPhenotypeFeatures');
 
     function updateRange() {
-        var minScore = parseFloat(range1.value);
-        var maxScore = parseFloat(range2.value);
-        visualizeData(sampleData, false, minScore, maxScore);
+        var minScore = parseFloat(noveltyRange1.value);
+        var maxScore = parseFloat(noveltyRange2.value);
+        var minPhenotypeScore = parseFloat(phenotypeRange1.value);
+        var maxPhenotypeScore = parseFloat(phenotypeRange2.value);
+        var showOnlyPhenotypeFeatures = showPhenotypeFeatures.checked;
+
+        visualizeData(sampleData, false, minScore, maxScore, minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
         // Reapply the box visualization if it was previously set
         if (currentBoxParams) {
             addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
         }
-        updateRetainedFeatures(minScore, maxScore);
+        updateRetainedFeatures(minScore, maxScore, minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures);
     }
 
+    // Event listeners for Novelty score slider
+    noveltyRange1.addEventListener('input', () => {
+        noveltyRange1Input.value = noveltyRange1.value;
+        updateRange();
+    });
+    noveltyRange2.addEventListener('input', () => {
+        noveltyRange2Input.value = noveltyRange2.value;
+        updateRange();
+    });
+    noveltyRange1Input.addEventListener('input', () => {
+        noveltyRange1.value = noveltyRange1Input.value;
+        updateRange();
+    });
+    noveltyRange2Input.addEventListener('input', () => {
+        noveltyRange2.value = noveltyRange2Input.value;
+        updateRange();
+    });
+
+    // Event listeners for Phenotype score slider
+    phenotypeRange1.addEventListener('input', () => {
+        phenotypeRange1Input.value = phenotypeRange1.value;
+        updateRange();
+    });
+    phenotypeRange2.addEventListener('input', () => {
+        phenotypeRange2Input.value = phenotypeRange2.value;
+        updateRange();
+    });
+    phenotypeRange1Input.addEventListener('input', () => {
+        phenotypeRange1.value = phenotypeRange1Input.value;
+        updateRange();
+    });
+    phenotypeRange2Input.addEventListener('input', () => {
+        phenotypeRange2.value = phenotypeRange2Input.value;
+        updateRange();
+    });
+
+    // Event listener for showPhenotypeFeatures toggle
+    showPhenotypeFeatures.addEventListener('change', updateRange);
+
     function enforceConstraints() {
-        if (parseFloat(range1Input.value) > parseFloat(range2Input.value)) {
-            range1Input.value = range2Input.value;
+        if (parseFloat(noveltyRange1Input.value) > parseFloat(noveltyRange2Input.value)) {
+            noveltyRange1Input.value = noveltyRange2Input.value;
         }
-        if (parseFloat(range2Input.value) < parseFloat(range1Input.value)) {
-            range2Input.value = range1Input.value;
+        if (parseFloat(noveltyRange2Input.value) < parseFloat(noveltyRange1Input.value)) {
+            noveltyRange2Input.value = noveltyRange1Input.value;
+        }
+        if (parseFloat(phenotypeRange1Input.value) > parseFloat(phenotypeRange2Input.value)) {
+            phenotypeRange1Input.value = phenotypeRange2Input.value;
+        }
+        if (parseFloat(phenotypeRange2Input.value) < parseFloat(phenotypeRange1Input.value)) {
+            phenotypeRange2Input.value = phenotypeRange1Input.value;
         }
         updateRange();
     }
+
+    // Call updateRange to apply current settings immediately
+    updateRange();
 }
 
-export function getFeaturesWithinRange(sampleData, minScore, maxScore) {
+export function getFeaturesWithinRange(sampleData, minScore, maxScore, minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures) {
     var featuresWithinRange = 0;
-    sampleData.novScore.forEach(function(score) {
-        if (score >= minScore && score <= maxScore) {
+    sampleData.novScore.forEach((score, index) => {
+        const phenotypeScore = sampleData.annotations?.[index]?.phenotypes?.[0]?.score;
+        if (score >= minScore && score <= maxScore &&
+            (!showOnlyPhenotypeFeatures || (phenotypeScore !== undefined && phenotypeScore !== null && phenotypeScore >= minPhenotypeScore && phenotypeScore <= maxPhenotypeScore))) {
             featuresWithinRange++;
         }
     });
@@ -61,49 +98,64 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore) {
 
 export function getSliderRanges() {
     // Get elements
-    const range1 = document.getElementById('range1');
-    const range2 = document.getElementById('range2');
-    const range1Input = document.getElementById('range1Input');
-    const range2Input = document.getElementById('range2Input');
+    const noveltyRange1 = document.getElementById('noveltyRange1');
+    const noveltyRange2 = document.getElementById('noveltyRange2');
+    const noveltyRange1Input = document.getElementById('noveltyRange1Input');
+    const noveltyRange2Input = document.getElementById('noveltyRange2Input');
 
     // Add event listeners for input events
-    range1.addEventListener('input', updateRangeFromSlider);
-    range2.addEventListener('input', updateRangeFromSlider);
-    range1Input.addEventListener('input', updateRangeFromInput);
-    range2Input.addEventListener('input', updateRangeFromInput);
+    noveltyRange1.addEventListener('input', updateRangeFromSlider);
+    noveltyRange2.addEventListener('input', updateRangeFromSlider);
+    noveltyRange1Input.addEventListener('input', updateRangeFromInput);
+    noveltyRange2Input.addEventListener('input', updateRangeFromInput);
 
     // Add event listeners for blur events to enforce constraints on loss of focus
-    range1Input.addEventListener('blur', enforceConstraints);
-    range2Input.addEventListener('blur', enforceConstraints);
+    noveltyRange1Input.addEventListener('blur', enforceConstraints);
+    noveltyRange2Input.addEventListener('blur', enforceConstraints);
 }
 
 // Update sliders based on slider input
 export function updateRangeFromSlider() {
-    const minRange = Math.min(parseFloat(range1.value), parseFloat(range2.value));
-    const maxRange = Math.max(parseFloat(range1.value), parseFloat(range2.value));
+    const noveltyRange1 = document.getElementById('noveltyRange1');
+    const noveltyRange2 = document.getElementById('noveltyRange2');
+    const noveltyRange1Input = document.getElementById('noveltyRange1Input');
+    const noveltyRange2Input = document.getElementById('noveltyRange2Input');
 
-    range1.value = minRange;
-    range2.value = maxRange;
+    const minRange = Math.min(parseFloat(noveltyRange1.value), parseFloat(noveltyRange2.value));
+    const maxRange = Math.max(parseFloat(noveltyRange1.value), parseFloat(noveltyRange2.value));
 
-    range1Input.value = minRange.toFixed(2);
-    range2Input.value = maxRange.toFixed(2);
+    noveltyRange1.value = minRange;
+    noveltyRange2.value = maxRange;
+
+    noveltyRange1Input.value = minRange.toFixed(2);
+    noveltyRange2Input.value = maxRange.toFixed(2);
 }
 
 // Update sliders based on input field values
 export function updateRangeFromInput() {
-    const minRange = parseFloat(range1Input.value);
-    const maxRange = parseFloat(range2Input.value);
+    const noveltyRange1 = document.getElementById('noveltyRange1');
+    const noveltyRange2 = document.getElementById('noveltyRange2');
+    const noveltyRange1Input = document.getElementById('noveltyRange1Input');
+    const noveltyRange2Input = document.getElementById('noveltyRange2Input');
+
+    const minRange = parseFloat(noveltyRange1Input.value);
+    const maxRange = parseFloat(noveltyRange2Input.value);
 
     if (!isNaN(minRange) && !isNaN(maxRange)) {
-        range1.value = minRange;
-        range2.value = maxRange;
+        noveltyRange1.value = minRange;
+        noveltyRange2.value = maxRange;
     }
 }
 
 // Enforce constraints when the input fields lose focus
 export function enforceConstraints() {
-    let minRange = parseFloat(range1Input.value);
-    let maxRange = parseFloat(range2Input.value);
+    const noveltyRange1 = document.getElementById('noveltyRange1');
+    const noveltyRange2 = document.getElementById('noveltyRange2');
+    const noveltyRange1Input = document.getElementById('noveltyRange1Input');
+    const noveltyRange2Input = document.getElementById('noveltyRange2Input');
+
+    let minRange = parseFloat(noveltyRange1Input.value);
+    let maxRange = parseFloat(noveltyRange2Input.value);
 
     if (isNaN(minRange)) {
         minRange = 0;
@@ -119,9 +171,9 @@ export function enforceConstraints() {
         [minRange, maxRange] = [maxRange, minRange];
     }
 
-    range1.value = minRange;
-    range2.value = maxRange;
+    noveltyRange1.value = minRange;
+    noveltyRange2.value = maxRange;
 
-    range1Input.value = minRange.toFixed(2);
-    range2Input.value = maxRange.toFixed(2);
+    noveltyRange1Input.value = minRange.toFixed(2);
+    noveltyRange2Input.value = maxRange.toFixed(2);
 }

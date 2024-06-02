@@ -248,16 +248,48 @@
                                                 <label class="form-label">Novelty score</label>
                                                 <div class="multirange">
                                                     <div class="track"></div>
-                                                    <input type="range" min="0.0" max="1.0" value="0.0" step="0.02" class="slider" id="range1">
-                                                    <input type="range" min="0.0" max="1.0" value="1.0" step="0.02" class="slider" id="range2">
+                                                    <input type="range"
+                                                           min="0.0" max="1.0" value="0.0" step="0.02"
+                                                           class="slider" id="noveltyRange1">
+                                                    <input type="range"
+                                                           min="0.0" max="1.0" value="1.0" step="0.02"
+                                                           class="slider" id="noveltyRange2">
                                                 </div>
                                                 <div class="range-inputs">
                                                     <div class="form-outline">
-                                                        <input type="text" id="range1Input" min="0.0" max="1.0" value="0.0" step="0.02" class="form-control form-icon-trailing" />
+                                                        <input type="text" id="noveltyRange1Input"
+                                                               min="0.0" max="1.0" value="0.0" step="0.02"
+                                                               class="form-control form-icon-trailing" />
                                                     </div>
                                                     <div class="form-outline">
-                                                        <input type="text" id="range2Input" min="0.0" max="1.0" value="1.0" step="0.02" class="form-control form-icon-trailing" />
+                                                        <input type="text" id="noveltyRange2Input"
+                                                               min="0.0" max="1.0" value="1.0" step="0.02"
+                                                               class="form-control form-icon-trailing" />
                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6">
+                                            <div class="slidecontainer">
+                                                <label class="form-label">Phenotype score</label>
+                                                <div class="multirange">
+                                                    <div class="track"></div>
+                                                    <input type="range" min="0.0" max="1.0" value="0.0" step="0.02" class="slider" id="phenotypeRange1">
+                                                    <input type="range" min="0.0" max="1.0" value="1.0" step="0.02" class="slider" id="phenotypeRange2">
+                                                </div>
+                                                <div class="range-inputs">
+                                                    <div class="form-outline">
+                                                        <input type="text" id="phenotypeRange1Input" min="0.0" max="1.0" value="0.0" step="0.02" class="form-control form-icon-trailing" />
+                                                    </div>
+                                                    <div class="form-outline">
+                                                        <input type="text" id="phenotypeRange2Input" min="0.0" max="1.0" value="1.0" step="0.02" class="form-control form-icon-trailing" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="showPhenotypeFeatures">
+                                                    <label class="form-check-label" for="showPhenotypeFeatures">
+                                                        Show features with phenotype data only
+                                                    </label>
                                                 </div>
                                             </div>
                                         </div>

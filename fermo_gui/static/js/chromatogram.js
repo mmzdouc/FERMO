@@ -1,5 +1,5 @@
 // Chromatogram visualization functions //
-export function visualizeData(sampleData, isFeatureVisualization = false, minScore = 0, maxScore = 10) {
+export function visualizeData(sampleData, isFeatureVisualization = false, minScore = 0, maxScore = 10, minPhenotypeScore = 0, maxPhenotypeScore = 10, showOnlyPhenotypeFeatures = false) {
     var data = [];
     var maxPeaksPerSample = sampleData.traceInt.map(trace => Math.max(...trace));
     var featuresWithinRange = 0;
@@ -11,7 +11,8 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
         maxPeak: maxPeaksPerSample[i],
         chromColors: getChromColors(sampleData, i, isFeatureVisualization),
         toolTip: getToolTip(sampleData, i),
-        novScore: sampleData.novScore[i]
+        novScore: sampleData.novScore[i],
+        phenotypeScore: sampleData.annotations?.[i]?.phenotypes?.[0]?.score ?? null
     }));
 
     combinedData.sort((a, b) => b.maxPeak - a.maxPeak);  // sort peaks so the smallest peaks are to the front
@@ -37,9 +38,10 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
                 smoothing: 0.8,
             },
         };
-
-        if ( isFeatureVisualization === false ) {
-            if (dataItem.novScore >= minScore && dataItem.novScore <= maxScore) {
+        if (!isFeatureVisualization) {
+            if ((dataItem.novScore >= minScore && dataItem.novScore <= maxScore) &&
+                (!showOnlyPhenotypeFeatures || (dataItem.phenotypeScore !== null &&
+                dataItem.phenotypeScore >= minPhenotypeScore && dataItem.phenotypeScore <= maxPhenotypeScore))) {
                 featuresWithinRange++;
             } else {
                 result.line.color = 'rgba(212, 212, 212, 0.8)';
@@ -66,7 +68,7 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
         margin: {
             l: 50, r: 0, t: 0,
             b: isFeatureVisualization ? 35 : 30,
-            },
+        },
         xaxis: {
             autorange: false,
             showgrid: false,
