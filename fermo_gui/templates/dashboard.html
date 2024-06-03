@@ -268,28 +268,59 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-12 col-md-6">
                                             <div class="slidecontainer">
-                                                <label class="form-label">Phenotype score</label>
+                                                 <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="showPhenotypeFeatures">
+                                                    <label class="form-check-label" for="showPhenotypeFeatures">
+                                                        Show features with phenotype data
+                                                    </label>
+                                                </div>
                                                 <div class="multirange">
                                                     <div class="track"></div>
-                                                    <input type="range" min="0.0" max="1.0" value="0.0" step="0.02" class="slider" id="phenotypeRange1">
-                                                    <input type="range" min="0.0" max="1.0" value="1.0" step="0.02" class="slider" id="phenotypeRange2">
+                                                    <input type="range"
+                                                           min="0.0" max="1.0" value="0.0" step="0.02"
+                                                           class="slider" id="phenotypeRange1">
+                                                    <input type="range"
+                                                           min="0.0" max="1.0" value="1.0" step="0.02"
+                                                           class="slider" id="phenotypeRange2">
                                                 </div>
                                                 <div class="range-inputs">
                                                     <div class="form-outline">
-                                                        <input type="text" id="phenotypeRange1Input" min="0.0" max="1.0" value="0.0" step="0.02" class="form-control form-icon-trailing" />
+                                                        <input type="text" id="phenotypeRange1Input"
+                                                               min="0.0" max="1.0" value="0.0" step="0.02"
+                                                               class="form-control form-icon-trailing" />
                                                     </div>
                                                     <div class="form-outline">
-                                                        <input type="text" id="phenotypeRange2Input" min="0.0" max="1.0" value="1.0" step="0.02" class="form-control form-icon-trailing" />
+                                                        <input type="text" id="phenotypeRange2Input"
+                                                               min="0.0" max="1.0" value="1.0" step="0.02"
+                                                               class="form-control form-icon-trailing" />
                                                     </div>
                                                 </div>
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" id="showPhenotypeFeatures">
-                                                    <label class="form-check-label" for="showPhenotypeFeatures">
-                                                        Show features with phenotype data only
-                                                    </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6">
+                                             <div class="slidecontainer">
+                                                <label class="form-label">Feature in number of samples</label>
+                                                <div class="multirange">
+                                                    <div class="track"></div>
+                                                    <input type="range"
+                                                           min="1.0" max="5.0" value="1.0" step="1.0"
+                                                           class="slider" id="numberRange1">
+                                                    <input type="range"
+                                                           min="1.0" max="5.0" value="5.0" step="1.0"
+                                                           class="slider" id="numberRange2">
+                                                </div>
+                                                <div class="range-inputs">
+                                                    <div class="form-outline">
+                                                        <input type="text" id="numberRange1Input"
+                                                               min="1.0" max="5.0" value="1.0" step="1.0"
+                                                               class="form-control form-icon-trailing" />
+                                                    </div>
+                                                    <div class="form-outline">
+                                                        <input type="text" id="numberRange2Input"
+                                                               min="1.0" max="5.0" value="5.0" step="1.0"
+                                                               class="form-control form-icon-trailing" />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -337,7 +368,9 @@
                             <div class="dropzone">
                                 <div class="accordion accordion-item" id="cyto">
                                     <h2 class="accordion-header" id="cytoscapeHeader">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cytoscape" aria-expanded="true" aria-controls="Cytoscape">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#cytoscape"
+                                                aria-expanded="true" aria-controls="Cytoscape">
                                             Spectral similarity networking
                                         </button>
                                     </h2>

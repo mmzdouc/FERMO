@@ -394,8 +394,13 @@ function createHeatmap(data, groupName) {
 		margin: { l: 50, r: 50, t: 50, b: 50 },
 	};
 
-	// Create the heatmap
-	Plotly.newPlot('heatmap-container', [trace], layout);
+    // Create a new container for this heatmap
+    const heatmapDiv = document.createElement('div');
+    heatmapDiv.classList.add('heatmap-item');
+    document.getElementById('heatmap-container').appendChild(heatmapDiv);
+
+    // Create the heatmap
+    Plotly.newPlot(heatmapDiv, [trace], layout);
 }
 
 function showTables() {

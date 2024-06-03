@@ -1,8 +1,8 @@
 {
   "metadata": {
     "fermo_core_version": "0.1.0",
-    "file_created_isoformat": "2024-05-27T15:48:29.168858",
-    "runtime_seconds": 41.152054,
+    "file_created_isoformat": "2024-06-03T12:37:12.514913",
+    "runtime_seconds": 47.423448,
     "system": "Linux",
     "version": "#117~20.04.1-Ubuntu SMP Tue Apr 30 10:35:57 UTC 2024",
     "architecture": [
@@ -26,8 +26,8 @@
       "rel_int_from": 0.01
     },
     "PhenotypeParameters": {
-      "filepath": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_bioactivity_qualitative.csv",
-      "format": "qualitative"
+      "filepath": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/dummy_bioactivity_quant_percentage.csv",
+      "format": "quantitative-percentage"
     },
     "GroupMetadataParameters": {
       "filepath": "/home/mitz/aWageningen/Active/FERMO/fermo_core/fermo_core/example_data/case_study_group_metadata.csv",
@@ -78,14 +78,10 @@
     },
     "FeatureFilteringParameters": {
       "activate_module": true,
-      "filter_rel_int_range": [
-        0.1,
-        1.0
-      ],
-      "filter_rel_area_range": [
-        0.1,
-        1.0
-      ]
+      "filter_rel_int_range_min": 0.1,
+      "filter_rel_int_range_max": 1.0,
+      "filter_rel_area_range_min": 0.1,
+      "filter_rel_area_range_max": 1.0
     },
     "BlankAssignmentParameters": {
       "activate_module": true,
@@ -99,13 +95,15 @@
       "value": "area"
     },
     "PhenoQualAssgnParams": {
-      "activate_module": true,
-      "factor": 5,
-      "algorithm": "minmax",
-      "value": "area"
+      "activate_module": false
     },
     "PhenoQuantPercentAssgnParams": {
-      "activate_module": false
+      "activate_module": true,
+      "sample_avg": "mean",
+      "value": "area",
+      "algorithm": "pearson",
+      "p_val_cutoff": 0.05,
+      "coeff_cutoff": 0.7
     },
     "PhenoQuantConcAssgnParams": {
       "activate_module": false
@@ -317,16 +315,16 @@
     "groups": {
       "default_s_ids": [],
       "nonblank_s_ids": [
-        "5425_5426_mod.mzXML",
-        "5432_5431_mod2.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5450_5449_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5444_5443_mod.mzXML",
+        "5450_5449_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5440_5439_mod.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "nonblank_f_ids": [
         3,
@@ -408,8 +406,8 @@
         "phylogroup": {
           "C": {
             "s_ids": [
-              "5425_5426_mod.mzXML",
               "5444_5443_mod.mzXML",
+              "5425_5426_mod.mzXML",
               "5458_5457_mod.mzXML"
             ],
             "f_ids": [
@@ -468,10 +466,10 @@
           },
           "S": {
             "s_ids": [
-              "5452_5451_mod.mzXML",
               "5456_5455_mod.mzXML",
-              "5434_5433_mod.mzXML",
-              "5446_5445_mod.mzXML"
+              "5452_5451_mod.mzXML",
+              "5446_5445_mod.mzXML",
+              "5434_5433_mod.mzXML"
             ],
             "f_ids": [
               3,
@@ -535,16 +533,12 @@
         "medium": {
           "AF": {
             "s_ids": [
-              "5425_5426_mod.mzXML",
-              "5440_5439_mod.mzXML",
-              "5446_5445_mod.mzXML",
-              "5444_5443_mod.mzXML",
-              "5450_5449_mod.mzXML",
-              "5456_5455_mod.mzXML",
               "5434_5433_mod.mzXML",
-              "5458_5457_mod.mzXML",
-              "5452_5451_mod.mzXML",
-              "5432_5431_mod2.mzXML"
+              "5432_5431_mod2.mzXML",
+              "5440_5439_mod.mzXML",
+              "5444_5443_mod.mzXML",
+              "5425_5426_mod.mzXML",
+              "5446_5445_mod.mzXML"
             ],
             "f_ids": [
               3,
@@ -578,10 +572,49 @@
               79,
               82,
               83,
+              100,
+              101,
+              102
+            ]
+          },
+          "MC1": {
+            "s_ids": [
+              "5456_5455_mod.mzXML",
+              "5450_5449_mod.mzXML",
+              "5452_5451_mod.mzXML",
+              "5458_5457_mod.mzXML"
+            ],
+            "f_ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              9,
+              12,
+              13,
+              14,
+              15,
+              17,
+              19,
+              23,
+              37,
+              41,
+              44,
+              46,
+              56,
+              57,
+              65,
+              66,
+              70,
+              76,
+              78,
+              79,
+              82,
+              83,
               95,
               96,
               97,
-              100,
               101,
               102,
               103,
@@ -3950,47 +3983,111 @@
     },
     "phenotypes": [
       {
-        "category": "qualitative",
-        "datatype": "qualitative",
+        "category": "assay:siomycin",
+        "datatype": "quantitative-percentage",
         "s_phen_data": [
           {
-            "s_id": "5452_5451_mod.mzXML",
-            "value": "N/A"
+            "s_id": "5425_5426_mod.mzXML",
+            "value": 2.5
           },
           {
-            "s_id": "5456_5455_mod.mzXML",
-            "value": "N/A"
+            "s_id": "5432_5431_mod2.mzXML",
+            "value": 10.5
           },
           {
             "s_id": "5434_5433_mod.mzXML",
-            "value": "N/A"
+            "value": 86.0
+          },
+          {
+            "s_id": "5440_5439_mod.mzXML",
+            "value": 3.0
+          },
+          {
+            "s_id": "5444_5443_mod.mzXML",
+            "value": 7.5
           },
           {
             "s_id": "5446_5445_mod.mzXML",
-            "value": "N/A"
+            "value": 90.0
+          },
+          {
+            "s_id": "5450_5449_mod.mzXML",
+            "value": 5.5
+          },
+          {
+            "s_id": "5452_5451_mod.mzXML",
+            "value": 90.5
+          },
+          {
+            "s_id": "5456_5455_mod.mzXML",
+            "value": 77.0
+          },
+          {
+            "s_id": "5458_5457_mod.mzXML",
+            "value": 7.0
+          },
+          {
+            "s_id": "D3_H3_mod.mzXML",
+            "value": 0.0
           }
         ],
-        "s_negative": [
-          "D3_H3_mod.mzXML",
-          "5425_5426_mod.mzXML",
-          "5440_5439_mod.mzXML",
-          "5444_5443_mod.mzXML",
-          "5450_5449_mod.mzXML",
-          "5458_5457_mod.mzXML",
-          "5432_5431_mod2.mzXML"
-        ],
+        "s_negative": [],
         "f_ids_positive": [
-          66,
-          105,
-          106,
-          107,
-          76,
-          109,
-          78,
-          79,
-          110,
-          82,
           83
+        ]
+      },
+      {
+        "category": "assay:chymostatinol",
+        "datatype": "quantitative-percentage",
+        "s_phen_data": [
+          {
+            "s_id": "5425_5426_mod.mzXML",
+            "value": 3.5
+          },
+          {
+            "s_id": "5432_5431_mod2.mzXML",
+            "value": 16.0
+          },
+          {
+            "s_id": "5434_5433_mod.mzXML",
+            "value": 89.0
+          },
+          {
+            "s_id": "5440_5439_mod.mzXML",
+            "value": 26.0
+          },
+          {
+            "s_id": "5444_5443_mod.mzXML",
+            "value": 1.0
+          },
+          {
+            "s_id": "5446_5445_mod.mzXML",
+            "value": 0.0
+          },
+          {
+            "s_id": "5450_5449_mod.mzXML",
+            "value": 63.5
+          },
+          {
+            "s_id": "5452_5451_mod.mzXML",
+            "value": 0.0
+          },
+          {
+            "s_id": "5456_5455_mod.mzXML",
+            "value": 7.0
+          },
+          {
+            "s_id": "5458_5457_mod.mzXML",
+            "value": 4.0
+          },
+          {
+            "s_id": "D3_H3_mod.mzXML",
+            "value": 6.5
+          }
+        ],
+        "s_negative": [],
+        "f_ids_positive": [
+          13
         ]
       }
     ]
@@ -4005,15 +4102,15 @@
       "area": 2500,
       "samples": [
         "D3_H3_mod.mzXML",
-        "5425_5426_mod.mzXML",
-        "5440_5439_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5444_5443_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": true,
       "area_per_sample": [
@@ -4026,11 +4123,11 @@
           "value": 2000
         },
         {
-          "s_id": "5425_5426_mod.mzXML",
+          "s_id": "5452_5451_mod.mzXML",
           "value": 1700
         },
         {
-          "s_id": "5452_5451_mod.mzXML",
+          "s_id": "5425_5426_mod.mzXML",
           "value": 1700
         },
         {
@@ -4042,15 +4139,15 @@
           "value": 1400
         },
         {
-          "s_id": "5444_5443_mod.mzXML",
-          "value": 1200
-        },
-        {
           "s_id": "5458_5457_mod.mzXML",
           "value": 1200
         },
         {
           "s_id": "5432_5431_mod2.mzXML",
+          "value": 1200
+        },
+        {
+          "s_id": "5444_5443_mod.mzXML",
           "value": 1200
         },
         {
@@ -4188,15 +4285,15 @@
       "area": 1300,
       "samples": [
         "D3_H3_mod.mzXML",
-        "5425_5426_mod.mzXML",
-        "5440_5439_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5444_5443_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": true,
       "area_per_sample": [
@@ -4205,11 +4302,11 @@
           "value": 1300
         },
         {
-          "s_id": "5425_5426_mod.mzXML",
+          "s_id": "5458_5457_mod.mzXML",
           "value": 1200
         },
         {
-          "s_id": "5458_5457_mod.mzXML",
+          "s_id": "5432_5431_mod2.mzXML",
           "value": 1200
         },
         {
@@ -4217,7 +4314,7 @@
           "value": 1200
         },
         {
-          "s_id": "5432_5431_mod2.mzXML",
+          "s_id": "5425_5426_mod.mzXML",
           "value": 1200
         },
         {
@@ -4255,11 +4352,11 @@
           "value": 9300
         },
         {
-          "s_id": "5456_5455_mod.mzXML",
+          "s_id": "5434_5433_mod.mzXML",
           "value": 9200
         },
         {
-          "s_id": "5434_5433_mod.mzXML",
+          "s_id": "5456_5455_mod.mzXML",
           "value": 9200
         },
         {
@@ -4318,15 +4415,15 @@
       "rt_stop": 4.07,
       "area": 8500,
       "samples": [
-        "5425_5426_mod.mzXML",
-        "5440_5439_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5444_5443_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -4385,11 +4482,11 @@
           "value": 23000
         },
         {
-          "s_id": "5425_5426_mod.mzXML",
+          "s_id": "5456_5455_mod.mzXML",
           "value": 22000
         },
         {
-          "s_id": "5456_5455_mod.mzXML",
+          "s_id": "5425_5426_mod.mzXML",
           "value": 22000
         },
         {
@@ -4407,30 +4504,38 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "C",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
-            "group2": "S",
-            "factor": 1.22
-          },
-          {
-            "group1": "C",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "C",
             "factor": 1.02
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 1.24
+          },
+          {
+            "group1": "C",
+            "group2": "S",
+            "factor": 1.22
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.15
           }
         ]
       },
@@ -4537,16 +4642,16 @@
       "rt_stop": 6.0,
       "area": 9500,
       "samples": [
-        "5425_5426_mod.mzXML",
-        "5440_5439_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5450_5449_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5444_5443_mod.mzXML",
+        "5450_5449_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -4605,7 +4710,7 @@
           "value": 42000
         },
         {
-          "s_id": "5425_5426_mod.mzXML",
+          "s_id": "5452_5451_mod.mzXML",
           "value": 27000
         },
         {
@@ -4613,7 +4718,7 @@
           "value": 27000
         },
         {
-          "s_id": "5452_5451_mod.mzXML",
+          "s_id": "5425_5426_mod.mzXML",
           "value": 27000
         },
         {
@@ -4635,31 +4740,37 @@
       ],
       "groups": {
         "phylogroup": [
-          "C",
+          "A2",
           "V2",
-          "S",
-          "A2"
+          "C",
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
+            "group1": "A2",
             "group2": "V2",
-            "factor": 5.84
+            "factor": 5.62
           },
           {
-            "group1": "C",
-            "group2": "S",
-            "factor": 1.34
-          },
-          {
-            "group1": "C",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "C",
             "factor": 1.04
+          },
+          {
+            "group1": "A2",
+            "group2": "S",
+            "factor": 1.29
+          },
+          {
+            "group1": "V2",
+            "group2": "C",
+            "factor": 5.84
           },
           {
             "group1": "V2",
@@ -4667,14 +4778,16 @@
             "factor": 4.36
           },
           {
-            "group1": "V2",
-            "group2": "A2",
-            "factor": 5.62
-          },
+            "group1": "C",
+            "group2": "S",
+            "factor": 1.34
+          }
+        ],
+        "medium": [
           {
-            "group1": "S",
-            "group2": "A2",
-            "factor": 1.29
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.04
           }
         ]
       },
@@ -4883,9 +4996,9 @@
       "area": 3600,
       "samples": [
         "5432_5431_mod2.mzXML",
-        "5458_5457_mod.mzXML",
         "5440_5439_mod.mzXML",
-        "5434_5433_mod.mzXML"
+        "5434_5433_mod.mzXML",
+        "5458_5457_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -4926,30 +5039,38 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "C",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
-            "group2": "S",
-            "factor": 1.29
-          },
-          {
-            "group1": "C",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "C",
             "factor": 2.48
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 1.93
+          },
+          {
+            "group1": "C",
+            "group2": "S",
+            "factor": 1.29
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.89
           }
         ]
       },
@@ -5397,15 +5518,15 @@
       "rt_stop": 6.28,
       "area": 15000,
       "samples": [
-        "5425_5426_mod.mzXML",
-        "5440_5439_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5444_5443_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -5464,11 +5585,11 @@
           "value": 58000
         },
         {
-          "s_id": "5425_5426_mod.mzXML",
+          "s_id": "5452_5451_mod.mzXML",
           "value": 55000
         },
         {
-          "s_id": "5452_5451_mod.mzXML",
+          "s_id": "5425_5426_mod.mzXML",
           "value": 55000
         },
         {
@@ -5486,30 +5607,38 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "C",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
-            "group2": "S",
-            "factor": 1.11
-          },
-          {
-            "group1": "C",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "C",
             "factor": 1.0
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 1.1
+          },
+          {
+            "group1": "C",
+            "group2": "S",
+            "factor": 1.11
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.19
           }
         ]
       },
@@ -5526,11 +5655,11 @@
             "partner_mz": 244.1164,
             "diff_ppm": 5.95,
             "samples": [
-              "5456_5455_mod.mzXML",
-              "5458_5457_mod.mzXML",
               "5434_5433_mod.mzXML",
+              "5458_5457_mod.mzXML",
+              "5432_5431_mod2.mzXML",
               "5452_5451_mod.mzXML",
-              "5432_5431_mod2.mzXML"
+              "5456_5455_mod.mzXML"
             ]
           }
         ],
@@ -5732,15 +5861,15 @@
       "rt_stop": 6.65,
       "area": 7400,
       "samples": [
-        "5425_5426_mod.mzXML",
-        "5440_5439_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5444_5443_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -5799,15 +5928,15 @@
           "value": 23000
         },
         {
+          "s_id": "5434_5433_mod.mzXML",
+          "value": 15000
+        },
+        {
           "s_id": "5444_5443_mod.mzXML",
           "value": 15000
         },
         {
           "s_id": "5456_5455_mod.mzXML",
-          "value": 15000
-        },
-        {
-          "s_id": "5434_5433_mod.mzXML",
           "value": 15000
         },
         {
@@ -5821,30 +5950,38 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "C",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
-            "group2": "S",
-            "factor": 1.82
-          },
-          {
-            "group1": "C",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "C",
             "factor": 1.55
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 1.18
+          },
+          {
+            "group1": "C",
+            "group2": "S",
+            "factor": 1.82
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.33
           }
         ]
       },
@@ -6533,9 +6670,9 @@
       "area": 16000,
       "samples": [
         "5432_5431_mod2.mzXML",
-        "5450_5449_mod.mzXML",
         "5440_5439_mod.mzXML",
-        "5434_5433_mod.mzXML"
+        "5434_5433_mod.mzXML",
+        "5450_5449_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -6576,30 +6713,38 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "V2",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "V2",
-            "group2": "S",
-            "factor": 1.12
-          },
-          {
-            "group1": "V2",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "V2",
             "factor": 4.38
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 4.9
+          },
+          {
+            "group1": "V2",
+            "group2": "S",
+            "factor": 1.12
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 3.21
           }
         ]
       },
@@ -6956,9 +7101,9 @@
       "area": 24000,
       "samples": [
         "5432_5431_mod2.mzXML",
-        "5450_5449_mod.mzXML",
         "5440_5439_mod.mzXML",
-        "5434_5433_mod.mzXML"
+        "5434_5433_mod.mzXML",
+        "5450_5449_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -6999,30 +7144,38 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "V2",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "V2",
-            "group2": "S",
-            "factor": 1.14
-          },
-          {
-            "group1": "V2",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "V2",
             "factor": 2.96
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 3.38
+          },
+          {
+            "group1": "V2",
+            "group2": "S",
+            "factor": 1.14
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.65
           }
         ]
       },
@@ -7259,9 +7412,9 @@
       "area": 44000,
       "samples": [
         "5432_5431_mod2.mzXML",
-        "5450_5449_mod.mzXML",
         "5440_5439_mod.mzXML",
-        "5434_5433_mod.mzXML"
+        "5434_5433_mod.mzXML",
+        "5450_5449_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -7284,11 +7437,11 @@
       ],
       "height_per_sample": [
         {
-          "s_id": "5450_5449_mod.mzXML",
+          "s_id": "5434_5433_mod.mzXML",
           "value": 110000
         },
         {
-          "s_id": "5434_5433_mod.mzXML",
+          "s_id": "5450_5449_mod.mzXML",
           "value": 110000
         },
         {
@@ -7302,35 +7455,43 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "V2",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "V2",
-            "group2": "S",
-            "factor": 1.47
-          },
-          {
-            "group1": "V2",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "V2",
             "factor": 5.17
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 7.59
+          },
+          {
+            "group1": "V2",
+            "group2": "S",
+            "factor": 1.47
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.62
           }
         ]
       },
       "scores": {
-        "phenotype": 0.0,
+        "phenotype": 1.0,
         "novelty": 0.07
       },
       "annotations": {
@@ -7514,7 +7675,16 @@
             "diff_ppm": 7.33
           }
         ],
-        "phenotypes": []
+        "phenotypes": [
+          {
+            "format": "quantitative-percentage",
+            "category": "assay:chymostatinol",
+            "descr": "N/A",
+            "score": 0.999621,
+            "p_value": 0.000379351,
+            "p_value_corr": 0.0125185821
+          }
+        ]
       },
       "networks": {
         "modified_cosine": {
@@ -7622,9 +7792,9 @@
       "area": 5600,
       "samples": [
         "5432_5431_mod2.mzXML",
-        "5450_5449_mod.mzXML",
         "5440_5439_mod.mzXML",
-        "5434_5433_mod.mzXML"
+        "5434_5433_mod.mzXML",
+        "5450_5449_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -7665,30 +7835,38 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "V2",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "V2",
-            "group2": "S",
-            "factor": 1.14
-          },
-          {
-            "group1": "V2",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "V2",
             "factor": 3.86
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 3.38
+          },
+          {
+            "group1": "V2",
+            "group2": "S",
+            "factor": 1.14
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 2.15
           }
         ]
       },
@@ -7931,9 +8109,9 @@
       "area": 21000,
       "samples": [
         "5432_5431_mod2.mzXML",
-        "5450_5449_mod.mzXML",
         "5440_5439_mod.mzXML",
-        "5434_5433_mod.mzXML"
+        "5434_5433_mod.mzXML",
+        "5450_5449_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -7974,30 +8152,38 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "V2",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "V2",
-            "group2": "S",
-            "factor": 2.33
-          },
-          {
-            "group1": "V2",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "V2",
             "factor": 1.01
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 2.35
+          },
+          {
+            "group1": "V2",
+            "group2": "S",
+            "factor": 2.33
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.44
           }
         ]
       },
@@ -8282,16 +8468,16 @@
       "area": 11000,
       "samples": [
         "D3_H3_mod.mzXML",
-        "5425_5426_mod.mzXML",
-        "5440_5439_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5450_5449_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5444_5443_mod.mzXML",
+        "5450_5449_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": true,
       "area_per_sample": [
@@ -8565,14 +8751,14 @@
       "rt_stop": 11.18,
       "area": 3600,
       "samples": [
-        "5425_5426_mod.mzXML",
+        "5434_5433_mod.mzXML",
+        "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
         "5440_5439_mod.mzXML",
         "5444_5443_mod.mzXML",
         "5450_5449_mod.mzXML",
-        "5434_5433_mod.mzXML",
-        "5458_5457_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5425_5426_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -8585,11 +8771,11 @@
           "value": 2800
         },
         {
-          "s_id": "5444_5443_mod.mzXML",
+          "s_id": "5432_5431_mod2.mzXML",
           "value": 1800
         },
         {
-          "s_id": "5432_5431_mod2.mzXML",
+          "s_id": "5444_5443_mod.mzXML",
           "value": 1800
         },
         {
@@ -8645,46 +8831,54 @@
       ],
       "groups": {
         "phylogroup": [
-          "C",
+          "A2",
           "V2",
-          "S",
-          "A2"
+          "C",
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
+            "group1": "A2",
             "group2": "V2",
+            "factor": 1.45
+          },
+          {
+            "group1": "A2",
+            "group2": "C",
+            "factor": 1.89
+          },
+          {
+            "group1": "A2",
+            "group2": "S",
+            "factor": 1.0
+          },
+          {
+            "group1": "V2",
+            "group2": "C",
             "factor": 2.73
           },
           {
-            "group1": "C",
-            "group2": "S",
-            "factor": 1.89
-          },
-          {
-            "group1": "C",
-            "group2": "A2",
-            "factor": 1.89
-          },
-          {
             "group1": "V2",
             "group2": "S",
             "factor": 1.45
           },
           {
-            "group1": "V2",
-            "group2": "A2",
-            "factor": 1.45
-          },
+            "group1": "C",
+            "group2": "S",
+            "factor": 1.89
+          }
+        ],
+        "medium": [
           {
-            "group1": "S",
-            "group2": "A2",
-            "factor": 1.0
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.11
           }
         ]
       },
@@ -8792,15 +8986,15 @@
       "area": 1600,
       "samples": [
         "D3_H3_mod.mzXML",
-        "5425_5426_mod.mzXML",
-        "5440_5439_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5444_5443_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": true,
       "area_per_sample": [
@@ -9359,13 +9553,13 @@
       "rt_stop": 12.65,
       "area": 5000,
       "samples": [
-        "5440_5439_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5450_5449_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5450_5449_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -9412,11 +9606,11 @@
           "value": 13000
         },
         {
-          "s_id": "5440_5439_mod.mzXML",
+          "s_id": "5432_5431_mod2.mzXML",
           "value": 11000
         },
         {
-          "s_id": "5432_5431_mod2.mzXML",
+          "s_id": "5440_5439_mod.mzXML",
           "value": 11000
         },
         {
@@ -9430,30 +9624,38 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "V2",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "V2",
-            "group2": "S",
-            "factor": 2.1
-          },
-          {
-            "group1": "V2",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "V2",
             "factor": 1.38
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 1.51
+          },
+          {
+            "group1": "V2",
+            "group2": "S",
+            "factor": 2.1
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.57
           }
         ]
       },
@@ -9705,16 +9907,16 @@
       "area": 15000,
       "samples": [
         "D3_H3_mod.mzXML",
-        "5425_5426_mod.mzXML",
-        "5440_5439_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5450_5449_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5444_5443_mod.mzXML",
+        "5450_5449_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": true,
       "area_per_sample": [
@@ -9781,11 +9983,11 @@
           "value": 51000
         },
         {
-          "s_id": "5425_5426_mod.mzXML",
+          "s_id": "5452_5451_mod.mzXML",
           "value": 50000
         },
         {
-          "s_id": "5452_5451_mod.mzXML",
+          "s_id": "5425_5426_mod.mzXML",
           "value": 50000
         },
         {
@@ -10070,16 +10272,16 @@
       "area": 6400,
       "samples": [
         "D3_H3_mod.mzXML",
-        "5425_5426_mod.mzXML",
-        "5440_5439_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5450_5449_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5444_5443_mod.mzXML",
+        "5450_5449_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": true,
       "area_per_sample": [
@@ -10463,16 +10665,16 @@
       "area": 3800,
       "samples": [
         "D3_H3_mod.mzXML",
-        "5425_5426_mod.mzXML",
-        "5440_5439_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5450_5449_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5440_5439_mod.mzXML",
+        "5444_5443_mod.mzXML",
+        "5450_5449_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": true,
       "area_per_sample": [
@@ -10539,11 +10741,11 @@
           "value": 17000
         },
         {
-          "s_id": "5425_5426_mod.mzXML",
+          "s_id": "5452_5451_mod.mzXML",
           "value": 14000
         },
         {
-          "s_id": "5452_5451_mod.mzXML",
+          "s_id": "5425_5426_mod.mzXML",
           "value": 14000
         },
         {
@@ -10925,30 +11127,38 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "C",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
-            "group2": "S",
-            "factor": 4.75
-          },
-          {
-            "group1": "C",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "C",
             "factor": 2.88
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 1.65
+          },
+          {
+            "group1": "C",
+            "group2": "S",
+            "factor": 4.75
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.9
           }
         ]
       },
@@ -11770,14 +11980,14 @@
       "area": 3000,
       "samples": [
         "D3_H3_mod.mzXML",
-        "5425_5426_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5444_5443_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": true,
       "area_per_sample": [
@@ -11802,11 +12012,11 @@
           "value": 2400
         },
         {
-          "s_id": "5446_5445_mod.mzXML",
+          "s_id": "5456_5455_mod.mzXML",
           "value": 1900
         },
         {
-          "s_id": "5456_5455_mod.mzXML",
+          "s_id": "5446_5445_mod.mzXML",
           "value": 1900
         },
         {
@@ -11832,11 +12042,11 @@
           "value": 17000
         },
         {
-          "s_id": "5425_5426_mod.mzXML",
+          "s_id": "5452_5451_mod.mzXML",
           "value": 14000
         },
         {
-          "s_id": "5452_5451_mod.mzXML",
+          "s_id": "5425_5426_mod.mzXML",
           "value": 14000
         },
         {
@@ -12356,20 +12566,20 @@
       "rt_stop": 6.07,
       "area": 1400,
       "samples": [
-        "5456_5455_mod.mzXML",
-        "5458_5457_mod.mzXML",
         "5434_5433_mod.mzXML",
+        "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
         {
-          "s_id": "5458_5457_mod.mzXML",
+          "s_id": "5434_5433_mod.mzXML",
           "value": 1400
         },
         {
-          "s_id": "5434_5433_mod.mzXML",
+          "s_id": "5458_5457_mod.mzXML",
           "value": 1400
         },
         {
@@ -12409,30 +12619,38 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "C",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
-            "group2": "S",
-            "factor": 1.43
-          },
-          {
-            "group1": "C",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "C",
             "factor": 1.17
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 1.22
+          },
+          {
+            "group1": "C",
+            "group2": "S",
+            "factor": 1.43
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.33
           }
         ]
       },
@@ -12449,11 +12667,11 @@
             "partner_mz": 261.1445,
             "diff_ppm": 5.95,
             "samples": [
-              "5456_5455_mod.mzXML",
-              "5458_5457_mod.mzXML",
               "5434_5433_mod.mzXML",
+              "5458_5457_mod.mzXML",
+              "5432_5431_mod2.mzXML",
               "5452_5451_mod.mzXML",
-              "5432_5431_mod2.mzXML"
+              "5456_5455_mod.mzXML"
             ]
           }
         ],
@@ -12526,15 +12744,15 @@
       "rt_stop": 9.09,
       "area": 1900,
       "samples": [
-        "5425_5426_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5450_5449_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5444_5443_mod.mzXML",
+        "5450_5449_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -12543,19 +12761,19 @@
           "value": 1900
         },
         {
-          "s_id": "5425_5426_mod.mzXML",
-          "value": 1700
-        },
-        {
           "s_id": "5452_5451_mod.mzXML",
           "value": 1700
         },
         {
-          "s_id": "5450_5449_mod.mzXML",
-          "value": 1300
+          "s_id": "5425_5426_mod.mzXML",
+          "value": 1700
         },
         {
           "s_id": "5458_5457_mod.mzXML",
+          "value": 1300
+        },
+        {
+          "s_id": "5450_5449_mod.mzXML",
           "value": 1300
         },
         {
@@ -12577,11 +12795,11 @@
       ],
       "height_per_sample": [
         {
-          "s_id": "5456_5455_mod.mzXML",
+          "s_id": "5452_5451_mod.mzXML",
           "value": 12000
         },
         {
-          "s_id": "5452_5451_mod.mzXML",
+          "s_id": "5456_5455_mod.mzXML",
           "value": 12000
         },
         {
@@ -12615,31 +12833,37 @@
       ],
       "groups": {
         "phylogroup": [
-          "C",
+          "A2",
           "V2",
-          "S",
-          "A2"
+          "C",
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
+            "group1": "A2",
             "group2": "V2",
-            "factor": 1.08
+            "factor": 2.03
           },
           {
-            "group1": "C",
-            "group2": "S",
-            "factor": 1.03
-          },
-          {
-            "group1": "C",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "C",
             "factor": 2.19
+          },
+          {
+            "group1": "A2",
+            "group2": "S",
+            "factor": 2.13
+          },
+          {
+            "group1": "V2",
+            "group2": "C",
+            "factor": 1.08
           },
           {
             "group1": "V2",
@@ -12647,14 +12871,16 @@
             "factor": 1.05
           },
           {
-            "group1": "V2",
-            "group2": "A2",
-            "factor": 2.03
-          },
+            "group1": "C",
+            "group2": "S",
+            "factor": 1.03
+          }
+        ],
+        "medium": [
           {
-            "group1": "S",
-            "group2": "A2",
-            "factor": 2.13
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.44
           }
         ]
       },
@@ -13034,13 +13260,13 @@
       "rt_stop": 12.2,
       "area": 1700,
       "samples": [
-        "5425_5426_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -13061,11 +13287,11 @@
           "value": 1300
         },
         {
-          "s_id": "5456_5455_mod.mzXML",
+          "s_id": "5434_5433_mod.mzXML",
           "value": 1200
         },
         {
-          "s_id": "5434_5433_mod.mzXML",
+          "s_id": "5456_5455_mod.mzXML",
           "value": 1200
         },
         {
@@ -13095,40 +13321,48 @@
           "value": 6200
         },
         {
-          "s_id": "5456_5455_mod.mzXML",
+          "s_id": "5434_5433_mod.mzXML",
           "value": 5800
         },
         {
-          "s_id": "5434_5433_mod.mzXML",
+          "s_id": "5456_5455_mod.mzXML",
           "value": 5800
         }
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "C",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
-            "group2": "S",
-            "factor": 1.34
-          },
-          {
-            "group1": "C",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "C",
             "factor": 1.03
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 1.29
+          },
+          {
+            "group1": "C",
+            "group2": "S",
+            "factor": 1.34
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.11
           }
         ]
       },
@@ -13192,13 +13426,13 @@
       "rt_stop": 13.63,
       "area": 3500,
       "samples": [
-        "5425_5426_mod.mzXML",
-        "5444_5443_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
+        "5444_5443_mod.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -13241,11 +13475,11 @@
           "value": 14000
         },
         {
-          "s_id": "5456_5455_mod.mzXML",
+          "s_id": "5452_5451_mod.mzXML",
           "value": 12000
         },
         {
-          "s_id": "5452_5451_mod.mzXML",
+          "s_id": "5456_5455_mod.mzXML",
           "value": 12000
         },
         {
@@ -13263,30 +13497,38 @@
       ],
       "groups": {
         "phylogroup": [
+          "A2",
           "C",
-          "S",
-          "A2"
+          "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
-            "group2": "S",
-            "factor": 1.34
-          },
-          {
-            "group1": "C",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "C",
             "factor": 1.76
           },
           {
-            "group1": "S",
-            "group2": "A2",
+            "group1": "A2",
+            "group2": "S",
             "factor": 1.31
+          },
+          {
+            "group1": "C",
+            "group2": "S",
+            "factor": 1.34
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.1
           }
         ]
       },
@@ -13463,11 +13705,11 @@
       "area": 3300,
       "samples": [
         "D3_H3_mod.mzXML",
-        "5456_5455_mod.mzXML",
-        "5458_5457_mod.mzXML",
         "5434_5433_mod.mzXML",
+        "5458_5457_mod.mzXML",
+        "5432_5431_mod2.mzXML",
         "5452_5451_mod.mzXML",
-        "5432_5431_mod2.mzXML"
+        "5456_5455_mod.mzXML"
       ],
       "blank": true,
       "area_per_sample": [
@@ -13480,11 +13722,11 @@
           "value": 3200
         },
         {
-          "s_id": "5456_5455_mod.mzXML",
+          "s_id": "5452_5451_mod.mzXML",
           "value": 2700
         },
         {
-          "s_id": "5452_5451_mod.mzXML",
+          "s_id": "5456_5455_mod.mzXML",
           "value": 2700
         },
         {
@@ -14037,10 +14279,19 @@
           "C"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
-      "group_factors": {},
+      "group_factors": {
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.36
+          }
+        ]
+      },
       "scores": {
         "phenotype": 0.0,
         "novelty": 0.21
@@ -14128,12 +14379,12 @@
       "rt_stop": 20.7,
       "area": 18000,
       "samples": [
-        "5425_5426_mod.mzXML",
-        "5446_5445_mod.mzXML",
-        "5450_5449_mod.mzXML",
-        "5456_5455_mod.mzXML",
         "5458_5457_mod.mzXML",
-        "5452_5451_mod.mzXML"
+        "5450_5449_mod.mzXML",
+        "5452_5451_mod.mzXML",
+        "5456_5455_mod.mzXML",
+        "5425_5426_mod.mzXML",
+        "5446_5445_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -14190,30 +14441,38 @@
       ],
       "groups": {
         "phylogroup": [
-          "C",
+          "S",
           "V2",
-          "S"
+          "C"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
+            "group1": "S",
             "group2": "V2",
-            "factor": 1.42
+            "factor": 3.46
           },
           {
-            "group1": "C",
-            "group2": "S",
+            "group1": "S",
+            "group2": "C",
             "factor": 4.9
           },
           {
             "group1": "V2",
-            "group2": "S",
-            "factor": 3.46
+            "group2": "C",
+            "factor": 1.42
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 4.68
           }
         ]
       },
@@ -14364,8 +14623,8 @@
       "rt_stop": 5.7,
       "area": 1900,
       "samples": [
-        "5458_5457_mod.mzXML",
-        "5434_5433_mod.mzXML"
+        "5434_5433_mod.mzXML",
+        "5458_5457_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -14390,18 +14649,26 @@
       ],
       "groups": {
         "phylogroup": [
-          "C",
-          "S"
+          "S",
+          "C"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
-            "group2": "S",
+            "group1": "S",
+            "group2": "C",
+            "factor": 1.92
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
             "factor": 1.92
           }
         ]
@@ -14857,8 +15124,8 @@
       "rt_stop": 6.66,
       "area": 10000,
       "samples": [
-        "5452_5451_mod.mzXML",
         "5456_5455_mod.mzXML",
+        "5452_5451_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5446_5445_mod.mzXML"
       ],
@@ -14904,10 +15171,19 @@
           "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
-      "group_factors": {},
+      "group_factors": {
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 2.11
+          }
+        ]
+      },
       "scores": {
         "phenotype": 0.0,
         "novelty": 1.0
@@ -14932,16 +15208,7 @@
             "diff_ppm": 7.15
           }
         ],
-        "phenotypes": [
-          {
-            "format": "qualitative",
-            "category": "N/A",
-            "descr": "only in positive samples",
-            "score": 0.0,
-            "p_value": 1.0,
-            "p_value_corr": 1.0
-          }
-        ]
+        "phenotypes": []
       },
       "networks": {
         "modified_cosine": {
@@ -15134,18 +15401,26 @@
       ],
       "groups": {
         "phylogroup": [
-          "V2",
-          "S"
+          "S",
+          "V2"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "V2",
-            "group2": "S",
+            "group1": "S",
+            "group2": "V2",
+            "factor": 2.09
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
             "factor": 2.09
           }
         ]
@@ -15334,8 +15609,8 @@
       "rt_stop": 13.5,
       "area": 2100,
       "samples": [
-        "5452_5451_mod.mzXML",
         "5456_5455_mod.mzXML",
+        "5452_5451_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5446_5445_mod.mzXML"
       ],
@@ -15381,10 +15656,19 @@
           "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
-      "group_factors": {},
+      "group_factors": {
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.16
+          }
+        ]
+      },
       "scores": {
         "phenotype": 0.0,
         "novelty": 0.02
@@ -15536,16 +15820,7 @@
             "diff_ppm": 6.76
           }
         ],
-        "phenotypes": [
-          {
-            "format": "qualitative",
-            "category": "N/A",
-            "descr": "only in positive samples",
-            "score": 0.0,
-            "p_value": 1.0,
-            "p_value_corr": 1.0
-          }
-        ]
+        "phenotypes": []
       },
       "networks": {
         "modified_cosine": {
@@ -16204,8 +16479,8 @@
       "rt_stop": 14.54,
       "area": 1900,
       "samples": [
-        "5452_5451_mod.mzXML",
         "5456_5455_mod.mzXML",
+        "5452_5451_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5446_5445_mod.mzXML"
       ],
@@ -16251,10 +16526,19 @@
           "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
-      "group_factors": {},
+      "group_factors": {
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.0
+          }
+        ]
+      },
       "scores": {
         "phenotype": 0.0,
         "novelty": 0.05
@@ -16455,16 +16739,7 @@
             "diff_ppm": 8.97
           }
         ],
-        "phenotypes": [
-          {
-            "format": "qualitative",
-            "category": "N/A",
-            "descr": "only in positive samples",
-            "score": 0.0,
-            "p_value": 1.0,
-            "p_value_corr": 1.0
-          }
-        ]
+        "phenotypes": []
       },
       "networks": {
         "modified_cosine": {
@@ -17097,8 +17372,8 @@
       "rt_stop": 15.37,
       "area": 2200,
       "samples": [
-        "5452_5451_mod.mzXML",
         "5456_5455_mod.mzXML",
+        "5452_5451_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5446_5445_mod.mzXML"
       ],
@@ -17144,10 +17419,19 @@
           "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
-      "group_factors": {},
+      "group_factors": {
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.08
+          }
+        ]
+      },
       "scores": {
         "phenotype": 0.0,
         "novelty": 0.02
@@ -17276,16 +17560,7 @@
             "diff_ppm": 5.63
           }
         ],
-        "phenotypes": [
-          {
-            "format": "qualitative",
-            "category": "N/A",
-            "descr": "only in positive samples",
-            "score": 0.0,
-            "p_value": 1.0,
-            "p_value_corr": 1.0
-          }
-        ]
+        "phenotypes": []
       },
       "networks": {
         "modified_cosine": {
@@ -17874,8 +18149,8 @@
       "rt_stop": 15.38,
       "area": 3700,
       "samples": [
-        "5452_5451_mod.mzXML",
         "5456_5455_mod.mzXML",
+        "5452_5451_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5446_5445_mod.mzXML"
       ],
@@ -17921,10 +18196,19 @@
           "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
-      "group_factors": {},
+      "group_factors": {
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.07
+          }
+        ]
+      },
       "scores": {
         "phenotype": 0.0,
         "novelty": 0.02
@@ -17948,8 +18232,8 @@
             "partner_mz": 824.7379,
             "diff_ppm": 8.38,
             "samples": [
-              "5452_5451_mod.mzXML",
               "5456_5455_mod.mzXML",
+              "5452_5451_mod.mzXML",
               "5434_5433_mod.mzXML",
               "5446_5445_mod.mzXML"
             ]
@@ -18002,16 +18286,7 @@
             "diff_ppm": 0.29
           }
         ],
-        "phenotypes": [
-          {
-            "format": "qualitative",
-            "category": "N/A",
-            "descr": "only in positive samples",
-            "score": 0.0,
-            "p_value": 1.0,
-            "p_value_corr": 1.0
-          }
-        ]
+        "phenotypes": []
       },
       "networks": {
         "modified_cosine": {
@@ -18660,8 +18935,8 @@
       "rt_stop": 15.65,
       "area": 17000,
       "samples": [
-        "5452_5451_mod.mzXML",
         "5456_5455_mod.mzXML",
+        "5452_5451_mod.mzXML",
         "5434_5433_mod.mzXML",
         "5446_5445_mod.mzXML"
       ],
@@ -18707,12 +18982,21 @@
           "S"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
-      "group_factors": {},
+      "group_factors": {
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.06
+          }
+        ]
+      },
       "scores": {
-        "phenotype": 0.0,
+        "phenotype": 1.0,
         "novelty": 0.02
       },
       "annotations": {
@@ -18724,8 +19008,8 @@
             "partner_mz": 1648.4547,
             "diff_ppm": 8.38,
             "samples": [
-              "5452_5451_mod.mzXML",
               "5456_5455_mod.mzXML",
+              "5452_5451_mod.mzXML",
               "5434_5433_mod.mzXML",
               "5446_5445_mod.mzXML"
             ]
@@ -18898,12 +19182,12 @@
         ],
         "phenotypes": [
           {
-            "format": "qualitative",
-            "category": "N/A",
-            "descr": "only in positive samples",
-            "score": 0.0,
-            "p_value": 1.0,
-            "p_value_corr": 1.0
+            "format": "quantitative-percentage",
+            "category": "assay:siomycin",
+            "descr": "N/A",
+            "score": 0.999378,
+            "p_value": 0.0006224159,
+            "p_value_corr": 0.0205397255
           }
         ]
       },
@@ -19356,7 +19640,7 @@
           "V2"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {},
@@ -19539,7 +19823,7 @@
           "V2"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {},
@@ -19901,7 +20185,7 @@
           "V2"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {},
@@ -20582,10 +20866,19 @@
           "C"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
-      "group_factors": {},
+      "group_factors": {
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.67
+          }
+        ]
+      },
       "scores": {
         "phenotype": 0.0,
         "novelty": 0.23
@@ -20724,19 +21017,27 @@
       ],
       "groups": {
         "phylogroup": [
-          "C",
-          "S"
+          "S",
+          "C"
         ],
         "medium": [
+          "MC1",
           "AF"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
-            "group2": "S",
+            "group1": "S",
+            "group2": "C",
             "factor": 1.5
+          }
+        ],
+        "medium": [
+          {
+            "group1": "MC1",
+            "group2": "AF",
+            "factor": 1.4
           }
         ]
       },
@@ -20852,8 +21153,8 @@
       "rt_stop": 7.08,
       "area": 2600,
       "samples": [
-        "5452_5451_mod.mzXML",
         "5456_5455_mod.mzXML",
+        "5452_5451_mod.mzXML",
         "5458_5457_mod.mzXML"
       ],
       "blank": false,
@@ -20887,18 +21188,18 @@
       ],
       "groups": {
         "phylogroup": [
-          "C",
-          "S"
+          "S",
+          "C"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
-            "group2": "S",
+            "group1": "S",
+            "group2": "C",
             "factor": 1.67
           }
         ]
@@ -21016,7 +21317,7 @@
           "S"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {},
@@ -21153,16 +21454,7 @@
             "diff_ppm": 4.05
           }
         ],
-        "phenotypes": [
-          {
-            "format": "qualitative",
-            "category": "N/A",
-            "descr": "only in positive samples",
-            "score": 0.0,
-            "p_value": 1.0,
-            "p_value_corr": 1.0
-          }
-        ]
+        "phenotypes": []
       },
       "networks": {
         "modified_cosine": {
@@ -21699,7 +21991,7 @@
           "S"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {},
@@ -21857,16 +22149,7 @@
             "diff_ppm": 8.65
           }
         ],
-        "phenotypes": [
-          {
-            "format": "qualitative",
-            "category": "N/A",
-            "descr": "only in positive samples",
-            "score": 0.0,
-            "p_value": 1.0,
-            "p_value_corr": 1.0
-          }
-        ]
+        "phenotypes": []
       },
       "networks": {
         "modified_cosine": {
@@ -22605,8 +22888,8 @@
       "rt_stop": 17.09,
       "area": 3200,
       "samples": [
-        "5452_5451_mod.mzXML",
-        "5456_5455_mod.mzXML"
+        "5456_5455_mod.mzXML",
+        "5452_5451_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -22634,7 +22917,7 @@
           "S"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {},
@@ -22727,16 +23010,7 @@
             "diff_ppm": 2.39
           }
         ],
-        "phenotypes": [
-          {
-            "format": "qualitative",
-            "category": "N/A",
-            "descr": "only in positive samples",
-            "score": 0.0,
-            "p_value": 1.0,
-            "p_value_corr": 1.0
-          }
-        ]
+        "phenotypes": []
       },
       "networks": {
         "modified_cosine": {
@@ -22783,8 +23057,8 @@
       "rt_stop": 17.59,
       "area": 4700,
       "samples": [
-        "5452_5451_mod.mzXML",
         "5456_5455_mod.mzXML",
+        "5452_5451_mod.mzXML",
         "5458_5457_mod.mzXML"
       ],
       "blank": false,
@@ -22818,18 +23092,18 @@
       ],
       "groups": {
         "phylogroup": [
-          "C",
-          "S"
+          "S",
+          "C"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {
         "phylogroup": [
           {
-            "group1": "C",
-            "group2": "S",
+            "group1": "S",
+            "group2": "C",
             "factor": 1.46
           }
         ]
@@ -22982,8 +23256,8 @@
       "rt_stop": 18.89,
       "area": 4900,
       "samples": [
-        "5452_5451_mod.mzXML",
-        "5456_5455_mod.mzXML"
+        "5456_5455_mod.mzXML",
+        "5452_5451_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -23011,7 +23285,7 @@
           "S"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {},
@@ -23019,22 +23293,7 @@
         "phenotype": 0.0,
         "novelty": 1.0
       },
-      "annotations": {
-        "adducts": [],
-        "matches": [],
-        "losses": [],
-        "fragments": [],
-        "phenotypes": [
-          {
-            "format": "qualitative",
-            "category": "N/A",
-            "descr": "only in positive samples",
-            "score": 0.0,
-            "p_value": 1.0,
-            "p_value_corr": 1.0
-          }
-        ]
-      },
+      "annotations": {},
       "networks": {
         "modified_cosine": {
           "algorithm": "modified_cosine",
@@ -23080,8 +23339,8 @@
       "rt_stop": 18.87,
       "area": 1900,
       "samples": [
-        "5452_5451_mod.mzXML",
-        "5456_5455_mod.mzXML"
+        "5456_5455_mod.mzXML",
+        "5452_5451_mod.mzXML"
       ],
       "blank": false,
       "area_per_sample": [
@@ -23109,7 +23368,7 @@
           "S"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {},
@@ -23130,16 +23389,7 @@
           }
         ],
         "fragments": [],
-        "phenotypes": [
-          {
-            "format": "qualitative",
-            "category": "N/A",
-            "descr": "only in positive samples",
-            "score": 0.0,
-            "p_value": 1.0,
-            "p_value_corr": 1.0
-          }
-        ]
+        "phenotypes": []
       },
       "networks": {
         "modified_cosine": {
@@ -23210,7 +23460,7 @@
           "C"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {},
@@ -23486,7 +23736,7 @@
           "C"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {},
@@ -23802,7 +24052,7 @@
           "C"
         ],
         "medium": [
-          "AF"
+          "MC1"
         ]
       },
       "group_factors": {},

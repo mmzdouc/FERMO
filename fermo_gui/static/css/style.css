@@ -308,3 +308,11 @@ table th:last-child{
     background-color: rgba(153, 191, 159, 0.70);
     border-color: #5a755e;
 }
+
+#heatmap-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+.heatmap-item {
+    margin: 10px;
+}
