@@ -1,4 +1,4 @@
-export function initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures, sampleData, chromatogramElement, currentBoxParams) {
+export function initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures, sampleData, chromatogramElement, getCurrentBoxParams) {
     const noveltyRange1 = document.getElementById('noveltyRange1');
     const noveltyRange2 = document.getElementById('noveltyRange2');
     const noveltyRange1Input = document.getElementById('noveltyRange1Input');
@@ -18,11 +18,30 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
 
         visualizeData(sampleData, false, minScore, maxScore, minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
+
+        const currentBoxParams = getCurrentBoxParams();
+
         // Reapply the box visualization if it was previously set
         if (currentBoxParams) {
             addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
         }
         updateRetainedFeatures(minScore, maxScore, minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures);
+    }
+
+    function enforceConstraints() {
+        if (parseFloat(noveltyRange1Input.value) > parseFloat(noveltyRange2Input.value)) {
+            noveltyRange1Input.value = noveltyRange2Input.value;
+        }
+        if (parseFloat(noveltyRange2Input.value) < parseFloat(noveltyRange1Input.value)) {
+            noveltyRange2Input.value = noveltyRange1Input.value;
+        }
+        if (parseFloat(phenotypeRange1Input.value) > parseFloat(phenotypeRange2Input.value)) {
+            phenotypeRange1Input.value = phenotypeRange2Input.value;
+        }
+        if (parseFloat(phenotypeRange2Input.value) < parseFloat(phenotypeRange1Input.value)) {
+            phenotypeRange2Input.value = phenotypeRange1Input.value;
+        }
+        updateRange();
     }
 
     // Event listeners for Novelty score slider
@@ -63,22 +82,6 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
 
     // Event listener for showPhenotypeFeatures toggle
     showPhenotypeFeatures.addEventListener('change', updateRange);
-
-    function enforceConstraints() {
-        if (parseFloat(noveltyRange1Input.value) > parseFloat(noveltyRange2Input.value)) {
-            noveltyRange1Input.value = noveltyRange2Input.value;
-        }
-        if (parseFloat(noveltyRange2Input.value) < parseFloat(noveltyRange1Input.value)) {
-            noveltyRange2Input.value = noveltyRange1Input.value;
-        }
-        if (parseFloat(phenotypeRange1Input.value) > parseFloat(phenotypeRange2Input.value)) {
-            phenotypeRange1Input.value = phenotypeRange2Input.value;
-        }
-        if (parseFloat(phenotypeRange2Input.value) < parseFloat(phenotypeRange1Input.value)) {
-            phenotypeRange2Input.value = phenotypeRange1Input.value;
-        }
-        updateRange();
-    }
 
     // Call updateRange to apply current settings immediately
     updateRange();

@@ -31,7 +31,7 @@ function updateTableWithFeatureData(fId, sampleData) {
     document.getElementById('BlankAs').textContent = sampleData.blankAs[fId];
 }
 
-// TODO: test multiple groups
+
 function updateTableWithGroupData(groupData){
     var featureData = Object.entries(groupData);
     if (Object.keys(featureData).length === 0) {

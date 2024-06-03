@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var statsChromatogram;
     var statsNetwork;
 
+    function getCurrentBoxParams() {
+        return currentBoxParams;
+    }
+
     // Initial state of drag and drop based on checkbox
     var allowDragAndDropCheckbox = document.getElementById('allowDragAndDrop');
     if (allowDragAndDropCheckbox.checked) {
@@ -60,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
         visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
         currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
+        addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
     }
 
     // Handle network type selection change event
@@ -93,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             let networkType = 'modified_cosine';
             let sampleId = null;
+            currentBoxParams = null;
 
             // Remove previous Plotly click event listeners
             chromatogramElement.removeAllListeners('plotly_click');
@@ -103,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('networkSelect').addEventListener('change', handleNetworkTypeChange);
 
             initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures,
-                  sampleData, chromatogramElement, currentBoxParams);
+                  sampleData, chromatogramElement, getCurrentBoxParams);
             // Call updateRange immediately after initializing filters
             const noveltyRange1 = document.getElementById('noveltyRange1');
             const noveltyRange2 = document.getElementById('noveltyRange2');
@@ -141,5 +147,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize filters
     initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures,
-                      sampleData, chromatogramElement, currentBoxParams);
+                      sampleData, chromatogramElement, getCurrentBoxParams);
 });
