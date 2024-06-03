@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema_version": "1.0.0",
+  "type": "object",
+  "title": "fermo session file input validation form",
+  "properties": {
+    "metadata": {},
+    "parameters": {},
+    "stats": {},
+    "general_features": {},
+    "samples": {}
+  },
+  "required": [
+    "metadata",
+    "parameters",
+    "stats",
+    "general_features",
+    "samples"
+  ]
+}

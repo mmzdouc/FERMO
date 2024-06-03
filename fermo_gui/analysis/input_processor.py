@@ -60,7 +60,7 @@ class InputProcessor(BaseModel):
     n_features: Optional[int] = None
     max_features: int = 1000
     maxsize_csv: int = 2000000
-    maxsize_mgf: int = 8000000
+    maxsize_mgf: int = 4000000
     max_time_module: int = 600
 
     def return_params(self: Self):

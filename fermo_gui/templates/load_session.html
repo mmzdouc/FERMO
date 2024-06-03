@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% from "_formhelpers.html" import render_field %}
+  <div class="container mt-5">
+    <h1>Load Session File</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="container-fluid">
+          <h2 style="color: red">Error during input validation</h2>
+          <ul class=flashes>
+          {% for message in messages %}
+            <li style="color: red">{{ message }}</li>
+          {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endwith %}
+		<form method="post" action="{{ url_for('routes.load_session') }}" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+
+      <div class="border p-4 my-2">
+        <fieldset id="session-form">
+          <div class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>Session file upload</h3></div>
+            </div>
+          </div>
+          <hr>
+          <div class="session-field">
+            {{ render_field(form.session_file) }}
+          </div>
+        </fieldset>
+      </div>
+
+      <fieldset class="p-4 my-2">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-auto mx-auto">
+              <button type="submit" class="btn btn-primary">Load Session</button>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+{% endblock %}

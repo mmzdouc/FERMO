@@ -63,7 +63,7 @@ def setup_fermo_run(form: AnalysisForm) -> Union[str, Response]:
     try:
         processor = InputProcessor(
             form=form,
-            task_dir=Path(task_path),
+            task_dir=task_path,
             online=current_app.config.get("ONLINE"),
         )
         processor.run_processor()
