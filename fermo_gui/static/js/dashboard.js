@@ -30,13 +30,23 @@ document.addEventListener('DOMContentLoaded', function() {
     if (firstSample) {
         const firstSampleName = firstSample.getAttribute('data-sample-name');
         sampleData = getSampleData(firstSampleName, statsChromatogram);
-        visualizeData(sampleData, false, 0, 1);
         document.getElementById('activeSample').textContent = `Sample: ${firstSampleName}`;
 
         const networkType = 'modified_cosine';
 
+        Plotly.newPlot(chromatogramElement, []);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
         document.getElementById('networkSelect').addEventListener('change', handleNetworkTypeChange);
+        document.getElementById('showBlankFeatures').addEventListener('change', updateRange);
+        document.getElementById('showAnnotationFeatures').addEventListener('change', function() {
+            const isChecked = this.checked;
+            updateRange();
+            document.querySelectorAll('.annotation-related').forEach(container => {
+                container.style.display = isChecked ? 'block' : 'none';
+            });
+        });
+
+        updateRange();
     }
 
     function handleChromatogramClick(data) {
@@ -58,13 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
         currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
     }
 
-    document.getElementById('showAnnotationFeatures').addEventListener('change', function() {
-        const isChecked = this.checked;
-        document.querySelectorAll('.annotation-related').forEach(container => {
-            container.style.display = isChecked ? 'block' : 'none';
-        });
-    });
-
     function toggleDropdown(containerId) {
         const dropdownContainer = document.getElementById(containerId);
         dropdownContainer.style.display = (dropdownContainer.style.display === "none" || dropdownContainer.style.display === "") ? "block" : "none";
@@ -77,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function() {
         row.addEventListener('click', function() {
             const sampleName = this.getAttribute('data-sample-name');
             sampleData = getSampleData(sampleName, statsChromatogram);
-            visualizeData(sampleData, false, parseFloat(document.getElementById('noveltyRange1').value), parseFloat(document.getElementById('noveltyRange2').value));
             hideNetwork();
             hideTables();
             document.getElementById('activeSample').textContent = `Sample: ${sampleName}`;
@@ -97,6 +99,8 @@ document.addEventListener('DOMContentLoaded', function() {
             chromatogramElement.on('plotly_click', handleChromatogramClick);
             document.getElementById('networkSelect').removeEventListener('change', handleNetworkTypeChange);
             document.getElementById('networkSelect').addEventListener('change', handleNetworkTypeChange);
+            document.getElementById('showAnnotationFeatures').addEventListener('change', updateRange);
+            document.getElementById('showBlankFeatures').addEventListener('change', updateRange);
 
             initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures,
                 sampleData, chromatogramElement, getCurrentBoxParams);
@@ -114,28 +118,34 @@ document.addEventListener('DOMContentLoaded', function() {
         const minMatchScore = parseFloat(document.getElementById('matchRange1').value);
         const maxMatchScore = parseFloat(document.getElementById('matchRange2').value);
         const showOnlyMatchFeatures = document.getElementById('showMatchFeatures').checked;
+        const showAnnotationFeatures = document.getElementById('showAnnotationFeatures').checked;
+        const showBlankFeatures = document.getElementById('showBlankFeatures').checked;
 
         visualizeData(sampleData, false, minScore, maxScore,
-        minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
-        minMatchScore, maxMatchScore, showOnlyMatchFeatures);
+                      minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
+                      minMatchScore, maxMatchScore, showOnlyMatchFeatures,
+                      showAnnotationFeatures, showBlankFeatures);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
         if (currentBoxParams) {
             addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
         }
         updateRetainedFeatures(minScore, maxScore,
-        minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
-        minMatchScore, maxMatchScore, showOnlyMatchFeatures);
+            minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
+            minMatchScore, maxMatchScore, showOnlyMatchFeatures,
+            showAnnotationFeatures, showBlankFeatures);
     }
 
     function updateRetainedFeatures(minScore, maxScore,
     minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
-    minMatchRange, maxMatchRange, showOnlyMatchFeatures) {
+    minMatchRange, maxMatchRange, showOnlyMatchFeatures,
+    showAnnotationFeatures, showBlankFeatures) {
         document.querySelectorAll('.select-sample').forEach(row => {
             const sampleName = row.getAttribute('data-sample-name');
             const sampleData = getSampleData(sampleName, statsChromatogram);
             const featuresWithinRange = getFeaturesWithinRange(sampleData, minScore, maxScore,
-            minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
-            minMatchRange, maxMatchRange, showOnlyMatchFeatures);
+                minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
+                minMatchRange, maxMatchRange, showOnlyMatchFeatures,
+                showAnnotationFeatures, showBlankFeatures);
             row.children[2].textContent = featuresWithinRange;
         });
     }

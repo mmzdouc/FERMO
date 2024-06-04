@@ -1,4 +1,5 @@
-export function initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures, sampleData, chromatogramElement, getCurrentBoxParams) {
+export function initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures,
+                                  sampleData, chromatogramElement, getCurrentBoxParams) {
     const elements = {
         noveltyRange1: document.getElementById('noveltyRange1'),
         noveltyRange2: document.getElementById('noveltyRange2'),
@@ -13,7 +14,9 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         matchRange2: document.getElementById('matchRange2'),
         matchRange1Input: document.getElementById('matchRange1Input'),
         matchRange2Input: document.getElementById('matchRange2Input'),
-        showMatchFeatures: document.getElementById('showMatchFeatures')
+        showMatchFeatures: document.getElementById('showMatchFeatures'),
+        showAnnotationFeatures: document.getElementById('showAnnotationFeatures'),
+        showBlankFeatures: document.getElementById('showBlankFeatures')
     };
 
     function updateRange() {
@@ -25,10 +28,13 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         const minMatchScore = parseFloat(elements.matchRange1.value);
         const maxMatchScore = parseFloat(elements.matchRange2.value);
         const showOnlyMatchFeatures = elements.showMatchFeatures.checked;
+        const showOnlyAnnotationFeatures = elements.showAnnotationFeatures.checked;
+        const showOnlyBlankFeatures = elements.showBlankFeatures.checked;
 
         visualizeData(sampleData, false, minScore, maxScore,
                       minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
-                      minMatchScore, maxMatchScore, showOnlyMatchFeatures);
+                      minMatchScore, maxMatchScore, showOnlyMatchFeatures,
+                      showOnlyAnnotationFeatures, showOnlyBlankFeatures);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
 
         const currentBoxParams = getCurrentBoxParams();
@@ -37,7 +43,8 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         }
         updateRetainedFeatures(minScore, maxScore,
                                minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
-                               minMatchScore, maxMatchScore, showOnlyMatchFeatures);
+                               minMatchScore, maxMatchScore, showOnlyMatchFeatures,
+                               showOnlyAnnotationFeatures, showOnlyBlankFeatures);
     }
 
     function enforceConstraints() {
@@ -91,15 +98,21 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
 
 export function getFeaturesWithinRange(sampleData, minScore, maxScore,
                                        minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
-                                       minMatchScore, maxMatchScore, showOnlyMatchFeatures) {
+                                       minMatchScore, maxMatchScore, showOnlyMatchFeatures,
+                                       showOnlyAnnotationFeatures, showOnlyBlankFeatures) {
     return sampleData.novScore.reduce((count, score, index) => {
         const phenotypeScore = sampleData.annotations?.[index]?.phenotypes?.[0]?.score;
         const matchScore = sampleData.annotations?.[index]?.matches?.[0]?.score;
+        const annotation = sampleData.annotations?.[index]?.adducts ?? null;
+        const blanks = sampleData.blankAs?.[index];
         if (score >= minScore && score <= maxScore &&
             (!showOnlyPhenotypeFeatures || (phenotypeScore !== null &&
             phenotypeScore >= minPhenotypeScore && phenotypeScore <= maxPhenotypeScore)) &&
             (!showOnlyMatchFeatures || (matchScore !== null &&
-            matchScore >= minMatchScore && matchScore <= maxMatchScore))) {
+            matchScore >= minMatchScore && matchScore <= maxMatchScore)) &&
+            (!showOnlyAnnotationFeatures || (annotation !== null)) &&
+            (!showOnlyBlankFeatures || (blanks !== true))
+            ) {
             return count + 1;
         }
         return count;
