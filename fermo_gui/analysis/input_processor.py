@@ -48,8 +48,7 @@ class InputProcessor(BaseModel):
         online: bool to indicate if application is running online (not local)
         n_features: the number of features in the dataframe
         max_features: the maximum allowed number of features in web-version
-        maxsize_csv: the maximum accepted size of csv files in bytes in web-version
-        maxsize_mgf: the maximum accepted size of mgf files in bytes in web-version
+        maxsize_file: the maximum accepted size of files in bytes in web-version
         max_time_module: the maximum runtime per module, in seconds
     """
 
@@ -59,8 +58,7 @@ class InputProcessor(BaseModel):
     params: dict = {}
     n_features: Optional[int] = None
     max_features: int = 1000
-    maxsize_csv: int = 2000000
-    maxsize_mgf: int = 4000000
+    maxsize_file: int = 8000000
     max_time_module: int = 600
 
     def return_params(self: Self):
@@ -260,7 +258,7 @@ class InputProcessor(BaseModel):
 
         if self.online:
             self.check_file_size(
-                f=self.form.peaktable_file.data, maxsize=self.maxsize_csv
+                f=self.form.peaktable_file.data, maxsize=self.maxsize_file
             )
 
         f_name = self.save_file(self.form.peaktable_file.data)
@@ -305,7 +303,7 @@ class InputProcessor(BaseModel):
             return
 
         if self.online:
-            self.check_file_size(f=self.form.msms_file.data, maxsize=self.maxsize_mgf)
+            self.check_file_size(f=self.form.msms_file.data, maxsize=self.maxsize_file)
 
         f_name = self.save_file(self.form.msms_file.data)
         f_path = self.task_dir.joinpath(f_name)
@@ -356,7 +354,7 @@ class InputProcessor(BaseModel):
 
         if self.online:
             self.check_file_size(
-                f=self.form.phenotype_file.data, maxsize=self.maxsize_csv
+                f=self.form.phenotype_file.data, maxsize=self.maxsize_file
             )
 
         f_name = self.save_file(self.form.phenotype_file.data)
@@ -407,7 +405,7 @@ class InputProcessor(BaseModel):
             return
 
         if self.online:
-            self.check_file_size(f=self.form.group_file.data, maxsize=self.maxsize_csv)
+            self.check_file_size(f=self.form.group_file.data, maxsize=self.maxsize_file)
 
         f_name = self.save_file(self.form.group_file.data)
         f_path = self.task_dir.joinpath(f_name)
@@ -439,7 +437,7 @@ class InputProcessor(BaseModel):
 
         if self.online:
             self.check_file_size(
-                f=self.form.library_file.data, maxsize=self.maxsize_mgf
+                f=self.form.library_file.data, maxsize=self.maxsize_file
             )
 
         f_name = self.save_file(self.form.library_file.data)
@@ -478,7 +476,7 @@ class InputProcessor(BaseModel):
         if self.form.ms2query_file.data is not None:
             if self.online:
                 self.check_file_size(
-                    f=self.form.ms2query_file.data, maxsize=self.maxsize_csv
+                    f=self.form.ms2query_file.data, maxsize=self.maxsize_file
                 )
             f_name = self.save_file(self.form.ms2query_file.data)
             f_path = self.task_dir.joinpath(f_name)

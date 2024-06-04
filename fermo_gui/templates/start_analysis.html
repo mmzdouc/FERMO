@@ -1,23 +1,63 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  {% from "_formhelpers.html" import render_field, render_switch %}
+  {% from "_formhelpers.html" import render_field, render_switch, render_help %}
   <div class="container mt-5">
     {% if jobload %}
-      <h1>Start new analysis</h1>
+      <div class="container-fluid">
+        <div class="row my-2 d-flex align-items-center">
+          <div class="col-auto"><h1>Start new analysis</h1></div>
+        </div>
+      </div>
     {% else %}
-      <h1>Start new analysis</h1>
-      <h2>Loaded parameters of job ID: {{ job_id }}</h2>
+      <div class="container-fluid">
+        <div class="row my-2 d-flex align-items-center">
+          <div class="col-auto"><h1>Start new analysis</h1></div>
+        </div>
+        <div class="row my-2 d-flex align-items-center">
+          <div class="col-auto"><h3>Loaded parameters of job ID: {{ job_id }}</h3></div>
+        </div>
+      </div>
+    {% endif %}
+    {% if online %}
+      <div class="border p-4 my-2">
+          <div class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>Heads Up Online Users!</h3></div>
+            </div>
+          </div>
+          <hr>
+          <div class="row my-2 d-flex align-items-center">
+            <div class="col-auto">
+              <p class="lh-base">Due to computational restrains, the <b>online version of FERMO</b> has a few <b>restrictions</b> in place:</p>
+              <ul class="lh-base">
+                <li><p class="lh-sm"><b>File sizes:</b> the maximum accepted size of file uploads is <b>7 MB</b>.</p></li>
+                <li><p class="lh-sm"><b>Feature table:</b> the maximum allowed number of molecular features is <b>1000</b>.</p></li>
+                <li><p class="lh-sm"><b>Job run time:</b> the maximum allowed run time for a single job is <b>60 minutes</b>, after which the job terminates prematurely.</p></li>
+                <li><p class="lh-sm"><b>Module run time:</b> the maximum allowed run time for a single module is <b>10 minutes</b>. If a module terminates due to a timeout, this is written to the summary.txt file.</p></li>
+              </ul>
+              <p class="lh-base">If you want to <b>bypass</b> these restrictions, you can run <a href="https://mmzdouc.github.io/fermo_docs/home/gui.installation/" target="_blank"><b>FERMO offline</b></a> or use the <a href="https://mmzdouc.github.io/fermo_docs/home/core.installation/" target="_blank"><b>fermo_core command line tool</b></a>.</p>
+            </div>
+          </div>
+      </div>
     {% endif %}
     {% with messages = get_flashed_messages() %}
       {% if messages %}
-        <div class="container-fluid">
-          <h2 style="color: red">Error during input validation</h2>
-          <ul class=flashes>
-          {% for message in messages %}
-            <li style="color: red">{{ message }}</li>
-          {% endfor %}
-          </ul>
+        <div class="border p-4 my-2">
+          <div style="color: red" class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>Error during input validation</h3></div>
+            </div>
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto">
+                <ul class=flashes>
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+               </ul>
+              </div>
+            </div>
+          </div>
         </div>
       {% endif %}
     {% endwith %}
@@ -27,13 +67,12 @@
       <form method="post" action="{{ url_for('routes.load_settings', job_id=job_id) }}" enctype="multipart/form-data">
     {% endif %}
       {{ form.hidden_tag() }}
-
       {% if jobload %}
         <div class="border p-4 my-2">
           <fieldset id="reloadjob-form">
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
-                <div class="col-auto"><h3>Load parameters</h3></div>
+                <div class="col-auto"><h3>Load parameters of previous job</h3></div>
               </div>
             </div>
             <hr>
@@ -42,7 +81,7 @@
               <div class="container-fluid">
               <div class="row">
                 <div class="col-auto mx-auto">
-                  <button type="submit" class="btn btn-primary">Reload Settings</button>
+                  <button type="submit" class="btn btn-primary">Load Parameters</button>
                 </div>
               </div>
             </div>
@@ -50,12 +89,11 @@
           </fieldset>
         </div>
       {% endif %}
-
       <div class="border p-4 my-2">
         <fieldset id="peaktable-form">
           <div class="container-fluid">
             <div class="row my-2 d-flex align-items-center">
-              <div class="col-auto"><h3>Peaktable*</h3></div>
+              <div class="col-auto"><h3>Peaktable* {{ render_help("https://mmzdouc.github.io/fermo_docs/home/input_output/#molecular-feature-peaktable") }}</h3></div>
             </div>
           </div>
           <hr>
@@ -64,10 +102,19 @@
             {{ render_field(form.peaktable_format) }}
             {{ render_field(form.peaktable_polarity) }}
             {{ render_field(form.peaktable_ppm) }}
-            {{ render_switch(form.peaktable_adduct_toggle) }}
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
-                <div class="col-auto"><h4>Feature filter parameters</h4></div>
+                <div class="col-auto"><h4>Adduct Annotation {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/annotation.adduct/") }}</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.msms-adduct')">Modify parameters</button></div>
+              </div>
+            </div>
+            <hr>
+            <div class="msms-adduct d-none">
+              {{ render_switch(form.peaktable_adduct_toggle) }}
+            </div>
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Feature filter parameters {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/filter.feature/") }}</h4></div>
                 <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.peaktable-filter')">Modify parameters</button></div>
               </div>
             </div>
@@ -82,12 +129,11 @@
           </div>
         </fieldset>
       </div>
-
       <div class="border p-4 my-2">
         <fieldset id="msms-form">
           <div class="container-fluid">
             <div class="row my-2 d-flex align-items-center">
-              <div class="col-auto"><h3>MS/MS</h3></div>
+              <div class="col-auto"><h3>MS/MS {{ render_help("https://mmzdouc.github.io/fermo_docs/home/input_output/#msms-spectrum-information") }}</h3></div>
               <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.msms-field')">Modify parameters</button></div>
             </div>
           </div>
@@ -95,12 +141,39 @@
           <div class="msms-field d-none">
             {{ render_field(form.msms_file) }}
             {{ render_field(form.msms_format) }}
-            {{ render_field(form.msms_rel_int_from) }}
-            {{ render_switch(form.msms_fragment_toggle) }}
-            {{ render_switch(form.msms_loss_toggle) }}
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
-                <div class="col-auto"><h4>Spectral networking: modified cosine</h4></div>
+                <div class="col-auto"><h4>MS/MS Filtering {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/filter.msms/") }}</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.msms-relintfrom')">Modify parameters</button></div>
+              </div>
+            </div>
+            <hr>
+            <div class="msms-relintfrom d-none">
+              {{ render_field(form.msms_rel_int_from) }}
+            </div>
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Fragment Annotation {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/annotation.fragment/") }}</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.msms-fragment')">Modify parameters</button></div>
+              </div>
+            </div>
+            <hr>
+            <div class="msms-fragment d-none">
+              {{ render_switch(form.msms_fragment_toggle) }}
+            </div>
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Neutral Loss Annotation {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/annotation.loss/") }}</h4></div>
+                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.msms-loss')">Modify parameters</button></div>
+              </div>
+            </div>
+            <hr>
+            <div class="msms-loss d-none">
+              {{ render_switch(form.msms_loss_toggle) }}
+            </div>
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>Spectral networking: modified cosine {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/networking/") }}</h4></div>
                 <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.msms-cosine')">Modify parameters</button></div>
               </div>
             </div>
@@ -114,7 +187,7 @@
             </div>
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
-                <div class="col-auto"><h4>Spectral networking: MS2DeepScore</h4></div>
+                <div class="col-auto"><h4>Spectral networking: MS2DeepScore {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/networking/") }}</h4></div>
                 <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.msms-deepscore')">Modify parameters</button></div>
               </div>
             </div>
@@ -128,12 +201,11 @@
           </div>
         </fieldset>
       </div>
-
       <div class="border p-4 my-2">
         <fieldset id="group-form">
           <div class="container-fluid">
             <div class="row my-2 d-flex align-items-center">
-              <div class="col-auto"><h3>Group Metadata</h3></div>
+              <div class="col-auto"><h3>Group Metadata {{ render_help("https://mmzdouc.github.io/fermo_docs/home/input_output/#group-metadata") }}</h3></div>
               <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.group-field')">Modify parameters</button></div>
             </div>
           </div>
@@ -143,7 +215,7 @@
             {{ render_field(form.group_format) }}
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
-                <div class="col-auto"><h4>Blank Assignment</h4></div>
+                <div class="col-auto"><h4>Blank Assignment {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/metadata.blank/") }}</h4></div>
                 <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.group-blank')">Modify parameters</button></div>
               </div>
             </div>
@@ -154,10 +226,9 @@
               {{ render_field(form.group_blank_algorithm) }}
               {{ render_field(form.group_blank_value) }}
             </div>
-
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
-                <div class="col-auto"><h4>Group Factor Assignment</h4></div>
+                <div class="col-auto"><h4>Group Factor Assignment {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/metadata.group_fold/") }}</h4></div>
                 <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.group-factor')">Modify parameters</button></div>
               </div>
             </div>
@@ -170,12 +241,11 @@
           </div>
         </fieldset>
       </div>
-
       <div class="border p-4 my-2">
         <fieldset id="phenotype-form">
           <div class="container-fluid">
             <div class="row my-2 d-flex align-items-center">
-              <div class="col-auto"><h3>Phenotype Data</h3></div>
+              <div class="col-auto"><h3>Phenotype Data {{ render_help("https://mmzdouc.github.io/fermo_docs/home/input_output/#phenotype-bioactivity-data") }}</h3></div>
               <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.phenotype-field')">Modify parameters</button></div>
             </div>
           </div>
@@ -184,11 +254,23 @@
             {{ render_field(form.phenotype_file) }}
             {{ render_field(form.phenotype_format) }}
             <div class="phenotype-qualitative d-none">
+              <div class="container-fluid">
+                <div class="row my-2 d-flex align-items-center">
+                  <div class="col-auto"><h4>Qualitative {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/phenotype.qualitative/") }}</h4></div>
+                </div>
+              </div>
+              <hr>
               {{ render_field(form.phenotype_qualit_factor) }}
               {{ render_field(form.phenotype_qualit_algorithm) }}
               {{ render_field(form.phenotype_qualit_value) }}
             </div>
             <div class="phenotype-quantitative-perc d-none">
+              <div class="container-fluid">
+                <div class="row my-2 d-flex align-items-center">
+                  <div class="col-auto"><h4>Quantitative-Percentage {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/phenotype.quant-percent/") }}</h4></div>
+                </div>
+              </div>
+              <hr>
               {{ render_field(form.phenotype_quant_average_perc) }}
               {{ render_field(form.phenotype_quant_value_perc) }}
               {{ render_field(form.phenotype_quant_algorithm_perc) }}
@@ -196,6 +278,12 @@
               {{ render_field(form.phenotype_quant_coeff_perc) }}
             </div>
             <div class="phenotype-quantitative-conc d-none">
+              <div class="container-fluid">
+                <div class="row my-2 d-flex align-items-center">
+                  <div class="col-auto"><h4>Quantitative-Concentration {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/phenotype.quant-concentr/") }}</h4></div>
+                </div>
+              </div>
+              <hr>
               {{ render_field(form.phenotype_quant_average_conc) }}
               {{ render_field(form.phenotype_quant_value_conc) }}
               {{ render_field(form.phenotype_quant_algorithm_conc) }}
@@ -205,12 +293,11 @@
           </div>
         </fieldset>
       </div>
-
       <div class="border p-4 my-2">
         <fieldset id="library-form">
           <div class="container-fluid">
             <div class="row my-2 d-flex align-items-center">
-              <div class="col-auto"><h3>Spectral Library</h3></div>
+              <div class="col-auto"><h3>Spectral Library {{ render_help("https://mmzdouc.github.io/fermo_docs/home/input_output/#spectral-library") }}</h3></div>
               <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.library-field')">Modify parameters</button></div>
             </div>
           </div>
@@ -220,7 +307,7 @@
             {{ render_field(form.library_format) }}
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
-                <div class="col-auto"><h4>Matching: modified cosine</h4></div>
+                <div class="col-auto"><h4>Matching: modified cosine {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/annotation.userlib/") }}</h4></div>
                 <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.library-cosine')">Modify parameters</button></div>
               </div>
             </div>
@@ -234,7 +321,7 @@
             </div>
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
-                <div class="col-auto"><h4>Matching: MS2DeepScore</h4></div>
+                <div class="col-auto"><h4>Matching: MS2DeepScore {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/annotation.userlib/") }}</h4></div>
                 <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.library-deepscore')">Modify parameters</button></div>
               </div>
             </div>
@@ -247,12 +334,11 @@
           </div>
         </fieldset>
       </div>
-
       <div class="border p-4 my-2">
         <fieldset id="ms2query-form">
           <div class="container-fluid">
             <div class="row my-2 d-flex align-items-center">
-              <div class="col-auto"><h3>MS2Query Annotation</h3></div>
+              <div class="col-auto"><h3>MS2Query Annotation {{ render_help("https://mmzdouc.github.io/fermo_docs/home/input_output/#ms2query-results-file") }}</h3></div>
               <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.ms2query-field')">Modify parameters</button></div>
             </div>
           </div>
@@ -260,17 +346,21 @@
           <div class="ms2query-field d-none">
             {{ render_field(form.ms2query_file) }}
             {{ render_field(form.ms2query_score) }}
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h4>MS2Query De Novo Calculation {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/annotation.ms2query/") }}</h4></div>
+              </div>
+            </div>
             <hr>
             {{ render_switch(form.ms2query_toggle) }}
           </div>
         </fieldset>
       </div>
-
       <div class="border p-4 my-2">
         <fieldset id="askcb-form">
           <div class="container-fluid">
             <div class="row my-2 d-flex align-items-center">
-              <div class="col-auto"><h3>antiSMASH Job Integration</h3></div>
+              <div class="col-auto"><h3>antiSMASH Job Integration {{ render_help("https://mmzdouc.github.io/fermo_docs/home/input_output/#antismash-results") }}</h3></div>
               <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.askcb-field')">Modify parameters</button></div>
             </div>
           </div>
@@ -280,7 +370,7 @@
             {{ render_field(form.askcb_score) }}
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
-                <div class="col-auto"><h4>Matching: modified cosine</h4></div>
+                <div class="col-auto"><h4>Matching: modified cosine {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/annotation.as_kcb/") }}</h4></div>
                 <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.askcb-cosine')">Modify parameters</button></div>
               </div>
             </div>
@@ -294,7 +384,7 @@
             </div>
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
-                <div class="col-auto"><h4>Matching: MS2DeepScore</h4></div>
+                <div class="col-auto"><h4>Matching: MS2DeepScore {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/annotation.as_kcb/") }}</h4></div>
                 <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.askcb-deepscore')">Modify parameters</button></div>
               </div>
             </div>
@@ -307,19 +397,21 @@
           </div>
         </fieldset>
       </div>
-      <div class="border p-4 my-2">
-        <fieldset id="notification-form">
-          <div class="container-fluid">
-            <div class="row my-2 d-flex align-items-center">
-              <div class="col-auto"><h3>Notification settings</h3></div>
+      {% if online %}
+        <div class="border p-4 my-2">
+          <fieldset id="notification-form">
+            <div class="container-fluid">
+              <div class="row my-2 d-flex align-items-center">
+                <div class="col-auto"><h3>Notification settings</h3></div>
+              </div>
             </div>
-          </div>
-          <hr>
-          <div class="notification-field">
-            {{ render_field(form.email) }}
-          </div>
-        </fieldset>
-      </div>
+            <hr>
+            <div class="notification-field">
+              {{ render_field(form.email) }}
+            </div>
+          </fieldset>
+        </div>
+      {% endif %}
       <fieldset class="p-4 my-2">
         <div class="container-fluid">
           <div class="row">

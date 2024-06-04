@@ -77,7 +77,11 @@ def setup_fermo_run(form: AnalysisForm) -> Union[str, Response]:
         if task_path.exists():
             shutil.rmtree(task_path, ignore_errors=True)
         return render_template(
-            "start_analysis.html", form=form, jobload=True, job_id=None
+            template_name_or_list="start_analysis.html",
+            form=form,
+            jobload=True,
+            job_id=None,
+            online=current_app.config.get("ONLINE"),
         )
 
     metadata = {
@@ -120,13 +124,23 @@ def start_analysis() -> Union[str, Response]:
             else:
                 flash(f"Could not find job ID '{exist_job_id}'")
                 return render_template(
-                    "start_analysis.html", form=form, jobload=True, job_id=None
+                    template_name_or_list="start_analysis.html",
+                    form=form,
+                    jobload=True,
+                    job_id=None,
+                    online=current_app.config.get("ONLINE"),
                 )
 
         return setup_fermo_run(form=form)
 
     form.apply_defaults(pars={})
-    return render_template("start_analysis.html", form=form, jobload=True, job_id=None)
+    return render_template(
+        template_name_or_list="start_analysis.html",
+        form=form,
+        jobload=True,
+        job_id=None,
+        online=current_app.config.get("ONLINE"),
+    )
 
 
 @bp.route("/analysis/load_settings/<job_id>/", methods=["GET", "POST"])
@@ -156,7 +170,11 @@ def load_settings(job_id: str) -> Union[str, Response]:
 
     form.apply_defaults(pars=parameters)
     return render_template(
-        "start_analysis.html", form=form, jobload=False, job_id=exist_job_id
+        template_name_or_list="start_analysis.html",
+        form=form,
+        jobload=False,
+        job_id=exist_job_id,
+        online=current_app.config.get("ONLINE"),
     )
 
 

@@ -89,7 +89,7 @@ class PeaktableForm:
         validators=[Optional(), NumberRange(min=0.0)],
     )
     peaktable_adduct_toggle = BooleanField(
-        label="Adduct Annotation Module",
+        label="Activate Module",
         description="Activate ion adduct annotation module.",
     )
     peaktable_filter_toggle = BooleanField(
@@ -153,11 +153,11 @@ class MsmsForm:
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
     )
     msms_fragment_toggle = BooleanField(
-        label="Fragment Annotation Module",
+        label="Activate Module",
         description="Activate MS/MS fragment annotation module.",
     )
     msms_loss_toggle = BooleanField(
-        label="Neutral Loss Annotation Module",
+        label="Activate Module",
         description="Activate MS/MS neutral loss annotation module.",
     )
     msms_cosine_toggle = BooleanField(
@@ -455,7 +455,7 @@ class Ms2queryForm:
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
     )
     ms2query_toggle = BooleanField(
-        label="Activate Module",
+        label="Activate De Novo Calculation",
         description=("Activate de novo MS2Query annotation module."),
     )
 

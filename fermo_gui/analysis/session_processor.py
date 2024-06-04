@@ -37,13 +37,13 @@ class SessionProcessor(BaseModel):
         task_dir: the upload folder + task ID Path + results
         form: SessionLoadForm object containing the form data
         online: bool to indicate if application is running online (not local)
-        max_size_json: maximum size of json, in bytes in web-version
+        maxsize_file: maximum size of file, in bytes in web-version
     """
 
     task_dir: Path
     form: Any
     online: bool
-    max_size_json: int = 8000000
+    maxsize_file: int = 8000000
 
     def save_file(self: Self, f: FileStorage) -> str:
         """Store the input file securely in user-specific dir
@@ -107,7 +107,7 @@ class SessionProcessor(BaseModel):
 
         if self.online:
             self.check_file_size(
-                f=self.form.session_file.data, maxsize=self.max_size_json
+                f=self.form.session_file.data, maxsize=self.maxsize_file
             )
 
         f_name = self.save_file(self.form.session_file.data)

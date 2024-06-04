@@ -42,3 +42,8 @@
     {% endif %}
   </div>
 {% endmacro %}
+
+
+{% macro render_help(url) %}
+  <a href="{{ url }}" target="_blank"><img src="/static/images/question-circle-fill.SVG" width="45" alt="?" style="color: 17,103,137;"></a>
+{% endmacro %}
