@@ -277,13 +277,11 @@ class InputProcessor(BaseModel):
 
         self.check_key_in_params("core_modules")
         self.params["core_modules"]["adduct_annotation"] = {
-            "activate_module": (
-                True if self.form.peaktable_adduct_toggle.data == "True" else False
-            ),
+            "activate_module": self.form.peaktable_adduct_toggle.data,
             "mass_dev_ppm": float(self.form.peaktable_ppm.data),
         }
 
-        if self.form.peaktable_filter_toggle.data == "True":
+        if self.form.peaktable_filter_toggle.data:
             self.check_key_in_params("additional_modules")
             self.params["additional_modules"]["feature_filtering"] = {
                 "activate_module": True,
@@ -322,23 +320,17 @@ class InputProcessor(BaseModel):
 
         self.check_key_in_params("core_modules")
         self.params["core_modules"]["fragment_annotation"] = {
-            "activate_module": (
-                True if self.form.msms_fragment_toggle.data == "True" else False
-            ),
+            "activate_module": self.form.msms_fragment_toggle.data,
             "mass_dev_ppm": float(self.form.peaktable_ppm.data),
         }
         self.params["core_modules"]["neutral_loss_annotation"] = {
-            "activate_module": (
-                True if self.form.msms_loss_toggle.data == "True" else False
-            ),
+            "activate_module": self.form.msms_loss_toggle.data,
             "mass_dev_ppm": float(self.form.peaktable_ppm.data),
         }
 
         self.params["core_modules"]["spec_sim_networking"] = {}
         self.params["core_modules"]["spec_sim_networking"]["modified_cosine"] = {
-            "activate_module": (
-                True if self.form.msms_cosine_toggle.data == "True" else False
-            ),
+            "activate_module": self.form.msms_cosine_toggle.data,
             "msms_min_frag_nr": int(self.form.msms_cosine_minfrag.data),
             "fragment_tol": float(self.form.msms_cosine_tolerance.data),
             "score_cutoff": float(self.form.msms_cosine_score.data),
@@ -346,9 +338,7 @@ class InputProcessor(BaseModel):
             "maximum_runtime": (self.max_time_module if self.online else 0),
         }
         self.params["core_modules"]["spec_sim_networking"]["ms2deepscore"] = {
-            "activate_module": (
-                True if self.form.msms_deepscore_toggle.data == "True" else False
-            ),
+            "activate_module": self.form.msms_deepscore_toggle.data,
             "msms_min_frag_nr": int(self.form.msms_deepscore_minfrag.data),
             "score_cutoff": float(self.form.msms_deepscore_score.data),
             "max_nr_links": int(self.form.msms_deepscore_links.data),
@@ -431,17 +421,13 @@ class InputProcessor(BaseModel):
 
         self.check_key_in_params("additional_modules")
         self.params["additional_modules"]["blank_assignment"] = {
-            "activate_module": (
-                True if self.form.group_blank_toggle.data == "True" else False
-            ),
+            "activate_module": self.form.group_blank_toggle.data,
             "factor": int(self.form.group_blank_factor.data),
             "algorithm": str(self.form.group_blank_algorithm.data),
             "value": str(self.form.group_blank_value.data),
         }
         self.params["additional_modules"]["group_factor_assignment"] = {
-            "activate_module": (
-                True if self.form.group_factor_toggle.data == "True" else False
-            ),
+            "activate_module": self.form.group_factor_toggle.data,
             "algorithm": str(self.form.group_factor_algorithm.data),
             "value": str(self.form.group_factor_value.data),
         }
@@ -471,9 +457,7 @@ class InputProcessor(BaseModel):
         self.params["additional_modules"]["spectral_library_matching"][
             "modified_cosine"
         ] = {
-            "activate_module": (
-                True if self.form.library_cosine_toggle.data == "True" else False
-            ),
+            "activate_module": self.form.library_cosine_toggle.data,
             "fragment_tol": float(self.form.library_cosine_tolerance.data),
             "min_nr_matched_peaks": int(self.form.library_cosine_matches.data),
             "score_cutoff": float(self.form.library_cosine_score.data),
@@ -483,9 +467,7 @@ class InputProcessor(BaseModel):
         self.params["additional_modules"]["spectral_library_matching"][
             "ms2deepscore"
         ] = {
-            "activate_module": (
-                True if self.form.library_deepscore_toggle.data == "True" else False
-            ),
+            "activate_module": self.form.library_deepscore_toggle.data,
             "score_cutoff": float(self.form.library_deepscore_score.data),
             "max_precursor_mass_diff": int(self.form.library_deepscore_mzdiff.data),
             "maximum_runtime": (self.max_time_module if self.online else 0),
@@ -512,12 +494,10 @@ class InputProcessor(BaseModel):
                 "score_cutoff": float(self.form.ms2query_score.data),
                 "maximum_runtime": (self.max_time_module if self.online else 0),
             }
-        else:
+        elif self.form.ms2query_file.data is None and self.form.ms2query_toggle.data:
             self.check_key_in_params("additional_modules")
             self.params["additional_modules"]["ms2query_annotation"] = {
-                "activate_module": (
-                    True if self.form.ms2query_toggle.data == "True" else False
-                ),
+                "activate_module": self.form.ms2query_toggle.data,
                 "score_cutoff": float(self.form.ms2query_score.data),
                 "maximum_runtime": (self.max_time_module if self.online else 0),
             }
@@ -541,9 +521,7 @@ class InputProcessor(BaseModel):
         self.check_key_in_params("additional_modules")
         self.params["additional_modules"]["as_kcb_matching"] = {}
         self.params["additional_modules"]["as_kcb_matching"]["modified_cosine"] = {
-            "activate_module": (
-                True if self.form.askcb_cosine_toggle.data == "True" else False
-            ),
+            "activate_module": self.form.askcb_cosine_toggle.data,
             "fragment_tol": float(self.form.askcb_cosine_tolerance.data),
             "min_nr_matched_peaks": int(self.form.askcb_cosine_matches.data),
             "score_cutoff": float(self.form.askcb_cosine_score.data),
@@ -551,9 +529,7 @@ class InputProcessor(BaseModel):
             "maximum_runtime": (self.max_time_module if self.online else 0),
         }
         self.params["additional_modules"]["as_kcb_matching"]["ms2deepscore"] = {
-            "activate_module": (
-                True if self.form.askcb_deepscore_toggle.data == "True" else False
-            ),
+            "activate_module": self.form.askcb_deepscore_toggle.data,
             "score_cutoff": float(self.form.askcb_deepscore_score.data),
             "max_precursor_mass_diff": int(self.form.askcb_deepscore_mzdiff.data),
             "maximum_runtime": (self.max_time_module if self.online else 0),

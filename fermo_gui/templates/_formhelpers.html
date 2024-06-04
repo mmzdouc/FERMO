@@ -17,3 +17,28 @@
     {% endif %}
   </div>
 {% endmacro %}
+
+
+{% macro render_switch(field) %}
+  <div class="container-fluid">
+    <div class="row my-2 d-flex align-items-center">
+      <div class="col-auto">
+        <div class="form-check form-switch">
+           <b>{{ field.label }}</b> {{ field(class_='form-check-input') }}
+        </div>
+      </div>
+      <div class="col-auto ms-auto"><p><i>{{ field.description }}</i></p></div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if field.errors %}
+    <div class="form-group row">
+      <ul class=errors>
+      {% for error in field.errors %}
+        <li style="color: red">{{ error }}</li>
+      {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+{% endmacro %}

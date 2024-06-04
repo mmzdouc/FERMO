@@ -26,6 +26,7 @@ from typing import Self
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from wtforms import (
+    BooleanField,
     DecimalField,
     EmailField,
     IntegerField,
@@ -87,17 +88,13 @@ class PeaktableForm:
         ),
         validators=[Optional(), NumberRange(min=0.0)],
     )
-    peaktable_adduct_toggle = SelectField(
-        label="Adduct Annotation",
-        description="Activate ion adduct annotation.",
-        validators=[Optional()],
-        choices=[("True", "active"), ("False", "inactive")],
+    peaktable_adduct_toggle = BooleanField(
+        label="Adduct Annotation Module",
+        description="Activate ion adduct annotation module.",
     )
-    peaktable_filter_toggle = SelectField(
-        label="Module",
-        description="Activate feature filtering for area and/or height.",
-        validators=[Optional()],
-        choices=[("False", "inactive"), ("True", "active")],
+    peaktable_filter_toggle = BooleanField(
+        label="Activate Module",
+        description="Activate molecular feature filtering module.",
     )
     peaktable_filter_height_lower = DecimalField(
         label="Filter Height (min)",
@@ -155,28 +152,24 @@ class MsmsForm:
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
     )
-    msms_fragment_toggle = SelectField(
-        label="Fragment Annotation",
-        description="Activate MS/MS fragment annotation.",
-        validators=[Optional()],
-        choices=[("True", "active"), ("False", "inactive")],
+    msms_fragment_toggle = BooleanField(
+        label="Fragment Annotation Module",
+        description="Activate MS/MS fragment annotation module.",
     )
-    msms_loss_toggle = SelectField(
-        label="Loss annotation",
-        description="Activate MS/MS neutral loss annotation.",
-        validators=[Optional()],
-        choices=[("True", "active"), ("False", "inactive")],
+    msms_loss_toggle = BooleanField(
+        label="Neutral Loss Annotation Module",
+        description="Activate MS/MS neutral loss annotation module.",
     )
-    msms_cosine_toggle = SelectField(
-        label="Module",
-        description="Activate modified cosine-based spectral (=molecular) networking.",
-        validators=[Optional()],
-        choices=[("True", "active"), ("False", "inactive")],
+    msms_cosine_toggle = BooleanField(
+        label="Activate Module",
+        description=(
+            "Activate modified cosine-based spectral (=molecular) networking module."
+        ),
     )
     msms_cosine_minfrag = IntegerField(
         label="MS/MS fragments",
         description=(
-            "Minimum number of fragments per spectrum to consider in networking"
+            "Minimum number of fragments per spectrum to consider in networking."
         ),
         validators=[Optional(), NumberRange(min=1)],
     )
@@ -195,16 +188,16 @@ class MsmsForm:
         description="Maximum number of edges any node is allowed to have.",
         validators=[Optional(), NumberRange(min=1)],
     )
-    msms_deepscore_toggle = SelectField(
-        label="Module",
-        description="Activate MS2DeepScore-based spectral (=molecular) networking.",
-        validators=[Optional()],
-        choices=[("True", "active"), ("False", "inactive")],
+    msms_deepscore_toggle = BooleanField(
+        label="Activate Module",
+        description=(
+            "Activate MS2DeepScore-based spectral (=molecular) networking " "module."
+        ),
     )
     msms_deepscore_minfrag = IntegerField(
         label="MS/MS fragments",
         description=(
-            "Minimum number of fragments per spectrum to consider in " "networking"
+            "Minimum number of fragments per spectrum to consider in networking."
         ),
         validators=[Optional(), NumberRange(min=1)],
     )
@@ -351,13 +344,9 @@ class GroupForm:
             ("fermo", "fermo"),
         ],
     )
-    group_blank_toggle = SelectField(
-        label="Module",
-        description=(
-            "Activate feature blank assignment (requires samples marked as 'BLANK')."
-        ),
-        validators=[Optional()],
-        choices=[("False", "inactive"), ("True", "active")],
+    group_blank_toggle = BooleanField(
+        label="Activate Module",
+        description=("Activate feature blank assignment module."),
     )
     group_blank_factor = IntegerField(
         label="Factor",
@@ -376,13 +365,9 @@ class GroupForm:
         validators=[Optional()],
         choices=[("area", "area"), ("height", "height")],
     )
-    group_factor_toggle = SelectField(
-        label="Module",
-        description=(
-            "Activate the calculation of fold-changes between groups of a category."
-        ),
-        validators=[Optional()],
-        choices=[("False", "inactive"), ("True", "active")],
+    group_factor_toggle = BooleanField(
+        label="Activate Module",
+        description=("Activate the group factor calculation module."),
     )
     group_factor_algorithm = SelectField(
         label="Algorithm",
@@ -412,11 +397,9 @@ class LibraryForm:
         validators=[Optional()],
         choices=[("mgf", "mgf")],
     )
-    library_cosine_toggle = SelectField(
-        label="Module",
-        description="Activate modified cosine-based spectral library matching.",
-        validators=[Optional()],
-        choices=[("False", "inactive"), ("True", "active")],
+    library_cosine_toggle = BooleanField(
+        label="Activate Module",
+        description="Activate modified cosine-based spectral library matching module.",
     )
     library_cosine_tolerance = DecimalField(
         label="Fragment tolerance",
@@ -425,7 +408,7 @@ class LibraryForm:
     )
     library_cosine_matches = IntegerField(
         label="Matched fragments",
-        description="Minimum number of fragment matches",
+        description="Minimum number of fragment matches.",
         validators=[Optional(), NumberRange(min=1)],
     )
     library_cosine_score = DecimalField(
@@ -440,11 +423,9 @@ class LibraryForm:
         ),
         validators=[Optional(), NumberRange(min=0)],
     )
-    library_deepscore_toggle = SelectField(
-        label="Module",
-        description="Activate MS2DeepScore-based spectral library matching.",
-        validators=[Optional()],
-        choices=[("False", "inactive"), ("True", "active")],
+    library_deepscore_toggle = BooleanField(
+        label="Activate Module",
+        description="Activate MS2DeepScore-based spectral library matching module.",
     )
     library_deepscore_score = DecimalField(
         label="Score",
@@ -473,14 +454,9 @@ class Ms2queryForm:
         description="Score cutoff for MS2Query model matches.",
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
     )
-    ms2query_toggle = SelectField(
-        label="New Calculation",
-        description=(
-            "Activate de novo MS2Query annotation (Note: computationally intense - "
-            "takes about 2 seconds per spectrum. Calculation time is restricted.)"
-        ),
-        validators=[Optional()],
-        choices=[("False", "inactive"), ("True", "active")],
+    ms2query_toggle = BooleanField(
+        label="Activate Module",
+        description=("Activate de novo MS2Query annotation module."),
     )
 
 
@@ -500,11 +476,11 @@ class ASKCBForm:
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
     )
-    askcb_cosine_toggle = SelectField(
-        label="Module",
-        description="Activate modified cosine-based MIBiG spectral library matching.",
-        validators=[Optional()],
-        choices=[("False", "inactive"), ("True", "active")],
+    askcb_cosine_toggle = BooleanField(
+        label="Activate Module",
+        description=(
+            "Activate modified cosine-based MIBiG spectral library matching " "module."
+        ),
     )
     askcb_cosine_tolerance = DecimalField(
         label="Fragment tolerance",
@@ -513,7 +489,7 @@ class ASKCBForm:
     )
     askcb_cosine_matches = IntegerField(
         label="Matched fragments",
-        description="Minimum number of fragment matches",
+        description="Minimum number of fragment matches.",
         validators=[Optional(), NumberRange(min=1)],
     )
     askcb_cosine_score = DecimalField(
@@ -528,11 +504,11 @@ class ASKCBForm:
         ),
         validators=[Optional(), NumberRange(min=0)],
     )
-    askcb_deepscore_toggle = SelectField(
-        label="Module",
-        description="Activate MS2DeepScore-based MIBiG spectral library matching.",
-        validators=[Optional()],
-        choices=[("False", "inactive"), ("True", "active")],
+    askcb_deepscore_toggle = BooleanField(
+        label="Activate Module",
+        description=(
+            "Activate MS2DeepScore-based MIBiG spectral library matching " "module."
+        ),
     )
     askcb_deepscore_score = DecimalField(
         label="Score",
@@ -585,16 +561,12 @@ class AnalysisForm(
             "peaktable_ppm": pars.get("core_modules", {})
             .get("adduct_annotation", {})
             .get("mass_dev_ppm", 10),
-            "peaktable_adduct_toggle": str(
-                pars.get("core_modules", {})
-                .get("adduct_annotation", {})
-                .get("activate_module", True)
-            ),
-            "peaktable_filter_toggle": str(
-                pars.get("additional_modules", {})
-                .get("feature_filtering", {})
-                .get("activate_module", False)
-            ),
+            "peaktable_adduct_toggle": pars.get("core_modules", {})
+            .get("adduct_annotation", {})
+            .get("activate_module", True),
+            "peaktable_filter_toggle": pars.get("additional_modules", {})
+            .get("feature_filtering", {})
+            .get("activate_module", False),
             "peaktable_filter_height_lower": pars.get("additional_modules", {})
             .get("feature_filtering", {})
             .get("filter_rel_int_range_min", 0.0),
@@ -611,22 +583,16 @@ class AnalysisForm(
             "msms_rel_int_from": pars.get("files", {})
             .get("msms", {})
             .get("rel_int_from", 0.01),
-            "msms_fragment_toggle": str(
-                pars.get("core_modules", {})
-                .get("fragment_annotation", {})
-                .get("activate_module", True)
-            ),
-            "msms_loss_toggle": str(
-                pars.get("core_modules", {})
-                .get("neutral_loss_annotation", {})
-                .get("activate_module", True)
-            ),
-            "msms_cosine_toggle": str(
-                pars.get("core_modules", {})
-                .get("spec_sim_networking", {})
-                .get("modified_cosine", {})
-                .get("activate_module", True)
-            ),
+            "msms_fragment_toggle": pars.get("core_modules", {})
+            .get("fragment_annotation", {})
+            .get("activate_module", True),
+            "msms_loss_toggle": pars.get("core_modules", {})
+            .get("neutral_loss_annotation", {})
+            .get("activate_module", True),
+            "msms_cosine_toggle": pars.get("core_modules", {})
+            .get("spec_sim_networking", {})
+            .get("modified_cosine", {})
+            .get("activate_module", True),
             "msms_cosine_minfrag": pars.get("core_modules", {})
             .get("spec_sim_networking", {})
             .get("modified_cosine", {})
@@ -643,12 +609,10 @@ class AnalysisForm(
             .get("spec_sim_networking", {})
             .get("modified_cosine", {})
             .get("max_nr_links", 10),
-            "msms_deepscore_toggle": str(
-                pars.get("core_modules", {})
-                .get("spec_sim_networking", {})
-                .get("ms2deepscore", {})
-                .get("activate_module", True)
-            ),
+            "msms_deepscore_toggle": pars.get("core_modules", {})
+            .get("spec_sim_networking", {})
+            .get("ms2deepscore", {})
+            .get("activate_module", True),
             "msms_deepscore_minfrag": pars.get("core_modules", {})
             .get("spec_sim_networking", {})
             .get("ms2deepscore", {})
@@ -719,11 +683,9 @@ class AnalysisForm(
             "group_format": pars.get("files", {})
             .get("group_metadata", {})
             .get("format", "fermo"),
-            "group_blank_toggle": str(
-                pars.get("additional_modules", {})
-                .get("blank_assignment", {})
-                .get("activate_module", False)
-            ),
+            "group_blank_toggle": pars.get("additional_modules", {})
+            .get("blank_assignment", {})
+            .get("activate_module", False),
             "group_blank_factor": pars.get("additional_modules", {})
             .get("blank_assignment", {})
             .get("factor", 10),
@@ -733,11 +695,9 @@ class AnalysisForm(
             "group_blank_value": pars.get("additional_modules", {})
             .get("blank_assignment", {})
             .get("value", "area"),
-            "group_factor_toggle": str(
-                pars.get("additional_modules", {})
-                .get("group_factor_assignment", {})
-                .get("activate_module", False)
-            ),
+            "group_factor_toggle": pars.get("additional_modules", {})
+            .get("group_factor_assignment", {})
+            .get("activate_module", False),
             "group_factor_algorithm": pars.get("additional_modules", {})
             .get("group_factor_assignment", {})
             .get("algorithm", "mean"),
@@ -747,12 +707,10 @@ class AnalysisForm(
             "library_format": pars.get("files", {})
             .get("spectral_library", {})
             .get("format", "mgf"),
-            "library_cosine_toggle": str(
-                pars.get("additional_modules", {})
-                .get("spectral_library_matching", {})
-                .get("modified_cosine", {})
-                .get("activate_module", False)
-            ),
+            "library_cosine_toggle": pars.get("additional_modules", {})
+            .get("spectral_library_matching", {})
+            .get("modified_cosine", {})
+            .get("activate_module", False),
             "library_cosine_tolerance": pars.get("additional_modules", {})
             .get("spectral_library_matching", {})
             .get("modified_cosine", {})
@@ -769,12 +727,10 @@ class AnalysisForm(
             .get("spectral_library_matching", {})
             .get("modified_cosine", {})
             .get("max_precursor_mass_diff", 600),
-            "library_deepscore_toggle": str(
-                pars.get("additional_modules", {})
-                .get("spectral_library_matching", {})
-                .get("ms2deepscore", {})
-                .get("activate_module", False)
-            ),
+            "library_deepscore_toggle": pars.get("additional_modules", {})
+            .get("spectral_library_matching", {})
+            .get("ms2deepscore", {})
+            .get("activate_module", False),
             "library_deepscore_score": pars.get("additional_modules", {})
             .get("spectral_library_matching", {})
             .get("ms2deepscore", {})
@@ -786,20 +742,16 @@ class AnalysisForm(
             "ms2query_score": pars.get("additional_modules", {})
             .get("ms2query_annotation", {})
             .get("score_cutoff", 0.7),
-            "ms2query_toggle": str(
-                pars.get("additional_modules", {})
-                .get("ms2query_annotation", {})
-                .get("activate_module", False)
-            ),
+            "ms2query_toggle": pars.get("additional_modules", {})
+            .get("ms2query_annotation", {})
+            .get("activate_module", False),
             "askcb_score": pars.get("files", {})
             .get("as_results", {})
             .get("similarity_cutoff", 0.7),
-            "askcb_cosine_toggle": str(
-                pars.get("additional_modules", {})
-                .get("as_kcb_matching", {})
-                .get("modified_cosine", {})
-                .get("activate_module", False)
-            ),
+            "askcb_cosine_toggle": pars.get("additional_modules", {})
+            .get("as_kcb_matching", {})
+            .get("modified_cosine", {})
+            .get("activate_module", False),
             "askcb_cosine_tolerance": pars.get("additional_modules", {})
             .get("as_kcb_matching", {})
             .get("modified_cosine", {})
@@ -816,12 +768,10 @@ class AnalysisForm(
             .get("as_kcb_matching", {})
             .get("modified_cosine", {})
             .get("max_precursor_mass_diff", 600),
-            "askcb_deepscore_toggle": str(
-                pars.get("additional_modules", {})
-                .get("as_kcb_matching", {})
-                .get("ms2deepscore", {})
-                .get("activate_module", False)
-            ),
+            "askcb_deepscore_toggle": pars.get("additional_modules", {})
+            .get("as_kcb_matching", {})
+            .get("ms2deepscore", {})
+            .get("activate_module", False),
             "askcb_deepscore_score": pars.get("additional_modules", {})
             .get("as_kcb_matching", {})
             .get("ms2deepscore", {})
