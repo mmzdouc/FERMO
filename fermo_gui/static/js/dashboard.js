@@ -77,6 +77,38 @@ document.addEventListener('DOMContentLoaded', function() {
         currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
     }
 
+    var annotationFeatureCheckbox = document.getElementById('showAnnotationFeatures');
+
+    annotationFeatureCheckbox.addEventListener('change', function() {
+        var isChecked = this.checked;
+        var annotationRelatedContainers = document.querySelectorAll('.annotation-related');
+
+        annotationRelatedContainers.forEach(function(container) {
+            if (isChecked) {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        });
+    });
+
+    document.getElementById('groupButton').addEventListener('click', function() {
+        var dropdownContainer = document.getElementById('dropdownGroupContainer');
+        if (dropdownContainer.style.display === "none" || dropdownContainer.style.display === "") {
+            dropdownContainer.style.display = "block";
+        } else {
+            dropdownContainer.style.display = "none";
+        }
+    });
+    document.getElementById('networkExcludeButton').addEventListener('click', function() {
+        var dropdownContainer = document.getElementById('dropdownNetworkContainer');
+        if (dropdownContainer.style.display === "none" || dropdownContainer.style.display === "") {
+            dropdownContainer.style.display = "block";
+        } else {
+            dropdownContainer.style.display = "none";
+        }
+    });
+
     // Activate the clicked sample of the 'Sample overview'
     var rows = document.querySelectorAll('.select-sample');
     rows.forEach(function(row) {
