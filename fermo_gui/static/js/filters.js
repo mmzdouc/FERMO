@@ -19,7 +19,9 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         showBlankFeatures: document.getElementById('showBlankFeatures'),
         findFId: document.getElementById('findInput'),
         mz1Input: document.getElementById('mz1Input'),
-        mz2Input: document.getElementById('mz2Input')
+        mz2Input: document.getElementById('mz2Input'),
+        sample1Input: document.getElementById('sample1Input'),
+        sample2Input: document.getElementById('sample2Input'),
     };
 
     function updateRange() {
@@ -36,11 +38,14 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         const findFeatureId = parseFloat(elements.findFId.value);
         const minMzScore = parseFloat(elements.mz1Input.value);
         const maxMzScore = parseFloat(elements.mz2Input.value);
+        const minSampleCount = parseFloat(elements.sample1Input.value);
+        const maxSampleCount = parseFloat(elements.sample2Input.value);
 
         visualizeData(sampleData, false, minScore, maxScore, findFeatureId,
                       minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                       minMatchScore, maxMatchScore, showOnlyMatchFeatures,
-                      showOnlyAnnotationFeatures, showOnlyBlankFeatures);
+                      showOnlyAnnotationFeatures, showOnlyBlankFeatures,
+                      minMzScore, maxMzScore, minSampleCount, maxSampleCount);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
 
         const currentBoxParams = getCurrentBoxParams();
@@ -51,7 +56,7 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
                                minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                                minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                                showOnlyAnnotationFeatures, showOnlyBlankFeatures,
-                               minMzScore, maxMzScore);
+                               minMzScore, maxMzScore, minSampleCount, maxSampleCount);
     }
 
     function enforceConstraints() {
@@ -107,7 +112,7 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
                                        minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                                        minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                                        showOnlyAnnotationFeatures, showOnlyBlankFeatures,
-                                       minMzScore, maxMzScore) {
+                                       minMzScore, maxMzScore, minSampleCount, maxSampleCount) {
     return sampleData.novScore.reduce((count, score, index) => {
         const phenotypeScore = sampleData.annotations?.[index]?.phenotypes?.[0]?.score;
         const matchScore = sampleData.annotations?.[index]?.matches?.[0]?.score;
@@ -115,6 +120,7 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
         const mz = sampleData.precMz[index];
         const blanks = sampleData.blankAs?.[index];
         const findFeature = sampleData.featureId?.[index];
+        const sampleCount = sampleData.samples[index].length;
         if (score >= minScore && score <= maxScore &&
             (!showOnlyPhenotypeFeatures || (phenotypeScore !== null &&
             phenotypeScore >= minPhenotypeScore && phenotypeScore <= maxPhenotypeScore)) &&
@@ -123,7 +129,8 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
             (!showOnlyAnnotationFeatures || (annotation !== null)) &&
             (!showOnlyBlankFeatures || (blanks !== true)) &&
             (!findFeatureId || (findFeatureId === findFeature)) &&
-            (!maxMzScore || (phenotypeScore >= minMzScore && phenotypeScore <= maxMzScore))
+            (!maxMzScore || (mz >= minMzScore && mz <= maxMzScore)) &&
+            (!maxSampleCount || (sampleCount >= minSampleCount && sampleCount <= maxSampleCount))
             ) {
             return count + 1;
         }

@@ -2,7 +2,8 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
                               minPhenotypeScore = 0, maxPhenotypeScore = 1, showOnlyPhenotypeFeatures = false,
                               minMatchScore = 0, maxMatchScore = 1, showOnlyMatchFeatures = false,
                               showOnlyAnnotationFeatures = false, showOnlyBlankFeatures = false,
-                              minMzScore = 0, maxMzScore = false) {
+                              minMzScore = 0, maxMzScore = false,
+                              minSampleScore = 0, maxSampleScore = false,) {
     const data = [];
     const maxPeaksPerSample = sampleData.traceInt.map(trace => Math.max(...trace));
     const combinedData = sampleData.traceRt.map((rt, i) => ({
@@ -17,7 +18,8 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
         matchScore: sampleData.annotations?.[i]?.matches?.[0]?.score ?? null,
         annId: sampleData.annotations?.[i]?.adducts ?? null,
         blankId: sampleData.blankAs?.[i] ?? null,
-        mz: sampleData.precMz[i]
+        mz: sampleData.precMz[i],
+        sampleCount: sampleData.samples[i].length,
     })).sort((a, b) => b.maxPeak - a.maxPeak);
 
     combinedData.forEach(dataItem => {
@@ -49,7 +51,8 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
             (showOnlyAnnotationFeatures && (dataItem.annId === null)) ||
             (showOnlyBlankFeatures && (dataItem.blankId === true)) ||
             (findFeatureId && (dataItem.featureId !== findFeatureId)) ||
-            (maxMzScore && (dataItem.mz < minMzScore || dataItem.mz > maxMzScore))
+            (maxMzScore && (dataItem.mz < minMzScore || dataItem.mz > maxMzScore)) ||
+            (maxSampleScore && (dataItem.sampleCount < minSampleScore || dataItem.sampleCount > maxSampleScore))
             )) {
             result.line.color = 'rgba(212, 212, 212, 0.8)';
             result.fillcolor = 'rgba(212, 212, 212, 0.3)';

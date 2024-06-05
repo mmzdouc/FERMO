@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('showBlankFeatures').addEventListener('change', updateRange);
         document.getElementById('findInput').addEventListener('input', updateRange);
         document.getElementById('mz2Input').addEventListener('input', updateRange);
+        document.getElementById('sample2Input').addEventListener('input', updateRange);
         document.getElementById('showAnnotationFeatures').addEventListener('change', function() {
             const isChecked = this.checked;
             updateRange();
@@ -105,6 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('showBlankFeatures').addEventListener('change', updateRange);
             document.getElementById('showBlankFeatures').addEventListener('input', updateRange);
             document.getElementById('mz2Input').addEventListener('input', updateRange);
+            document.getElementById('sample2Input').addEventListener('input', updateRange);
 
             initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures,
                 sampleData, chromatogramElement, getCurrentBoxParams);
@@ -127,13 +129,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const findFeatureId = parseFloat(document.getElementById('findInput').value);
         const minMzScore = parseFloat(document.getElementById('mz1Input').value);
         const maxMzScore = parseFloat(document.getElementById('mz2Input').value);
+        const minSampleScore = parseFloat(document.getElementById('sample1Input').value);
+        const maxSampleScore = parseFloat(document.getElementById('sample2Input').value);
 
 
         visualizeData(sampleData, false, minScore, maxScore, findFeatureId,
                       minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                       minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                       showAnnotationFeatures, showBlankFeatures,
-                      minMzScore, maxMzScore);
+                      minMzScore, maxMzScore, minSampleScore, maxSampleScore);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
         if (currentBoxParams) {
             addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
@@ -142,14 +146,14 @@ document.addEventListener('DOMContentLoaded', function() {
             minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
             minMatchScore, maxMatchScore, showOnlyMatchFeatures,
             showAnnotationFeatures, showBlankFeatures,
-            minMzScore, maxMzScore);
+            minMzScore, maxMzScore, minSampleScore, maxSampleScore);
     }
 
     function updateRetainedFeatures(minScore, maxScore, findFeatureId,
     minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
     minMatchRange, maxMatchRange, showOnlyMatchFeatures,
     showAnnotationFeatures, showBlankFeatures,
-    minMzScore, maxMzScore) {
+    minMzScore, maxMzScore, minSampleScore, maxSampleScore) {
         document.querySelectorAll('.select-sample').forEach(row => {
             const sampleName = row.getAttribute('data-sample-name');
             const sampleData = getSampleData(sampleName, statsChromatogram);
@@ -157,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                 minMatchRange, maxMatchRange, showOnlyMatchFeatures,
                 showAnnotationFeatures, showBlankFeatures,
-                minMzScore, maxMzScore);
+                minMzScore, maxMzScore, minSampleScore, maxSampleScore);
             row.children[2].textContent = featuresWithinRange;
         });
     }
