@@ -16,7 +16,8 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         matchRange2Input: document.getElementById('matchRange2Input'),
         showMatchFeatures: document.getElementById('showMatchFeatures'),
         showAnnotationFeatures: document.getElementById('showAnnotationFeatures'),
-        showBlankFeatures: document.getElementById('showBlankFeatures')
+        showBlankFeatures: document.getElementById('showBlankFeatures'),
+        findFId: document.getElementById('findInput')
     };
 
     function updateRange() {
@@ -30,8 +31,9 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         const showOnlyMatchFeatures = elements.showMatchFeatures.checked;
         const showOnlyAnnotationFeatures = elements.showAnnotationFeatures.checked;
         const showOnlyBlankFeatures = elements.showBlankFeatures.checked;
+        const findFeatureId = parseFloat(elements.findFId.value);
 
-        visualizeData(sampleData, false, minScore, maxScore,
+        visualizeData(sampleData, false, minScore, maxScore, findFeatureId,
                       minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                       minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                       showOnlyAnnotationFeatures, showOnlyBlankFeatures);
@@ -41,7 +43,7 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         if (currentBoxParams) {
             addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
         }
-        updateRetainedFeatures(minScore, maxScore,
+        updateRetainedFeatures(minScore, maxScore, findFeatureId,
                                minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                                minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                                showOnlyAnnotationFeatures, showOnlyBlankFeatures);
@@ -96,7 +98,7 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
     updateRange();
 }
 
-export function getFeaturesWithinRange(sampleData, minScore, maxScore,
+export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatureId,
                                        minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                                        minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                                        showOnlyAnnotationFeatures, showOnlyBlankFeatures) {
@@ -105,13 +107,15 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore,
         const matchScore = sampleData.annotations?.[index]?.matches?.[0]?.score;
         const annotation = sampleData.annotations?.[index]?.adducts ?? null;
         const blanks = sampleData.blankAs?.[index];
+        const findFeature = sampleData.featureId?.[index];
         if (score >= minScore && score <= maxScore &&
             (!showOnlyPhenotypeFeatures || (phenotypeScore !== null &&
             phenotypeScore >= minPhenotypeScore && phenotypeScore <= maxPhenotypeScore)) &&
             (!showOnlyMatchFeatures || (matchScore !== null &&
             matchScore >= minMatchScore && matchScore <= maxMatchScore)) &&
             (!showOnlyAnnotationFeatures || (annotation !== null)) &&
-            (!showOnlyBlankFeatures || (blanks !== true))
+            (!showOnlyBlankFeatures || (blanks !== true)) &&
+            (!findFeatureId || (findFeatureId === findFeature))
             ) {
             return count + 1;
         }

@@ -1,4 +1,4 @@
-export function visualizeData(sampleData, isFeatureVisualization = false, minScore = 0, maxScore = 10,
+export function visualizeData(sampleData, isFeatureVisualization = false, minScore = 0, maxScore = 10, findFeatureId = false,
                               minPhenotypeScore = 0, maxPhenotypeScore = 1, showOnlyPhenotypeFeatures = false,
                               minMatchScore = 0, maxMatchScore = 1, showOnlyMatchFeatures = false,
                               showOnlyAnnotationFeatures = false, showOnlyBlankFeatures = false) {
@@ -45,7 +45,10 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
             (showOnlyMatchFeatures && (dataItem.matchScore === null ||
             dataItem.matchScore < minMatchScore || dataItem.matchScore > maxMatchScore)) ||
             (showOnlyAnnotationFeatures && (dataItem.annId === null)) ||
-            (showOnlyBlankFeatures && (dataItem.blankId === true)))) {
+            (showOnlyBlankFeatures && (dataItem.blankId === true)) ||
+            (findFeatureId && (dataItem.featureId !== findFeatureId))
+
+            )) {
             result.line.color = 'rgba(212, 212, 212, 0.8)';
             result.fillcolor = 'rgba(212, 212, 212, 0.3)';
         }
