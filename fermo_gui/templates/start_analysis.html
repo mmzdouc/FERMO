@@ -4,18 +4,18 @@
   {% from "_formhelpers.html" import render_field, render_switch, render_help %}
   <div class="container mt-5">
     {% if jobload %}
-      <div class="p-4 my-2">
+      <div class="mx-4">
         <div class="container-fluid">
           <div class="row my-2 d-flex align-items-center">
-            <div class="col-auto"><h1>Start new analysis</h1></div>
+            <div class="col-auto"><h1 class="fw-semibold lh-2">Start new analysis</h1></div>
           </div>
         </div>
       </div>
     {% else %}
-      <div class="p-4 my-2">
+      <div class="mx-4">
         <div class="container-fluid">
           <div class="row my-2 d-flex align-items-center">
-            <div class="col-auto"><h1>Start new analysis</h1></div>
+            <div class="col-auto"><h1 class="fw-semibold lh-2">Start new analysis</h1></div>
           </div>
           <div class="row my-2 d-flex align-items-center">
             <div class="col-auto"><h3>Loaded parameters of job ID: {{ job_id }}</h3></div>
@@ -23,8 +23,18 @@
         </div>
       </div>
     {% endif %}
+    <div class="mx-4 my-2">
+      <div class="container-fluid">
+        <div class="row my-2 d-flex align-items-center">
+          <div class="col-auto">
+            <p class="lead my-1">Upload your data, set your preferred parameters, and you are good to go!</p>
+            <p class="lead my-1">You can also load the settings of your previous job, or the parameters your colleagues used.</p>
+          </div>
+        </div>
+      </div>
+    </div>
     {% if online %}
-      <div class="border p-4 my-2">
+      <div class="p-4">
           <div class="container-fluid">
             <div class="row my-2 d-flex align-items-center">
               <div class="col-auto"><h3>Heads Up Online Users!</h3></div>

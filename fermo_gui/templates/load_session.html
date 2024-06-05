@@ -3,22 +3,45 @@
 {% block content %}
   {% from "_formhelpers.html" import render_field %}
   <div class="container mt-5">
-    <h1>Load Session File</h1>
+    <div class="mx-4">
+      <div class="container-fluid">
+        <div class="row my-2 d-flex align-items-center">
+          <div class="col-auto"><h1 class="fw-semibold lh-2">Load Session File</h1></div>
+        </div>
+      </div>
+    </div>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
-        <div class="container-fluid">
-          <h2 style="color: red">Error during input validation</h2>
-          <ul class=flashes>
-          {% for message in messages %}
-            <li style="color: red">{{ message }}</li>
-          {% endfor %}
-          </ul>
+        <div class="border p-4 my-2">
+          <div style="color: red" class="container-fluid">
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto"><h3>Error during input validation</h3></div>
+            </div>
+            <div class="row my-2 d-flex align-items-center">
+              <div class="col-auto">
+                <ul class=flashes>
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+               </ul>
+              </div>
+            </div>
+          </div>
         </div>
       {% endif %}
     {% endwith %}
+    <div class="mx-4 my-2">
+      <div class="container-fluid">
+        <div class="row my-4 d-flex align-items-center">
+          <div class="col-auto">
+            <p class="lead my-1">Upload your previously created <i>FERMO</i> session.json file to visualize it in the dashboard.</p>
+            <p class="lead my-1">You can also use this to upload the parameters of a previous job.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 		<form method="post" action="{{ url_for('routes.load_session') }}" enctype="multipart/form-data">
       {{ form.hidden_tag() }}
-
       <div class="border p-4 my-2">
         <fieldset id="session-form">
           <div class="container-fluid">

@@ -1,7 +1,65 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <span class="title"><h3>{% block title %} Placeholder for the About page {% endblock %}</h3></span>
-    <div class="content">
+<div class="container mt-5">
+    <div class="mx-4">
+        <div class="container-fluid">
+            <div class="row my-4 d-flex align-items-center">
+                <div class="col-auto"><h1 class="fw-semibold lh-2">About</h1></div>
+            </div>
+            <p class="lead mb-3"><i>FERMO</i> is a dashboard for metabolomics data analysis, with automated integration of genomics, phenotypical, and environmental (meta)data. It aims to make the prioritization of molecules of interest convenient, fast, and reproducible.</p>
+            <p class="lead mb-5"><i>FERMO</i> integrates and cross-links with a number of other tools. For a list of dependencies, see <a target="_blank" href="https://github.com/mmzdouc/fermo_core/blob/main/pyproject.toml">here</a> and <a target="_blank" href="https://github.com/fermo-met/fermo_gui/blob/main/pyproject.toml">here</a>.</p>
+      </div>
     </div>
+    <div class="mx-4">
+        <div class="container-fluid">
+            <section class="row my-4 d-flex">
+                <div class="col-auto">
+                    <h2 class="fw-semibold lh-2">How to cite <i>FERMO</i></h2>
+                    <p class="lead mb-4">
+                        The manuscript for the new version of <i>FERMO</i> is currently under preparation. For the previous beta version, a preprint is available on <a target="_blank" href="https://doi.org/10.1101/2022.12.21.521422 ">bioRxiv</a>.
+                    </p>
+                </div>
+            </section>
+            <section class="row my-4 d-flex">
+                <div class="col-auto">
+                    <h2 class="fw-semibold lh-2 mb-2">People</h2>
+                    <p class="lead mb-2">
+                        <i>FERMO</i> is being developed by:
+                    </p>
+                </div>
+            </section>
+            <section class="row g-3 g-md-5 mb-5 pb-5 justify-content-center">
+                <div class="col-lg-6 py-lg-4 pe-lg-5 justify-content-center d-flex">
+                    <img class="d-none d-sm-block mb-5" style="max-width: 9vw;" src="{{ url_for('static', filename='/images/profile.mmz.JPG') }}" alt="Profile picture MMZ">
+                    <div class="mx-2">
+                        <p class="lead">Mitja M. Zdouc</p>
+                        <p class="lead">Lead developer</p>
+                        <p class="lead">Wageningen University & Research</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 py-lg-4 pe-lg-5 justify-content-center d-flex">
+                    <img class="d-none d-sm-block mb-5" style="max-width: 9vw;" src="{{ url_for('static', filename='/images/profile.hea.JPG') }}" alt="Profile picture HEA">
+                    <div class="mx-2">
+                        <p class="lead">Hannah E. Augustijn</p>
+                        <p class="lead">Interface design</p>
+                        <p class="lead">Wageningen University & Research</p>
+                        <p class="lead">Leiden University</p>
+                    </div>
+                </div>
+            </section>
+            <section class="row my-4 d-flex">
+                <div class="col-auto">
+                    <h2 class="fw-semibold lh-2">License and Terms</h2>
+                    <p class="lead mb-2">
+                        <i>FERMO</i> is licensed under the MIT license and is free to use. There is no login requirement. We ask users to be reasonable in their usage, and limit themselves to 5 concurrent jobs. For large-scale analyses, <i>FERMO</i> can be installed offline.
+                    </p>
+                    <p class="lead mb-2">
+                        For documents and software available from this server, the <i>FERMO</i> team does not warrant or assume any legal liability or responsibility for the accuracy, completeness, or usefulness of any information, apparatus, product, or process disclosed. Uploaded data and jobs are deleted regularly.
+                    </p>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
 {% endblock %}
