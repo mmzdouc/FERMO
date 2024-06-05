@@ -17,7 +17,9 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         showMatchFeatures: document.getElementById('showMatchFeatures'),
         showAnnotationFeatures: document.getElementById('showAnnotationFeatures'),
         showBlankFeatures: document.getElementById('showBlankFeatures'),
-        findFId: document.getElementById('findInput')
+        findFId: document.getElementById('findInput'),
+        mz1Input: document.getElementById('mz1Input'),
+        mz2Input: document.getElementById('mz2Input')
     };
 
     function updateRange() {
@@ -32,6 +34,8 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         const showOnlyAnnotationFeatures = elements.showAnnotationFeatures.checked;
         const showOnlyBlankFeatures = elements.showBlankFeatures.checked;
         const findFeatureId = parseFloat(elements.findFId.value);
+        const minMzScore = parseFloat(elements.mz1Input.value);
+        const maxMzScore = parseFloat(elements.mz2Input.value);
 
         visualizeData(sampleData, false, minScore, maxScore, findFeatureId,
                       minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
@@ -46,7 +50,8 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         updateRetainedFeatures(minScore, maxScore, findFeatureId,
                                minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                                minMatchScore, maxMatchScore, showOnlyMatchFeatures,
-                               showOnlyAnnotationFeatures, showOnlyBlankFeatures);
+                               showOnlyAnnotationFeatures, showOnlyBlankFeatures,
+                               minMzScore, maxMzScore);
     }
 
     function enforceConstraints() {
@@ -101,11 +106,13 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
 export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatureId,
                                        minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                                        minMatchScore, maxMatchScore, showOnlyMatchFeatures,
-                                       showOnlyAnnotationFeatures, showOnlyBlankFeatures) {
+                                       showOnlyAnnotationFeatures, showOnlyBlankFeatures,
+                                       minMzScore, maxMzScore) {
     return sampleData.novScore.reduce((count, score, index) => {
         const phenotypeScore = sampleData.annotations?.[index]?.phenotypes?.[0]?.score;
         const matchScore = sampleData.annotations?.[index]?.matches?.[0]?.score;
         const annotation = sampleData.annotations?.[index]?.adducts ?? null;
+        const mz = sampleData.precMz[index];
         const blanks = sampleData.blankAs?.[index];
         const findFeature = sampleData.featureId?.[index];
         if (score >= minScore && score <= maxScore &&
@@ -115,7 +122,8 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
             matchScore >= minMatchScore && matchScore <= maxMatchScore)) &&
             (!showOnlyAnnotationFeatures || (annotation !== null)) &&
             (!showOnlyBlankFeatures || (blanks !== true)) &&
-            (!findFeatureId || (findFeatureId === findFeature))
+            (!findFeatureId || (findFeatureId === findFeature)) &&
+            (!maxMzScore || (phenotypeScore >= minMzScore && phenotypeScore <= maxMzScore))
             ) {
             return count + 1;
         }

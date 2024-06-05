@@ -1,7 +1,8 @@
 export function visualizeData(sampleData, isFeatureVisualization = false, minScore = 0, maxScore = 10, findFeatureId = false,
                               minPhenotypeScore = 0, maxPhenotypeScore = 1, showOnlyPhenotypeFeatures = false,
                               minMatchScore = 0, maxMatchScore = 1, showOnlyMatchFeatures = false,
-                              showOnlyAnnotationFeatures = false, showOnlyBlankFeatures = false) {
+                              showOnlyAnnotationFeatures = false, showOnlyBlankFeatures = false,
+                              minMzScore = 0, maxMzScore = false) {
     const data = [];
     const maxPeaksPerSample = sampleData.traceInt.map(trace => Math.max(...trace));
     const combinedData = sampleData.traceRt.map((rt, i) => ({
@@ -15,7 +16,8 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
         phenotypeScore: sampleData.annotations?.[i]?.phenotypes?.[0]?.score ?? null,
         matchScore: sampleData.annotations?.[i]?.matches?.[0]?.score ?? null,
         annId: sampleData.annotations?.[i]?.adducts ?? null,
-        blankId: sampleData.blankAs?.[i] ?? null
+        blankId: sampleData.blankAs?.[i] ?? null,
+        mz: sampleData.precMz[i]
     })).sort((a, b) => b.maxPeak - a.maxPeak);
 
     combinedData.forEach(dataItem => {
@@ -46,8 +48,8 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
             dataItem.matchScore < minMatchScore || dataItem.matchScore > maxMatchScore)) ||
             (showOnlyAnnotationFeatures && (dataItem.annId === null)) ||
             (showOnlyBlankFeatures && (dataItem.blankId === true)) ||
-            (findFeatureId && (dataItem.featureId !== findFeatureId))
-
+            (findFeatureId && (dataItem.featureId !== findFeatureId)) ||
+            (maxMzScore && (dataItem.mz < minMzScore || dataItem.mz > maxMzScore))
             )) {
             result.line.color = 'rgba(212, 212, 212, 0.8)';
             result.fillcolor = 'rgba(212, 212, 212, 0.3)';
