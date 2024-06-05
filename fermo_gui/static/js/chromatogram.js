@@ -1,9 +1,11 @@
-export function visualizeData(sampleData, isFeatureVisualization = false, minScore = 0, maxScore = 10, findFeatureId = false,
+export function visualizeData(sampleData,
+                              isFeatureVisualization = false, minScore = 0, maxScore = 10, findFeatureId = false,
                               minPhenotypeScore = 0, maxPhenotypeScore = 1, showOnlyPhenotypeFeatures = false,
                               minMatchScore = 0, maxMatchScore = 1, showOnlyMatchFeatures = false,
                               showOnlyAnnotationFeatures = false, showOnlyBlankFeatures = false,
                               minMzScore = 0, maxMzScore = false,
-                              minSampleScore = 0, maxSampleScore = false,) {
+                              minSampleScore = 0, maxSampleScore = false,
+                              foldScore = null, foldGroup1 = false, foldGroup2 = false, foldSelectGroup = false) {
     const data = [];
     const maxPeaksPerSample = sampleData.traceInt.map(trace => Math.max(...trace));
     const combinedData = sampleData.traceRt.map((rt, i) => ({
@@ -19,7 +21,8 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
         annId: sampleData.annotations?.[i]?.adducts ?? null,
         blankId: sampleData.blankAs?.[i] ?? null,
         mz: sampleData.precMz[i],
-        sampleCount: sampleData.samples[i].length,
+        sampleCount: sampleData.samples?.[i].length ?? null,
+        foldChange: sampleData.fGroupData?.[i]?.[foldSelectGroup] ?? []
     })).sort((a, b) => b.maxPeak - a.maxPeak);
 
     combinedData.forEach(dataItem => {
@@ -42,6 +45,21 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
                 smoothing: 0.8,
             },
         };
+
+        // Fold Score validation
+        let foldValid = foldScore === null || !foldSelectGroup || !foldGroup1 || !foldGroup2;
+        if (!foldValid) {
+            for (const foldChange of dataItem.foldChange) {
+                if ((foldChange.group1 === foldGroup1 && foldChange.group2 === foldGroup2) ||
+                    (foldChange.group1 === foldGroup2 && foldChange.group2 === foldGroup1)) {
+                    if (foldChange.factor >= foldScore) {
+                        foldValid = true;
+                        break;
+                    }
+                }
+            }
+        }
+
         if (!isFeatureVisualization &&
             ((dataItem.novScore < minScore || dataItem.novScore > maxScore) ||
             (showOnlyPhenotypeFeatures && (dataItem.phenotypeScore === null ||
@@ -52,7 +70,8 @@ export function visualizeData(sampleData, isFeatureVisualization = false, minSco
             (showOnlyBlankFeatures && (dataItem.blankId === true)) ||
             (findFeatureId && (dataItem.featureId !== findFeatureId)) ||
             (maxMzScore && (dataItem.mz < minMzScore || dataItem.mz > maxMzScore)) ||
-            (maxSampleScore && (dataItem.sampleCount < minSampleScore || dataItem.sampleCount > maxSampleScore))
+            (maxSampleScore && (dataItem.sampleCount < minSampleScore || dataItem.sampleCount > maxSampleScore)) ||
+            !foldValid
             )) {
             result.line.color = 'rgba(212, 212, 212, 0.8)';
             result.fillcolor = 'rgba(212, 212, 212, 0.3)';

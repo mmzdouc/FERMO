@@ -404,6 +404,7 @@
 
                                     <label class="form-label pe-2 pt-0 bold-label">Fold-change filter:</label>
                                     <div class="slidecontainer pt-0">
+                                        <div id="groupInfo" data-stats-groups='{{ data.stats_groups | tojson | safe }}'></div>
                                         <div class="range-inputs float-start my-0">
                                             <div class="form-outline">
                                                 <input type="text" id="foldInput"
@@ -413,17 +414,27 @@
                                             </div>
                                             <p class="mt-1 px-2">times more in</p>
                                             <div class="form-outline">
-                                                <input type="text" id="group1FoldInput"
-                                                       placeholder="group 1"
-                                                       class="form-control form-icon-trailing"
-                                                       style="width: 5rem;" />
+                                                <select class="form-select form-select-sm"
+                                                        aria-label="Select group"
+                                                        id="group1FoldInput">
+                                                  <option value="" selected>group 1</option>
+                                                </select>
                                             </div>
                                             <p class="mt-1 px-2">vs</p>
                                             <div class="form-outline">
-                                                <input type="text" id="group2FoldInput"
-                                                       placeholder="group 2"
-                                                       class="form-control form-icon-trailing"
-                                                       style="width: 5rem;" />
+                                                <select class="form-select form-select-sm"
+                                                        aria-label="Select group"
+                                                        id="group2FoldInput">
+                                                  <option value="" selected>group 2</option>
+                                                </select>
+                                            </div>
+                                            <p class="mt-1 px-2">of</p>
+                                            <div class="form-outline">
+                                                <select class="form-select form-select-sm"
+                                                        aria-label="Select group"
+                                                        id="selectFoldInput">
+                                                  <option value="" selected>select group</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>

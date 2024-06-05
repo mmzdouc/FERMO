@@ -217,7 +217,8 @@ table th:last-child{
 }
 
 .form-select {
-    font-size: 13px;
+    font-size: 12px;
+    color: #575757;
 }
 
 .slidecontainer {
