@@ -23,15 +23,15 @@
             </section>
             <section class="row my-4 d-flex">
                 <div class="col-auto">
-                    <h2 class="fw-semibold lh-2 mb-2">People</h2>
+                    <h2 class="fw-semibold lh-2 mb-2">Developers</h2>
                     <p class="lead mb-2">
-                        <i>FERMO</i> is being developed by:
+                        <i>FERMO</i> is being developed by the following people:
                     </p>
                 </div>
             </section>
             <section class="row g-3 g-md-5 mb-5 pb-5 justify-content-center">
                 <div class="col-lg-6 py-lg-4 pe-lg-5 justify-content-center d-flex">
-                    <img class="d-none d-sm-block mb-5" style="max-width: 9vw;" src="{{ url_for('static', filename='/images/profile.mmz.JPG') }}" alt="Profile picture MMZ">
+                    <img class="d-none d-sm-block" style="max-width: 9vw;" src="{{ url_for('static', filename='/images/profile.mmz.JPG') }}" alt="Profile picture MMZ">
                     <div class="mx-2">
                         <p class="lead">Mitja M. Zdouc</p>
                         <p class="lead">Lead developer</p>
@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 py-lg-4 pe-lg-5 justify-content-center d-flex">
-                    <img class="d-none d-sm-block mb-5" style="max-width: 9vw;" src="{{ url_for('static', filename='/images/profile.hea.JPG') }}" alt="Profile picture HEA">
+                    <img class="d-none d-sm-block" style="max-width: 9vw;" src="{{ url_for('static', filename='/images/profile.hea.JPG') }}" alt="Profile picture HEA">
                     <div class="mx-2">
                         <p class="lead">Hannah E. Augustijn</p>
                         <p class="lead">Interface design</p>
@@ -50,8 +50,21 @@
             </section>
             <section class="row my-4 d-flex">
                 <div class="col-auto">
+                    <h2 class="fw-semibold lh-2">Acknowledgements</h2>
+                    <p class="lead my-3">The following people contributed during the development of <i>FERMO</i>:</p>
+                    <ul>
+                        <li><p class="lead mb-2">Justin J.J. van der Hooft - academic project supervision</p></li>
+                        <li><p class="lead mb-2">Marnix H. Medema - academic project supervision</p></li>
+                        <li><p class="lead mb-2">Sarah Habicht - co-developed a first prototype of the online version of <i>FERMO</i> in the scope of her <a target="_blank" href="https://edepot.wur.nl/633364">master thesis</a> (2023).</p></li>
+                        <li><p class="lead mb-2">Koen van Ingen - supported the development of the antiSMASH KnownClusterBlast compatibility module in the scope of his bachelor thesis (2024).</p></li>
+                        <li><p class="lead mb-2">Beta testers in alphabetical order: Bayona Maldonado, Lina M. and Dell, Maria and Iorio, Marianna and de Jonge, Niek and Khatib, Soliman and Lund, George and Maffioli, Sonia and Padva, Leo and Simone, Matteo and Soldatou, Sylvia.</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="row my-4 d-flex">
+                <div class="col-auto">
                     <h2 class="fw-semibold lh-2">License and Terms</h2>
-                    <p class="lead mb-2">
+                    <p class="lead my-3">
                         <i>FERMO</i> is licensed under the MIT license and is free to use. There is no login requirement. We ask users to be reasonable in their usage, and limit themselves to 5 concurrent jobs. For large-scale analyses, <i>FERMO</i> can be installed offline.
                     </p>
                     <p class="lead mb-2">
