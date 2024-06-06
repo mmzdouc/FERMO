@@ -25,7 +25,9 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         foldInput: document.getElementById('foldInput'),
         group1FoldInput: document.getElementById('group1FoldInput'),
         group2FoldInput: document.getElementById('group2FoldInput'),
-        selectFoldInput: document.getElementById('selectFoldInput')
+        selectFoldInput: document.getElementById('selectFoldInput'),
+        groupFilterSelect: document.getElementById('groupFilter'),
+        networkFilterSelect: document.getElementById('networkFilter')
     };
 
     function updateRange() {
@@ -48,13 +50,16 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         const foldGroup1 = elements.group1FoldInput.value;
         const foldGroup2 = elements.group2FoldInput.value;
         const foldSelectGroup = elements.selectFoldInput.value;
+        const groupFilterValues = Array.from(elements.groupFilterSelect.selectedOptions).map(option => option.value);
+        const networkFilterValues = Array.from(elements.networkFilterSelect.selectedOptions).map(option => option.value);
 
         visualizeData(sampleData, false, minScore, maxScore, findFeatureId,
                       minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                       minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                       showOnlyAnnotationFeatures, showOnlyBlankFeatures,
                       minMzScore, maxMzScore, minSampleCount, maxSampleCount,
-                      foldScore, foldGroup1, foldGroup2, foldSelectGroup);
+                      foldScore, foldGroup1, foldGroup2, foldSelectGroup,
+                      groupFilterValues.length ? groupFilterValues : null, networkFilterValues, statsFIdGroups);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
 
         const currentBoxParams = getCurrentBoxParams();
@@ -66,7 +71,8 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
                                minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                                showOnlyAnnotationFeatures, showOnlyBlankFeatures,
                                minMzScore, maxMzScore, minSampleCount, maxSampleCount,
-                               foldScore, foldGroup1, foldGroup2, foldSelectGroup);
+                               foldScore, foldGroup1, foldGroup2, foldSelectGroup,
+                               groupFilterValues ? groupFilterValues : null, networkFilterValues, statsFIdGroups);
     }
 
     function enforceConstraints() {
@@ -123,7 +129,8 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
                                        minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                                        showOnlyAnnotationFeatures, showOnlyBlankFeatures,
                                        minMzScore, maxMzScore, minSampleCount, maxSampleCount,
-                                       foldScore, foldGroup1, foldGroup2, foldSelectGroup) {
+                                       foldScore, foldGroup1, foldGroup2, foldSelectGroup,
+                                       groupFilterValues, networkFilterValues, statsFIdGroups) {
     return sampleData.novScore.reduce((count, score, index) => {
         const phenotypeScore = sampleData.annotations?.[index]?.phenotypes?.[0]?.score;
         const matchScore = sampleData.annotations?.[index]?.matches?.[0]?.score;
@@ -133,6 +140,10 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
         const findFeature = sampleData.featureId?.[index];
         const sampleCount = sampleData.samples[index].length;
         const foldChanges = sampleData.fGroupData?.[index]?.[foldSelectGroup] ?? [];
+        const featureGroups = Object(statsFIdGroups)?.[findFeature] ?? []
+
+        const groupFilterValid = groupFilterValues ? groupFilterValues.some(value => featureGroups.includes(value)) : true;
+
 
         // Check fold change conditions
         let foldValid = !foldScore || !foldGroup1 || !foldGroup2 || !foldSelectGroup;
@@ -158,7 +169,7 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
             (!findFeatureId || (findFeatureId === findFeature)) &&
             (!maxMzScore || (mz >= minMzScore && mz <= maxMzScore)) &&
             (!maxSampleCount || (sampleCount >= minSampleCount && sampleCount <= maxSampleCount)) &&
-            foldValid
+            foldValid && groupFilterValid
             ) {
             return count + 1;
         }
@@ -171,7 +182,6 @@ export function getFilterGroupSelectionFields(statsGroups) {
     const group1FoldInput = document.getElementById('group1FoldInput');
     const group2FoldInput = document.getElementById('group2FoldInput');
 
-    // Populate selectFoldInput
     selectFoldInput.innerHTML = '<option value="null" selected>select group</option>';
     Object.keys(statsGroups).forEach(groupKey => {
         const option = document.createElement('option');
@@ -180,13 +190,11 @@ export function getFilterGroupSelectionFields(statsGroups) {
         selectFoldInput.appendChild(option);
     });
 
-    // Event listener for selectFoldInput
     selectFoldInput.addEventListener('change', () => {
         const selectedGroup = selectFoldInput.value;
         if (selectedGroup !== "null") {
             const groupValues = statsGroups[selectedGroup];
 
-            // Populate group1FoldInput
             group1FoldInput.innerHTML = '<option value="" selected>group 1</option>';
             groupValues.forEach(value => {
                 const option = document.createElement('option');
@@ -195,7 +203,6 @@ export function getFilterGroupSelectionFields(statsGroups) {
                 group1FoldInput.appendChild(option);
             });
 
-            // Populate group2FoldInput
             group2FoldInput.innerHTML = '<option value="" selected>group 2</option>';
             groupValues.forEach(value => {
                 const option = document.createElement('option');
@@ -204,11 +211,9 @@ export function getFilterGroupSelectionFields(statsGroups) {
                 group2FoldInput.appendChild(option);
             });
 
-            // Enable the select inputs
             group1FoldInput.disabled = false;
             group2FoldInput.disabled = false;
         } else {
-            // Clear and disable the select inputs if no group is selected
             group1FoldInput.innerHTML = '<option value="" selected>group 1</option>';
             group2FoldInput.innerHTML = '<option value="" selected>group 2</option>';
             group1FoldInput.disabled = true;
@@ -216,7 +221,52 @@ export function getFilterGroupSelectionFields(statsGroups) {
         }
     });
 
-    // Initially disable the select inputs
     group1FoldInput.disabled = true;
     group2FoldInput.disabled = true;
+}
+
+export function populateDropdown(statsGroups) {
+    const dropdownGroupContainer = document.getElementById('dropdownGroupContainer');
+    const dropdownNetworkContainer = document.getElementById('dropdownNetworkContainer');
+    const multiSelectGroup = dropdownGroupContainer.querySelector('select');
+    const multiSelectNetwork = dropdownNetworkContainer.querySelector('select');
+
+    // Clear previous options
+    multiSelectGroup.innerHTML = '';
+    multiSelectNetwork.innerHTML = '';
+
+    // Add "blanks" option to network select
+    const blanksOption = document.createElement('option');
+    blanksOption.value = 'blanks';
+    blanksOption.textContent = 'blanks';
+    multiSelectNetwork.appendChild(blanksOption);
+
+    Object.keys(statsGroups).forEach(groupKey => {
+        // Create disabled group option for Group select
+        const groupOptionGroup = document.createElement('option');
+        groupOptionGroup.textContent = groupKey;
+        groupOptionGroup.disabled = true;
+        multiSelectGroup.appendChild(groupOptionGroup);
+
+        // Create disabled group option for Network select
+        const groupOptionNetwork = document.createElement('option');
+        groupOptionNetwork.textContent = groupKey;
+        groupOptionNetwork.disabled = true;
+        multiSelectNetwork.appendChild(groupOptionNetwork);
+
+        // Add the values under the respective group label
+        statsGroups[groupKey].forEach(value => {
+            // Create option for Group select
+            const optionGroup = document.createElement('option');
+            optionGroup.value = value;
+            optionGroup.textContent = value;
+            multiSelectGroup.appendChild(optionGroup);
+
+            // Create option for Network select
+            const optionNetwork = document.createElement('option');
+            optionNetwork.value = value;
+            optionNetwork.textContent = value;
+            multiSelectNetwork.appendChild(optionNetwork);
+        });
+    });
 }

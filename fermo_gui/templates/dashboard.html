@@ -413,6 +413,8 @@
                                                        style="width: 5rem;" />
                                             </div>
                                             <p class="mt-1 px-2">times more in</p>
+                                        </div>
+                                        <div class="range-inputs float-start my-0">
                                             <div class="form-outline">
                                                 <select class="form-select form-select-sm"
                                                         aria-label="Select group"
@@ -440,26 +442,21 @@
                                     </div>
 
                                     <div class="slidecontainer pt-0">
-                                        <label class="form-label pe-2 pt-1">Only show features of the selected group(s):</label>
+                                        <div id="statsFIdGroups" data-stats-fgroups='{{ data.stats_fgroups | tojson | safe }}'></div>
+                                        <label class="form-label pe-2 pt-1">Show only selected group features:</label>
                                         <button id="groupButton" class="btn btn-outline-primary btn-sm">Select</button>
                                         <div id="dropdownGroupContainer" class="dropdown-container">
-                                            <select class="form-select form-select-sm w-50" multiple>
-                                                <option selected>Select Options</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
+                                            <select id="groupFilter" class="form-select form-select-sm w-50" multiple>
+                                                <option value="" selected>Select Options</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="slidecontainer pt-0">
-                                        <label class="form-label pe-2 pt-1">Exclude features with selected groups in their networks:</label>
+                                        <label class="form-label pe-2 pt-1">Exclude features with specific network groups:</label>
                                         <button id="networkExcludeButton" class="btn btn-outline-primary btn-sm">Select</button>
                                         <div id="dropdownNetworkContainer" class="dropdown-container">
-                                            <select class="form-select form-select-sm w-50" multiple>
-                                                <option selected>Blanks</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
+                                            <select id="networkFilter" class="form-select form-select-sm w-50" multiple>
+                                                <option value="" selected>Select Options</option>
                                             </select>
                                         </div>
                                     </div>

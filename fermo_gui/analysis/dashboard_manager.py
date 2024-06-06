@@ -42,6 +42,7 @@ class DashboardManager(BaseModel):
     stats_chromatogram: dict = {}
     stats_network: dict = {}
     stats_groups: dict = {}
+    stats_fgroups: dict = {}
 
     def prepare_data_get(self: Self, f_sess: dict):
         """Run methods to prepare the data required by GET method
@@ -65,6 +66,7 @@ class DashboardManager(BaseModel):
             "stats_chromatogram": self.stats_chromatogram,
             "stats_network": self.stats_network,
             "stats_groups": self.stats_groups,
+            "stats_fgroups": self.stats_fgroups,
         }
 
     def extract_stats_analysis(self: Self, f_sess: dict):
@@ -118,6 +120,11 @@ class DashboardManager(BaseModel):
                             sample_to_group[s_id].update({group_id.title(): category})
                         else:
                             sample_to_group[s_id] = {group_id.title(): category}
+                    for f_id in details["f_ids"]:
+                        if f_id in self.stats_fgroups:
+                            self.stats_fgroups[f_id].append(category)
+                        else:
+                            self.stats_fgroups[f_id] = [category]
 
             for sample in f_sess.get("stats", {}).get("samples"):
                 total_features = len(

@@ -5,7 +5,8 @@ export function visualizeData(sampleData,
                               showOnlyAnnotationFeatures = false, showOnlyBlankFeatures = false,
                               minMzScore = 0, maxMzScore = false,
                               minSampleScore = 0, maxSampleScore = false,
-                              foldScore = null, foldGroup1 = false, foldGroup2 = false, foldSelectGroup = false) {
+                              foldScore = null, foldGroup1 = false, foldGroup2 = false, foldSelectGroup = false,
+                              groupFilterValues = null, networkFilterValues = null, statsFIdGroups = null) {
     const data = [];
     const maxPeaksPerSample = sampleData.traceInt.map(trace => Math.max(...trace));
     const combinedData = sampleData.traceRt.map((rt, i) => ({
@@ -22,7 +23,8 @@ export function visualizeData(sampleData,
         blankId: sampleData.blankAs?.[i] ?? null,
         mz: sampleData.precMz[i],
         sampleCount: sampleData.samples?.[i].length ?? null,
-        foldChange: sampleData.fGroupData?.[i]?.[foldSelectGroup] ?? []
+        foldChange: sampleData.fGroupData?.[i]?.[foldSelectGroup] ?? [],
+        featureGroups: Object(statsFIdGroups)?.[sampleData.featureId[i]] ?? []
     })).sort((a, b) => b.maxPeak - a.maxPeak);
 
     combinedData.forEach(dataItem => {
@@ -60,6 +62,8 @@ export function visualizeData(sampleData,
             }
         }
 
+        const groupFilterValid = groupFilterValues ? groupFilterValues.some(value => dataItem.featureGroups.includes(value)) : true;
+
         if (!isFeatureVisualization &&
             ((dataItem.novScore < minScore || dataItem.novScore > maxScore) ||
             (showOnlyPhenotypeFeatures && (dataItem.phenotypeScore === null ||
@@ -71,7 +75,7 @@ export function visualizeData(sampleData,
             (findFeatureId && (dataItem.featureId !== findFeatureId)) ||
             (maxMzScore && (dataItem.mz < minMzScore || dataItem.mz > maxMzScore)) ||
             (maxSampleScore && (dataItem.sampleCount < minSampleScore || dataItem.sampleCount > maxSampleScore)) ||
-            !foldValid
+            !foldValid || !groupFilterValid
             )) {
             result.line.color = 'rgba(212, 212, 212, 0.8)';
             result.fillcolor = 'rgba(212, 212, 212, 0.3)';

@@ -3,7 +3,7 @@ import { updateFeatureTables, hideTables } from './dynamic_tables.js';
 import { visualizeData, addBoxVisualization } from './chromatogram.js';
 import { visualizeNetwork, hideNetwork } from './network.js';
 import { enableDragAndDrop, disableDragAndDrop } from './dragdrop.js';
-import { initializeFilters, getFeaturesWithinRange, getFilterGroupSelectionFields } from './filters.js';
+import { initializeFilters, getFeaturesWithinRange, getFilterGroupSelectionFields, populateDropdown } from './filters.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     let dragged;
@@ -25,9 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const chromatogramElement = document.getElementById('mainChromatogram');
     const networkElement = document.getElementById('cy');
     const groupElement = document.getElementById('groupInfo');
+    const featureGroupElement = document.getElementById('statsFIdGroups');
     statsChromatogram = JSON.parse(chromatogramElement.getAttribute('data-stats-chromatogram'));
     statsNetwork = JSON.parse(networkElement.getAttribute('data-stats-network'));
     statsGroups = JSON.parse(groupElement.getAttribute('data-stats-groups'));
+    statsFIdGroups = JSON.parse(featureGroupElement.getAttribute('data-stats-fgroups'));
 
     const firstSample = document.querySelector('.select-sample');
     if (firstSample) {
@@ -38,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const networkType = 'modified_cosine';
 
         getFilterGroupSelectionFields(statsGroups)
+        populateDropdown(statsGroups)
 
         Plotly.newPlot(chromatogramElement, []);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
@@ -50,6 +53,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('group1FoldInput').addEventListener('input', updateRange);
         document.getElementById('group2FoldInput').addEventListener('input', updateRange);
         document.getElementById('selectFoldInput').addEventListener('change', updateRange);
+        document.getElementById('groupFilter').addEventListener('change', updateRange);
+        document.getElementById('networkFilter').addEventListener('change', updateRange);
         document.getElementById('showAnnotationFeatures').addEventListener('change', function() {
             const isChecked = this.checked;
             updateRange();
@@ -120,6 +125,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('group1FoldInput').addEventListener('input', updateRange);
             document.getElementById('group2FoldInput').addEventListener('input', updateRange);
             document.getElementById('selectFoldInput').addEventListener('change', updateRange);
+            document.getElementById('groupFilter').addEventListener('change', updateRange);
+            document.getElementById('networkFilter').addEventListener('change', updateRange);
 
             initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures,
                 sampleData, chromatogramElement, getCurrentBoxParams);
@@ -149,6 +156,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const foldGroup2 = document.getElementById('group2FoldInput').value;
         const foldSelectGroup = document.getElementById('selectFoldInput').value;
 
+        const groupFilterSelect = document.getElementById('groupFilter');
+        const networkFilterSelect = document.getElementById('networkFilter');
+
+        const groupFilterValues = Array.from(groupFilterSelect.selectedOptions).map(option => option.value);
+        const networkFilterValues = Array.from(networkFilterSelect.selectedOptions).map(option => option.value);
+
+
         // Check if all fold score inputs are filled
         const foldScoreInputsFilled = foldScore && foldGroup1 && foldGroup2 && foldSelectGroup;
 
@@ -157,7 +171,8 @@ document.addEventListener('DOMContentLoaded', function() {
                       minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                       showOnlyAnnotationFeatures, showOnlyBlankFeatures,
                       minMzScore, maxMzScore, minSampleCount, maxSampleCount,
-                      foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup);
+                      foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup,
+                      groupFilterValues.length ? groupFilterValues : null, networkFilterValues, statsFIdGroups);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
 
         if (currentBoxParams) {
@@ -169,15 +184,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                                showOnlyAnnotationFeatures, showOnlyBlankFeatures,
                                minMzScore, maxMzScore, minSampleCount, maxSampleCount,
-                               foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup);
+                               foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup,
+                               groupFilterValues.length ? groupFilterValues : null, networkFilterValues, statsFIdGroups);
     }
 
     function updateRetainedFeatures(minScore, maxScore, findFeatureId,
-    minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
-    minMatchRange, maxMatchRange, showOnlyMatchFeatures,
-    showAnnotationFeatures, showBlankFeatures,
-    minMzScore, maxMzScore, minSampleScore, maxSampleScore,
-    foldScore, foldGroup1, foldGroup2, foldSelectGroup) {
+                                    minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
+                                    minMatchRange, maxMatchRange, showOnlyMatchFeatures,
+                                    showAnnotationFeatures, showBlankFeatures,
+                                    minMzScore, maxMzScore, minSampleScore, maxSampleScore,
+                                    foldScore, foldGroup1, foldGroup2, foldSelectGroup,
+                                    groupFilterValues, networkFilterValues, statsFIdGroups) {
         document.querySelectorAll('.select-sample').forEach(row => {
             const sampleName = row.getAttribute('data-sample-name');
             const sampleData = getSampleData(sampleName, statsChromatogram);
@@ -186,7 +203,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 minMatchRange, maxMatchRange, showOnlyMatchFeatures,
                 showAnnotationFeatures, showBlankFeatures,
                 minMzScore, maxMzScore, minSampleScore, maxSampleScore,
-                foldScore, foldGroup1, foldGroup2, foldSelectGroup);
+                foldScore, foldGroup1, foldGroup2, foldSelectGroup,
+                groupFilterValues, networkFilterValues, statsFIdGroups);
             row.children[2].textContent = featuresWithinRange;
         });
     }

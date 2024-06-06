@@ -134,7 +134,7 @@ table th:last-child{
 
 .accordion-body {
     background: #fff;
-    max-height: 62vh;
+    max-height: 55vh;
 }
 
 .accordion-button:focus {
@@ -359,5 +359,5 @@ table th:last-child{
 
 .bold-label {
     font-weight: bold;
-    color: #5a755e;
+    color: #5e5e5e;
 }
