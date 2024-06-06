@@ -59,7 +59,8 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
                       showOnlyAnnotationFeatures, showOnlyBlankFeatures,
                       minMzScore, maxMzScore, minSampleCount, maxSampleCount,
                       foldScore, foldGroup1, foldGroup2, foldSelectGroup,
-                      groupFilterValues.length ? groupFilterValues : null, networkFilterValues, statsFIdGroups);
+                      groupFilterValues.length ? groupFilterValues : null,
+                      networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
 
         const currentBoxParams = getCurrentBoxParams();
@@ -72,7 +73,8 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
                                showOnlyAnnotationFeatures, showOnlyBlankFeatures,
                                minMzScore, maxMzScore, minSampleCount, maxSampleCount,
                                foldScore, foldGroup1, foldGroup2, foldSelectGroup,
-                               groupFilterValues ? groupFilterValues : null, networkFilterValues, statsFIdGroups);
+                               groupFilterValues ? groupFilterValues : null,
+                               networkFilterValues ? networkFilterValues : null, statsFIdGroups);
     }
 
     function enforceConstraints() {
@@ -140,10 +142,14 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
         const findFeature = sampleData.featureId?.[index];
         const sampleCount = sampleData.samples[index].length;
         const foldChanges = sampleData.fGroupData?.[index]?.[foldSelectGroup] ?? [];
-        const featureGroups = Object(statsFIdGroups)?.[findFeature] ?? []
+        const featureGroups = Object(statsFIdGroups)?.[findFeature] ?? [];
+        const networkFIds = sampleData.fNetwork?.[index] ?? [];
 
-        const groupFilterValid = groupFilterValues ? groupFilterValues.some(value => featureGroups.includes(value)) : true;
 
+        const groupFilterValid = groupFilterValues ? groupFilterValues.some(value => featureGroups.includes(value)) : false;
+
+        const networkFilterValid = networkFilterValues ? networkFIds.some(id => networkFilterValues.some(value =>
+            statsFIdGroups[id] && statsFIdGroups[id].includes(value))) : false;
 
         // Check fold change conditions
         let foldValid = !foldScore || !foldGroup1 || !foldGroup2 || !foldSelectGroup;
@@ -159,7 +165,7 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
             }
         }
 
-        if (score >= minScore && score <= maxScore &&
+        if (score >= minScore && score <= maxScore && foldValid && groupFilterValid && networkFilterValid &&
             (!showOnlyPhenotypeFeatures || (phenotypeScore !== null &&
             phenotypeScore >= minPhenotypeScore && phenotypeScore <= maxPhenotypeScore)) &&
             (!showOnlyMatchFeatures || (matchScore !== null &&
@@ -168,8 +174,7 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
             (!showOnlyBlankFeatures || (blanks !== true)) &&
             (!findFeatureId || (findFeatureId === findFeature)) &&
             (!maxMzScore || (mz >= minMzScore && mz <= maxMzScore)) &&
-            (!maxSampleCount || (sampleCount >= minSampleCount && sampleCount <= maxSampleCount)) &&
-            foldValid && groupFilterValid
+            (!maxSampleCount || (sampleCount >= minSampleCount && sampleCount <= maxSampleCount))
             ) {
             return count + 1;
         }
@@ -235,10 +240,21 @@ export function populateDropdown(statsGroups) {
     multiSelectGroup.innerHTML = '';
     multiSelectNetwork.innerHTML = '';
 
+    // Add deselect option to network select
+    const deselectOptionNetwork = document.createElement('option');
+    deselectOptionNetwork.value = '';
+    deselectOptionNetwork.textContent = 'Select group';
+    multiSelectNetwork.appendChild(deselectOptionNetwork);
+
+    const deselectOptionGroup = document.createElement('option');
+    deselectOptionGroup.value = '';
+    deselectOptionGroup.textContent = 'Select group';
+    multiSelectGroup.appendChild(deselectOptionGroup);
+
     // Add "blanks" option to network select
     const blanksOption = document.createElement('option');
     blanksOption.value = 'blanks';
-    blanksOption.textContent = 'blanks';
+    blanksOption.textContent = 'Blanks';
     multiSelectNetwork.appendChild(blanksOption);
 
     Object.keys(statsGroups).forEach(groupKey => {
@@ -268,5 +284,22 @@ export function populateDropdown(statsGroups) {
             optionNetwork.textContent = value;
             multiSelectNetwork.appendChild(optionNetwork);
         });
+    });
+
+    // Event listeners for deselecting all options
+    multiSelectGroup.addEventListener('change', function(event) {
+        if (event.target.value === '') {
+            Array.from(multiSelectGroup.options).forEach(option => {
+                option.selected = false;
+            });
+        }
+    });
+
+    multiSelectNetwork.addEventListener('change', function(event) {
+        if (event.target.value === '') {
+            Array.from(multiSelectNetwork.options).forEach(option => {
+                option.selected = false;
+            });
+        }
     });
 }

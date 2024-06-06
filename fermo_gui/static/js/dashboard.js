@@ -172,7 +172,8 @@ document.addEventListener('DOMContentLoaded', function() {
                       showOnlyAnnotationFeatures, showOnlyBlankFeatures,
                       minMzScore, maxMzScore, minSampleCount, maxSampleCount,
                       foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup,
-                      groupFilterValues.length ? groupFilterValues : null, networkFilterValues, statsFIdGroups);
+                      groupFilterValues.length ? groupFilterValues : null,
+                      networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
 
         if (currentBoxParams) {
@@ -185,7 +186,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                showOnlyAnnotationFeatures, showOnlyBlankFeatures,
                                minMzScore, maxMzScore, minSampleCount, maxSampleCount,
                                foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup,
-                               groupFilterValues.length ? groupFilterValues : null, networkFilterValues, statsFIdGroups);
+                               groupFilterValues.length ? groupFilterValues : null,
+                               networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
     }
 
     function updateRetainedFeatures(minScore, maxScore, findFeatureId,
@@ -204,7 +206,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 showAnnotationFeatures, showBlankFeatures,
                 minMzScore, maxMzScore, minSampleScore, maxSampleScore,
                 foldScore, foldGroup1, foldGroup2, foldSelectGroup,
-                groupFilterValues, networkFilterValues, statsFIdGroups);
+                groupFilterValues ? groupFilterValues : null,
+                networkFilterValues ? networkFilterValues : null, statsFIdGroups);
             row.children[2].textContent = featuresWithinRange;
         });
     }

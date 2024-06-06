@@ -24,7 +24,8 @@ export function visualizeData(sampleData,
         mz: sampleData.precMz[i],
         sampleCount: sampleData.samples?.[i].length ?? null,
         foldChange: sampleData.fGroupData?.[i]?.[foldSelectGroup] ?? [],
-        featureGroups: Object(statsFIdGroups)?.[sampleData.featureId[i]] ?? []
+        featureGroups: Object(statsFIdGroups)?.[sampleData.featureId[i]] ?? [],
+        networkFIds: sampleData.fNetwork?.[i] ?? []
     })).sort((a, b) => b.maxPeak - a.maxPeak);
 
     combinedData.forEach(dataItem => {
@@ -64,6 +65,9 @@ export function visualizeData(sampleData,
 
         const groupFilterValid = groupFilterValues ? groupFilterValues.some(value => dataItem.featureGroups.includes(value)) : true;
 
+        const networkFilterValid = networkFilterValues ? !dataItem.networkFIds.some(id => networkFilterValues.some(value =>
+            statsFIdGroups[id] && statsFIdGroups[id].includes(value))) : true;
+
         if (!isFeatureVisualization &&
             ((dataItem.novScore < minScore || dataItem.novScore > maxScore) ||
             (showOnlyPhenotypeFeatures && (dataItem.phenotypeScore === null ||
@@ -75,7 +79,7 @@ export function visualizeData(sampleData,
             (findFeatureId && (dataItem.featureId !== findFeatureId)) ||
             (maxMzScore && (dataItem.mz < minMzScore || dataItem.mz > maxMzScore)) ||
             (maxSampleScore && (dataItem.sampleCount < minSampleScore || dataItem.sampleCount > maxSampleScore)) ||
-            !foldValid || !groupFilterValid
+            !foldValid || !groupFilterValid || !networkFilterValid
             )) {
             result.line.color = 'rgba(212, 212, 212, 0.8)';
             result.fillcolor = 'rgba(212, 212, 212, 0.3)';
