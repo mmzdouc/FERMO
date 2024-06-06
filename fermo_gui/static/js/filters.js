@@ -146,8 +146,14 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
         const networkFIds = sampleData.fNetwork?.[index] ?? [];
 
         const groupFilterValid = groupFilterValues ? groupFilterValues.some(value => featureGroups.includes(value)) : true;
-        const networkFilterValid = networkFilterValues ? !networkFIds.some(id => networkFilterValues.some(value =>
-            statsFIdGroups[id] && statsFIdGroups[id].includes(value))) : true;
+        const featureIdToBlankId = Object.fromEntries(
+            sampleData.featureId.map((id, index) => [id, sampleData.blankAs?.[index]])
+        );
+        const networkFilterValid = networkFilterValues ? (networkFIds.length > 0 && !networkFIds.some(id =>
+            networkFilterValues.some(value =>
+                (value === "blanks" && featureIdToBlankId[id] === true) ||
+                (statsFIdGroups[id] && statsFIdGroups[id].includes(value))
+            ))) : true;
 
         let foldValid = !foldScore || !foldGroup1 || !foldGroup2 || !foldSelectGroup;
         if (!foldValid) {

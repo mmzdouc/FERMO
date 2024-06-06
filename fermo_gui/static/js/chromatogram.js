@@ -65,8 +65,15 @@ export function visualizeData(sampleData,
 
         const groupFilterValid = groupFilterValues ? groupFilterValues.some(value => dataItem.featureGroups.includes(value)) : true;
 
-        const networkFilterValid = networkFilterValues ? !dataItem.networkFIds.some(id => networkFilterValues.some(value =>
-            statsFIdGroups[id] && statsFIdGroups[id].includes(value))) : true;
+        const featureIdToBlankId = Object.fromEntries(
+            sampleData.featureId.map((id, index) => [id, sampleData.blankAs?.[index]])
+        );
+        const networkFilterValid = networkFilterValues ? (dataItem.networkFIds.length > 0
+        && !dataItem.networkFIds.some(id =>
+            networkFilterValues.some(value =>
+                (value === "blanks" && featureIdToBlankId[id] === true) ||
+                (statsFIdGroups[id] && statsFIdGroups[id].includes(value))
+            ))) : true;
 
         if (!isFeatureVisualization &&
             ((dataItem.novScore < minScore || dataItem.novScore > maxScore) ||
