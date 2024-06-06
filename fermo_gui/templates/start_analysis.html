@@ -157,7 +157,8 @@
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
                 <div class="col-auto"><h4>MS/MS Filter Module {{ render_help("https://mmzdouc.github.io/fermo_docs/modules/filter.msms/") }}</h4></div>
-                <div class="col-auto ms-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.msms-relintfrom')">Show module settings</button></div>
+                <div class="col-auto ms-auto">{{ render_activate_toggle(form.msms_filter_toggle) }}</div>
+                <div class="col-auto"><button class="btn btn-primary btn-sm" type="button" onclick="toggleDisplay('.msms-relintfrom')">Show module settings</button></div>
               </div>
             </div>
             <hr>

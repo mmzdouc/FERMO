@@ -313,8 +313,14 @@ class InputProcessor(BaseModel):
         self.params["files"]["msms"] = {
             "filepath": str(f_path.resolve()),
             "format": str(self.form.msms_format.data),
-            "rel_int_from": float(self.form.msms_rel_int_from.data),
         }
+
+        if self.form.msms_filter_toggle.data:
+            self.params["files"]["msms"]["rel_int_from"] = float(
+                self.form.msms_rel_int_from.data
+            )
+        else:
+            self.params["files"]["msms"]["rel_int_from"] = 0.0
 
         self.check_key_in_params("core_modules")
         self.params["core_modules"]["fragment_annotation"] = {

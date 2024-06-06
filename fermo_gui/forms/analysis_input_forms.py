@@ -144,6 +144,10 @@ class MsmsForm:
         validators=[Optional()],
         choices=[("mgf", "mgf")],
     )
+    msms_filter_toggle = BooleanField(
+        label="Activate Module",
+        description="Activate MS/MS fragment filter module.",
+    )
     msms_rel_int_from = DecimalField(
         label="Filter",
         description=(
@@ -583,6 +587,11 @@ class AnalysisForm(
             "msms_rel_int_from": pars.get("files", {})
             .get("msms", {})
             .get("rel_int_from", 0.01),
+            "msms_filter_toggle": (
+                True
+                if pars.get("files", {}).get("msms", {}).get("rel_int_from", 0.01) > 0.0
+                else False
+            ),
             "msms_fragment_toggle": pars.get("core_modules", {})
             .get("fragment_annotation", {})
             .get("activate_module", True),
