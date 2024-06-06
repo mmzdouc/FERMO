@@ -569,13 +569,13 @@ class AnalysisForm(
             .get("activate_module", False),
             "peaktable_filter_height_lower": pars.get("additional_modules", {})
             .get("feature_filtering", {})
-            .get("filter_rel_int_range_min", 0.0),
+            .get("filter_rel_int_range_min", 0.01),
             "peaktable_filter_height_upper": pars.get("additional_modules", {})
             .get("feature_filtering", {})
             .get("filter_rel_int_range_max", 1.0),
             "peaktable_filter_area_lower": pars.get("additional_modules", {})
             .get("feature_filtering", {})
-            .get("filter_rel_area_range_min", 0.0),
+            .get("filter_rel_area_range_min", 0.01),
             "peaktable_filter_area_upper": pars.get("additional_modules", {})
             .get("feature_filtering", {})
             .get("filter_rel_int_range_max", 1.0),
