@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
         visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
         currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
+        updateRange();
     }
 
     function toggleDropdown(containerId) {
@@ -206,8 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 showAnnotationFeatures, showBlankFeatures,
                 minMzScore, maxMzScore, minSampleScore, maxSampleScore,
                 foldScore, foldGroup1, foldGroup2, foldSelectGroup,
-                groupFilterValues ? groupFilterValues : null,
-                networkFilterValues ? networkFilterValues : null, statsFIdGroups);
+                groupFilterValues, networkFilterValues, statsFIdGroups);
             row.children[2].textContent = featuresWithinRange;
         });
     }

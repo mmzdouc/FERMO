@@ -73,8 +73,8 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
                                showOnlyAnnotationFeatures, showOnlyBlankFeatures,
                                minMzScore, maxMzScore, minSampleCount, maxSampleCount,
                                foldScore, foldGroup1, foldGroup2, foldSelectGroup,
-                               groupFilterValues ? groupFilterValues : null,
-                               networkFilterValues ? networkFilterValues : null, statsFIdGroups);
+                               groupFilterValues.length ? groupFilterValues : null,
+                               networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
     }
 
     function enforceConstraints() {
@@ -145,13 +145,10 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
         const featureGroups = Object(statsFIdGroups)?.[findFeature] ?? [];
         const networkFIds = sampleData.fNetwork?.[index] ?? [];
 
+        const groupFilterValid = groupFilterValues ? groupFilterValues.some(value => featureGroups.includes(value)) : true;
+        const networkFilterValid = networkFilterValues ? !networkFIds.some(id => networkFilterValues.some(value =>
+            statsFIdGroups[id] && statsFIdGroups[id].includes(value))) : true;
 
-        const groupFilterValid = groupFilterValues ? groupFilterValues.some(value => featureGroups.includes(value)) : false;
-
-        const networkFilterValid = networkFilterValues ? networkFIds.some(id => networkFilterValues.some(value =>
-            statsFIdGroups[id] && statsFIdGroups[id].includes(value))) : false;
-
-        // Check fold change conditions
         let foldValid = !foldScore || !foldGroup1 || !foldGroup2 || !foldSelectGroup;
         if (!foldValid) {
             for (const foldChange of foldChanges) {
@@ -165,16 +162,15 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
             }
         }
 
-        if (score >= minScore && score <= maxScore && foldValid && groupFilterValid && networkFilterValid &&
-            (!showOnlyPhenotypeFeatures || (phenotypeScore !== null &&
-            phenotypeScore >= minPhenotypeScore && phenotypeScore <= maxPhenotypeScore)) &&
-            (!showOnlyMatchFeatures || (matchScore !== null &&
-            matchScore >= minMatchScore && matchScore <= maxMatchScore)) &&
+        if ((score >= minScore && score <= maxScore) &&
+            (!showOnlyPhenotypeFeatures || (phenotypeScore !== null && phenotypeScore >= minPhenotypeScore && phenotypeScore <= maxPhenotypeScore)) &&
+            (!showOnlyMatchFeatures || (matchScore !== null && matchScore >= minMatchScore && matchScore <= maxMatchScore)) &&
             (!showOnlyAnnotationFeatures || (annotation !== null)) &&
             (!showOnlyBlankFeatures || (blanks !== true)) &&
             (!findFeatureId || (findFeatureId === findFeature)) &&
             (!maxMzScore || (mz >= minMzScore && mz <= maxMzScore)) &&
             (!maxSampleCount || (sampleCount >= minSampleCount && sampleCount <= maxSampleCount))
+            && foldValid && groupFilterValid && networkFilterValid
             ) {
             return count + 1;
         }
