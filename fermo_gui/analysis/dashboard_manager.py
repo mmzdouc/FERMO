@@ -1,6 +1,6 @@
-"""Manages dashboard data loading and filtering functionality
+"""Manages dashboard data loading
 
-Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
+Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD & Hannah Esther Augustijn, MSc
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
