@@ -71,52 +71,16 @@
     {% block footer %}
       <footer class="container-fluid bg-light text-muted py-3 border-top">
         <div class="row">
-          <div class="col-md-8">
-            <div class="d-flex flex-column h-100">
+          <div class="col-md-12">
+            <div class="d-flex flex-column h-100 text-center">
               <div class="mt-auto px-5">
-                <h6 class="text-uppercase fw-bold mb-1">Fermo Dashboard</h6>
-                <p class="mb-0">Version {{version}}</p>
+                <h6 class="text-uppercase fw-bold mb-1">Fermo v{{version}}</h6>
                 <p class="mb-0">
-                  © 2022 - Present Mitja M. Zdouc et al. under the
-                  <a rel="license"
-                     href="https://opensource.org/license/mit/"
-                     class="text-decoration-none p-2" style="color: #116789" target="_blank">MIT License.</a>
+                  <p>If you have find this software useful, please
+                <a rel="cite"
+                     href="https://doi.org/10.1101/2022.12.21.521422"
+                     class="text-decoration-none" style="color: #116789" target="_blank">cite us.</a></p>
                 </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-xs-12 col-sm-12 col-md-4 text-md-end px-5">
-            <div class="container-fluid">
-              <div class="row">
-                <div class="col-xs-3 col-sm-3 col-md-3">
-                  <a href="https://www.wur.nl/en/persons/marnix-medema.htm" target="_blank">
-                    <img src="{{ url_for('static', filename='images/Medema_logo.svg') }}"
-                         alt="Medema lab Logo"
-                         class="img-fluid d-inline-block custom-footer-image"/>
-                  </a>
-                </div>
-                <div class="col-xs-3 col-sm-3 col-md-3">
-                  <a href="https://vdhooftcompmet.github.io/" target="_blank">
-                    <img src="{{ url_for('static', filename='images/vdh_logo.svg') }}"
-                         alt="Van der Hooft Computational Metabolomics Group Logo"
-                         class="img-fluid d-inline-block custom-footer-image"/>
-                  </a>
-                </div>
-                <div class="col-xs-3 col-sm-3 col-md-3">
-                  <a href="https://www.wur.nl/en/research-results/chair-groups/plant-sciences/bioinformatics/people.htm"
-                     target="_blank">
-                    <img src="{{ url_for('static', filename='images/WUR_logo.png') }}"
-                         alt="Wageningen University and Research Logo"
-                         class="img-fluid d-inline-block custom-footer-image"/>
-                  </a>
-                </div>
-                <div class="col-xs-3 col-sm-3 col-md-3">
-                  <a href="https://marblesproject.eu/" target="_blank">
-                    <img src="{{ url_for('static', filename='images/Marbles_logo.svg') }}"
-                         alt="MARBLES EU Logo"
-                         class="img-fluid d-inline-block custom-footer-image"/>
-                  </a>
-                </div>
               </div>
             </div>
           </div>
