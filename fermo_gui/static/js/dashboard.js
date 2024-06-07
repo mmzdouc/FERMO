@@ -1,134 +1,106 @@
 import { getSampleData, getFeatureData } from './parsing.js';
 import { updateFeatureTables, hideTables } from './dynamic_tables.js';
-import { visualizeData } from './chromatogram.js';
+import { visualizeData, addBoxVisualization } from './chromatogram.js';
 import { visualizeNetwork, hideNetwork } from './network.js';
+import { enableDragAndDrop, disableDragAndDrop } from './dragdrop.js';
+import { initializeFilters, getFeaturesWithinRange, getFilterGroupSelectionFields, populateDropdown } from './filters.js';
 
 document.addEventListener('DOMContentLoaded', function() {
-    var dragged;
+    let dragged;
+    let currentBoxParams = null;
+    let sampleData;
+    let statsChromatogram;
+    let statsNetwork;
+    let statsGroups;
 
-    // Drag and Drop functionality
-    document.addEventListener("drag", function(event) {}, false);
+    const getCurrentBoxParams = () => currentBoxParams;
 
-    document.addEventListener("dragstart", function(event) {
-        dragged = event.target;
-        // make it half transparent
-        event.target.style.opacity = .5;
-        event.dataTransfer.setData("draggedAccId", event.target.id);
-        setTimeout(() => event.target.classList.toggle("hidden"));
-        // change dropzone background when hovering
-        if (event.target.classList.contains("dropzone")) {
-            event.target.style.background = "#a3a3a3";
-        }
-        // highlight dropzones
-        document.querySelectorAll('.dropzone').forEach(function(dropzone) {
-            dropzone.classList.add('dropzone-dragging');
-        });
-    }, false);
+    const allowDragAndDropCheckbox = document.getElementById('allowDragAndDrop');
+    allowDragAndDropCheckbox.checked ? enableDragAndDrop() : disableDragAndDrop();
 
-    document.addEventListener("dragend", function(event) {
-        // reset the transparency
-        event.target.style.opacity = "";
-        // reset dropzone background
-        document.querySelectorAll('.dropzone').forEach(function(dropzone) {
-            dropzone.classList.remove('dropzone-dragging');
-        });
-    }, false);
+    allowDragAndDropCheckbox.addEventListener('change', function() {
+        this.checked ? enableDragAndDrop() : disableDragAndDrop();
+    });
 
-    document.addEventListener("dragover", function(event) {
-        // prevent default to allow drop
-        event.preventDefault();
-    }, false);
+    const chromatogramElement = document.getElementById('mainChromatogram');
+    const networkElement = document.getElementById('cy');
+    const groupElement = document.getElementById('groupInfo');
+    const featureGroupElement = document.getElementById('statsFIdGroups');
+    statsChromatogram = JSON.parse(chromatogramElement.getAttribute('data-stats-chromatogram'));
+    statsNetwork = JSON.parse(networkElement.getAttribute('data-stats-network'));
+    statsGroups = JSON.parse(groupElement.getAttribute('data-stats-groups'));
+    statsFIdGroups = JSON.parse(featureGroupElement.getAttribute('data-stats-fgroups'));
 
-    document.addEventListener("dragenter", function(event) {
-        // highlight potential drop target when the draggable element enters it
-        if (event.target.classList.contains("dropzone")) {
-            event.target.style.background = "#a3a3a3";
-        }
-    }, false);
-
-    document.addEventListener("dragleave", function(event) {
-        // reset background of potential drop target when the draggable element leaves it
-        if (event.target.classList.contains("dropzone")) {
-            event.target.style.background = "";
-        }
-    }, false);
-
-    document.addEventListener("drop", function(event) {
-        event.preventDefault();
-
-        // move dragged elem to the selected drop target
-        if (event.target.classList.contains("dropzone")) {
-            event.target.style.background = "";
-
-            // Get the ID of the dragged accordion from the data transfer object
-            const draggedAccId = event.dataTransfer.getData("draggedAccId");
-            const draggedAcc = document.getElementById(draggedAccId);
-            const fromContainer = draggedAcc.parentNode;
-            const toContainer = event.target;
-
-            // Check if the drop zone is already occupied, if so swap containers, if not append
-            if (toContainer !== fromContainer) {
-                const existingAcc = toContainer.firstElementChild;
-                if (existingAcc) {
-                    fromContainer.appendChild(existingAcc);
-                }
-                toContainer.appendChild(draggedAcc);
-            } else {
-                toContainer.appendChild(draggedAcc);
-            }
-        }
-    }, false);
-
-    // Load all data
-    var chromatogramElement = document.getElementById('mainChromatogram');
-    var networkElement = document.getElementById('cy');
-    var statsChromatogram = JSON.parse(chromatogramElement.getAttribute('data-stats-chromatogram'));
-    var statsNetwork = JSON.parse(networkElement.getAttribute('data-stats-network'));
-
-    var firstSample = document.querySelector('.select-sample');
+    const firstSample = document.querySelector('.select-sample');
     if (firstSample) {
-        var firstSampleName = firstSample.getAttribute('data-sample-name');
-        var sampleData = getSampleData(firstSampleName, statsChromatogram);
-        visualizeData(sampleData, false);
-        document.getElementById('activeSample').textContent = 'Sample: ' + firstSampleName;
+        const firstSampleName = firstSample.getAttribute('data-sample-name');
+        sampleData = getSampleData(firstSampleName, statsChromatogram);
+        document.getElementById('activeSample').textContent = `Sample: ${firstSampleName}`;
 
-        let networkType = 'modified_cosine';
-        let sampleId = null;
+        const networkType = 'modified_cosine';
 
-        // Update the feature table on chromatogram click
+        getFilterGroupSelectionFields(statsGroups)
+        populateDropdown(statsGroups)
+
+        Plotly.newPlot(chromatogramElement, []);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
-        // Add event listener for network type selection
         document.getElementById('networkSelect').addEventListener('change', handleNetworkTypeChange);
+        document.getElementById('showBlankFeatures').addEventListener('change', updateRange);
+        document.getElementById('findInput').addEventListener('input', updateRange);
+        document.getElementById('mz2Input').addEventListener('input', updateRange);
+        document.getElementById('sample2Input').addEventListener('input', updateRange);
+        document.getElementById('foldInput').addEventListener('input', updateRange);
+        document.getElementById('group1FoldInput').addEventListener('input', updateRange);
+        document.getElementById('group2FoldInput').addEventListener('input', updateRange);
+        document.getElementById('selectFoldInput').addEventListener('change', updateRange);
+        document.getElementById('groupFilter').addEventListener('change', updateRange);
+        document.getElementById('networkFilter').addEventListener('change', updateRange);
+        document.getElementById('showAnnotationFeatures').addEventListener('change', function() {
+            const isChecked = this.checked;
+            updateRange();
+            document.querySelectorAll('.annotation-related').forEach(container => {
+                container.style.display = isChecked ? 'block' : 'none';
+            });
+        });
+
+        updateRange();
     }
 
-    // Handle chromatogram click event
     function handleChromatogramClick(data) {
-        var networkType = document.getElementById('networkSelect').value;
-        var featureId = data.points[0].data.name;
-        var filteredSampleData = getFeatureData(featureId, sampleData);
-        var sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
+        const networkType = document.getElementById('networkSelect').value;
+        const featureId = data.points[0].data.name;
+        const filteredSampleData = getFeatureData(featureId, sampleData);
+        const sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
         visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
+        currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
+        addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
     }
 
-    // Handle network type selection change event
     function handleNetworkTypeChange() {
-        var networkType = document.getElementById('networkSelect').value;
-        var featureId = document.getElementById('activeFeature').textContent.split(': ')[1];
-        var filteredSampleData = getFeatureData(featureId, sampleData);
-        var sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
+        const networkType = document.getElementById('networkSelect').value;
+        const featureId = document.getElementById('activeFeature').textContent.split(': ')[1];
+        const filteredSampleData = getFeatureData(featureId, sampleData);
+        const sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
         visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
+        currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
+        updateRange();
     }
 
-    // Activate the clicked sample of the 'Sample overview'
-    var rows = document.querySelectorAll('.select-sample');
-    rows.forEach(function(row) {
+    function toggleDropdown(containerId) {
+        const dropdownContainer = document.getElementById(containerId);
+        dropdownContainer.style.display = (dropdownContainer.style.display === "none" || dropdownContainer.style.display === "") ? "block" : "none";
+    }
+
+    document.getElementById('groupButton').addEventListener('click', () => toggleDropdown('dropdownGroupContainer'));
+    document.getElementById('networkExcludeButton').addEventListener('click', () => toggleDropdown('dropdownNetworkContainer'));
+
+    document.querySelectorAll('.select-sample').forEach(row => {
         row.addEventListener('click', function() {
-            var sampleName = this.getAttribute('data-sample-name');
+            const sampleName = this.getAttribute('data-sample-name');
             sampleData = getSampleData(sampleName, statsChromatogram);
-            visualizeData(sampleData, false);
             hideNetwork();
             hideTables();
-            document.getElementById('activeSample').textContent = 'Sample: ' + sampleName;
+            document.getElementById('activeSample').textContent = `Sample: ${sampleName}`;
             Plotly.purge('featureChromatogram');
             document.getElementById('feature-general-info').textContent =
             'Click on any feature in the main chromatogram overview.';
@@ -138,18 +110,108 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById("sampleCell").innerHTML =
             "<tr><td>Click on any feature in the main chromatogram overview.</td><td></td></tr>";
 
-            let networkType = 'modified_cosine';
-            let sampleId = null;
+            const networkType = 'modified_cosine';
+            currentBoxParams = null;
 
-            // Remove previous Plotly click event listeners
             chromatogramElement.removeAllListeners('plotly_click');
-
-            // Attach event listeners again
             chromatogramElement.on('plotly_click', handleChromatogramClick);
             document.getElementById('networkSelect').removeEventListener('change', handleNetworkTypeChange);
             document.getElementById('networkSelect').addEventListener('change', handleNetworkTypeChange);
+            document.getElementById('showAnnotationFeatures').addEventListener('change', updateRange);
+            document.getElementById('showBlankFeatures').addEventListener('change', updateRange);
+            document.getElementById('showBlankFeatures').addEventListener('input', updateRange);
+            document.getElementById('mz2Input').addEventListener('input', updateRange);
+            document.getElementById('sample2Input').addEventListener('input', updateRange);
+            document.getElementById('foldInput').addEventListener('input', updateRange);
+            document.getElementById('group1FoldInput').addEventListener('input', updateRange);
+            document.getElementById('group2FoldInput').addEventListener('input', updateRange);
+            document.getElementById('selectFoldInput').addEventListener('change', updateRange);
+            document.getElementById('groupFilter').addEventListener('change', updateRange);
+            document.getElementById('networkFilter').addEventListener('change', updateRange);
+
+            initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures,
+                sampleData, chromatogramElement, getCurrentBoxParams);
+
+            updateRange();
         });
     });
 
+    function updateRange() {
+        const minScore = parseFloat(document.getElementById('noveltyRange1').value);
+        const maxScore = parseFloat(document.getElementById('noveltyRange2').value);
+        const minPhenotypeScore = parseFloat(document.getElementById('phenotypeRange1').value);
+        const maxPhenotypeScore = parseFloat(document.getElementById('phenotypeRange2').value);
+        const showOnlyPhenotypeFeatures = document.getElementById('showPhenotypeFeatures').checked;
+        const minMatchScore = parseFloat(document.getElementById('matchRange1').value);
+        const maxMatchScore = parseFloat(document.getElementById('matchRange2').value);
+        const showOnlyMatchFeatures = document.getElementById('showMatchFeatures').checked;
+        const showOnlyAnnotationFeatures = document.getElementById('showAnnotationFeatures').checked;
+        const showOnlyBlankFeatures = document.getElementById('showBlankFeatures').checked;
+        const findFeatureId = parseFloat(document.getElementById('findInput').value);
+        const minMzScore = parseFloat(document.getElementById('mz1Input').value);
+        const maxMzScore = parseFloat(document.getElementById('mz2Input').value);
+        const minSampleCount = parseFloat(document.getElementById('sample1Input').value);
+        const maxSampleCount = parseFloat(document.getElementById('sample2Input').value);
+        const foldScore = parseFloat(document.getElementById('foldInput').value);
+        const foldGroup1 = document.getElementById('group1FoldInput').value;
+        const foldGroup2 = document.getElementById('group2FoldInput').value;
+        const foldSelectGroup = document.getElementById('selectFoldInput').value;
 
+        const groupFilterSelect = document.getElementById('groupFilter');
+        const networkFilterSelect = document.getElementById('networkFilter');
+
+        const groupFilterValues = Array.from(groupFilterSelect.selectedOptions).map(option => option.value);
+        const networkFilterValues = Array.from(networkFilterSelect.selectedOptions).map(option => option.value);
+
+
+        // Check if all fold score inputs are filled
+        const foldScoreInputsFilled = foldScore && foldGroup1 && foldGroup2 && foldSelectGroup;
+
+        visualizeData(sampleData, false, minScore, maxScore, findFeatureId,
+                      minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
+                      minMatchScore, maxMatchScore, showOnlyMatchFeatures,
+                      showOnlyAnnotationFeatures, showOnlyBlankFeatures,
+                      minMzScore, maxMzScore, minSampleCount, maxSampleCount,
+                      foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup,
+                      groupFilterValues.length ? groupFilterValues : null,
+                      networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
+        chromatogramElement.on('plotly_click', handleChromatogramClick);
+
+        if (currentBoxParams) {
+            addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
+        }
+
+        updateRetainedFeatures(minScore, maxScore, findFeatureId,
+                               minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
+                               minMatchScore, maxMatchScore, showOnlyMatchFeatures,
+                               showOnlyAnnotationFeatures, showOnlyBlankFeatures,
+                               minMzScore, maxMzScore, minSampleCount, maxSampleCount,
+                               foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup,
+                               groupFilterValues.length ? groupFilterValues : null,
+                               networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
+    }
+
+    function updateRetainedFeatures(minScore, maxScore, findFeatureId,
+                                    minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
+                                    minMatchRange, maxMatchRange, showOnlyMatchFeatures,
+                                    showAnnotationFeatures, showBlankFeatures,
+                                    minMzScore, maxMzScore, minSampleScore, maxSampleScore,
+                                    foldScore, foldGroup1, foldGroup2, foldSelectGroup,
+                                    groupFilterValues, networkFilterValues, statsFIdGroups) {
+        document.querySelectorAll('.select-sample').forEach(row => {
+            const sampleName = row.getAttribute('data-sample-name');
+            const sampleData = getSampleData(sampleName, statsChromatogram);
+            const featuresWithinRange = getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatureId,
+                minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
+                minMatchRange, maxMatchRange, showOnlyMatchFeatures,
+                showAnnotationFeatures, showBlankFeatures,
+                minMzScore, maxMzScore, minSampleScore, maxSampleScore,
+                foldScore, foldGroup1, foldGroup2, foldSelectGroup,
+                groupFilterValues, networkFilterValues, statsFIdGroups);
+            row.children[2].textContent = featuresWithinRange;
+        });
+    }
+
+    initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures,
+        sampleData, chromatogramElement, getCurrentBoxParams);
 });

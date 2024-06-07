@@ -4,140 +4,110 @@ import { updateFeatureTables } from './dynamic_tables.js';
 export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType) {
     const cos_id = sampleData.idNetCos[sampleId];
     const ms_id = sampleData.idNetMs[sampleId];
-    const networkId = (networkType === 'modified_cosine') ? cos_id : ms_id;
+    const networkId = networkType === 'modified_cosine' ? cos_id : ms_id;
 
     const filteredFeatureIds = filteredSampleData.featureId.filter(id => id.toString() !== fId);
-    let networkData = statsNetwork[networkType][networkId].elements;
+    const networkData = statsNetwork[networkType][networkId].elements;
     const uniqueNIds = networkData.nodes.map(node => node.data.id);
     const uniqueFIds = getUniqueFeatureIds(statsChromatogram);
     const featureDetails = getFeatureDetails(uniqueNIds, statsChromatogram);
 
-    var cy = cytoscape({
+    const cy = cytoscape({
         container: document.getElementById('cy'),
         elements: networkData,
-        layout: {
-            name: 'cose',
-            rows: 1
-        },
-
-        style: [
-            {
-                selector: 'node',
-                style: {
-                    "background-color": "#b2b6b9",
-                    color: "white",
-                    "border-color": "white",
-                    "border-width": 4
-                }
-            },
-            {
-                selector: 'edge',
-                style: {
-                    "curve-style": "bezier",
-                    "width": "mapData(weight, 0.5, 1, 1, 10)"
-                }
-            },
-            {
-                selector: 'node[id = "' + fId + '"]',
-                style: {
-                    "background-color": "#f4aaa7",
-                    "border-color": "#960303",
-                    "border-width": 4
-                }
-            },
-            {
-                selector: filteredFeatureIds.map(id => 'node[id = "' + id + '"]').join(', '),
-                style: {
-                    "background-color": "#c6dcfb",
-                    "border-color": "#227aa0",
-                    "border-width": 4
-                }
-            },
-            {
-                selector: uniqueFIds.map(id => 'node[id = "' + id + '"]').join(', '),
-                style: {
-                    "border-color": "#000",
-                    "border-width": 4
-                }
-            },
-            {
-                selector: 'edge:selected',
-                style: {
-                    'line-color': '#F08080',
-                    "target-arrow-color": "#F08080",
-                }
-            },
-        ],
+        layout: { name: 'cose', rows: 1 },
+        style: getCyStyles(fId, filteredFeatureIds, uniqueFIds)
     });
 
-    var tooltip = document.createElement('div');
+    const tooltip = createTooltip();
+    setupCyEvents(cy, tooltip, featureDetails, sampleData, fId, statsNetwork, statsChromatogram, networkType);
+    showNetwork();
+}
+
+function getCyStyles(fId, filteredFeatureIds, uniqueFIds) {
+    return [
+        { selector: 'node', style: baseNodeStyle("#b2b6b9", "white") },
+        { selector: 'edge', style: { "curve-style": "bezier", "width": "mapData(weight, 0.5, 1, 1, 10)" } },
+        { selector: `node[id = "${fId}"]`, style: baseNodeStyle("#f4aaa7", "#960303") },
+        { selector: filteredFeatureIds.map(id => `node[id = "${id}"]`).join(', '), style: baseNodeStyle("#c6dcfb", "#227aa0") },
+        { selector: uniqueFIds.map(id => `node[id = "${id}"]`).join(', '), style: { "border-color": "#000", "border-width": 4 } },
+        { selector: 'edge:selected', style: { 'line-color': '#F08080', "target-arrow-color": "#F08080" } }
+    ];
+}
+
+function baseNodeStyle(bgColor, borderColor) {
+    return { "background-color": bgColor, "border-color": borderColor, "border-width": 4, color: "white" };
+}
+
+function createTooltip() {
+    const tooltip = document.createElement('div');
     tooltip.id = 'tooltip';
     document.body.appendChild(tooltip);
+    return tooltip;
+}
 
-    // Show tooltip on mouseover
-    cy.on('mouseover', 'node', function (event) {
-        var node = event.target;
-        var featureId = node.id();
-        var featureDetail = featureDetails.find(feature => feature.f_id.toString() === featureId);
+function setupCyEvents(cy, tooltip, featureDetails, sampleData, fId, statsNetwork, statsChromatogram, networkType) {
+    cy.on('mouseover', 'node', event => showNodeTooltip(event.target, featureDetails, tooltip));
+    cy.on('mousemove', 'node', event => moveTooltip(event, tooltip));
+    cy.on('mouseout', 'node', () => hideTooltip(tooltip));
+    cy.on('mouseover', 'edge', event => showEdgeTooltip(event.target, featureDetails, tooltip));
+    cy.on('mousemove', 'edge', event => moveTooltip(event, tooltip));
+    cy.on('mouseout', 'edge', () => hideTooltip(tooltip));
 
-        tooltip.innerHTML =
-            'Feature ID: ' + node.id() + '<br>' +
-            'Precursor m/z: ' + featureDetail.mz + '<br>' +
-            'Average rt: ' + featureDetail.rt_avg + '<br>';
+    cy.on('select', 'node', event => handleNodeSelect(event.target, featureDetails, sampleData, fId, statsNetwork, statsChromatogram, networkType, tooltip));
+    document.getElementById('cy').addEventListener('mouseleave', () => hideTooltip(tooltip));
+}
+
+function showNodeTooltip(node, featureDetails, tooltip) {
+    const featureId = node.id();
+    const featureDetail = featureDetails.find(feature => feature.f_id.toString() === featureId);
+
+    if (featureDetail) {
+        tooltip.innerHTML = `Feature ID: ${featureId}<br>
+                             Precursor m/z: ${featureDetail.mz}<br>
+                             Average rt: ${featureDetail.rt_avg}<br>`;
         tooltip.style.display = 'block';
-    });
+    }
+}
 
-    cy.on('mousemove', 'node', function (event) {
-        tooltip.style.left = event.originalEvent.pageX + 10 + 'px';
-        tooltip.style.top = event.originalEvent.pageY + 10 + 'px';
-    });
+function showEdgeTooltip(edge, featureDetails, tooltip) {
+    const edgeWeight = edge.data('weight').toFixed(2);
+    const sourceId = edge.data('source').toString();
+    const targetId = edge.data('target').toString();
+    const sourceFeature = featureDetails.find(feature => feature.f_id.toString() === sourceId);
+    const targetFeature = featureDetails.find(feature => feature.f_id.toString() === targetId);
 
-    cy.on('mouseout', 'node', function () {
-        tooltip.style.display = 'none';
-    });
+    if (sourceFeature && targetFeature) {
+        const mzDifference = Math.abs(sourceFeature.mz - targetFeature.mz).toFixed(4);
+        tooltip.innerHTML = `Edge Weight: ${edgeWeight}<br>m/z Difference: ${mzDifference}<br>`;
+        tooltip.style.display = 'block';
+    }
+}
 
-    document.getElementById('cy').addEventListener('mouseleave', function () {
-        tooltip.style.display = 'none';
-    });
+function moveTooltip(event, tooltip) {
+    tooltip.style.left = event.originalEvent.pageX + 10 + 'px';
+    tooltip.style.top = event.originalEvent.pageY + 10 + 'px';
+}
 
-    cy.on('mouseover', 'edge', function (event) {
-        var edge = event.target;
-        var edgeWeight = edge.data('weight').toFixed(2);
+function hideTooltip(tooltip) {
+    tooltip.style.display = 'none';
+}
 
-        var sourceId = edge.data('source').toString();
-        var targetId = edge.data('target').toString();
+function handleNodeSelect(node, featureDetails, sampleData, fId, statsNetwork, statsChromatogram, networkType, tooltip) {
+    hideTooltip(tooltip);
+    const featureId = node.id();
+    const filteredSampleData = getFeatureData(featureId, sampleData);
 
-        var sourceFeature = featureDetails.find(feature => feature.f_id.toString() === sourceId);
-        var targetFeature = featureDetails.find(feature => feature.f_id.toString() === targetId);
-
-        if (sourceFeature && targetFeature) {
-            var mzDifference = Math.abs(sourceFeature.mz - targetFeature.mz).toFixed(4);
-
-            tooltip.innerHTML =
-                'Edge Weight: ' + edgeWeight + '<br>' +
-                'm/z Difference: ' + mzDifference + '<br>';
-            tooltip.style.display = 'block';
-        }
-    });
-
-    cy.on('mousemove', 'edge', function (event) {
-        tooltip.style.left = event.originalEvent.pageX + 10 + 'px';
-        tooltip.style.top = event.originalEvent.pageY + 10 + 'px';
-    });
-
-    cy.on('mouseout', 'edge', function () {
-        tooltip.style.display = 'none';
-    });
-
-    cy.on('select', 'node', function(event) {
-        tooltip.style.display = 'none';
-        var node = event.target;
-        var featureId = node.id();
-        var filteredSampleData = getFeatureData(featureId, sampleData);
-        sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
+    if (isEmpty(filteredSampleData)) {
+        alert('This feature is not found in this sample.');
+    } else {
+        const sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
         visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
-    });
-    showNetwork();
+    }
+}
+
+function isEmpty(data) {
+    return Object.values(data).every(array => Array.isArray(array) && array.length === 0);
 }
 
 function showNetwork() {

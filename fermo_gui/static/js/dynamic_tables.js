@@ -10,7 +10,7 @@ export function updateFeatureTables(featureId, sampleData, filteredSampleData) {
             document.getElementById('activeFeature').textContent =
             'Network visualization of feature: ' + featureId;
             addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
-            visualizeData(filteredSampleData, true);
+            visualizeData(filteredSampleData, true, 0, 1);
             updateTableWithFeatureData(i, sampleData);
             updateTableWithGroupData(sampleData.fGroupData[i]);
             updateTableWithSampleData(sampleData.fSampleData[i], sampleData.aSampleData[i]);
@@ -21,7 +21,6 @@ export function updateFeatureTables(featureId, sampleData, filteredSampleData) {
     }
 }
 
-// TODO: remove general feature data after sample switch
 function updateTableWithFeatureData(fId, sampleData) {
     document.getElementById('featureIdCell').textContent = sampleData.featureId[fId];
     document.getElementById('precMzCell').textContent = sampleData.precMz[fId];
@@ -32,7 +31,7 @@ function updateTableWithFeatureData(fId, sampleData) {
     document.getElementById('BlankAs').textContent = sampleData.blankAs[fId];
 }
 
-// TODO: test multiple groups
+
 function updateTableWithGroupData(groupData){
     var featureData = Object.entries(groupData);
     if (Object.keys(featureData).length === 0) {
@@ -86,7 +85,6 @@ function updateTableWithSampleData(sampleIntensity, sampleArea) {
     });
 }
 
-// TODO: remove feature data after sample switch
 function updateTableWithAnnotationData(annotations, sample) {
     // Check if annotations is empty
     if (Object.keys(annotations).length === 0) {
@@ -396,8 +394,13 @@ function createHeatmap(data, groupName) {
 		margin: { l: 50, r: 50, t: 50, b: 50 },
 	};
 
-	// Create the heatmap
-	Plotly.newPlot('heatmap-container', [trace], layout);
+    // Create a new container for this heatmap
+    const heatmapDiv = document.createElement('div');
+    heatmapDiv.classList.add('heatmap-item');
+    document.getElementById('heatmap-container').appendChild(heatmapDiv);
+
+    // Create the heatmap
+    Plotly.newPlot(heatmapDiv, [trace], layout);
 }
 
 function showTables() {
