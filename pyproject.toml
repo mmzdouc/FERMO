@@ -26,7 +26,7 @@ classifiers = [
 dependencies = [
     "celery[redis]==5.2.7",
     "email-validator==2.1.0.post1",
-    "fermo_core==0.2.2",
+    "fermo_core==0.3.3",
     "Flask==3.0.1",
     "Flask-WTF==1.2.1",
     "Flask-Session==0.6.0",
@@ -154,7 +154,9 @@ ignore = [
     # unnecessary-comprehension-in-call
 #    "C419",
     # function-uses-loop-variable
-#    "B023"
+#    "B023",
     # commented-out code
-    "ERA001"
+    "ERA001",
+    # set-attr-with-constant
+    "B010"
 ]

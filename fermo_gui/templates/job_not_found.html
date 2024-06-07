@@ -1,13 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <span class="title"><h1>{% block title %} Job not found {% endblock %}</h1></span>
-    <div class="content">
-        <h5>The job with the ID '{{ data.get("task_id") }}' could not be found.</h5>
-        <h5>This could have two reasons.</h5>
-        <ul>
-            <li>The job is still running.</li>
-            <li>The job was run more than two weeks ago. Results are only kept for two weeks and are then deleted.</li>
-        </ul>
+<div class="container mt-5">
+    <div class="mx-4">
+        <div class="container-fluid">
+            <div class="row my-4 d-flex align-items-center">
+                <div class="col-auto"><h1 class="fw-semibold lh-2">Job results not found</h1></div>
+            </div>
+            <p class="lead mb-3">Results for the job with the ID <b>'{{ data.get("task_id") }}'</b> could not be found. Possible reasons are:</p>
+            <ul>
+                <li><p class="lead mb-2">The job ID is incorrect (i.e. contains a typo)</p></li>
+                <li><p class="lead mb-2">The job was deleted (in the online version, jobs are only retained for four weeks).</p></li>
+                <li><p class="lead mb-2">The job has not yet completed running.</p></li>
+            </ul>
+      </div>
     </div>
+</div>
 {% endblock %}

@@ -1,26 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <span class="title"><h1>{% block title %} Job failed {% endblock %}</h1></span>
-    <div class="content">
-        <h5>The job with the ID '{{ data.get("task_id") }}' failed.</h5>
-        <h5>See below for a log which may give insights why the job failed.</h5>
-        <hr>
-         <div class="container mt-5">
-            <div class="row">
-                <div class="col-md-6">
-                    <textarea class="form-control code-box" style="height: 400px; overflow-y: scroll;" readonly>
-                        {% if data.log %}
-                            {% for entry in data.log %}
-                                {{ entry }}
-                            {% endfor %}
-                        {% else %}
-                            <p>No log entries available.</p>
-                        {% endif %}
-                    </textarea>
-                </div>
+<div class="container mt-5">
+    <div class="mx-4">
+        <div class="container-fluid">
+            <div class="row my-4 d-flex align-items-center">
+                <div class="col-auto"><h1 class="fw-semibold lh-2">Job failed</h1></div>
             </div>
-         </div>
-
+            <p class="lead mb-3">The job with the ID <b>'{{ data.get("task_id") }}'</b> failed.</p>
+            <p class="lead mb-3">For more details, see the log below:</p>
+      </div>
     </div>
+    <div class="mx-4">
+        <div class="container-fluid">
+            <textarea class="form-control code-box" style="height: 400px; overflow-y: scroll;" readonly>
+                {% if data.log %}
+                    {% for entry in data.log %}
+                        {{ entry }}
+                    {% endfor %}
+                {% else %}
+                    <p>No log entries available.</p>
+                {% endif %}
+            </textarea>
+        </div>
+    </div>
+</div>
 {% endblock %}

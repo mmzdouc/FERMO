@@ -20,8 +20,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from flask import Flask
+
 from celery import Celery, Task
+from flask import Flask
 
 
 def configure_celery(app: Flask) -> Flask:
@@ -33,12 +34,16 @@ def configure_celery(app: Flask) -> Flask:
     Returns:
         The Flask app instance with added extension Celery
     """
+    config_dict = {
+        "broker_url": "redis://localhost",
+        "result_backend": "redis://localhost",
+        "task_ignore_result": True,
+    }
+    if app.config.get("MAX_RUN_TIME") is not None:
+        config_dict["task_soft_time_limit"] = app.config.get("MAX_RUN_TIME")
+
     app.config.from_mapping(
-        CELERY=dict(
-            broker_url="redis://localhost",
-            result_backend="redis://localhost",
-            task_ignore_result=True,
-        ),
+        CELERY=config_dict,
     )
     app.config.from_prefixed_env()
 

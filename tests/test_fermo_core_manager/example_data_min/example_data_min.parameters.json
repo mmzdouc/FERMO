@@ -35,14 +35,10 @@
     "additional_modules": {
         "feature_filtering": {
             "activate_module": true,
-            "filter_rel_int_range": [
-                0.1,
-                1.0
-            ],
-            "filter_rel_area_range": [
-                0.1,
-                1.0
-            ]
+            "filter_rel_int_range_min": 0.1,
+            "filter_rel_int_range_max": 1.0,
+            "filter_rel_area_range_min": 0.1,
+            "filter_rel_area_range_max": 1.0
         }
     }
 }

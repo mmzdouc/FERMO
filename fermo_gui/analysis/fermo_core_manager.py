@@ -29,6 +29,7 @@ from typing import Self
 
 import coloredlogs
 from celery import shared_task
+from celery.exceptions import SoftTimeLimitExceeded
 from fermo_core.input_output.class_file_manager import FileManager
 from fermo_core.input_output.class_parameter_manager import ParameterManager
 from fermo_core.input_output.class_validation_manager import ValidationManager
@@ -48,6 +49,27 @@ def start_fermo_core_manager(metadata: dict) -> bool:
     Returns:
         True if job successful, False if error was raised
     """
+
+    def _write_to_log(msg: str):
+        try:
+            with open(
+                Path(metadata.get("task_path")).joinpath("results/out.fermo.log"), "a"
+            ) as file:
+                file.write(msg)
+        except OSError:
+            with open(
+                Path(metadata.get("task_path")).joinpath("results/out.fermo.log"), "w"
+            ) as file:
+                file.write(msg)
+
+    def _send_mail_fail():
+        if metadata.get("email_notify"):
+            GeneralManager().email_notify_fail(
+                root_url=metadata.get("root_url"),
+                address=metadata.get("email"),
+                job_id=metadata.get("job_id"),
+            )
+
     try:
         manager = FermoCoreManager(
             job_id=metadata.get("job_id"), uploads_dir=metadata.get("task_path")
@@ -61,14 +83,17 @@ def start_fermo_core_manager(metadata: dict) -> bool:
                 job_id=metadata.get("job_id"),
             )
         return True
+    except SoftTimeLimitExceeded as e:
+        _write_to_log(
+            f"Job surpassed maximum time limit of '{metadata.get('max_runtime')}' "
+            f"seconds: {e}"
+        )
+        _send_mail_fail()
+        return False
+
     except Exception as e:
-        print(e)  # Due to Celery Error catching, empty "e"
-        if metadata.get("email_notify"):
-            GeneralManager().email_notify_fail(
-                root_url=metadata.get("root_url"),
-                address=metadata.get("email"),
-                job_id=metadata.get("job_id"),
-            )
+        _write_to_log(f"An error occurred: {e}")
+        _send_mail_fail()
         return False
 
 
