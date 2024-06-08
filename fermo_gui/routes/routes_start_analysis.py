@@ -84,6 +84,9 @@ def setup_fermo_run(form: AnalysisForm) -> Union[str, Response]:
             online=current_app.config.get("ONLINE"),
         )
 
+    if form.email.data is None:
+        form.email.data = ""
+
     metadata = {
         "job_id": task_id,
         "task_path": str(task_path.resolve()),
