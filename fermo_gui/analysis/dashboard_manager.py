@@ -1,6 +1,6 @@
-"""Manages dashboard data loading and filtering functionality
+"""Manages dashboard data loading
 
-Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
+Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD & Hannah Esther Augustijn, MSc
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -111,26 +111,48 @@ class DashboardManager(BaseModel):
             for group_id, categories in groups.items():
                 group_list.append(group_id.title())
                 for category, details in categories.items():
+                    # to be used for group filtering sample -> category
                     if group_id in self.stats_groups:
                         self.stats_groups[group_id].append(category)
                     else:
                         self.stats_groups[group_id] = [category]
-                    for s_id in details["s_ids"]:
-                        if s_id in sample_to_group:
-                            sample_to_group[s_id].update({group_id.title(): category})
-                        else:
-                            sample_to_group[s_id] = {group_id.title(): category}
+                    # to be used for group filtering feature -> category
                     for f_id in details["f_ids"]:
                         if f_id in self.stats_fgroups:
                             self.stats_fgroups[f_id].append(category)
                         else:
                             self.stats_fgroups[f_id] = [category]
 
+                    for s_id in details["s_ids"]:
+                        if s_id in sample_to_group:
+                            sample_to_group[s_id].update({group_id.title(): category})
+                        else:
+                            sample_to_group[s_id] = {group_id.title(): category}
+
             for sample in f_sess.get("stats", {}).get("samples"):
                 total_features = len(
                     f_sess.get("samples", {}).get(sample, {}).get("feature_ids")
                 )
                 remaining_features = total_features
+
+                diversity = (
+                    f_sess.get("samples", {})
+                    .get(sample, {})
+                    .get("scores", {})
+                    .get("diversity")
+                )
+                specificity = (
+                    f_sess.get("samples", {})
+                    .get(sample, {})
+                    .get("scores", {})
+                    .get("specificity")
+                )
+                mean_novelty = (
+                    f_sess.get("samples", {})
+                    .get(sample, {})
+                    .get("scores", {})
+                    .get("mean_novelty")
+                )
 
                 group_info = sample_to_group.get(sample, {})
                 if len(group_info.keys()) != len(group_list):
@@ -146,6 +168,9 @@ class DashboardManager(BaseModel):
                         "Sample name": sample,
                         "Total features": total_features,
                         "Retained features": remaining_features,
+                        "Diversity": diversity,
+                        "Specificity": specificity,
+                        "Mean novelty": mean_novelty,
                         **ordered_group_info,
                     }
                 )

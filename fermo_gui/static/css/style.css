@@ -162,8 +162,17 @@ table th:last-child{
 .accordion-button-info::after {
     order: -1;
     background-image: url("/static/images/collapse_icon_info.svg");
-    background-color: none;
+    background-color: transparent;
     content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s;
+}
+
+.accordion-button-info:not(.collapsed)::after {
+    background-image: url("/static/images/collapse_icon_info.svg");
+    transform: rotate(-45deg);
     display: inline-block;
     width: 16px;
     height: 16px;
@@ -238,7 +247,6 @@ table th:last-child{
     height: 4px;
     border-radius: 5px;
     background: #d3d3d3;
-    z-index: 1;
     opacity: 0.7;
 }
 
@@ -255,6 +263,7 @@ table th:last-child{
     outline: none;
     -webkit-transition: .2s;
     transition: opacity .2s;
+    background: transparent;
 }
 
 .multirange input[type=range]::-webkit-slider-thumb {
