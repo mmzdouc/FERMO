@@ -9,7 +9,9 @@ tests/test_fermo_core_manager/*/results/*
 instance/
 fermo_gui/upload/*
 !fermo_gui/upload/example
-!fermo_gui/upload/defaults
+
+# Project files
+.ruff_cache
 
 ### CUSTOM STOP ###
 
