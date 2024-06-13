@@ -17,11 +17,6 @@ repos:
       entry: ruff check
       language: system
       types: [ file, python ]
-    - id: pytest
-      name: pytest
-      entry: pytest tests/
-      language: system
-      types: [ file, python ]
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.4.0
   hooks:

@@ -20,10 +20,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
 from pathlib import Path
 from typing import Union
 
-from flask import render_template, current_app, request, redirect, url_for, Response
+from flask import Response, current_app, redirect, render_template, request, url_for
 
 from fermo_gui.analysis.dashboard_manager import DashboardManager
 from fermo_gui.analysis.general_manager import GeneralManager

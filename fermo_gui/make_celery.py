@@ -1,4 +1,4 @@
-"""Provides Flask Blueprints instances.
+"""Connects Celery worker with current Flask instance.
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -21,11 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from flask import Blueprint
+from fermo_gui import create_app
 
-bp = Blueprint("routes", __name__)
-
-from fermo_gui.routes import routes_main
-from fermo_gui.routes import routes_results
-from fermo_gui.routes import routes_start_analysis
-from fermo_gui.routes import routes_load_session
+flask_app = create_app()
+celery_app = flask_app.extensions["celery"]

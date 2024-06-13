@@ -2,9 +2,9 @@
 name = "fermo_gui"
 version = "0.10.1"
 description = "Visalization part of program FERMO"
-readme = "README.md"
+readme = "../README.md"
 requires-python = ">=3.11,<3.12"
-license = {file = "LICENSE.md"}
+license = {file = "../LICENSE.md"}
 authors = [
     { name = "Mitja M. Zdouc", email = "zdoucmm@gmail.com" },
     { name = "Hannah E. Augustijn", email = "hannah.augustijn@gmail.com"}
@@ -49,7 +49,7 @@ dev = [
 [project.urls]
 "Website" = "https://fermo.bioinformatics.nl/"
 "Repository" = "https://github.com/fermo-met/fermo_gui"
-Documentation = "https://mmzdouc.github.io/fermo_docs/"
+"Documentation" = "https://mmzdouc.github.io/fermo_docs/"
 
 
 [build-system]
