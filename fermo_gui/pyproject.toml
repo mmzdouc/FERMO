@@ -21,7 +21,6 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Topic :: Scientific/Engineering :: Chemistry"
 ]
-
 dependencies = [
     "celery[redis]==5.2.7",
     "email-validator==2.1.0.post1",
@@ -34,7 +33,6 @@ dependencies = [
     "jsonschema==4.19.0",
     "pydantic==2.5.2"
 ]
-
 [project.optional-dependencies]
 dev = [
     "black~=24.4.2",
@@ -55,6 +53,11 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.envs.dev]
+features = [
+    "dev"
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
