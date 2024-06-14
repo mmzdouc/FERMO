@@ -36,7 +36,7 @@ FERMO is licensed under the [MIT License](LICENSE.md).
 
 ### Authors
 - Mitja M. Zdouc <zdoucmm@gmail.com>
-- Hannah E. Augustijn
+- Hannah E. Augustijn <hannah.augustijn@gmail.com>
 
 ### Publications
 
