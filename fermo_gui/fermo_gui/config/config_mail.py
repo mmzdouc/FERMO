@@ -1,4 +1,4 @@
-"""Provides Flask Blueprints instances.
+"""Sets the Flask mail configuration.
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -21,11 +21,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from flask import Blueprint
+from flask import Flask
 
-bp = Blueprint("routes", __name__)
 
-from fermo_gui.routes import routes_main
-from fermo_gui.routes import routes_results
-from fermo_gui.routes import routes_start_analysis
-from fermo_gui.routes import routes_load_session
+def configure_mail(app: Flask) -> Flask:
+    """Configure email server settings to deliver job notifications
+
+    Email-address and password must be set in a config file.
+
+    Arguments:
+        app: The Flask app instance
+    """
+    app.config["MAIL_SERVER"] = "smtp.gmail.com"
+    app.config["MAIL_PORT"] = 465
+    app.config["MAIL_USE_TLS"] = False
+    app.config["MAIL_USE_SSL"] = True
+    return app

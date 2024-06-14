@@ -1,64 +1,71 @@
-Announcement - Please Read
-============
-### FERMO is currently being refactored. The code in this fork is experimental and may change quickly and without announcements. For a more stable version, please look at [FERMO's main page](https://github.com/mmzdouc/fermo).
+fermo_gui
+=========
 
----
+`fermo_gui` is the graphical user interface for the metabolomics data analysis pipeline [`fermo_core`](https://github.com/mmzdouc/fermo_core). It allows to start new analysis jobs, load existing session files, and visualize results.
 
-## Overview
+For more information about *FERMO*, `fermo_gui`, or `fermo_core`, see the [Documentation](https://mmzdouc.github.io/fermo_docs/).
 
-TBA
+*Nota bene*: `fermo_gui` has only been tested on Linux systems. While the Docker-installation is likely to work on other systems as well, they are not officially supported. Also see [*Fermo Online*](https://fermo.bioinformatics.nl/) for a user-friendly installation-free version.
 
-## Versions
+Table of Contents
+-----------------
+- [Installation and Quickstart](#installation-and-quickstart)
+- [Usage](#usage)
+- [Attribution](#attribution)
+- [For Developers](#for-developers)
+- [Contributing](#contributing)
 
-All previous version of FERMO can be accessed via its [Zenodo repository](https://zenodo.org/doi/10.5281/zenodo.7565700).
+## Installation and Quickstart
 
-## Dependencies
+### With docker from GitHub
+- Install `docker` and `docker-compose`
+- Download or clone the [repository](https://github.com/fermo-met/fermo_gui)
+- (Change into the fermo_gui base directory if not already present)
+- Run `docker-compose up --build`. This will install all dependencies and start the application.
+- Open the application in any browser with the URL `http://0.0.0.0:8001/`
 
-A list of dependencies can be found in the file [pyproject.toml](pyproject.toml).
+## Usage
 
-## License
+For more information about *FERMO*, `fermo_gui`, or `fermo_core`, see the [Documentation](https://mmzdouc.github.io/fermo_docs/).
+
+## Attribution
+
+### License
 
 FERMO is licensed under the [MIT License](LICENSE.md).
 
+### Authors
+- Mitja M. Zdouc <zdoucmm@gmail.com>
+- Hannah E. Augustijn <hannah.augustijn@gmail.com>
+
+### Publications
+
+See [FERMO online](https://fermo.bioinformatics.nl/) for information on citing `fermo_gui`.
+
+### Versions
+
+All previous version of FERMO can be accessed via its [Zenodo repository](https://zenodo.org/doi/10.5281/zenodo.7565700).
+
+
 ## For Developers
+
+### Dependencies
+
+A list of dependencies can be found in the file [pyproject.toml](fermo_gui/pyproject.toml).
 
 ### Installation and Setup
 
-- Clone the repository to your local machine and enter it: this is the main directory
-- Create a new virtual environment (e.g. with `conda`)
+- Clone the repository to your local machine and enter the `fermo_gui` source directory
 - Install `python 3.11`
-- Install `fermo_gui` with `pip install -e '.[dev]'` (while in the main directory)
-- Initialize `pre-commit` with `pre-commit install`
-- Run the app with `flask --app fermo_gui run --debug` (while in the main directory)
-- In a separate CLI, run the Celery work queue with `celery -A make_celery worker --loglevel INFO` (while in the main directory)
+- Install `pipx install hatch`
+- Run `hatch -v env create dev`
+- Run `hatch run dev:pre-commit install`
+- Install redis-server with `sudo apt-get install redis-server`
+- Run the application with `hatch run dev:flask --app fermo_gui run --debug`
+- In a separate command line window, run `hatch run dev:celery -A make_celery worker --loglevel ERROR`
 
-### Contributing and Coding Style
+### Contributing
 
-For general guidelines regarding contributing to this project, see [CONTRIBUTING](CONTRIBUTING.md).
-Furthermore, we have a [CODE OF CONDUCT](CODE_OF_CONDUCT.md).
-
-#### Practices:
-
-This project follows certain practices to ensure coding standards:
-- For code development, use of a branching model - one branch per feature, pull
-  requests to merge into `main`. The `main` branch is protected.
-- For consistent code style, tools including `black`, `flake8`.
-- Application of said tools before committing via `pre-commit`.
-- Unit testing using `pytest` and test-driven development in general.
-- Use of type hinting and docstrings (the use of `pycodestyle` is recommended).
-- Following the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)
-- Versioning using [Semantic Versioning](http://semver.org/).
-
-#### Code contribution:
-
-To contribute code:
-- Communicate with the lead developers and discuss the intended change/feature.
-- For each feature/change, create a new branch.
-- Add and test it thoroughly (with unit tests).
-
-To merge into the `main` branch:
-- Add changes to the [CHANGELOG](CHANGELOG.md) using plain and concise language.
-- Update the version by increasing the counter in [pyproject.toml](pyproject.toml)
-  as instructed by the lead developers.
-- Issue a pull request to the `main` branch.
-- After code review, the pull request may or may not be accepted.
+Contributions, whether filing an issue, making a pull request, or forking, are appreciated. Please see [Contributing](CONTRIBUTING.md) for more information on getting involved.
+Contributors agree to adhere to the specified [Code of Conduct](CODE_OF_CONDUCT.md).
+For technical details, see the For Developers pages in the [Documentation](https://mmzdouc.github.io/fermo_docs/for_devs/overview/).

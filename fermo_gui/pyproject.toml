@@ -1,8 +1,7 @@
 [project]
 name = "fermo_gui"
-version = "0.10.0"
+version = "0.10.1"
 description = "Visalization part of program FERMO"
-readme = "README.md"
 requires-python = ">=3.11,<3.12"
 license = {file = "LICENSE.md"}
 authors = [
@@ -22,20 +21,18 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Topic :: Scientific/Engineering :: Chemistry"
 ]
-
 dependencies = [
     "celery[redis]==5.2.7",
     "email-validator==2.1.0.post1",
     "fermo_core==0.3.3",
     "Flask==3.0.1",
     "Flask-WTF==1.2.1",
-    "Flask-Session==0.6.0",
     "Flask-Mail==0.9.1",
     "Flask-SocketIO==5.3.6",
+    "gunicorn==22.0.0",
     "jsonschema==4.19.0",
     "pydantic==2.5.2"
 ]
-
 [project.optional-dependencies]
 dev = [
     "black~=24.4.2",
@@ -50,12 +47,17 @@ dev = [
 [project.urls]
 "Website" = "https://fermo.bioinformatics.nl/"
 "Repository" = "https://github.com/fermo-met/fermo_gui"
-Documentation = "https://mmzdouc.github.io/fermo_docs/"
+"Documentation" = "https://mmzdouc.github.io/fermo_docs/"
 
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.envs.dev]
+features = [
+    "dev"
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -135,26 +137,10 @@ select = [
     "UP",
 ]
 ignore = [
-    # whitespace-before-punctuation
-#    "E203",
-    # percent-format-invalid-format
-#    "E501",
-    # needless-bool
-#    "SIM103",
-    # if-with-same-arms
-#    "SIM114",
     # if-expr-with-true-false
     "SIM210",
     # non-pep604-annotation
     "UP007",
-    # unnecessary-placeholder
-#    "PIE790",
-    # unnecessary-comprehension
-#    "C416",
-    # unnecessary-comprehension-in-call
-#    "C419",
-    # function-uses-loop-variable
-#    "B023",
     # commented-out code
     "ERA001",
     # set-attr-with-constant

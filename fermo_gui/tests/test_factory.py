@@ -2,11 +2,7 @@ import os
 
 import pytest
 
-from fermo_gui import (
-    create_app,
-    configure_app,
-    create_instance_path,
-)
+from fermo_gui import configure_app, create_app, create_instance_path
 
 
 def test_config_valid():

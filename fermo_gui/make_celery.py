@@ -1,4 +1,4 @@
-"""Sets the Flask Session configuration.
+"""Connects Celery worker with current Flask instance.
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -20,15 +20,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from flask import Flask
 
+from fermo_gui import create_app
 
-def configure_session(app: Flask) -> Flask:
-    """Configure Session cache settings for intermediate data storage
-
-    Arguments:
-        app: The Flask app instance
-    """
-    app.config["SESSION_PERMANENT"] = False
-    app.config["SESSION_TYPE"] = "redis"
-    return app
+flask_app = create_app()
+celery_app = flask_app.extensions["celery"]

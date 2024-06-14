@@ -1,4 +1,5 @@
 import pytest
+
 from fermo_gui import create_app
 
 

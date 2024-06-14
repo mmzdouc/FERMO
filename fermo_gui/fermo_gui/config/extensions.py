@@ -1,4 +1,4 @@
-"""Connects Celery worker with current Flask instance.
+"""Instantiates Flask extensions in a central place for convenient retrieval.
 
 Copyright (c) 2022-present Mitja Maximilian Zdouc, PhD
 
@@ -20,7 +20,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from fermo_gui import create_app
 
-flask_app = create_app()
-celery_app = flask_app.extensions["celery"]
+from flask_mail import Mail
+from flask_socketio import SocketIO
+
+mail = Mail()
+socketio = SocketIO()

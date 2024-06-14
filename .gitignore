@@ -1,15 +1,17 @@
 ### CUSTOM START ###
 
-tests/test_fermo_core_manager/*/results/*
+fermo_gui/tests/test_fermo_core_manager/*/results/*
 
 # pycharm
 .idea/
 
 # Flask app
 instance/
-fermo_gui/upload/*
-!fermo_gui/upload/example
-!fermo_gui/upload/defaults
+fermo_gui/fermo_gui/upload/*
+!fermo_gui/fermo_gui/upload/example
+
+# Project files
+.ruff_cache
 
 ### CUSTOM STOP ###
 
