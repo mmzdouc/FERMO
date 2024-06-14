@@ -55,8 +55,9 @@ A list of dependencies can be found in the file [pyproject.toml](fermo_gui/pypro
 
 ### Installation and Setup
 
-- Clone the repository to your local machine and enter the `fermo_gui` source directory
+- Clone the repository to your local machine and enter the `fermo_gui` [source directory](fermo_gui/)
 - Install `python 3.11`
+- Install `pip install pipx`
 - Install `pipx install hatch`
 - Run `hatch -v env create dev`
 - Run `hatch run dev:pre-commit install`
