@@ -2,9 +2,8 @@
 name = "fermo_gui"
 version = "0.10.1"
 description = "Visalization part of program FERMO"
-readme = "../README.md"
 requires-python = ">=3.11,<3.12"
-license = {file = "../LICENSE.md"}
+license = {file = "LICENSE.md"}
 authors = [
     { name = "Mitja M. Zdouc", email = "zdoucmm@gmail.com" },
     { name = "Hannah E. Augustijn", email = "hannah.augustijn@gmail.com"}
@@ -31,6 +30,7 @@ dependencies = [
     "Flask-WTF==1.2.1",
     "Flask-Mail==0.9.1",
     "Flask-SocketIO==5.3.6",
+    "gunicorn==22.0.0",
     "jsonschema==4.19.0",
     "pydantic==2.5.2"
 ]
@@ -134,26 +134,10 @@ select = [
     "UP",
 ]
 ignore = [
-    # whitespace-before-punctuation
-#    "E203",
-    # percent-format-invalid-format
-#    "E501",
-    # needless-bool
-#    "SIM103",
-    # if-with-same-arms
-#    "SIM114",
     # if-expr-with-true-false
     "SIM210",
     # non-pep604-annotation
     "UP007",
-    # unnecessary-placeholder
-#    "PIE790",
-    # unnecessary-comprehension
-#    "C416",
-    # unnecessary-comprehension-in-call
-#    "C419",
-    # function-uses-loop-variable
-#    "B023",
     # commented-out code
     "ERA001",
     # set-attr-with-constant
