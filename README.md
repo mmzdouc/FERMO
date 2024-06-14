@@ -23,6 +23,7 @@ Table of Contents
 - (Change into the fermo_gui base directory if not already present)
 - Run `docker-compose up --build`. This will install all dependencies and start the application.
 - Open the application in any browser with the URL `http://0.0.0.0:8001/`
+- To terminate the container, simply hit `ctrl+c`
 
 ## Usage
 
