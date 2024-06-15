@@ -1,30 +1,12 @@
 version: '3.3'
 
 services:
-  redis:
-    build:
-      context: .
-      dockerfile: ./compose/redis/Dockerfile
-    ports:
-      - 6379:6379
-
-#  celery:
-#    build:
-#      context: .
-#      dockerfile: ./compose/celery/Dockerfile
-#    depends_on:
-#      - redis
-
   fermo_gui:
     build:
       context: .
       dockerfile: ./compose/fermo_gui/Dockerfile
     ports:
       - 8001:8001
-#    depends_on:
-#      - redis
-#      - celery
-
   nginx:
     build:
       context: .
@@ -33,25 +15,3 @@ services:
       - 1337:80
     depends_on:
       - fermo_gui
-
-
-
-
-
-
-
-#  celery_worker:
-#    build:
-#      context: .
-#      dockerfile: ./compose/fermo_gui/Dockerfile
-#    volumes:
-#      - .:/fermo_gui
-#    command: >
-#      hatch run celery -A make_celery worker --loglevel ERROR
-#    depends_on:
-#      - redis
-#
-
-#
-#volumes:
-#  redis: {}
