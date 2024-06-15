@@ -114,6 +114,49 @@ document.addEventListener('DOMContentLoaded', function() {
         dropdownContainer.style.display = (dropdownContainer.style.display === "none" || dropdownContainer.style.display === "") ? "block" : "none";
     }
 
+    function checkAndEnableOption(jobId, filename, elementId) {
+        const url = `/check_file/${jobId}/${filename}`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const element = document.getElementById(elementId);
+                if (data.exists) {
+                    element.disabled = false;
+                    element.dataset.url = `/download/${jobId}/${filename}`;
+                } else {
+                    element.disabled = true;
+                    delete element.dataset.url;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    const jobId = document.querySelector('.container').getAttribute('data-job-id');
+
+    // Check and enable options based on file availability
+    checkAndEnableOption(jobId, 'out.fermo.summary.txt', 'summary');
+    checkAndEnableOption(jobId, 'out.fermo.abbrev.csv', 'abbrev');
+    checkAndEnableOption(jobId, 'out.fermo.log', 'log');
+    checkAndEnableOption(jobId, 'out.fermo.session.json', 'session');
+    checkAndEnableOption(jobId, 'out.fermo.full.csv', 'full');
+    checkAndEnableOption(jobId, 'out.fermo.modified_cosine.graphml', 'mod_cosine');
+    checkAndEnableOption(jobId, 'out.fermo.ms2deepscore.graphml', 'ms2deepscore');
+
+    // Add event listeners to download buttons
+    document.querySelectorAll('.download-btn').forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            const selectId = event.target.getAttribute('data-select-id');
+            const selectElement = document.getElementById(selectId);
+            const selectedOption = selectElement.selectedOptions[0];
+            if (selectedOption && selectedOption.dataset.url) {
+                window.location.href = selectedOption.dataset.url;
+            } else {
+                alert('Please select a file to download.');
+            }
+        });
+    });
     document.getElementById('groupButton').addEventListener('click', () => toggleDropdown('dropdownGroupContainer'));
     document.getElementById('networkExcludeButton').addEventListener('click', () => toggleDropdown('dropdownNetworkContainer'));
 
