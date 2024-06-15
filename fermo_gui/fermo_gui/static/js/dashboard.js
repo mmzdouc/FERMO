@@ -70,7 +70,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('networkSelect').addEventListener('change', handleNetworkTypeChange);
         document.getElementById('showBlankFeatures').addEventListener('change', updateRange);
         document.getElementById('findInput').addEventListener('input', updateRange);
+        document.getElementById('mz1Input').addEventListener('input', updateRange);
         document.getElementById('mz2Input').addEventListener('input', updateRange);
+        document.getElementById('sample1Input').addEventListener('input', updateRange);
         document.getElementById('sample2Input').addEventListener('input', updateRange);
         document.getElementById('foldInput').addEventListener('input', updateRange);
         document.getElementById('group1FoldInput').addEventListener('input', updateRange);
@@ -186,7 +188,9 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('showAnnotationFeatures').addEventListener('change', updateRange);
             document.getElementById('showBlankFeatures').addEventListener('change', updateRange);
             document.getElementById('showBlankFeatures').addEventListener('input', updateRange);
+            document.getElementById('mz1Input').addEventListener('input', updateRange);
             document.getElementById('mz2Input').addEventListener('input', updateRange);
+            document.getElementById('sample1Input').addEventListener('input', updateRange);
             document.getElementById('sample2Input').addEventListener('input', updateRange);
             document.getElementById('foldInput').addEventListener('input', updateRange);
             document.getElementById('group1FoldInput').addEventListener('input', updateRange);
@@ -237,7 +241,8 @@ document.addEventListener('DOMContentLoaded', function() {
                       minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                       minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                       showOnlyAnnotationFeatures, showOnlyBlankFeatures,
-                      minMzScore, maxMzScore, minSampleCount, maxSampleCount,
+                      minMzScore, maxMzScore ? maxMzScore : 10000,
+                      minSampleCount, maxSampleCount ? maxSampleCount : 100,
                       foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup,
                       groupFilterValues.length ? groupFilterValues : null,
                       networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
