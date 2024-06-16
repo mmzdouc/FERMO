@@ -32,6 +32,7 @@ import pandas as pd
 import requests
 from fermo_core.input_output.class_validation_manager import ValidationManager
 from pydantic import BaseModel
+from requests.exceptions import Timeout
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
@@ -78,6 +79,10 @@ class InputProcessor(BaseModel):
 
         Returns:
             The secured filename used for storage
+
+        Raises:
+            timouterror: could not download from antiSMASH server in time
+
         """
         filename = secure_filename(f.filename)
         f.save(self.task_dir.joinpath(filename))
@@ -90,35 +95,41 @@ class InputProcessor(BaseModel):
             A path to the downloaded dir
 
         Raises:
-            ValueError: could not detect antiSMASH job
+            ValueError: download took too long
+            ValueError: antiSMASH JobID not found
         """
-        url = (
-            f"https://antismash.secondarymetabolites.org/upload"
-            f"/{self.form.askcb_jobid.data}/"
-        )
-        response = requests.get(url)
-        html = response.text
-        zips = []
-        for line in html.split("\n"):
-            if ".zip" in line:
-                zips.append(line.split('"')[1])
+        try:
+            url = (
+                f"https://antismash.secondarymetabolites.org/upload"
+                f"/{self.form.askcb_jobid.data}/"
+            )
+            response = requests.get(url, timeout=20)
+            html = response.text
+            zips = []
+            for line in html.split("\n"):
+                if ".zip" in line:
+                    zips.append(line.split('"')[1])
 
-        if len(zips) == 0:
-            raise ValueError("antiSMASH JobID not found.")
-        else:
-            for zip_file in zips:
-                response = requests.get(os.path.join(url, zip_file))
+            if len(zips) == 0:
+                raise ValueError("antiSMASH JobID not found.")
+            else:
+                for zip_file in zips:
+                    response = requests.get(os.path.join(url, zip_file), timeout=20)
 
-                with open(self.task_dir.joinpath(zip_file), "wb") as f:
-                    f.write(response.content)
+                    with open(self.task_dir.joinpath(zip_file), "wb") as f:
+                        f.write(response.content)
 
-                as_dir = zip_file.split(".")[0]
-                with zipfile.ZipFile(self.task_dir.joinpath(zip_file), "r") as zip_ref:
-                    zip_ref.extractall(self.task_dir.joinpath(as_dir))
+                    as_dir = zip_file.split(".")[0]
+                    with zipfile.ZipFile(
+                        self.task_dir.joinpath(zip_file), "r"
+                    ) as zip_ref:
+                        zip_ref.extractall(self.task_dir.joinpath(as_dir))
 
-                os.remove(self.task_dir.joinpath(zip_file))
+                    os.remove(self.task_dir.joinpath(zip_file))
 
-                return self.task_dir.joinpath(as_dir)
+                    return self.task_dir.joinpath(as_dir)
+        except Timeout as e:
+            raise ValueError(f"Connection to antiSMASH server timed out: {e}") from e
 
     @staticmethod
     def check_file_size(f: FileStorage, maxsize: int):
@@ -505,7 +516,7 @@ class InputProcessor(BaseModel):
         dir_as = self.download_as_job()
 
         self.params["files"]["as_results"] = {
-            "directory_path": str(self.task_dir.joinpath(dir_as).resolve()),
+            "directory_path": str(dir_as.resolve()),
             "similarity_cutoff": float(self.form.askcb_score.data),
         }
 
