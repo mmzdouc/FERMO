@@ -11,7 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Full rework of frontend and backend of fermo_gui
 - Use of fermo_core as processing backend
-
+- [Breaking Change] No compatibility with previous versions of FERMO
 
 ## [0.9.1] - 2024-01-22
 
