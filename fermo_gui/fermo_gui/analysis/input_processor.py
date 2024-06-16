@@ -57,9 +57,9 @@ class InputProcessor(BaseModel):
     online: bool
     params: dict = {}
     n_features: Optional[int] = None
-    max_features: int = 1000
+    max_features: int = 3000
     maxsize_file: int = 8000000
-    max_time_module: int = 600
+    max_time_module: int = 900
 
     def return_params(self: Self):
         """Returns the params dict for writing"""
