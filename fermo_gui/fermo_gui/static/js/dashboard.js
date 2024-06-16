@@ -22,7 +22,7 @@ SOFTWARE.
 */
 
 import { getSampleData, getFeatureData } from './parsing.js';
-import { updateFeatureTables, hideTables } from './dynamic_tables.js';
+import { updateFeatureTables, hideTables, clearHeatmaps } from './dynamic_tables.js';
 import { visualizeData, addBoxVisualization } from './chromatogram.js';
 import { visualizeNetwork, hideNetwork } from './network.js';
 import { enableDragAndDrop, disableDragAndDrop } from './dragdrop.js';
@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleChromatogramClick(data) {
+        clearHeatmaps();
         const networkType = document.getElementById('networkSelect').value;
         const featureId = data.points[0].data.name;
         const filteredSampleData = getFeatureData(featureId, sampleData);
@@ -174,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'Click on any feature in the main chromatogram overview.';
             document.getElementById('feature-annotation').textContent =
             'Click on any feature in the main chromatogram overview.';
-            Plotly.purge('heatmap-container');
+            clearHeatmaps();
             document.getElementById("sampleCell").innerHTML =
             "<tr><td>Click on any feature in the main chromatogram overview.</td><td></td></tr>";
 

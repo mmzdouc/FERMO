@@ -59,7 +59,7 @@ function updateTableWithGroupData(groupData){
     var featureData = Object.entries(groupData);
     if (Object.keys(featureData).length === 0) {
         document.getElementById('feature-general-info').textContent = 'No group data available for this feature.'
-        Plotly.purge('heatmap-container');
+        clearHeatmaps();
     } else {
         document.getElementById('feature-general-info').textContent = 'The feature is found in the following groups:'
         for (const [key, value] of featureData) {
@@ -345,85 +345,96 @@ function createExtraInfoRow(data, extraColumns, colspan) {
 
 // Heatmap visualization function //
 function createHeatmap(data, groupName) {
-	const groupValues = [...new Set([...data.map(item => item.group1), ...data.map(item => item.group2)])].sort();
-	const matrix = groupValues.map(() => Array(groupValues.length).fill(0));
+    const groupValues = [...new Set([...data.map(item => item.group1), ...data.map(item => item.group2)])].sort();
+    const matrix = groupValues.map(() => Array(groupValues.length).fill(0));
 
-	// Fill the matrix with factor values
-	data.forEach(item => {
-		const rowIndex = groupValues.indexOf(item.group1);
-		const colIndex = groupValues.indexOf(item.group2);
-		matrix[rowIndex][colIndex] = item.factor;
-		matrix[colIndex][rowIndex] = item.factor;
-	});
-	const reversedMatrix = matrix.reverse();
-	const reversedGroupValues = [...groupValues].reverse();
+    // Fill the matrix with factor values
+    data.forEach(item => {
+        const rowIndex = groupValues.indexOf(item.group1);
+        const colIndex = groupValues.indexOf(item.group2);
+        matrix[rowIndex][colIndex] = item.factor;
+        matrix[colIndex][rowIndex] = item.factor;
+    });
+    const reversedMatrix = matrix.reverse();
+    const reversedGroupValues = [...groupValues].reverse();
 
-	// Create value annotations to be shown within the heatmap
-	const annotations = [];
-	for (let i = 0; i < reversedGroupValues.length; i++) {
-		for (let j = 0; j < groupValues.length; j++) {
-			if (reversedMatrix[i][j] !== null) {
-				annotations.push({
-					x: groupValues[j],
-					y: reversedGroupValues[i],
-					text: reversedMatrix[i][j].toFixed(2),
-					showarrow: false,
-					font: { size: 7 }
-				});
-			}
-		}
-	}
+    // Create value annotations to be shown within the heatmap
+    const annotations = [];
+    for (let i = 0; i < reversedGroupValues.length; i++) {
+        for (let j = 0; j < groupValues.length; j++) {
+            if (reversedMatrix[i][j] !== null) {
+                annotations.push({
+                    x: groupValues[j],
+                    y: reversedGroupValues[i],
+                    text: reversedMatrix[i][j].toFixed(2),
+                    showarrow: false,
+                    font: { size: 7 }
+                });
+            }
+        }
+    }
 
-	// Define colorscale
-	const colorscaleValue = [
-		[0, '#f5f5f5'],
-		[0.01, '#dbf3ff'],
-		[1, '#de4b4b']
-	];
+    // Define colorscale
+    const colorscaleValue = [
+        [0, '#f5f5f5'],
+        [0.01, '#dbf3ff'],
+        [1, '#de4b4b']
+    ];
 
-	// Create a new Plotly figure
-	const trace = {
-		z: reversedMatrix,
-		x: groupValues,
-		y: reversedGroupValues,
-		type: 'heatmap',
-		colorscale: colorscaleValue,
-		showscale: false
-	};
+    // Create a new Plotly figure
+    const trace = {
+        z: reversedMatrix,
+        x: groupValues,
+        y: reversedGroupValues,
+        type: 'heatmap',
+        colorscale: colorscaleValue,
+        showscale: false
+    };
 
-	// Define layout options
-	const layout = {
-		title: {
-			text: `Fold-differences of <br><b>${groupName}</b>`,
-			font: { size: 12 },
-			x: 0.5,
-			xanchor: 'center',
-		},
-		width: 250,
-		height: 250,
-		xaxis: {
-			ticks: '',
-			ticksuffix: ' ',
-			autosize: false,
-			font: { size: 7 },
-		},
-		yaxis: {
-			ticks: '',
-			ticksuffix: ' ',
-			autosize: false,
-			font: { size: 7 },
-		},
-		annotations: annotations,
-		margin: { l: 50, r: 50, t: 50, b: 50 },
-	};
+    // Define layout options
+    const layout = {
+        title: {
+            text: `Fold-differences of <br><b>${groupName}</b>`,
+            font: { size: 12 },
+            x: 0.5,
+            xanchor: 'center',
+        },
+        width: 250,
+        height: 250,
+        xaxis: {
+            ticks: '',
+            ticksuffix: ' ',
+            autosize: false,
+            font: { size: 7 },
+        },
+        yaxis: {
+            ticks: '',
+            ticksuffix: ' ',
+            autosize: false,
+            font: { size: 7 },
+        },
+        annotations: annotations,
+        margin: { l: 50, r: 50, t: 50, b: 50 },
+    };
 
     // Create a new container for this heatmap
     const heatmapDiv = document.createElement('div');
     heatmapDiv.classList.add('heatmap-item');
     document.getElementById('heatmap-container').appendChild(heatmapDiv);
+    heatmapDivs.push(heatmapDiv);
 
     // Create the heatmap
     Plotly.newPlot(heatmapDiv, [trace], layout);
+}
+
+let heatmapDivs = [];
+
+export function clearHeatmaps() {
+    heatmapDivs.forEach(div => {
+        Plotly.purge(div);
+        div.remove();
+    });
+    heatmapDivs = [];
 }
 
 function showTables() {
