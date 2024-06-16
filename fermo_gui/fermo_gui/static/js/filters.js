@@ -162,7 +162,7 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
                                        showOnlyAnnotationFeatures, showOnlyBlankFeatures,
                                        minMzScore, maxMzScore, minSampleCount, maxSampleCount,
                                        foldScore, foldGroup1, foldGroup2, foldSelectGroup,
-                                       groupFilterValues, networkFilterValues, statsFIdGroups) {
+                                       groupFilterValues, networkFilterValues, statsFIdGroups, networkType) {
     return sampleData.novScore.reduce((count, score, index) => {
         const phenotypeScore = sampleData.annotations?.[index]?.phenotypes?.[0]?.score;
         const matchScore = sampleData.annotations?.[index]?.matches?.[0]?.score;
@@ -173,7 +173,7 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
         const sampleCount = sampleData.samples[index].length;
         const foldChanges = sampleData.fGroupData?.[index]?.[foldSelectGroup] ?? [];
         const featureGroups = Object(statsFIdGroups)?.[findFeature] ?? [];
-        const networkFIds = sampleData.fNetwork?.[index] ?? [];
+        const networkFIds = sampleData.fNetworkCosine?.[index] ?? [];
 
         const groupFilterValid = groupFilterValues ? groupFilterValues.some(value => featureGroups.includes(value)) : true;
         const featureIdToBlankId = Object.fromEntries(
