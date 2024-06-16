@@ -458,10 +458,6 @@ class Ms2queryForm:
         description="Score cutoff for MS2Query model matches.",
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
     )
-    ms2query_toggle = BooleanField(
-        label="Activate De Novo Calculation",
-        description=("Activate de novo MS2Query annotation module."),
-    )
 
 
 class ASKCBForm:
@@ -751,9 +747,6 @@ class AnalysisForm(
             "ms2query_score": pars.get("additional_modules", {})
             .get("ms2query_annotation", {})
             .get("score_cutoff", 0.7),
-            "ms2query_toggle": pars.get("additional_modules", {})
-            .get("ms2query_annotation", {})
-            .get("activate_module", False),
             "askcb_score": pars.get("files", {})
             .get("as_results", {})
             .get("similarity_cutoff", 0.7),

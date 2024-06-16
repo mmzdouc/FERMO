@@ -492,19 +492,6 @@ class InputProcessor(BaseModel):
                 "filepath": str(f_path.resolve()),
                 "score_cutoff": float(self.form.ms2query_score.data),
             }
-            self.check_key_in_params("additional_modules")
-            self.params["additional_modules"]["ms2query_annotation"] = {
-                "activate_module": False,
-                "score_cutoff": float(self.form.ms2query_score.data),
-                "maximum_runtime": (self.max_time_module if self.online else 0),
-            }
-        elif self.form.ms2query_file.data is None and self.form.ms2query_toggle.data:
-            self.check_key_in_params("additional_modules")
-            self.params["additional_modules"]["ms2query_annotation"] = {
-                "activate_module": self.form.ms2query_toggle.data,
-                "score_cutoff": float(self.form.ms2query_score.data),
-                "maximum_runtime": (self.max_time_module if self.online else 0),
-            }
 
     def process_forms_askcb(self: Self):
         """Processes the antismash input form data if any
