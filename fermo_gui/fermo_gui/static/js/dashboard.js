@@ -97,9 +97,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const featureId = data.points[0].data.name;
         const filteredSampleData = getFeatureData(featureId, sampleData, networkType);
         const sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
-        visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
         currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
         addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
+        visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
     }
 
     function handleNetworkTypeChange() {
@@ -107,9 +107,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const featureId = document.getElementById('activeFeature').textContent.split(': ')[1];
         const filteredSampleData = getFeatureData(featureId, sampleData, networkType);
         const sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
-        visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
-        currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
         updateRange();
+        currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
+        visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
     }
 
     function toggleDropdown(containerId) {

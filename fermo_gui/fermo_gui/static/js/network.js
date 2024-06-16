@@ -30,21 +30,27 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleDa
     const networkId = networkType === 'modified_cosine' ? cos_id : ms_id;
 
     const filteredFeatureIds = filteredSampleData.featureId.filter(id => id.toString() !== fId);
-    const networkData = statsNetwork[networkType][networkId].elements;
-    const uniqueNIds = networkData.nodes.map(node => node.data.id);
-    const uniqueFIds = getUniqueFeatureIds(statsChromatogram);
-    const featureDetails = getFeatureDetails(uniqueNIds, statsChromatogram);
 
-    const cy = cytoscape({
-        container: document.getElementById('cy'),
-        elements: networkData,
-        layout: { name: 'cose', rows: 1 },
-        style: getCyStyles(fId, filteredFeatureIds, uniqueFIds)
-    });
+    if (statsNetwork[networkType] && statsNetwork[networkType][networkId]) {
+        const networkData = statsNetwork[networkType][networkId].elements;
+        const uniqueNIds = networkData.nodes.map(node => node.data.id);
+        const uniqueFIds = getUniqueFeatureIds(statsChromatogram);
+        const featureDetails = getFeatureDetails(uniqueNIds, statsChromatogram);
 
-    const tooltip = createTooltip();
-    setupCyEvents(cy, tooltip, featureDetails, sampleData, fId, statsNetwork, statsChromatogram, networkType);
-    showNetwork();
+        const cy = cytoscape({
+            container: document.getElementById('cy'),
+            elements: networkData,
+            layout: { name: 'cose', rows: 1 },
+            style: getCyStyles(fId, filteredFeatureIds, uniqueFIds)
+        });
+
+        const tooltip = createTooltip();
+        setupCyEvents(cy, tooltip, featureDetails, sampleData, fId, statsNetwork, statsChromatogram, networkType);
+        showNetwork();
+    } else {
+        hideNetwork();
+        document.getElementById('activeFeature').textContent = "There are no networks found for this feature.";
+    }
 }
 
 function getCyStyles(fId, filteredFeatureIds, uniqueFIds) {

@@ -32,8 +32,8 @@ export function updateFeatureTables(featureId, sampleData, filteredSampleData) {
             document.getElementById('activeFeature').textContent =
             'Network visualization of feature: ' + featureId;
             const networkType = document.getElementById('networkSelect').value;
-            addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
             visualizeData(filteredSampleData, networkType, true, 0, 1);
+            addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
             updateTableWithFeatureData(i, sampleData);
             updateTableWithGroupData(sampleData.fGroupData[i]);
             updateTableWithSampleData(sampleData.fSampleData[i], sampleData.aSampleData[i]);
