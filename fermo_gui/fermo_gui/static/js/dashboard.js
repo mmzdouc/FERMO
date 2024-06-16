@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
         clearHeatmaps();
         const networkType = document.getElementById('networkSelect').value;
         const featureId = data.points[0].data.name;
-        const filteredSampleData = getFeatureData(featureId, sampleData);
+        const filteredSampleData = getFeatureData(featureId, sampleData, networkType);
         const sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
         visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
         currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleNetworkTypeChange() {
         const networkType = document.getElementById('networkSelect').value;
         const featureId = document.getElementById('activeFeature').textContent.split(': ')[1];
-        const filteredSampleData = getFeatureData(featureId, sampleData);
+        const filteredSampleData = getFeatureData(featureId, sampleData, networkType);
         const sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
         visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
         currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
@@ -227,6 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const foldGroup1 = document.getElementById('group1FoldInput').value;
         const foldGroup2 = document.getElementById('group2FoldInput').value;
         const foldSelectGroup = document.getElementById('selectFoldInput').value;
+        const networkType = document.getElementById('networkSelect').value;
 
         const groupFilterSelect = document.getElementById('groupFilter');
         const networkFilterSelect = document.getElementById('networkFilter');
@@ -234,11 +235,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const groupFilterValues = Array.from(groupFilterSelect.selectedOptions).map(option => option.value);
         const networkFilterValues = Array.from(networkFilterSelect.selectedOptions).map(option => option.value);
 
-
-        // Check if all fold score inputs are filled
         const foldScoreInputsFilled = foldScore && foldGroup1 && foldGroup2 && foldSelectGroup;
 
-        visualizeData(sampleData, false, minScore, maxScore, findFeatureId,
+        visualizeData(sampleData, networkType, false, minScore, maxScore, findFeatureId,
                       minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                       minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                       showOnlyAnnotationFeatures, showOnlyBlankFeatures,

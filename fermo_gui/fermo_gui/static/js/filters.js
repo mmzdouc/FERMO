@@ -50,7 +50,8 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         group2FoldInput: document.getElementById('group2FoldInput'),
         selectFoldInput: document.getElementById('selectFoldInput'),
         groupFilterSelect: document.getElementById('groupFilter'),
-        networkFilterSelect: document.getElementById('networkFilter')
+        networkFilterSelect: document.getElementById('networkFilter'),
+        networkTypeSelect: document.getElementById('networkSelect')
     };
 
     function updateRange() {
@@ -75,8 +76,9 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         const foldSelectGroup = elements.selectFoldInput.value;
         const groupFilterValues = Array.from(elements.groupFilterSelect.selectedOptions).map(option => option.value);
         const networkFilterValues = Array.from(elements.networkFilterSelect.selectedOptions).map(option => option.value);
+        const networkType = elements.networkTypeSelect.value;
 
-        visualizeData(sampleData, false, minScore, maxScore, findFeatureId,
+        visualizeData(sampleData, networkType, false, minScore, maxScore, findFeatureId,
                       minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                       minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                       showOnlyAnnotationFeatures, showOnlyBlankFeatures,

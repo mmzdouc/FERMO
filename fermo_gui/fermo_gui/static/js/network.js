@@ -119,7 +119,7 @@ function hideTooltip(tooltip) {
 function handleNodeSelect(node, featureDetails, sampleData, fId, statsNetwork, statsChromatogram, networkType, tooltip) {
     hideTooltip(tooltip);
     const featureId = node.id();
-    const filteredSampleData = getFeatureData(featureId, sampleData);
+    const filteredSampleData = getFeatureData(featureId, sampleData, networkType);
 
     if (isEmpty(filteredSampleData)) {
         alert('This feature is not found in this sample.');

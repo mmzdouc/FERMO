@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-export function visualizeData(sampleData,
+export function visualizeData(sampleData, networkType = "modified_cosine",
                               isFeatureVisualization = false, minScore = 0, maxScore = 10, findFeatureId = false,
                               minPhenotypeScore = 0, maxPhenotypeScore = 1, showOnlyPhenotypeFeatures = false,
                               minMatchScore = 0, maxMatchScore = 1, showOnlyMatchFeatures = false,

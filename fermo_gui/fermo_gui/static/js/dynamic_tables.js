@@ -23,7 +23,6 @@ SOFTWARE.
 
 import { visualizeData, addBoxVisualization } from './chromatogram.js';
 import { visualizeNetwork } from './network.js'
-import { getFeatureData } from './parsing.js';
 
 // Functions to dynamically update tables after feature or sample selection //
 export function updateFeatureTables(featureId, sampleData, filteredSampleData) {
@@ -32,8 +31,9 @@ export function updateFeatureTables(featureId, sampleData, filteredSampleData) {
             showTables()
             document.getElementById('activeFeature').textContent =
             'Network visualization of feature: ' + featureId;
+            const networkType = document.getElementById('networkSelect').value;
             addBoxVisualization(sampleData.traceInt[i], sampleData.traceRt[i]);
-            visualizeData(filteredSampleData, true, 0, 1);
+            visualizeData(filteredSampleData, networkType, true, 0, 1);
             updateTableWithFeatureData(i, sampleData);
             updateTableWithGroupData(sampleData.fGroupData[i]);
             updateTableWithSampleData(sampleData.fSampleData[i], sampleData.aSampleData[i]);

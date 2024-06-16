@@ -41,7 +41,8 @@ export function getSampleData(sampleName, statsChromatogram) {
         precMz: activeSampleData.map(obj => obj.mz),
         novScore: activeSampleData.map(obj => obj.novelty),
         blankAs: activeSampleData.map(obj => obj.blank),
-        fNetwork: activeSampleData.map(obj => obj.network_features),
+        fNetworkCosine: activeSampleData.map(obj => obj.n_features_cosine),
+        fNetworkDeepScore: activeSampleData.map(obj => obj.n_features_deepscore),
         idNetCos: activeSampleData.map(obj => obj.n_cos_id),
         idNetMs: activeSampleData.map(obj => obj.n_ms2d_id),
         samples: activeSampleData.map(obj => obj.samples),
@@ -54,7 +55,7 @@ export function getSampleData(sampleName, statsChromatogram) {
     }
 }
 
-export function getFeatureData(featureId, sampleData) {
+export function getFeatureData(featureId, sampleData, networkType) {
     let filteredData = {
         featureId: [],
         fNetwork: [],
@@ -74,11 +75,17 @@ export function getFeatureData(featureId, sampleData) {
     for (var i = 0; i < sampleData.featureId.length; i++) {
         if (sampleData.featureId[i] == featureId) {
             filteredData.upLowRange.push(sampleData.upLowRange[0], sampleData.upLowRange[1]);
-            filteredData.fNetwork.push(sampleData.fNetwork[i]);
+            let networkType2;
+            if (networkType === "modified_cosine") {
+                networkType2 = "fNetworkCosine";
+            } else if (networkType === "ms2deepscore") {
+                networkType2 = "fNetworkDeepScore";
+            }
+            filteredData.fNetwork.push(sampleData[networkType2][i]);
 
             // Iterate through the fNetwork array to find the corresponding features
-            for (var j = 0; j < sampleData.fNetwork[i].length; j++) {
-                let key = sampleData.fNetwork[i][j];
+            for (var j = 0; j < sampleData[networkType2][i].length; j++) {
+                let key = sampleData[networkType2][i][j];
                 let index = sampleData.featureId.indexOf(key);
 
                 if (index >= 0 && index < sampleData.traceInt.length) {
