@@ -27,13 +27,11 @@ from flask import Flask
 def configure_mail(app: Flask) -> Flask:
     """Configure email server settings to deliver job notifications
 
-    Email-address and password must be set in a config file.
+    All configs must be read from a config file in an 'instance' folder
 
     Arguments:
         app: The Flask app instance
     """
-    app.config["MAIL_SERVER"] = "smtp.gmail.com"
-    app.config["MAIL_PORT"] = 465
-    app.config["MAIL_USE_TLS"] = False
-    app.config["MAIL_USE_SSL"] = True
+    if app.config.get("ONLINE"):
+        app.config.from_pyfile("config.py", silent=True)
     return app

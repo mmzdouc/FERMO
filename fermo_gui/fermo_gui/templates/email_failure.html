@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>FERMO Job Failure Notification (NOREPLY)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #eaeaea;
+            border-radius: 5px;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .content {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+        p {
+            color: #333333;
+        }
+        a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i>FERMO</i> Job Failure</h1>
+        </div>
+        <div class="content">
+            <p>Dear user,</p>
+            <p>The <i>FERMO</i> job with the ID</p>
+            <p><strong>{{ job_id }}</strong></p>
+            <p>has failed.</p>
+            <p>Please follow this link to see the fail log:</p>
+            <p><a href="{{ root_url }}/results/job_failed/{{ job_id }}/">{{ root_url }}/results/job_failed/{{ job_id }}/</a></p>
+            <p>If you believe this to be a bug, please feel free to file a <a href="https://github.com/mmzdouc/FERMO/issues">Bug Report</a>.</p>
+            <p>Please do not respond to this email as it is sent from an unmonitored address.</p>
+            <p>Kind regards,</p>
+            <p>The <i>FERMO</i> team</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2022 to present <i>FERMO</i>. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
