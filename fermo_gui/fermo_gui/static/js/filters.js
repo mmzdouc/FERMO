@@ -88,7 +88,12 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
                       networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
 
-        const currentBoxParams = getCurrentBoxParams();
+        const featureId = document.getElementById('activeFeature').textContent.split(': ')[1];
+        for (var i = 0; i < sampleData.featureId.length; i++) {
+            if (sampleData.featureId[i] == featureId) {
+                var currentBoxParams = { traceInt: sampleData.traceInt[i], traceRt: sampleData.traceRt[i] };
+            }
+        }
         if (currentBoxParams) {
             addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
         }

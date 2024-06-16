@@ -208,77 +208,68 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function updateRange() {
-        const minScore = parseFloat(document.getElementById('noveltyRange1').value);
-        const maxScore = parseFloat(document.getElementById('noveltyRange2').value);
-        const minPhenotypeScore = parseFloat(document.getElementById('phenotypeRange1').value);
-        const maxPhenotypeScore = parseFloat(document.getElementById('phenotypeRange2').value);
-        const showOnlyPhenotypeFeatures = document.getElementById('showPhenotypeFeatures').checked;
-        const minMatchScore = parseFloat(document.getElementById('matchRange1').value);
-        const maxMatchScore = parseFloat(document.getElementById('matchRange2').value);
-        const showOnlyMatchFeatures = document.getElementById('showMatchFeatures').checked;
-        const showOnlyAnnotationFeatures = document.getElementById('showAnnotationFeatures').checked;
-        const showOnlyBlankFeatures = document.getElementById('showBlankFeatures').checked;
-        const findFeatureId = parseFloat(document.getElementById('findInput').value);
-        const minMzScore = parseFloat(document.getElementById('mz1Input').value);
-        const maxMzScore = parseFloat(document.getElementById('mz2Input').value);
-        const minSampleCount = parseFloat(document.getElementById('sample1Input').value);
-        const maxSampleCount = parseFloat(document.getElementById('sample2Input').value);
-        const foldScore = parseFloat(document.getElementById('foldInput').value);
-        const foldGroup1 = document.getElementById('group1FoldInput').value;
-        const foldGroup2 = document.getElementById('group2FoldInput').value;
-        const foldSelectGroup = document.getElementById('selectFoldInput').value;
-        const networkType = document.getElementById('networkSelect').value;
+        // Extract values from the input elements
+        const getInputValue = id => parseFloat(document.getElementById(id).value);
+        const getChecked = id => document.getElementById(id).checked;
+        const getSelectedValues = id => Array.from(document.getElementById(id).selectedOptions).map(option => option.value);
+        const getValue = id => document.getElementById(id).value;
 
-        const groupFilterSelect = document.getElementById('groupFilter');
-        const networkFilterSelect = document.getElementById('networkFilter');
+        const params = {
+            minScore: getInputValue('noveltyRange1'),
+            maxScore: getInputValue('noveltyRange2'),
+            minPhenotypeScore: getInputValue('phenotypeRange1'),
+            maxPhenotypeScore: getInputValue('phenotypeRange2'),
+            showOnlyPhenotypeFeatures: getChecked('showPhenotypeFeatures'),
+            minMatchScore: getInputValue('matchRange1'),
+            maxMatchScore: getInputValue('matchRange2'),
+            showOnlyMatchFeatures: getChecked('showMatchFeatures'),
+            showOnlyAnnotationFeatures: getChecked('showAnnotationFeatures'),
+            showOnlyBlankFeatures: getChecked('showBlankFeatures'),
+            findFeatureId: getInputValue('findInput'),
+            minMzScore: getInputValue('mz1Input'),
+            maxMzScore: getInputValue('mz2Input') || 10000,
+            minSampleCount: getInputValue('sample1Input'),
+            maxSampleCount: getInputValue('sample2Input') || 100,
+            foldScore: getInputValue('foldInput'),
+            foldGroup1: getValue('group1FoldInput'),
+            foldGroup2: getValue('group2FoldInput'),
+            foldSelectGroup: getValue('selectFoldInput'),
+            networkType: getValue('networkSelect'),
+            groupFilterValues: getSelectedValues('groupFilter'),
+            networkFilterValues: getSelectedValues('networkFilter')
+        };
 
-        const groupFilterValues = Array.from(groupFilterSelect.selectedOptions).map(option => option.value);
-        const networkFilterValues = Array.from(networkFilterSelect.selectedOptions).map(option => option.value);
+        const foldScoreInputsFilled = params.foldScore && params.foldGroup1 && params.foldGroup2 && params.foldSelectGroup;
 
-        const foldScoreInputsFilled = foldScore && foldGroup1 && foldGroup2 && foldSelectGroup;
-
-        visualizeData(sampleData, networkType, false, minScore, maxScore, findFeatureId,
-                      minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
-                      minMatchScore, maxMatchScore, showOnlyMatchFeatures,
-                      showOnlyAnnotationFeatures, showOnlyBlankFeatures,
-                      minMzScore, maxMzScore ? maxMzScore : 10000,
-                      minSampleCount, maxSampleCount ? maxSampleCount : 100,
-                      foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup,
-                      groupFilterValues.length ? groupFilterValues : null,
-                      networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
+        visualizeData(sampleData, params.networkType, false, params.minScore, params.maxScore, params.findFeatureId,
+                      params.minPhenotypeScore, params.maxPhenotypeScore, params.showOnlyPhenotypeFeatures,
+                      params.minMatchScore, params.maxMatchScore, params.showOnlyMatchFeatures,
+                      params.showOnlyAnnotationFeatures, params.showOnlyBlankFeatures,
+                      params.minMzScore, params.maxMzScore,
+                      params.minSampleCount, params.maxSampleCount,
+                      foldScoreInputsFilled ? params.foldScore : null, params.foldGroup1, params.foldGroup2, params.foldSelectGroup,
+                      params.groupFilterValues.length ? params.groupFilterValues : null,
+                      params.networkFilterValues.length ? params.networkFilterValues : null, statsFIdGroups);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
 
         if (currentBoxParams) {
             addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
         }
 
-        updateRetainedFeatures(minScore, maxScore, findFeatureId,
-                               minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
-                               minMatchScore, maxMatchScore, showOnlyMatchFeatures,
-                               showOnlyAnnotationFeatures, showOnlyBlankFeatures,
-                               minMzScore, maxMzScore, minSampleCount, maxSampleCount,
-                               foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup,
-                               groupFilterValues.length ? groupFilterValues : null,
-                               networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
+        updateRetainedFeatures(params, statsFIdGroups);
     }
 
-    function updateRetainedFeatures(minScore, maxScore, findFeatureId,
-                                    minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
-                                    minMatchRange, maxMatchRange, showOnlyMatchFeatures,
-                                    showAnnotationFeatures, showBlankFeatures,
-                                    minMzScore, maxMzScore, minSampleScore, maxSampleScore,
-                                    foldScore, foldGroup1, foldGroup2, foldSelectGroup,
-                                    groupFilterValues, networkFilterValues, statsFIdGroups) {
+    function updateRetainedFeatures(params, statsFIdGroups) {
         document.querySelectorAll('.select-sample').forEach(row => {
             const sampleName = row.getAttribute('data-sample-name');
             const sampleData = getSampleData(sampleName, statsChromatogram);
-            const featuresWithinRange = getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatureId,
-                minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
-                minMatchRange, maxMatchRange, showOnlyMatchFeatures,
-                showAnnotationFeatures, showBlankFeatures,
-                minMzScore, maxMzScore, minSampleScore, maxSampleScore,
-                foldScore, foldGroup1, foldGroup2, foldSelectGroup,
-                groupFilterValues, networkFilterValues, statsFIdGroups);
+            const featuresWithinRange = getFeaturesWithinRange(sampleData, params.minScore, params.maxScore, params.findFeatureId,
+                params.minPhenotypeScore, params.maxPhenotypeScore, params.showOnlyPhenotypeFeatures,
+                params.minMatchScore, params.maxMatchScore, params.showOnlyMatchFeatures,
+                params.showOnlyAnnotationFeatures, params.showOnlyBlankFeatures,
+                params.minMzScore, params.maxMzScore, params.minSampleCount, params.maxSampleCount,
+                params.foldScore, params.foldGroup1, params.foldGroup2, params.foldSelectGroup,
+                params.groupFilterValues, params.networkFilterValues, statsFIdGroups);
             row.children[2].textContent = featuresWithinRange;
         });
     }
