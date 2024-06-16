@@ -39,7 +39,6 @@ dependencies = [
 ]
 [project.optional-dependencies]
 dev = [
-    "bandit[toml]~=1.7.9",
     "black~=24.4.2",
     "isort~=5.13.2",
     "pre-commit~=3.4.0",
@@ -140,6 +139,8 @@ select = [
     "TID",
     # pyupgrade
     "UP",
+    # flake8-bandit
+    "S"
 ]
 ignore = [
     # if-expr-with-true-false

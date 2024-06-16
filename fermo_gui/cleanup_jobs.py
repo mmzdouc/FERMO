@@ -1,7 +1,7 @@
 import os
+import shutil
 import time
 from datetime import datetime, timedelta
-import shutil
 
 
 def delete_old_directories(target_dir, excluded_dir, age_limit):
