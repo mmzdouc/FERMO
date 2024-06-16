@@ -90,7 +90,6 @@ def start_fermo_core_manager(metadata: dict) -> bool:
         )
         _send_mail_fail()
         return False
-
     except Exception as e:
         _write_to_log(f"An error occurred: {e}")
         _send_mail_fail()
@@ -119,14 +118,6 @@ class FermoCoreManager(BaseModel):
         logger = logging.getLogger("fermo_core")
         logger.setLevel(logging.DEBUG)
 
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setLevel(logging.DEBUG)
-        console_handler.setFormatter(
-            coloredlogs.ColoredFormatter(
-                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            )
-        )
-
         file_handler = logging.FileHandler(
             Path(f"{self.uploads_dir}/results/out.fermo.log"),
             mode="w",
@@ -136,7 +127,6 @@ class FermoCoreManager(BaseModel):
             logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         )
 
-        logger.addHandler(console_handler)
         logger.addHandler(file_handler)
 
         return logger
