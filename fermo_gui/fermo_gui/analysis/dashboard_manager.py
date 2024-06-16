@@ -219,6 +219,10 @@ class DashboardManager(BaseModel):
                         .get("summary", {})
                         .get(str(n_id_deepscore), {})
                     )
+                    if len(n_features_deepscore) >= 25:
+                        n_features_deepscore = {}
+                    if len(n_features_cosine) >= 25:
+                        n_features_cosine = {}
 
                     feature_data.append(
                         {
@@ -261,7 +265,16 @@ class DashboardManager(BaseModel):
                 n_info = networks.get(network, {})
                 network_data = {}
                 for n_id in n_info.get("subnetworks", {}):
-                    network_data[n_id] = n_info.get("subnetworks", {}).get(n_id)
+                    network_size = len(
+                        n_info.get("subnetworks", {})
+                        .get(n_id)
+                        .get("elements", {})
+                        .get("nodes", {})
+                    )
+                    if network_size >= 25:
+                        network_data[n_id] = "large_network"
+                    else:
+                        network_data[n_id] = n_info.get("subnetworks", {}).get(n_id)
 
                 self.stats_network[network] = network_data
 

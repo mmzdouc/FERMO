@@ -31,22 +31,34 @@ export function visualizeNetwork(fId, statsNetwork, filteredSampleData, sampleDa
 
     const filteredFeatureIds = filteredSampleData.featureId.filter(id => id.toString() !== fId);
 
-    if (statsNetwork[networkType] && statsNetwork[networkType][networkId]) {
-        const networkData = statsNetwork[networkType][networkId].elements;
-        const uniqueNIds = networkData.nodes.map(node => node.data.id);
-        const uniqueFIds = getUniqueFeatureIds(statsChromatogram);
-        const featureDetails = getFeatureDetails(uniqueNIds, statsChromatogram);
+    if (statsNetwork[networkType]) {
+        // Check the size of the network. Label set in the dashboard_manager.py
+        if (statsNetwork[networkType][networkId] === "large_network") {
+            hideNetwork();
+            document.getElementById('legend').style.display = '';
+            document.getElementById('activeFeature').textContent =
+            "Network is too big to render on the dashboard for feature: " + fId;;
+            return;
+        } else if (statsNetwork[networkType][networkId]) {
+            const networkData = statsNetwork[networkType][networkId].elements;
+            const uniqueNIds = networkData.nodes.map(node => node.data.id);
+            const uniqueFIds = getUniqueFeatureIds(statsChromatogram);
+            const featureDetails = getFeatureDetails(uniqueNIds, statsChromatogram);
 
-        const cy = cytoscape({
-            container: document.getElementById('cy'),
-            elements: networkData,
-            layout: { name: 'cose', rows: 1 },
-            style: getCyStyles(fId, filteredFeatureIds, uniqueFIds)
-        });
+            const cy = cytoscape({
+                container: document.getElementById('cy'),
+                elements: networkData,
+                layout: { name: 'cose', rows: 1 },
+                style: getCyStyles(fId, filteredFeatureIds, uniqueFIds)
+            });
 
-        const tooltip = createTooltip();
-        setupCyEvents(cy, tooltip, featureDetails, sampleData, fId, statsNetwork, statsChromatogram, networkType);
-        showNetwork();
+            const tooltip = createTooltip();
+            setupCyEvents(cy, tooltip, featureDetails, sampleData, fId, statsNetwork, statsChromatogram, networkType);
+            showNetwork();
+        } else {
+            hideNetwork();
+            document.getElementById('activeFeature').textContent = "There are no networks found for this feature.";
+        }
     } else {
         hideNetwork();
         document.getElementById('activeFeature').textContent = "There are no networks found for this feature.";
