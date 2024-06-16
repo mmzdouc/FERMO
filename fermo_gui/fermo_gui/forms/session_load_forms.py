@@ -22,8 +22,9 @@ SOFTWARE.
 """
 
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileAllowed, FileField, FileRequired
-from wtforms import SubmitField
+from flask_wtf.file import FileAllowed, FileField
+from wtforms import StringField, SubmitField
+from wtforms.validators import Optional
 
 
 class SessionLoadForm(FlaskForm):
@@ -32,7 +33,13 @@ class SessionLoadForm(FlaskForm):
     session_file = FileField(
         label="FERMO Session File",
         description="Upload a previously created FERMO session file.",
-        validators=[FileRequired(), FileAllowed(["json"])],
+        validators=[Optional(), FileAllowed(["json"])],
+    )
+
+    reload_existing_jobid = StringField(
+        label="FERMO JobID",
+        description=("Reload an existing FERMO job."),
+        validators=[Optional()],
     )
 
     load_session = SubmitField("Load Session")
