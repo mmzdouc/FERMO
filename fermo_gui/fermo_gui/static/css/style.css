@@ -370,3 +370,21 @@ table th:last-child{
     font-weight: bold;
     color: #5e5e5e;
 }
+
+.info-button {
+    display: inline-block;
+    background-image: url("/static/images/question-circle-fill.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: transparent;
+    border: none;
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+    transition: transform 0.3s;
+    text-decoration: none;
+}
+
+.info-button:hover {
+    transform: scale(1.2);
+}

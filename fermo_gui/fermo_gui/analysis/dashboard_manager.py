@@ -194,17 +194,35 @@ class DashboardManager(BaseModel):
                     )
                     g_info = f_sess.get("general_features", {}).get(str(f_id), {})
                     novelty = g_info.get("scores", {}).get("novelty", {})
+                    n_id_cosine = (
+                        g_info.get("networks", {})
+                        .get("modified_cosine", {})
+                        .get("network_id", {})
+                    )
+                    n_id_deepscore = (
+                        g_info.get("networks", {})
+                        .get("ms2deepscore", {})
+                        .get("network_id", {})
+                    )
 
-                    network_features = []
-                    networks = f_sess.get("stats", {}).get("networks", {})
-                    for network_type in networks:
-                        network_data = networks.get(str(network_type), {}).get(
-                            "summary", {}
-                        )
-                        for n_id in network_data:
-                            n_features = network_data.get(str(n_id), {})
-                            if f_id in n_features:
-                                network_features = n_features
+                    n_features_cosine = (
+                        f_sess.get("stats", {})
+                        .get("networks", {})
+                        .get("modified_cosine", {})
+                        .get("summary", {})
+                        .get(str(n_id_cosine), {})
+                    )
+                    n_features_deepscore = (
+                        f_sess.get("stats", {})
+                        .get("networks", {})
+                        .get("ms2deepscore", {})
+                        .get("summary", {})
+                        .get(str(n_id_deepscore), {})
+                    )
+                    if len(n_features_deepscore) >= 50:
+                        n_features_deepscore = {}
+                    if len(n_features_cosine) >= 50:
+                        n_features_cosine = {}
 
                     feature_data.append(
                         {
@@ -223,13 +241,10 @@ class DashboardManager(BaseModel):
                             "f_sample": g_info.get("height_per_sample"),
                             "a_sample": g_info.get("area_per_sample"),
                             "annotations": g_info.get("annotations"),
-                            "n_cos_id": g_info.get("networks", {})
-                            .get("modified_cosine", {})
-                            .get("network_id", {}),
-                            "n_ms2d_id": g_info.get("networks", {})
-                            .get("ms2deepscore", {})
-                            .get("network_id", {}),
-                            "network_features": network_features,
+                            "n_cos_id": n_id_cosine,
+                            "n_ms2d_id": n_id_deepscore,
+                            "n_features_cosine": n_features_cosine,
+                            "n_features_deepscore": n_features_deepscore,
                         }
                     )
                 self.stats_chromatogram[sample] = feature_data
@@ -250,7 +265,16 @@ class DashboardManager(BaseModel):
                 n_info = networks.get(network, {})
                 network_data = {}
                 for n_id in n_info.get("subnetworks", {}):
-                    network_data[n_id] = n_info.get("subnetworks", {}).get(n_id)
+                    network_size = len(
+                        n_info.get("subnetworks", {})
+                        .get(n_id)
+                        .get("elements", {})
+                        .get("nodes", {})
+                    )
+                    if network_size >= 50:
+                        network_data[n_id] = "large_network"
+                    else:
+                        network_data[n_id] = n_info.get("subnetworks", {}).get(n_id)
 
                 self.stats_network[network] = network_data
 

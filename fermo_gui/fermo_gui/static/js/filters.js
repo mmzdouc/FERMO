@@ -50,7 +50,8 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         group2FoldInput: document.getElementById('group2FoldInput'),
         selectFoldInput: document.getElementById('selectFoldInput'),
         groupFilterSelect: document.getElementById('groupFilter'),
-        networkFilterSelect: document.getElementById('networkFilter')
+        networkFilterSelect: document.getElementById('networkFilter'),
+        networkTypeSelect: document.getElementById('networkSelect')
     };
 
     function updateRange() {
@@ -75,8 +76,9 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
         const foldSelectGroup = elements.selectFoldInput.value;
         const groupFilterValues = Array.from(elements.groupFilterSelect.selectedOptions).map(option => option.value);
         const networkFilterValues = Array.from(elements.networkFilterSelect.selectedOptions).map(option => option.value);
+        const networkType = elements.networkTypeSelect.value;
 
-        visualizeData(sampleData, false, minScore, maxScore, findFeatureId,
+        visualizeData(sampleData, networkType, false, minScore, maxScore, findFeatureId,
                       minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                       minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                       showOnlyAnnotationFeatures, showOnlyBlankFeatures,
@@ -86,7 +88,12 @@ export function initializeFilters(visualizeData, handleChromatogramClick, addBox
                       networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
 
-        const currentBoxParams = getCurrentBoxParams();
+        const featureId = document.getElementById('activeFeature').textContent.split(': ')[1];
+        for (var i = 0; i < sampleData.featureId.length; i++) {
+            if (sampleData.featureId[i] == featureId) {
+                var currentBoxParams = { traceInt: sampleData.traceInt[i], traceRt: sampleData.traceRt[i] };
+            }
+        }
         if (currentBoxParams) {
             addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
         }
@@ -155,7 +162,7 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
                                        showOnlyAnnotationFeatures, showOnlyBlankFeatures,
                                        minMzScore, maxMzScore, minSampleCount, maxSampleCount,
                                        foldScore, foldGroup1, foldGroup2, foldSelectGroup,
-                                       groupFilterValues, networkFilterValues, statsFIdGroups) {
+                                       groupFilterValues, networkFilterValues, statsFIdGroups, networkType) {
     return sampleData.novScore.reduce((count, score, index) => {
         const phenotypeScore = sampleData.annotations?.[index]?.phenotypes?.[0]?.score;
         const matchScore = sampleData.annotations?.[index]?.matches?.[0]?.score;
@@ -166,7 +173,7 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
         const sampleCount = sampleData.samples[index].length;
         const foldChanges = sampleData.fGroupData?.[index]?.[foldSelectGroup] ?? [];
         const featureGroups = Object(statsFIdGroups)?.[findFeature] ?? [];
-        const networkFIds = sampleData.fNetwork?.[index] ?? [];
+        const networkFIds = sampleData.fNetworkCosine?.[index] ?? [];
 
         const groupFilterValid = groupFilterValues ? groupFilterValues.some(value => featureGroups.includes(value)) : true;
         const featureIdToBlankId = Object.fromEntries(

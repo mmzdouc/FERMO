@@ -97,4 +97,6 @@ def task_result(job_id: str) -> Union[str, Response]:
     if request.method == "GET":
         manager = DashboardManager()
         manager.prepare_data_get(f_sess)
-        return render_template("dashboard.html", data=manager.provide_data_get())
+        return render_template(
+            "dashboard.html", data=manager.provide_data_get(), job_id=job_id
+        )

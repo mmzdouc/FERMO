@@ -22,7 +22,7 @@ SOFTWARE.
 */
 
 import { getSampleData, getFeatureData } from './parsing.js';
-import { updateFeatureTables, hideTables } from './dynamic_tables.js';
+import { updateFeatureTables, hideTables, clearHeatmaps } from './dynamic_tables.js';
 import { visualizeData, addBoxVisualization } from './chromatogram.js';
 import { visualizeNetwork, hideNetwork } from './network.js';
 import { enableDragAndDrop, disableDragAndDrop } from './dragdrop.js';
@@ -70,7 +70,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('networkSelect').addEventListener('change', handleNetworkTypeChange);
         document.getElementById('showBlankFeatures').addEventListener('change', updateRange);
         document.getElementById('findInput').addEventListener('input', updateRange);
+        document.getElementById('mz1Input').addEventListener('input', updateRange);
         document.getElementById('mz2Input').addEventListener('input', updateRange);
+        document.getElementById('sample1Input').addEventListener('input', updateRange);
         document.getElementById('sample2Input').addEventListener('input', updateRange);
         document.getElementById('foldInput').addEventListener('input', updateRange);
         document.getElementById('group1FoldInput').addEventListener('input', updateRange);
@@ -90,23 +92,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleChromatogramClick(data) {
+        clearHeatmaps();
         const networkType = document.getElementById('networkSelect').value;
         const featureId = data.points[0].data.name;
-        const filteredSampleData = getFeatureData(featureId, sampleData);
+        const filteredSampleData = getFeatureData(featureId, sampleData, networkType);
         const sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
-        visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
         currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
         addBoxVisualization(currentBoxParams.traceInt, currentBoxParams.traceRt);
+        visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
     }
 
     function handleNetworkTypeChange() {
         const networkType = document.getElementById('networkSelect').value;
         const featureId = document.getElementById('activeFeature').textContent.split(': ')[1];
-        const filteredSampleData = getFeatureData(featureId, sampleData);
+        const filteredSampleData = getFeatureData(featureId, sampleData, networkType);
         const sampleId = updateFeatureTables(featureId, sampleData, filteredSampleData);
-        visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
-        currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
         updateRange();
+        currentBoxParams = { traceInt: sampleData.traceInt[sampleId], traceRt: sampleData.traceRt[sampleId] };
+        visualizeNetwork(featureId, statsNetwork, filteredSampleData, sampleData, sampleId, statsChromatogram, networkType);
     }
 
     function toggleDropdown(containerId) {
@@ -114,6 +117,49 @@ document.addEventListener('DOMContentLoaded', function() {
         dropdownContainer.style.display = (dropdownContainer.style.display === "none" || dropdownContainer.style.display === "") ? "block" : "none";
     }
 
+    function checkAndEnableOption(jobId, filename, elementId) {
+        const url = `/check_file/${jobId}/${filename}`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const element = document.getElementById(elementId);
+                if (data.exists) {
+                    element.disabled = false;
+                    element.dataset.url = `/download/${jobId}/${filename}`;
+                } else {
+                    element.disabled = true;
+                    delete element.dataset.url;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    const jobId = document.querySelector('.container').getAttribute('data-job-id');
+
+    // Check and enable options based on file availability
+    checkAndEnableOption(jobId, 'out.fermo.summary.txt', 'summary');
+    checkAndEnableOption(jobId, 'out.fermo.abbrev.csv', 'abbrev');
+    checkAndEnableOption(jobId, 'out.fermo.log', 'log');
+    checkAndEnableOption(jobId, 'out.fermo.session.json', 'session');
+    checkAndEnableOption(jobId, 'out.fermo.full.csv', 'full');
+    checkAndEnableOption(jobId, 'out.fermo.modified_cosine.graphml', 'mod_cosine');
+    checkAndEnableOption(jobId, 'out.fermo.ms2deepscore.graphml', 'ms2deepscore');
+
+    // Add event listeners to download buttons
+    document.querySelectorAll('.download-btn').forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            const selectId = event.target.getAttribute('data-select-id');
+            const selectElement = document.getElementById(selectId);
+            const selectedOption = selectElement.selectedOptions[0];
+            if (selectedOption && selectedOption.dataset.url) {
+                window.location.href = selectedOption.dataset.url;
+            } else {
+                alert('Please select a file to download.');
+            }
+        });
+    });
     document.getElementById('groupButton').addEventListener('click', () => toggleDropdown('dropdownGroupContainer'));
     document.getElementById('networkExcludeButton').addEventListener('click', () => toggleDropdown('dropdownNetworkContainer'));
 
@@ -129,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'Click on any feature in the main chromatogram overview.';
             document.getElementById('feature-annotation').textContent =
             'Click on any feature in the main chromatogram overview.';
-            Plotly.purge('heatmap-container');
+            clearHeatmaps();
             document.getElementById("sampleCell").innerHTML =
             "<tr><td>Click on any feature in the main chromatogram overview.</td><td></td></tr>";
 
@@ -143,7 +189,9 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('showAnnotationFeatures').addEventListener('change', updateRange);
             document.getElementById('showBlankFeatures').addEventListener('change', updateRange);
             document.getElementById('showBlankFeatures').addEventListener('input', updateRange);
+            document.getElementById('mz1Input').addEventListener('input', updateRange);
             document.getElementById('mz2Input').addEventListener('input', updateRange);
+            document.getElementById('sample1Input').addEventListener('input', updateRange);
             document.getElementById('sample2Input').addEventListener('input', updateRange);
             document.getElementById('foldInput').addEventListener('input', updateRange);
             document.getElementById('group1FoldInput').addEventListener('input', updateRange);
@@ -179,6 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const foldGroup1 = document.getElementById('group1FoldInput').value;
         const foldGroup2 = document.getElementById('group2FoldInput').value;
         const foldSelectGroup = document.getElementById('selectFoldInput').value;
+        const networkType = document.getElementById('networkSelect').value;
 
         const groupFilterSelect = document.getElementById('groupFilter');
         const networkFilterSelect = document.getElementById('networkFilter');
@@ -186,15 +235,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const groupFilterValues = Array.from(groupFilterSelect.selectedOptions).map(option => option.value);
         const networkFilterValues = Array.from(networkFilterSelect.selectedOptions).map(option => option.value);
 
-
-        // Check if all fold score inputs are filled
         const foldScoreInputsFilled = foldScore && foldGroup1 && foldGroup2 && foldSelectGroup;
 
-        visualizeData(sampleData, false, minScore, maxScore, findFeatureId,
+        visualizeData(sampleData, networkType, false, minScore, maxScore, findFeatureId,
                       minPhenotypeScore, maxPhenotypeScore, showOnlyPhenotypeFeatures,
                       minMatchScore, maxMatchScore, showOnlyMatchFeatures,
                       showOnlyAnnotationFeatures, showOnlyBlankFeatures,
-                      minMzScore, maxMzScore, minSampleCount, maxSampleCount,
+                      minMzScore, maxMzScore ? maxMzScore : 10000,
+                      minSampleCount, maxSampleCount ? maxSampleCount : 100,
                       foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup,
                       groupFilterValues.length ? groupFilterValues : null,
                       networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
