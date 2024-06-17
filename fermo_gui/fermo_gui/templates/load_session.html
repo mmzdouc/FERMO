@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  {% from "_formhelpers.html" import render_field %}
+  {% from "_formhelpers.html" import render_field, render_help %}
   <div class="container mt-5">
     <div class="mx-4">
       <div class="container-fluid">
@@ -46,7 +46,7 @@
           <fieldset id="reload-existing-job-form">
             <div class="container-fluid">
               <div class="row my-2 d-flex align-items-center">
-                <div class="col-auto"><h3>Load existing job</h3></div>
+                <div class="col-auto"><h3>Load Existing Job {{ render_help("https://mmzdouc.github.io/fermo_docs/home/gui.load/#load-existing-job") }}</h3></div>
               </div>
             </div>
             <hr>
@@ -59,7 +59,7 @@
         <fieldset id="session-form">
           <div class="container-fluid">
             <div class="row my-2 d-flex align-items-center">
-              <div class="col-auto"><h3>Session file upload</h3></div>
+              <div class="col-auto"><h3>Session File Upload {{ render_help("https://mmzdouc.github.io/fermo_docs/home/gui.load/#session-file-upload") }}</h3></div>
             </div>
           </div>
           <hr>
