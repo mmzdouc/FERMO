@@ -34,17 +34,17 @@ def configure_celery(app: Flask) -> Flask:
     Returns:
         The Flask app instance with added extension Celery
     """
-    config_dict = {
-        "broker_url": "redis://localhost",
-        "result_backend": "redis://localhost",
-        "task_ignore_result": True,
-    }
-    if app.config.get("MAX_RUN_TIME") is not None:
-        config_dict["task_soft_time_limit"] = app.config.get("MAX_RUN_TIME")
+    if app.config.get("ONLINE"):
+        app.config.from_pyfile("config.py", silent=True)
+    else:
+        app.config.from_mapping(
+            CELERY={
+                "broker_url": "redis://localhost",
+                "result_backend": "redis://localhost",
+                "task_ignore_result": True,
+            },
+        )
 
-    app.config.from_mapping(
-        CELERY=config_dict,
-    )
     app.config.from_prefixed_env()
 
     class FlaskTask(Task):

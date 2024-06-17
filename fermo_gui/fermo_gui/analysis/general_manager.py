@@ -25,6 +25,7 @@ import json
 from pathlib import Path
 
 from celery import uuid
+from flask import render_template
 from flask_mail import Message
 
 from fermo_gui.config.extensions import mail
@@ -56,7 +57,6 @@ class GeneralManager:
             location: the location of the upload dir
             filename: the filename identifier
         """
-        # TODO(MMZ 14.2.24): Cover with tests
         location = Path(location)
         with open(location.joinpath(filename)) as infile:
             params = json.load(infile)
@@ -71,21 +71,11 @@ class GeneralManager:
             address: the user-provided email address
             job_id: the job identifier
         """
-        # TODO(MMZ 14.2.24): Cover with tests
         msg = Message()
         msg.recipients = [address]
-        msg.subject = "Fermo Job Successful (NOREPLY)"
-        msg.body = (
-            "Dear user, \n"
-            "\n"
-            "your job with the ID \n"
-            f"{job_id}\n"
-            "has completed successfully. \n"
-            "Please follow this link to see the results: \n"
-            f"{root_url}/results/{job_id}/.\n"
-            "\n"
-            "Kind regards, \n"
-            "the FERMO team. \n"
+        msg.subject = "Fermo Job Success (NOREPLY)"
+        msg.html = render_template(
+            "email_success.html", job_id=job_id, root_url=root_url
         )
         mail.send(msg)
 
@@ -98,20 +88,10 @@ class GeneralManager:
             address: the user-provided email address
             job_id: the job identifier
         """
-        # TODO(MMZ 14.2.24): Cover with tests
         msg = Message()
         msg.recipients = [address]
-        msg.subject = "Fermo Job Failed (NOREPLY)"
-        msg.body = (
-            "Dear user, \n"
-            "\n"
-            "your job with the ID \n"
-            f"{job_id}\n"
-            "has failed. \n"
-            "Please follow this link to see the fail log: \n"
-            f"{root_url}/results/job_failed/{job_id}/.\n"
-            "\n"
-            "Kind regards, \n"
-            "the FERMO team. \n"
+        msg.subject = "Fermo Job Failure (NOREPLY)"
+        msg.html = render_template(
+            "email_failure.html", job_id=job_id, root_url=root_url
         )
         mail.send(msg)

@@ -7,28 +7,11 @@ services:
       dockerfile: ./compose/fermo_gui/Dockerfile
     ports:
       - 8001:8001
-
-#    depends_on:
-#      - redis
-#      - celery_worker
-#
-#  celery_worker:
-#    build:
-#      context: .
-#      dockerfile: ./compose/fermo_gui/Dockerfile
-#    volumes:
-#      - .:/fermo_gui
-#    command: >
-#      hatch run celery -A make_celery worker --loglevel ERROR
-#    depends_on:
-#      - redis
-#
-#  redis:
-#    image: redis:7-alpine
-#    ports:
-#      - 6379:6379
-#    volumes:
-#      - redis:/data
-#
-#volumes:
-#  redis: {}
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/nginx/Dockerfile
+    ports:
+      - 1337:80
+    depends_on:
+      - fermo_gui

@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Union
 
 from flask import Response, current_app, flash, redirect, render_template, url_for
+from werkzeug.utils import secure_filename
 
 from fermo_gui.analysis.general_manager import GeneralManager as GenManager
 from fermo_gui.analysis.session_processor import SessionProcessor
@@ -64,6 +65,27 @@ def setup_session_load(form: SessionLoadForm) -> Union[str, Response]:
     return redirect(url_for("routes.task_result", job_id=task_id))
 
 
+def redirect_existing_job(form: SessionLoadForm) -> Union[str, Response]:
+    """Perform checks and redirect to results
+
+    Arguments:
+        form: the filled SessionLoadForm instance
+
+    Returns:
+        Either a Response or a rendered html as str
+    """
+    job_id = secure_filename(form.reload_existing_jobid.data)
+    if Path(current_app.config.get("UPLOAD_FOLDER")).joinpath(job_id).exists():
+        return redirect(url_for("routes.task_result", job_id=job_id))
+    else:
+        flash(
+            f"Could not find FERMO job ID '{job_id}' in the "
+            f"results files. This could be due to a typo (e.g. a trailing space) or "
+            f"because the job was removed (jobs are only retained for 30 days)."
+        )
+        return render_template("load_session.html", form=form)
+
+
 @bp.route("/analysis/load_session/", methods=["GET", "POST"])
 def load_session() -> Union[str, Response]:
     """Render load session page, get and store data, load.
@@ -74,6 +96,15 @@ def load_session() -> Union[str, Response]:
     form = SessionLoadForm()
 
     if form.validate_on_submit():
-        return setup_session_load(form=form)
+        if (
+            form.reload_existing_jobid.data is not None
+            and form.reload_existing_jobid.data != ""
+        ):
+            return redirect_existing_job(form=form)
+        elif form.session_file.data is not None:
+            return setup_session_load(form=form)
+        else:
+            flash("No valid job ID nor a FERMO Session file were provided.")
+            return render_template("load_session.html", form=form)
 
     return render_template("load_session.html", form=form)

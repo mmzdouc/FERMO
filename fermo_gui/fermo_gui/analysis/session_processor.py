@@ -389,18 +389,6 @@ class SessionProcessor(BaseModel):
 
         if (
             sess.get("parameters", {})
-            .get("Ms2QueryAnnotationParameters", {})
-            .get("activate_module", False)
-        ):
-            params["additional_modules"]["ms2query_annotation"] = {
-                "activate_module": True,
-                "score_cutoff": sess.get("parameters", {})
-                .get("Ms2QueryAnnotationParameters", {})
-                .get("score_cutoff", 0.7),
-            }
-
-        if (
-            sess.get("parameters", {})
             .get("AsKcbCosineMatchingParams", {})
             .get("activate_module", False)
         ):

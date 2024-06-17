@@ -1,0 +1,5 @@
+.venv
+.git
+tests
+.pre-commit-config.yaml
+.idea/
