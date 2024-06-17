@@ -12,6 +12,6 @@ services:
       context: .
       dockerfile: ./compose/nginx/Dockerfile
     ports:
-      - 1337:80
+      - 1338:80
     depends_on:
       - fermo_gui
