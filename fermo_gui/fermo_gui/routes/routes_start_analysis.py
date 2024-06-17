@@ -87,6 +87,9 @@ def setup_fermo_run(form: AnalysisForm) -> Union[str, Response]:
     if form.email.data is None:
         form.email.data = ""
 
+    root_url = str(request.base_url.partition("/analysis/job_submitted/")[0])
+    root_url = root_url.replace("http://thornton", "https://fermo", 1)
+
     metadata = {
         "job_id": task_id,
         "task_path": str(task_path.resolve()),
@@ -95,7 +98,7 @@ def setup_fermo_run(form: AnalysisForm) -> Union[str, Response]:
         "email_notify": (
             True if (len(form.email.data) != 0 and processor.online) else False
         ),
-        "root_url": request.base_url.partition("/analysis/start_analysis/")[0],
+        "root_url": root_url,
     }
     start_fermo_core_manager.apply_async(
         kwargs={"metadata": metadata},
@@ -191,9 +194,11 @@ def job_submitted(job_id: str) -> str:
     Returns:
         The rendered "job_submitted.html" page
     """
+    root_url = str(request.base_url.partition("/analysis/job_submitted/")[0])
+    root_url = root_url.replace("http://thornton", "https://fermo", 1)
     job_data = {
         "task_id": job_id,
-        "root_url": request.base_url.partition("/analysis/job_submitted/")[0],
+        "root_url": root_url,
     }
     return render_template("job_submitted.html", job_data=job_data)
 
