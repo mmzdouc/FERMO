@@ -30,7 +30,7 @@ from flask import Flask
 
 from fermo_gui.config.config_celery import configure_celery
 from fermo_gui.config.config_mail import configure_mail
-from fermo_gui.config.extensions import mail, socketio
+from fermo_gui.config.extensions import mail
 from fermo_gui.routes import bp
 
 
@@ -49,7 +49,6 @@ def create_app(test_config: Optional[dict] = None) -> Flask:
     app = configure_celery(app)
 
     mail.init_app(app)
-    socketio.init_app(app)
 
     create_instance_path(app)
     register_context_processors(app)

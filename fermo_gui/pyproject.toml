@@ -29,7 +29,6 @@ dependencies = [
     "Flask==3.0.1",
     "Flask-WTF==1.2.1",
     "Flask-Mail==0.9.1",
-    "Flask-SocketIO==5.3.6",
     "gevent==24.2.1",
     "gunicorn==22.0.0",
     "jsonschema==4.19.0",
@@ -50,7 +49,7 @@ dev = [
 
 [project.urls]
 "Website" = "https://fermo.bioinformatics.nl/"
-"Repository" = "https://github.com/fermo-met/fermo_gui"
+"Repository" = "https://github.com/mmzdouc/fermo"
 "Documentation" = "https://mmzdouc.github.io/fermo_docs/"
 
 
@@ -150,5 +149,7 @@ ignore = [
     # commented-out code
     "ERA001",
     # set-attr-with-constant
-    "B010"
+    "B010",
+    # possible-hardcoded-key
+    "S105"
 ]
