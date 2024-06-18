@@ -1,0 +1,27 @@
+{% macro render_field(field) %}
+  <div class="container-fluid">
+    <div class="row my-2 d-flex align-items-center">
+      <div class="col-auto"><p><b>{{ field.label }}</b> {{ field(**kwargs)|safe }}</p></div>
+      <div class="col-auto ms-auto"><p><i>{{ field.description }}</i></p></div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if field.errors %}
+    <div class="form-group row">
+      <ul class=errors>
+      {% for error in field.errors %}
+        <li style="color: red">{{ error }}</li>
+      {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{% macro render_activate_toggle(field) %}
+  <div style="transform: scale(1.7);" class="form-check form-switch">{{ field(class_='form-check-input') }}</div>
+{% endmacro %}
+
+{% macro render_help(url) %}
+  <a href="{{ url }}" target="_blank"><img src="/static/images/question-circle-fill.SVG" width="25" alt="?" style="color: 17,103,137;"></a>
+{% endmacro %}

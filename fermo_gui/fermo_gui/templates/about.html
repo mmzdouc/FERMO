@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="mx-4">
+        <div class="container-fluid">
+            <div class="row my-4 d-flex align-items-center">
+                <div class="col-auto"><h1 class="fw-semibold lh-2">About</h1></div>
+            </div>
+            <p class="lead mb-3"><i>FERMO</i> is a dashboard for metabolomics data analysis, with automated integration of genomics, phenotypical, and environmental (meta)data. It aims to make the prioritization of molecules of interest convenient, fast, and reproducible.</p>
+            <p class="lead mb-5"><i>FERMO</i> integrates and cross-links with a number of other tools. For a list of dependencies, see <a target="_blank" href="https://github.com/mmzdouc/fermo_core">here</a> and <a target="_blank" href="https://github.com/mmzdouc/fermo">here</a>.</p>
+      </div>
+    </div>
+    <div class="mx-4">
+        <div class="container-fluid">
+            <section class="row my-4 d-flex">
+                <div class="col-auto">
+                    <h2 class="fw-semibold lh-2">How to cite <i>FERMO</i></h2>
+                    <p class="lead mb-4">
+                        The manuscript for the new version of <i>FERMO</i> is currently under preparation. For the previous beta version, a preprint is available on <a target="_blank" href="https://doi.org/10.1101/2022.12.21.521422 ">bioRxiv</a>.
+                    </p>
+                </div>
+            </section>
+            <section class="row my-4 d-flex">
+                <div class="col-auto">
+                    <h2 class="fw-semibold lh-2 mb-2">Developers</h2>
+                    <p class="lead mb-2">
+                        <i>FERMO</i> is being developed by the following people:
+                    </p>
+                </div>
+            </section>
+            <section class="row g-3 g-md-5 mb-5 pb-5 justify-content-center">
+                <div class="col-lg-6 py-lg-4 pe-lg-5 justify-content-center d-flex">
+                    <img class="d-none d-sm-block" style="max-width: 9vw;" src="{{ url_for('static', filename='/images/profile.mmz.JPG') }}" alt="Profile picture MMZ">
+                    <div class="mx-2">
+                        <p class="lead">Mitja M. Zdouc</p>
+                        <p class="lead">Lead developer</p>
+                        <p class="lead">Wageningen University & Research</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 py-lg-4 pe-lg-5 justify-content-center d-flex">
+                    <img class="d-none d-sm-block" style="max-width: 9vw;" src="{{ url_for('static', filename='/images/profile.hea.JPG') }}" alt="Profile picture HEA">
+                    <div class="mx-2">
+                        <p class="lead">Hannah E. Augustijn</p>
+                        <p class="lead">Interface design</p>
+                        <p class="lead">Wageningen University & Research</p>
+                        <p class="lead">Leiden University</p>
+                    </div>
+                </div>
+            </section>
+            <section class="row my-4 d-flex">
+                <div class="col-auto">
+                    <h2 class="fw-semibold lh-2">Acknowledgements</h2>
+                    <p class="lead my-3">The following people contributed during the development of <i>FERMO</i>:</p>
+                    <ul>
+                        <li><p class="lead mb-2">Justin J.J. van der Hooft - academic project supervision</p></li>
+                        <li><p class="lead mb-2">Marnix H. Medema - academic project supervision</p></li>
+                        <li><p class="lead mb-2">Sarah Habicht - co-developed a first prototype of the online version of <i>FERMO</i> in the scope of her <a target="_blank" href="https://edepot.wur.nl/633364">master thesis</a> (2023).</p></li>
+                        <li><p class="lead mb-2">Koen van Ingen - supported the development of the antiSMASH KnownClusterBlast compatibility module in the scope of his bachelor thesis (2024).</p></li>
+                        <li><p class="lead mb-2">Beta testers in alphabetical order: Bayona Maldonado, Lina M. and Dell, Maria and Iorio, Marianna and de Jonge, Niek and Khatib, Soliman and Lund, George and Maffioli, Sonia and Padva, Leo and Simone, Matteo and Soldatou, Sylvia.</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="row my-4 d-flex">
+                <div class="col-auto">
+                    <h2 class="fw-semibold lh-2">Institutions and Funding</h2>
+                    <p class="lead my-3">The development of <i>FERMO</i> is supported by the following institutions:</p>
+                    <table style="border-collapse: collapse; width: 80%;">
+                      <tr>
+                        <td style="border: none; width: 45%;"><img src="{{ url_for('static', filename='/images/Marbles_logo.svg') }}" alt="Logo Marbles EU" style="width: 100%;"></td>
+                          <td style="border: none; width: 5%;"></td>
+                        <td style="border: none; width: 45%;"><img src="{{ url_for('static', filename='/images/WUR_logo.png') }}" alt="Logo Wageningen University" style="width: 100%;"></td>
+                      </tr>
+                      <tr>
+                        <td style="border: none; width: 45%; text-align: justify;">This work was funded by the European Union Horizon 2020 project MARBLES [101000392]</td>
+                          <td style="border: none; width: 5%;"></td>
+                        <td style="border: none; width: 45%; text-align: justify;">This work was supported by the Netherlands Organization for Scientific Research (NWO) KIC grant KICH1.LWV04.21.013</td>
+                      </tr>
+                </table>
+                </div>
+            </section>
+            <section class="row my-4 d-flex">
+                <div class="col-auto">
+                    <h2 class="fw-semibold lh-2">License and Terms</h2>
+                    <p class="lead my-3">
+                        <i>FERMO</i> is licensed under the MIT license and is free to use. There is no login requirement. We ask users to be reasonable in their usage, and limit themselves to 5 concurrent jobs. For large-scale analyses, <i>FERMO</i> can be installed offline.
+                    </p>
+                    <p class="lead mb-2">
+                        For documents and software available from this server, the <i>FERMO</i> team does not warrant or assume any legal liability or responsibility for the accuracy, completeness, or usefulness of any information, apparatus, product, or process disclosed. The anonymity of uploaded data cannot be guaranteed. All data and existing jobs are deleted regularly and without warning.
+                    </p>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

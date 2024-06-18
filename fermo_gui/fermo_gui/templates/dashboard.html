@@ -1,0 +1,682 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4 pe-md-0 pe-sm-3">
+            <div class="dropzone">
+                <div class="accordion accordion-item" id="sample">
+                    <h2 class="accordion-header" id="sampleTableHeader">
+                        <button class="accordion-button"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#sampleTable"
+                                aria-expanded="true"
+                                aria-controls="sampleTable">
+                        General information
+                        </button>
+                    </h2>
+                    <div id="sampleTable"
+                         class="accordion-collapse collapse show"
+                         aria-labelledby="sampleTableHeader">
+                        <div class="accordion-body overflow-auto">
+                            <table class="table table-striped table-hover">
+                                <tbody>
+                                    {% for key in data.stats_analysis %}
+                                        <tr>
+                                            <td>{{ key }}</td>
+                                            <td>{{ data.stats_analysis[key] }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropzone">
+                <div class="accordion accordion-item" id="sampleInfo">
+                    <h2 class="accordion-header" id="sampleInfoHeader">
+                        <button class="accordion-button collapsed"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#sampleInfoTable"
+                                aria-expanded="false"
+                                aria-controls="sampleInfoTable">
+                            Sample overview
+                        </button>
+                    </h2>
+                    <div id="sampleInfoTable"
+                         class="accordion-collapse collapse"
+                         aria-labelledby="sampleInfoHeader">
+                        <div class="accordion-body overflow-auto">
+                            <table id="sampleInfoTables" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        {% for header_value in data.stats_samples_dyn[0] %}
+                                            <th style="text-align: center;">{{ header_value }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for filename in data.stats_samples_dyn %}
+                                        <tr class="select-sample"
+                                            data-sample-name="{{ filename['Sample name'] }}"
+                                            style="cursor: pointer;">
+                                            {% for key, value in filename.items() %}
+                                                <td style="text-align: center;">{{ value }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropzone">
+                <div class="accordion accordion-item" id="feature">
+                    <h2 class="accordion-header" id="featureTableHeader">
+                        <button class="accordion-button collapsed"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#featureTable"
+                                aria-expanded="false"
+                                aria-controls="featureTable">
+                            Molecular feature info
+                        </button>
+                    </h2>
+                    <div id="featureTable"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="featureTableHeader">
+                        <div class="accordion-body overflow-auto">
+                            <div class="accordion-subheader accordion-item" id="genFeature">
+                                <h2 class="accordion-header" id="featureTableGeneral">
+                                    <button class="accordion-button collapsed"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#featureGeneral"
+                                            aria-expanded="false"
+                                            aria-controls="featureTable">
+                                        General feature info
+                                    </button>
+                                </h2>
+                                <div id="featureGeneral"
+                                     class="accordion-collapse collapse show"
+                                     aria-labelledby="featureTableGeneral">
+                                    <div class="accordion-body overflow-auto">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Feature ID</td>
+                                                    <td id="featureIdCell"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Precursor m/z</td>
+                                                    <td id="precMzCell"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Retention time (min)</td>
+                                                    <td id="retTimeCell"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Feature intensity (relative)</td>
+                                                    <td id="relIntCell">Click on any feature in the main chromatogram overview</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Feature intensity (absolute)</td>
+                                                    <td id="absIntCell"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Feature novelty score</td>
+                                                    <td id="NovScore"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Feature blank associated</td>
+                                                    <td id="BlankAs"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-subheader accordion-item" id="annotationFeature">
+                                <h2 class="accordion-header" id="featureTableAnnotation">
+                                    <button class="accordion-button collapsed"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#featureAnnotation"
+                                            aria-expanded="false"
+                                            aria-controls="featureTable">
+                                        Feature annotation
+                                    </button>
+                                </h2>
+                                <div id="featureAnnotation"
+                                     class="accordion-collapse collapse"
+                                     aria-labelledby="featureTableGeneral">
+                                    <div class="accordion-body overflow-auto">
+                                        <p id="feature-annotation">Click on any feature in the main chromatogram overview.</p>
+                                        <table id="matchTable" class="table table-hover fixed-width-table" style="display: none;"></table>
+                                        <table id="phenotypeTable" class="table table-hover fixed-width-table" style="display: none;"></table>
+                                        <table id="adductTable" class="table table-hover fixed-width-table" style="display: none;"></table>
+                                        <table id="fragmentTable" class="table table-hover fixed-width-table" style="display: none;"></table>
+                                        <table id="lossesTable" class="table table-hover fixed-width-table" style="display: none;"></table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-subheader accordion-item" id="groupFeature">
+                                <h2 class="accordion-header" id="featureTableGroups">
+                                    <button class="accordion-button collapsed"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#featureGroups"
+                                            aria-expanded="false"
+                                            aria-controls="featureTable">
+                                        Feature group info
+                                    </button>
+                                </h2>
+                                <div id="featureGroups"
+                                     class="accordion-collapse collapse"
+                                     aria-labelledby="featureTableGeneral">
+                                    <div class="accordion-body overflow-auto">
+                                        <p id="feature-general-info">Click on any feature in the main chromatogram overview</p>
+                                        <div id="heatmap-container"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-subheader accordion-item" id="sampleFeature">
+                                <h2 class="accordion-header" id="featureTableSamples">
+                                    <button class="accordion-button collapsed"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#featureSamples"
+                                            aria-expanded="false"
+                                            aria-controls="featureTable">
+                                        Feature info across samples
+                                    </button>
+                                </h2>
+                                <div id="featureSamples"
+                                     class="accordion-collapse collapse"
+                                     aria-labelledby="featureTableSample">
+                                    <div class="accordion-body overflow-auto">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sample</th>
+                                                    <th>Intensity</th>
+                                                    <th>Area</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="sampleCell" style="text-align: left;">
+                                                <tr>
+                                                    <td>Click on any feature in the main chromatogram overview</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropzone">
+                <div class="accordion accordion-item" id="filter">
+                    <h2 class="accordion-header" id="filtersHeader">
+                        <button class="accordion-button collapsed"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#filters"
+                                aria-expanded="false"
+                                aria-controls="filters">
+                            Filters
+                        </button>
+                    </h2>
+                    <div id="filters"
+                         class="accordion-collapse collapse"
+                         aria-labelledby="filtersHeader">
+                        <div class="accordion-body overflow-auto">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="slidecontainer w-50">
+                                        <label class="form-label bold-label">
+                                            <a href="https://mmzdouc.github.io/fermo_docs/home/gui.dashboard/#novelty-score-filter" target="_blank" class="info-button"></a>
+                                            Novelty score filter
+                                        </label>
+                                        <div class="multirange">
+                                            <div class="track"></div>
+                                            <input type="range"
+                                                   min="0.0" max="1.0" value="0.0" step="0.02"
+                                                   class="slider" id="noveltyRange1">
+                                            <input type="range"
+                                                   min="0.0" max="1.0" value="1.0" step="0.02"
+                                                   class="slider" id="noveltyRange2">
+                                        </div>
+                                        <div class="range-inputs">
+                                            <div class="form-outline">
+                                                <input type="text" id="noveltyRange1Input"
+                                                       min="0.0" max="1.0" value="0.0" step="0.02"
+                                                       class="form-control form-icon-trailing" />
+                                            </div>
+                                            <div class="form-outline">
+                                                <input type="text" id="noveltyRange2Input"
+                                                       min="0.0" max="1.0" value="1.0" step="0.02"
+                                                       class="form-control form-icon-trailing" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-6 p-0">
+                                        <div class="slidecontainer mt-4 pb-0 pe-4">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="showBlankFeatures">
+                                                <label class="form-check-label" for="showBlankFeatures">Hide blanks</label>
+                                            </div>
+                                        </div>
+                                        <div class="slidecontainer py-0 pe-4">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="showAnnotationFeatures">
+                                                <label class="form-check-label" for="showAnnotationFeatures">
+                                                    Hide unannotated features
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-6 annotation-related">
+                                        <div class="slidecontainer">
+                                             <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="showMatchFeatures">
+                                                <label class="form-check-label" for="showMatchFeatures">
+                                                    Match score filter
+                                                </label>
+                                            </div>
+                                            <div class="multirange">
+                                                <div class="track"></div>
+                                                <input type="range"
+                                                       min="0.0" max="1.0" value="0.0" step="0.02"
+                                                       class="slider" id="matchRange1">
+                                                <input type="range"
+                                                       min="0.0" max="1.0" value="1.0" step="0.02"
+                                                       class="slider" id="matchRange2">
+                                            </div>
+                                            <div class="range-inputs">
+                                                <div class="form-outline">
+                                                    <input type="text" id="matchRange1Input"
+                                                           min="0.0" max="1.0" value="0.0" step="0.02"
+                                                           class="form-control form-icon-trailing" />
+                                                </div>
+                                                <div class="form-outline">
+                                                    <input type="text" id="matchRange2Input"
+                                                           min="0.0" max="1.0" value="1.0" step="0.02"
+                                                           class="form-control form-icon-trailing" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-6 annotation-related">
+                                        <div class="slidecontainer">
+                                             <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="showPhenotypeFeatures">
+                                                <label class="form-check-label" for="showPhenotypeFeatures">
+                                                    Phenotype score filter
+                                                </label>
+                                            </div>
+                                            <div class="multirange">
+                                                <div class="track"></div>
+                                                <input type="range"
+                                                       min="0.0" max="1.0" value="0.0" step="0.02"
+                                                       class="slider" id="phenotypeRange1">
+                                                <input type="range"
+                                                       min="0.0" max="1.0" value="1.0" step="0.02"
+                                                       class="slider" id="phenotypeRange2">
+                                            </div>
+                                            <div class="range-inputs">
+                                                <div class="form-outline">
+                                                    <input type="text" id="phenotypeRange1Input"
+                                                           min="0.0" max="1.0" value="0.0" step="0.02"
+                                                           class="form-control form-icon-trailing" />
+                                                </div>
+                                                <div class="form-outline">
+                                                    <input type="text" id="phenotypeRange2Input"
+                                                           min="0.0" max="1.0" value="1.0" step="0.02"
+                                                           class="form-control form-icon-trailing" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="slidecontainer pt-0">
+                                        <label class="form-label pe-2 pt-1 float-start">Find feature:</label>
+                                         <div class="range-inputs float-start my-0">
+                                            <div class="form-outline float-start">
+                                                <input type="text" id="findInput"
+                                                       min="0"
+                                                       placeholder="ID"
+                                                       class="form-control form-icon-trailing"
+                                                       width="4rem;" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <label class="form-label pe-2 pt-0 bold-label">
+                                        <a href="https://mmzdouc.github.io/fermo_docs/home/gui.dashboard/#precursor-mz-filter" target="_blank" class="info-button"></a>
+                                        Precursor m/z filter
+                                    </label>
+                                    <div class="slidecontainer pt-0">
+                                        <div class="range-inputs float-start my-0">
+                                            <div class="form-outline">
+                                                <input type="text" id="mz1Input"
+                                                       min="0" placeholder="min"
+                                                       class="form-control form-icon-trailing"
+                                                       style="width: 8rem;" />
+                                            </div>
+                                            <div class="form-outline">
+                                                <input type="text" id="mz2Input"
+                                                       min="0" placeholder="max"
+                                                       class="form-control form-icon-trailing"
+                                                       style="width: 8rem;" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <label class="form-label pe-2 pt-0 bold-label">
+                                        <a href="https://mmzdouc.github.io/fermo_docs/home/gui.dashboard/#sample-filter" target="_blank" class="info-button"></a>
+                                        Sample filter
+                                    </label>
+                                    <div class="slidecontainer pt-0">
+                                        <div class="range-inputs float-start my-0">
+                                            <p class="mt-1 pe-2">Show features in</p>
+                                            <div class="form-outline">
+                                                <input type="text" id="sample1Input"
+                                                       min="0" placeholder="min"
+                                                       class="form-control form-icon-trailing"
+                                                       style="width: 5rem;" />
+                                            </div>
+                                            <p class="mt-1 px-2">to</p>
+                                            <div class="form-outline">
+                                                <input type="text" id="sample2Input"
+                                                       max="{{ data.stats_analysis['Total Samples'] }}"
+                                                       placeholder="max"
+                                                       class="form-control form-icon-trailing"
+                                                       style="width: 5rem;" />
+                                            </div>
+                                            <p class="mt-1 px-2">samples</p>
+                                        </div>
+                                    </div>
+
+                                    <label class="form-label pe-2 pt-0 bold-label">
+                                        <a href="https://mmzdouc.github.io/fermo_docs/home/gui.dashboard/#fold-change-filter" target="_blank" class="info-button"></a>
+                                        Fold-change filter
+                                    </label>
+                                    <div class="slidecontainer pt-0">
+                                        <div id="groupInfo" data-stats-groups='{{ data.stats_groups | tojson | safe }}'></div>
+                                        <div class="range-inputs float-start my-0">
+                                            <div class="form-outline">
+                                                <input type="text" id="foldInput"
+                                                       min="0" placeholder="n-fold"
+                                                       class="form-control form-icon-trailing"
+                                                       style="width: 5rem;" />
+                                            </div>
+                                            <p class="mt-1 px-2">times more in</p>
+                                        </div>
+                                        <div class="range-inputs float-start my-0">
+                                            <div class="form-outline">
+                                                <select class="form-select form-select-sm"
+                                                        aria-label="Select group"
+                                                        id="group1FoldInput">
+                                                  <option value="" selected>group 1</option>
+                                                </select>
+                                            </div>
+                                            <p class="mt-1 px-2">vs</p>
+                                            <div class="form-outline">
+                                                <select class="form-select form-select-sm"
+                                                        aria-label="Select group"
+                                                        id="group2FoldInput">
+                                                  <option value="" selected>group 2</option>
+                                                </select>
+                                            </div>
+                                            <p class="mt-1 px-2">of</p>
+                                            <div class="form-outline">
+                                                <select class="form-select form-select-sm"
+                                                        aria-label="Select group"
+                                                        id="selectFoldInput">
+                                                  <option value="" selected>select group</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="slidecontainer pt-0">
+                                        <div id="statsFIdGroups" data-stats-fgroups='{{ data.stats_fgroups | tojson | safe }}'></div>
+                                        <label class="form-label pe-2 pt-1">
+                                            <a href="https://mmzdouc.github.io/fermo_docs/home/gui.dashboard/#show-only-selected-group-feature" target="_blank" class="info-button"></a>
+                                            Show only selected group features:
+                                        </label>
+                                        <button id="groupButton" class="btn btn-outline-primary btn-sm">Select</button>
+                                        <div id="dropdownGroupContainer" class="dropdown-container">
+                                            <select id="groupFilter" class="form-select form-select-sm w-50" multiple>
+                                                <option value="" selected>Select Options</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="slidecontainer pt-0">
+                                        <label class="form-label pe-2 pt-1">
+                                            <a href="https://mmzdouc.github.io/fermo_docs/home/gui.dashboard/#exclude-feature-with-specific-network-groups" target="_blank" class="info-button"></a>
+                                            Exclude features with specific network groups:
+                                        </label>
+                                        <button id="networkExcludeButton" class="btn btn-outline-primary btn-sm">Select</button>
+                                        <div id="dropdownNetworkContainer" class="dropdown-container">
+                                            <select id="networkFilter" class="form-select form-select-sm w-50" multiple>
+                                                <option value="" selected>Select Options</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-8 ps-md-0 pe-sm-3">
+            <div class="dropzone">
+                <div class="accordion accordion-item" id="chromatogram">
+                    <h2 class="accordion-header" id="ChromatogramHeader">
+                        <button class="accordion-button"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#ChromatogramBody"
+                                aria-expanded="true"
+                                aria-controls="ChromatogramBody">
+                            Main Chromatogram
+                        </button>
+                    </h2>
+                    <div id="ChromatogramBody"
+                         class="accordion-collapse collapse show"
+                         aria-labelledby="sampleTableHeader">
+                        <div class="accordion-body overflow-auto">
+                            <div class="chromDiv row-md-12">
+                                <h6 id="activeSample" class="fw-bold" style="font-size: 14px;">
+                                    Sample: {{ data.stats_chromatogram | first }}
+                                </h6>
+                                <p>Click any sample in the 'Sample Overview' table to visualize its chromatogram.</p>
+                                <div id="mainChromatogram"
+                                     data-stats-chromatogram='{{ data.stats_chromatogram | tojson | safe }}'>
+                                </div>
+                                <div id="featureChromatogram"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-6 pe-md-0 ps-md-0 pe-sm-3">
+                        <div class="dropzone">
+                            <div class="accordion accordion-item" id="cyto">
+                                <h2 class="accordion-header" id="cytoscapeHeader">
+                                    <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#cytoscape"
+                                            aria-expanded="true" aria-controls="Cytoscape">
+                                        Spectral similarity networking
+                                    </button>
+                                </h2>
+                                <div class="accordion-collapse collapse" id="cytoscape" aria-labelledby="CytoscapeHeader">
+                                    <div class="accordion-body overflow-auto">
+                                        <p id="activeFeature">Select any feature in the main chromatogram to visualize its network.</p>
+
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-xs-12 col-sm-12 col-md-8">
+                                                    <div id="cy-container" style="display: none;">
+                                                        <div id="cy" data-stats-network='{{ data.stats_network | tojson | safe }}'></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-12 col-md-4">
+                                                    <div id="legend" style="display: none;">
+                                                        <div class="legend-item">
+                                                            <div class="legend-dot" style="background-color: #f4aaa7; border: 2px solid #960303;"></div>
+                                                            <p class="legend-text">Selected feature</p>
+                                                        </div>
+                                                        <div class="legend-item">
+                                                            <div class="legend-dot" style="background-color: #c6dcfb; border: 2px solid #227aa0;"></div>
+                                                            <p class="legend-text">Related feature</p>
+                                                        </div>
+                                                        <div class="legend-item">
+                                                            <div class="legend-dot" style="background-color: #fff; border: 2px solid black;"></div>
+                                                            <p class="legend-text">Unique to sample</p>
+                                                        </div>
+                                                        <br>
+                                                        <label for="networkSelect" class="form-label">Select network type</label>
+                                                        <select class="form-select" id="networkSelect">
+                                                              <option value="modified_cosine" selected>Modified Cosine</option>
+                                                              <option value="ms2deepscore">MS2DeepScore</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6 pe-md-0 ps-md-0 pe-sm-3">
+                        <div class="dropzone">
+                            <div class="accordion accordion-item" id="dashboardSettings">
+                                <h2 class="accordion-header" id="settingsHeader">
+                                    <button class="accordion-button collapsed"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#settings"
+                                            aria-expanded="false"
+                                            aria-controls="settings">
+                                        Downloads and general settings
+                                    </button>
+                                </h2>
+                                <div id="settings"
+                                     class="accordion-collapse collapse"
+                                     aria-labelledby="filtersHeader">
+                                    <div class="accordion-body overflow-auto">
+                                        <div class="container-fluid">
+                                            <div class="row p-3">
+                                                <div class="form-check form-switch">
+                                                  <input class="form-check-input" type="checkbox" id="allowDragAndDrop">
+                                                  <label class="form-check-label" for="allowDragAndDrop">
+                                                      Drag and drop the dashboard elements to reorganise the layout.
+                                                  </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container" data-job-id="{{ job_id }}">
+                                            <div class="row p-2">
+                                                <label class="form-label pe-2 pt-0 bold-label">Download summary files:</label>
+                                                <div class="range-inputs float-start my-0">
+                                                    <div class="col-xs-8 col-sm-8 col-md-8">
+                                                        <div class="form-outline">
+                                                            <select class="form-select form-select-sm" aria-label="Select file" id="fermoFiles">
+                                                                <option id="selectF" value="">Select file</option>
+                                                                <option id="summary" value="out.fermo.summary.txt" disabled>Summary (.txt)</option>
+                                                                <option id="abbrev" value="out.fermo.abbrev.csv" disabled>Abbreviations (.csv)</option>
+                                                                <option id="log" value="out.fermo.log" disabled>Log (.log)</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-4 col-sm-4 col-md-4 ps-2">
+                                                        <button class="btn btn-outline-primary btn-sm download-btn" data-select-id="fermoFiles">Download</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row p-2">
+                                                <label class="form-label pe-2 pt-0 bold-label">Download session files:</label>
+                                                <div class="range-inputs float-start my-0">
+                                                    <div class="col-xs-8 col-sm-8 col-md-8">
+                                                        <div class="form-outline">
+                                                            <select class="form-select form-select-sm" aria-label="Select file" id="sessionFiles">
+                                                                <option id="selectF2" value="">Select file</option>
+                                                                <option id="session" value="out.fermo.session.json" disabled>Session file (.json)</option>
+                                                                <option id="full" value="out.fermo.full.csv" disabled>Full results (.csv)</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-4 col-sm-4 col-md-4 ps-2">
+                                                        <button class="btn btn-outline-primary btn-sm download-btn" data-select-id="sessionFiles">Download</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row p-2">
+                                                <label class="form-label pe-2 pt-0 bold-label">Download cytoscape networks:</label>
+                                                <div class="range-inputs float-start my-0">
+                                                    <div class="col-xs-8 col-sm-8 col-md-8">
+                                                        <div class="form-outline">
+                                                            <select class="form-select form-select-sm" aria-label="Select file" id="cytoscapeFiles">
+                                                                <option id="selectF3" value="">Select file</option>
+                                                                <option id="mod_cosine" value="out.fermo.modified_cosine.graphml" disabled>Modified cosine (.graphml)</option>
+                                                                <option id="ms2deepscore" value="out.fermo.ms2deepscore.graphml" disabled>MS2DeepScore (.graphml)</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-4 col-sm-4 col-md-4 ps-2">
+                                                        <button class="btn btn-outline-primary btn-sm download-btn" data-select-id="cytoscapeFiles">Download</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="dropzone"></div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="dropzone"></div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="module" src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/plotly-2.18.2.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/cytoscape.min.js') }}"></script>
+<script>
+    var statsChromatogram = {{ data.stats_chromatogram | tojson | safe }};
+</script>
+
+{% endblock %}

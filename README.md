@@ -1,86 +1,101 @@
-![FERMO logo](readme_assets/Fermo_logo_blue.svg)
-<br/>
-<br/>
+fermo_gui
+=========
 
-Introduction
-============
+`fermo_gui` is the graphical user interface for the metabolomics data analysis pipeline [`fermo_core`](https://github.com/mmzdouc/fermo_core). It allows to start new analysis jobs, load existing session files, and visualize results.
 
-**FERMO** is a dashboard app for processing and analysis of 
-**LC-MS(/MS)** data for **Windows**, **macOS** and **Linux**. 
-In particular, **FERMO** can be used to 
-*integrate* **LC-MS(/MS)** data with 
-**quantitative biological data and other metadata**, to *facilitate*:
-- **prioritization** of compounds likely responsible for bioactivity,
-- **detection** of fold-changes between conditions,
-- **annotation** of metabolites and their selection based on novelty,
-- **assessment** of the chemical diversity of samples.
+For more information about *FERMO*, `fermo_gui`, or `fermo_core`, see the [Documentation](https://mmzdouc.github.io/fermo_docs/).
 
-For more information, see our [bioRxiv preprint](https://doi.org/10.1101/2022.12.21.521422).
+*Nota bene*: `fermo_gui` has only been tested on Linux systems. While the Docker-installation is likely to work on other systems as well, they are not officially supported. See [*Fermo Online*](https://fermo.bioinformatics.nl/) for a user-friendly installation-free version.
 
-<img src='https://user-images.githubusercontent.com/95709447/232235831-675d966d-5d16-4aff-a8e8-2e7c78ac9ca5.png' alt="workflow" width='600'>
+Table of Contents
+-----------------
+- [Installation and Quickstart](#installation-and-quickstart)
+- [Usage](#usage)
+- [Attribution](#attribution)
+- [For Developers](#for-developers)
+- [Contributing](#contributing)
 
-Documentation
-=============
-The online documentation is located at the 
-[**FERMO Github Wiki**](https://github.com/mmzdouc/FERMO/wiki/). Among
-other information, it includes:
-- Installation instructions for [Windows](https://github.com/mmzdouc/FERMO/wiki/Installation-Windows),
- [macOS](https://github.com/mmzdouc/FERMO/wiki/Installation-macOS), 
- and [Linux](https://github.com/mmzdouc/FERMO/wiki/Installation-Linux)
-- Information on [prerequisites](https://github.com/mmzdouc/FERMO/wiki/Prerequisites)
-- A [quickstart guide](https://github.com/mmzdouc/FERMO/wiki/Quickstart-guide)
+## Installation and Quickstart
 
-Support
-=======
-**FERMO** is actively supported and developed software. 
-Please use the [issue tracker](https://github.com/mmzdouc/fermo/issues) 
-to report errors and malfunctions.
+### With docker from GitHub
+- Install `docker` and `docker-compose`
+- Download or clone the [repository](https://github.com/mmzdouc/fermo)
+- (Change into the fermo_gui base directory if not already present)
+- Run `docker-compose up --build`. This will compose the docker container, install all dependencies and start the application.
+- Open the application in any browser with the URL `http://0.0.0.0:8001/`
+- To terminate the container, simply hit `ctrl+c`
 
-About
-=====
+## Usage
 
-## Citation
+For more information about *FERMO*, `fermo_gui`, or `fermo_core`, see the [Documentation](https://mmzdouc.github.io/fermo_docs/).
 
-When using the tool in published research, please cite:
-- Zdouc, M. M. and Bayona Maldonado, L. M. and Augustijn, H. E. and Soldatou, S. and de Jonge, Niek and Jaspars, M. and van Wezel, G. P. and Medema, M. H. and van der Hooft, J. J. J., "FERMO: a Dashboard for Streamlined Rationalized Prioritization of Molecular Features from Mass Spectrometry Data", [bioRxiv 2022.12.21.521422](https://doi.org/10.1101/2022.12.21.521422)
+## Attribution
 
-## Dependencies
-
-A list of dependencies can be found in [requirements.txt](requirements.txt).
-
-## License
+### License
 
 FERMO is licensed under the [MIT License](LICENSE.md).
 
+### Authors
+- Mitja M. Zdouc <zdoucmm@gmail.com>
+- Hannah E. Augustijn <hannah.augustijn@gmail.com>
+
+### Publications
+
+See [FERMO online](https://fermo.bioinformatics.nl/) for information on citing `fermo_gui`.
+
+### Versions
+
+All previous version of FERMO can be accessed via its [Zenodo repository](https://zenodo.org/doi/10.5281/zenodo.7565700).
+
+
 ## For Developers
+
+### Dependencies
+
+A list of dependencies can be found in the file [pyproject.toml](fermo_gui/pyproject.toml).
+
+### Installation and Setup
+
+- Clone the repository to your local machine and enter the `fermo_gui` [source directory](fermo_gui/)
+- Install `python 3.11`
+- Install `pip install pipx`
+- Install `pipx install hatch`
+- Run `hatch -v env create dev`
+- Run `hatch run dev:pre-commit install`
+- Install redis-server with `sudo apt-get install redis-server`
+- Run the application with `hatch run dev:flask --app fermo_gui run --debug`
+- In a separate command line window, run `hatch run dev:celery -A make_celery worker --loglevel ERROR`
+
+### Config file
+
+The flask application automatically reads configuration settings from a `config.py` file in the `instance` directory in the `fermo_gui` [source directory](fermo_gui/) (not in version control for security reasons). 
+If not available, `fermo_gui` will employ default settings, assuming that the application runs offline. 
+These default settings must not be used if the application is to be deployed to production. 
+The following default settings are used:
+
+```python
+SECRET_KEY: str
+ONLINE: bool = True
+MAX_RUN_TIME: int = 3600
+CELERY: dict = {
+    "broker_url": "redis://localhost",
+    "result_backend": "redis://localhost",
+    "task_ignore_result": True,
+    "task_soft_time_limit": 3600
+}
+MAIL_USERNAME: str
+MAIL_PASSWORD: str
+MAIL_DEFAULT_SENDER: str
+MAIL_SERVER: str
+MAIL_PORT: int
+MAIL_USE_TLS: bool
+MAIL_USE_SSL: bool
+```
+
+Further, the number of workers can be adjusted in the [`entrypoint_docker.sh`](fermo_gui/entrypoint_docker.sh) script.
 
 ### Contributing
 
-For details on our code of conduct and the process for submitting pull requests to us, please read [CONTRIBUTING.md](.github/CONTRIBUTING.md).
-
-### Versioning
-
-We use [Semantic Versioning](http://semver.org/) for versioning.
-
-## Authors
-
-- **Mitja M. Zdouc** - *lead developer* -
-- **Hannah E. Augustijn** - *interface design* -
-
-See also the list of [contributors](https://github.com/mmzdouc/FERMO/contributors) who participated in this project.
-
-## Acknowledgments (in Alphabetical Order)
-
-- Bayona Maldonado, Lina M.  - *beta testing*
-- Dell, Maria - *beta testing*
-- van der Hooft, Justin J. J. - *project supervision*
-- Iorio, Marianna - *beta testing*
-- de Jonge, Niek - *code review, beta testing*
-- Khatib, Soliman - *beta testing*
-- Lund, George - *beta testing*
-- Maffioli, Sonia - *beta testing*
-- Medema, Marnix H. - *project supervision*
-- Padva, Leo - *beta testing*
-- Simone, Matteo - *beta testing*
-- Soldatou, Sylvia - *beta testing*
-
+Contributions, whether filing an issue, making a pull request, or forking, are appreciated. Please see [Contributing](CONTRIBUTING.md) for more information on getting involved.
+Contributors agree to adhere to the specified [Code of Conduct](CODE_OF_CONDUCT.md).
+For technical details, see the For Developers pages in the [Documentation](https://mmzdouc.github.io/fermo_docs/for_devs/overview/).

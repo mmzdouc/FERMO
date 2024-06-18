@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  fermo_gui:
+    build:
+      context: .
+      dockerfile: ./compose/fermo_gui/Dockerfile
+    ports:
+      - 8001:8001
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/nginx/Dockerfile
+    ports:
+      - 1338:80
+    depends_on:
+      - fermo_gui

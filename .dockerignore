@@ -1,0 +1,5 @@
+fermo_gui/.venv
+.git
+fermo_gui/tests
+fermo_gui/.pre-commit-config.yaml
+.idea/

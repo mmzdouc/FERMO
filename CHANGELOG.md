@@ -5,9 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2024-06-16
+
+### Changed
+
+- Full rework of frontend and backend of fermo_gui
+- Use of fermo_core as processing backend
+- [Breaking Change] No compatibility with previous versions of FERMO
+
+## [0.9.1] - 2024-01-22
+
+### Changed
+
+- Full rework on fermo frontend and backend
+- Replaced legacy code with Flask application
+
 ## [0.8.11] - 2023-04-16
 
-### Added 
+### Added
 
 - Re-introduced support for macOS
 - Startup script for macOS
@@ -24,7 +39,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [0.8.9] - 2023-02-10
 
-### Added 
+### Added
 
 - Tracking of changes with CHANGELOG.md
 
@@ -38,7 +53,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [0.8.8] - 2023-01-24
 
-### Added 
+### Added
 
 - Expanded adduct detection functionality - FERMO now also recognizes `[M+NH4]+`, `[M+K]+`, `[M+H2O+H]+`, `[M-H2O+H]+` (0.8.8.3)
 
