@@ -85,7 +85,7 @@ def setup_fermo_run(form: AnalysisForm) -> Union[str, Response]:
     if form.email.data is None:
         form.email.data = ""
 
-    root_url = str(request.base_url.partition("/analysis/job_submitted/")[0])
+    root_url = str(request.base_url.partition("/analysis/start_analysis/")[0])
     root_url = root_url.replace("http://thornton", "https://fermo", 1)
 
     metadata = {
