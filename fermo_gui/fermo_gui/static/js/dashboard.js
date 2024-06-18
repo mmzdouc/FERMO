@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     statsChromatogram = JSON.parse(chromatogramElement.getAttribute('data-stats-chromatogram'));
     statsNetwork = JSON.parse(networkElement.getAttribute('data-stats-network'));
     statsGroups = JSON.parse(groupElement.getAttribute('data-stats-groups'));
-    statsFIdGroups = JSON.parse(featureGroupElement.getAttribute('data-stats-fgroups'));
+    const statsFIdGroups = JSON.parse(featureGroupElement.getAttribute('data-stats-fgroups'));
 
     const firstSample = document.querySelector('.select-sample');
     if (firstSample) {
