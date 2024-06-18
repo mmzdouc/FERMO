@@ -8,39 +8,10 @@
                 <div class="col-auto"><h1 class="fw-semibold lh-2">Job submitted</h1></div>
             </div>
             <p class="lead mb-3">Your job with the ID <b>'{{ job_data.get("task_id") }}'</b> was successfully submitted.</p>
-            <p class="lead mb-3">Once the job is completed, you will be automatically redirected to the dashboard page.</p>
-            <p class="lead mb-3">You can also use the following link to access your results: <a href="{{ job_data.get('root_url') }}/results/{{ job_data.get('task_id') }}/">{{ job_data.get('root_url') }}/results/{{ job_data.get('task_id') }}/</a>.</p>
-            <p class="lead mb-3">If you have specified an email address, you will be notified automatically.</p>
+            <p class="lead mb-3">Once the job finishes, you can use the following link to access your results:</p>
+            <p class="lead mb-3"><a href="{{ job_data.get('root_url') }}/results/{{ job_data.get('task_id') }}/">{{ job_data.get('root_url') }}/results/{{ job_data.get('task_id') }}/</a></p>
+            <p class="lead mb-3">If you have specified an email address, you will be notified about the job outcome (online version only).</p>
       </div>
     </div>
 </div>
-<script type="text/javascript" charset="utf-8">
-    // Uses socket.io to poll for job status via getStatus()
-    var socket = io();
-
-    // Test function to verify connection to SocketIO (for debugging purposes)
-    socket.on('connect', function() {
-        socket.emit('startup_event', {data: 'Connected to SocketIO.'});
-    });
-
-    // Responds to poll return message with wait or redirects, depending on outcome
-    socket.on('job_status', function(data) {
-        if (data.status === 'job_successful') {
-            window.location.href = "{{ job_data.get('root_url') }}/results/{{ job_data.get('task_id') }}/";
-        } else if (data.status === 'job_running') {
-            // pass and wait for next cycle
-        } else if (data.status === 'job_not_found') {
-            window.location.href = "{{ job_data.get('root_url') }}/results/job_not_found/{{ job_data.get('task_id') }}/";
-        } else {
-            window.location.href = "{{ job_data.get('root_url') }}/results/job_failed/{{ job_data.get('task_id') }}/";
-        }
-    });
-
-    // Polling function; triggered every n milliseconds. Requests status update.
-    function getStatus() {
-        socket.emit('get_status', {task_id: {{ job_data.get("task_id")|tojson|safe }}});
-    }
-    setInterval(getStatus, 5000);
-    getStatus();
-</script>
 {% endblock %}

@@ -8,7 +8,6 @@
       <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
       <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
       <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
   </head>
   <body class="d-flex flex-column vh-100">
     {% block header%}
@@ -50,7 +49,7 @@
               </ul>
               <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
                 <li class="nav-item">
-                  <a class="nav-link" href="https://github.com/fermo-met/fermo_gui" target="_blank"
+                  <a class="nav-link" href="https://github.com/mmzdouc/fermo" target="_blank"
                      rel="noopener" aria-label="GitHub">
                     <img src="{{ url_for('static', filename='/images/github.svg') }}" alt="GitHub">
                   </a>
@@ -61,13 +60,11 @@
         </nav>
       </header>
     {% endblock %}
-
     {% block content %}
       <main>
         The content was not populated
       </main>
     {% endblock %}
-
     {% block footer %}
       <footer class="container-fluid bg-light text-muted py-3 border-top">
         <div class="row">
@@ -82,7 +79,6 @@
         </div>
       </footer>
     {% endblock %}
-
     {% block scripts %}
       <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
       <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}" defer></script>

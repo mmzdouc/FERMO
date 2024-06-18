@@ -19,7 +19,7 @@ Table of Contents
 
 ### With docker from GitHub
 - Install `docker` and `docker-compose`
-- Download or clone the [repository](https://github.com/fermo-met/fermo_gui)
+- Download or clone the [repository](https://github.com/mmzdouc/fermo)
 - (Change into the fermo_gui base directory if not already present)
 - Run `docker-compose up --build`. This will compose the docker container, install all dependencies and start the application.
 - Open the application in any browser with the URL `http://0.0.0.0:8001/`

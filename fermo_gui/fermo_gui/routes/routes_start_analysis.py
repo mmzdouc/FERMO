@@ -26,7 +26,6 @@ import shutil
 from pathlib import Path
 from typing import Union
 
-from celery.result import AsyncResult
 from flask import (
     Response,
     current_app,
@@ -41,7 +40,6 @@ from werkzeug.utils import secure_filename
 from fermo_gui.analysis.fermo_core_manager import start_fermo_core_manager
 from fermo_gui.analysis.general_manager import GeneralManager as GenManager
 from fermo_gui.analysis.input_processor import InputProcessor
-from fermo_gui.config.extensions import socketio
 from fermo_gui.forms.analysis_input_forms import AnalysisForm
 from fermo_gui.routes import bp
 
@@ -201,45 +199,3 @@ def job_submitted(job_id: str) -> str:
         "root_url": root_url,
     }
     return render_template("job_submitted.html", job_data=job_data)
-
-
-@socketio.on("startup_event")
-def handle_startup_message(data: dict):
-    """Debug function to check responsiveness of socket.io
-
-    Arguments:
-        data: a JSON-derived dictionary
-    """
-    print("received json: " + str(data))
-
-
-@socketio.on("get_status")
-def check_job_status(data: dict):
-    """Serve job status upon request.
-
-    Note: Celery does not differentiate between non-existing and non-running jobs.
-    To prevent endless loops on non-existing jobs, existence of upload folder is
-    verified: no folder, no job run
-
-    Arguments:
-        data: JSON-derived dict with job ID to check status of
-    """
-    if (
-        not Path(current_app.config.get("UPLOAD_FOLDER"))
-        .joinpath(data.get("task_id"))
-        .exists()
-    ):
-        socketio.emit("job_status", {"status": "job_not_found"})
-    else:
-        try:
-            result = AsyncResult(data.get("task_id"))
-            outcome = result.result if result.ready() else None
-            match outcome:
-                case True:
-                    socketio.emit("job_status", {"status": "job_successful"})
-                case False:
-                    socketio.emit("job_status", {"status": "job_failed"})
-                case None:
-                    socketio.emit("job_status", {"status": "job_running"})
-        except ValueError:
-            socketio.emit("job_status", {"status": "job_not_found"})
