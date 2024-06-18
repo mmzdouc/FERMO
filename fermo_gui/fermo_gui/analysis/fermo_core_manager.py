@@ -22,12 +22,10 @@ SOFTWARE.
 """
 
 import logging
-import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Self
 
-import coloredlogs
 from celery import shared_task
 from celery.exceptions import SoftTimeLimitExceeded
 from fermo_core.input_output.class_file_manager import FileManager
