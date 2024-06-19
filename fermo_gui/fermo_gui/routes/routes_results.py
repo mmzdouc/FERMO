@@ -95,10 +95,7 @@ def task_result(job_id: str) -> Union[str, Response]:
             filename="out.fermo.session.json",
         )
     except FileNotFoundError:
-        root_url = str(request.base_url.partition(f"/results/{job_id}/")[0])
-        root_url = root_url.replace("http://thornton", "https://fermo", 1)
-        job_data = {"task_id": job_id, "root_url": root_url, }
-        return redirect(url_for("routes.job_not_found", job_data=job_data))
+        return redirect(url_for("routes.job_not_found", job_id=job_id))
 
     if request.method == "GET":
         manager = DashboardManager()
