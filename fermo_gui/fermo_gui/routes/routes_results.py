@@ -69,7 +69,10 @@ def job_not_found(job_id: str) -> str:
     Returns:
         The job_not_found page for the job ID
     """
-    return render_template("job_not_found.html", data={"task_id": job_id})
+    root_url = str(request.base_url.partition(f"/results/job_not_found/{job_id}/")[0])
+    root_url = root_url.replace("http://thornton", "https://fermo", 1)
+    job_data = {"task_id": job_id, "root_url": root_url, }
+    return render_template("job_not_found.html", job_data=job_data)
 
 
 @bp.route("/results/<job_id>/", methods=["GET", "POST"])
@@ -92,7 +95,10 @@ def task_result(job_id: str) -> Union[str, Response]:
             filename="out.fermo.session.json",
         )
     except FileNotFoundError:
-        return redirect(url_for("routes.job_not_found", job_id=job_id))
+        root_url = str(request.base_url.partition(f"/results/{job_id}/")[0])
+        root_url = root_url.replace("http://thornton", "https://fermo", 1)
+        job_data = {"task_id": job_id, "root_url": root_url, }
+        return redirect(url_for("routes.job_not_found", job_data=job_data))
 
     if request.method == "GET":
         manager = DashboardManager()
