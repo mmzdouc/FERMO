@@ -7,11 +7,11 @@
             <div class="row my-4 d-flex align-items-center">
                 <div class="col-auto"><h1 class="fw-semibold lh-2">Job results not found</h1></div>
             </div>
-            <p class="lead mb-3">Results for the job with the ID <b>'{{ data.get("task_id") }}'</b> could not be found. Possible reasons are:</p>
+            <p class="lead mb-3">Results for the job with the ID <b>'{{ job_data.get("task_id") }}'</b> could not be found. Possible reasons are:</p>
             <ul>
-                <li><p class="lead mb-2">The job ID is incorrect (i.e. contains a typo)</p></li>
-                <li><p class="lead mb-2">The job was deleted (in the online version, jobs are only retained for four weeks).</p></li>
-                <li><p class="lead mb-2">The job has not yet completed running.</p></li>
+                <li><p class="lead mb-2">The job has not yet completed running - click <a href="{{ job_data.get('root_url') }}/results/{{ job_data.get('task_id') }}/"><b>here</b></a> to reload the page.</p></li>
+                <li><p class="lead mb-2">The job ID is incorrect (i.e. contains a typo).</p></li>
+                <li><p class="lead mb-2">The job was deleted (in the online version, jobs are only retained for 30 days).</p></li>
             </ul>
       </div>
     </div>
