@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from flask import render_template
+from flask import current_app, render_template
 
 from fermo_gui.routes import bp
 
@@ -33,7 +33,8 @@ def index() -> str:
     Returns:
         The index.html page as string.
     """
-    return render_template("index.html")
+    online = current_app.config.get("ONLINE") or False
+    return render_template("index.html", online=online)
 
 
 @bp.route("/about/")
