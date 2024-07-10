@@ -44,6 +44,7 @@ class NotificationForm:
         label="Email Address",
         description="Provide an email address to be notified about the outcome of the job.",
         validators=[Optional(), Email()],
+        render_kw={"placeholder": "your@email.com"},
     )
 
 
@@ -57,6 +58,7 @@ class ReloadJobForm:
             "not retained and must be newly uploaded."
         ),
         validators=[Optional()],
+        render_kw={"placeholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"},
     )
 
 
@@ -465,8 +467,9 @@ class ASKCBForm:
 
     askcb_jobid = StringField(
         label="antiSMASH JobID",
-        description=("The antiSMASH job to use for integrated analysis with FERMO."),
+        description=("The antiSMASH job ID to use for integrated analysis with FERMO."),
         validators=[Optional()],
+        render_kw={"placeholder": "taxon-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"},
     )
     askcb_score = DecimalField(
         label="Similarity score",

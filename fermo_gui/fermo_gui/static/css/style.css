@@ -373,7 +373,7 @@ table th:last-child{
 
 .info-button {
     display: inline-block;
-    background-image: url("/static/images/question-circle-fill.svg");
+    background-image: url("/static/images/question-circle-fill.SVG");
     background-repeat: no-repeat;
     background-size: contain;
     background-color: transparent;

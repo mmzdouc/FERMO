@@ -597,37 +597,36 @@
                                         </div>
                                         <div class="container" data-job-id="{{ job_id }}">
                                             <div class="row p-2">
-                                                <label class="form-label pe-2 pt-0 bold-label">Download summary files:</label>
-                                                <div class="range-inputs float-start my-0">
-                                                    <div class="col-xs-8 col-sm-8 col-md-8">
-                                                        <div class="form-outline">
-                                                            <select class="form-select form-select-sm" aria-label="Select file" id="fermoFiles">
-                                                                <option id="selectF" value="">Select file</option>
-                                                                <option id="summary" value="out.fermo.summary.txt" disabled>Summary (.txt)</option>
-                                                                <option id="abbrev" value="out.fermo.abbrev.csv" disabled>Abbreviations (.csv)</option>
-                                                                <option id="log" value="out.fermo.log" disabled>Log (.log)</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xs-4 col-sm-4 col-md-4 ps-2">
-                                                        <button class="btn btn-outline-primary btn-sm download-btn" data-select-id="fermoFiles">Download</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row p-2">
                                                 <label class="form-label pe-2 pt-0 bold-label">Download session files:</label>
                                                 <div class="range-inputs float-start my-0">
                                                     <div class="col-xs-8 col-sm-8 col-md-8">
                                                         <div class="form-outline">
                                                             <select class="form-select form-select-sm" aria-label="Select file" id="sessionFiles">
                                                                 <option id="selectF2" value="">Select file</option>
-                                                                <option id="session" value="out.fermo.session.json" disabled>Session file (.json)</option>
-                                                                <option id="full" value="out.fermo.full.csv" disabled>Full results (.csv)</option>
+                                                                <option id="session" value="out.fermo.session.json" disabled>Session file (.fermo.json)</option>
+                                                                <option id="full" value="out.fermo.full.csv" disabled>Modified peaktable (.csv)</option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <div class="col-xs-4 col-sm-4 col-md-4 ps-2">
                                                         <button class="btn btn-outline-primary btn-sm download-btn" data-select-id="sessionFiles">Download</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row p-2">
+                                                <label class="form-label pe-2 pt-0 bold-label">Download summary files:</label>
+                                                <div class="range-inputs float-start my-0">
+                                                    <div class="col-xs-8 col-sm-8 col-md-8">
+                                                        <div class="form-outline">
+                                                            <select class="form-select form-select-sm" aria-label="Select file" id="fermoFiles">
+                                                                <option id="selectF" value="">Select file</option>
+                                                                <option id="summary" value="out.fermo.summary.txt" disabled>Job summary (.txt)</option>
+                                                                <option id="log" value="out.fermo.log" disabled>Job log file (.log)</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-4 col-sm-4 col-md-4 ps-2">
+                                                        <button class="btn btn-outline-primary btn-sm download-btn" data-select-id="fermoFiles">Download</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -638,6 +637,7 @@
                                                         <div class="form-outline">
                                                             <select class="form-select form-select-sm" aria-label="Select file" id="cytoscapeFiles">
                                                                 <option id="selectF3" value="">Select file</option>
+                                                                <option id="abbrev" value="out.fermo.abbrev.csv" disabled>Annotations table (.abbrev.csv)</option>
                                                                 <option id="mod_cosine" value="out.fermo.modified_cosine.graphml" disabled>Modified cosine (.graphml)</option>
                                                                 <option id="ms2deepscore" value="out.fermo.ms2deepscore.graphml" disabled>MS2DeepScore (.graphml)</option>
                                                             </select>
