@@ -7,11 +7,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [1.0.7] - 2024-07-10
 
+### Added
+
+- Example: added example result files for download
+
 ### Fixed
 
 - Job URLs: when job was started after loading old parameters, result URL was malformed
 - Nginx config: fixed default upload file size
 - Dashboard: clarified download field names
+
 
 ## [1.0.6] - 2024-06-19
 
