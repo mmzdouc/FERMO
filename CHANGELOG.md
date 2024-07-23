@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.0.7] - 2024-07-10
+
+### Changed
+
+- Bumped version of `fermo_core` to `0.4.3`
+
 ## [1.0.7] - 2024-07-10
 
 ### Added
@@ -16,7 +23,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Job URLs: when job was started after loading old parameters, result URL was malformed
 - Nginx config: fixed default upload file size
 - Dashboard: clarified download field names
-
 
 ## [1.0.6] - 2024-06-19
 
