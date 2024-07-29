@@ -560,8 +560,13 @@
                                                         <br>
                                                         <label for="networkSelect" class="form-label">Select network type</label>
                                                         <select class="form-select" id="networkSelect">
-                                                              <option value="modified_cosine" selected>Modified Cosine</option>
-                                                              <option value="ms2deepscore">MS2DeepScore</option>
+                                                            {% for networkType in data.stats_network %}
+                                                                {% if 'modified_cosine' in networkType %}
+                                                                    <option value="modified_cosine" selected>Modified Cosine</option>
+                                                                {% elif 'ms2deepscore' in networkType %}
+                                                                    <option value="ms2deepscore">MS2DeepScore</option>
+                                                                {% endif %}
+                                                            {% endfor %}
                                                         </select>
                                                     </div>
                                                 </div>
