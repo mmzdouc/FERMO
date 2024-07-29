@@ -62,8 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const networkType = 'modified_cosine';
 
-        getFilterGroupSelectionFields(statsGroups)
-        populateDropdown(statsGroups)
+        getFilterGroupSelectionFields(statsGroups);
+        populateDropdown(statsGroups);
 
         Plotly.newPlot(chromatogramElement, []);
         chromatogramElement.on('plotly_click', handleChromatogramClick);
@@ -87,6 +87,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 container.style.display = isChecked ? 'block' : 'none';
             });
         });
+
+        document.getElementById('resetFilters').addEventListener('click', resetFilters);
 
         updateRange();
     }
@@ -199,6 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('selectFoldInput').addEventListener('change', updateRange);
             document.getElementById('groupFilter').addEventListener('change', updateRange);
             document.getElementById('networkFilter').addEventListener('change', updateRange);
+            document.getElementById('resetFilters').addEventListener('change', updateRange);
 
             initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures,
                 sampleData, chromatogramElement, getCurrentBoxParams);
@@ -281,6 +284,39 @@ document.addEventListener('DOMContentLoaded', function() {
                 groupFilterValues, networkFilterValues, statsFIdGroups);
             row.children[2].textContent = featuresWithinRange;
         });
+    }
+
+    function resetFilters() {
+        // Reset all filter inputs to their default values
+        document.getElementById('noveltyRange1').value = 0;
+        document.getElementById('noveltyRange2').value = 10;
+        document.getElementById('noveltyRange1Input').value = 0;
+        document.getElementById('noveltyRange2Input').value = 1;
+        document.getElementById('phenotypeRange1').value = 0;
+        document.getElementById('phenotypeRange2').value = 1;
+        document.getElementById('phenotypeRange1Input').value = 0;
+        document.getElementById('phenotypeRange2Input').value = 1;
+        document.getElementById('showPhenotypeFeatures').checked = false;
+        document.getElementById('matchRange1').value = 0;
+        document.getElementById('matchRange2').value = 1;
+        document.getElementById('matchRange1Input').value = 0;
+        document.getElementById('matchRange2Input').value = 1;
+        document.getElementById('showMatchFeatures').checked = false;
+        document.getElementById('showAnnotationFeatures').checked = false;
+        document.getElementById('showBlankFeatures').checked = false;
+        document.getElementById('findInput').value = '';
+        document.getElementById('mz1Input').value = 0;
+        document.getElementById('mz2Input').value = 10000;
+        document.getElementById('sample1Input').value = 0;
+        document.getElementById('sample2Input').value = 100;
+        document.getElementById('foldInput').value = '';
+        document.getElementById('group1FoldInput').value = '';
+        document.getElementById('group2FoldInput').value = '';
+        document.getElementById('selectFoldInput').value = 'null';
+        document.getElementById('groupFilter').selectedIndex = -1;
+        document.getElementById('networkFilter').selectedIndex = -1;
+        document.getElementById('networkSelect').value = 'modified_cosine';
+        updateRange();
     }
 
     initializeFilters(visualizeData, handleChromatogramClick, addBoxVisualization, updateRetainedFeatures,
