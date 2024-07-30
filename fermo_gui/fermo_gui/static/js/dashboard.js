@@ -215,6 +215,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function updateRange() {
+        const chromatogramElement = document.getElementById('mainChromatogram');
+        const currentXRange = chromatogramElement.layout.xaxis.range;
+        const currentYRange = chromatogramElement.layout.yaxis.range;
+
         const minScore = parseFloat(document.getElementById('noveltyRange1').value);
         const maxScore = parseFloat(document.getElementById('noveltyRange2').value);
         const minPhenotypeScore = parseFloat(document.getElementById('phenotypeRange1').value);
@@ -253,6 +257,12 @@ document.addEventListener('DOMContentLoaded', function() {
                       foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup,
                       groupFilterValues.length ? groupFilterValues : null,
                       networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
+
+        if (currentXRange[0] < 0) {
+            currentXRange = chromatogramElement.layout.xaxis.range;
+            currentYRange = chromatogramElement.layout.yaxis.range;
+        }
+
         chromatogramElement.on('plotly_click', function(data) {
             clickedOnPoint = true;
             handleChromatogramClick(data);
@@ -277,6 +287,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                foldScoreInputsFilled ? foldScore : null, foldGroup1, foldGroup2, foldSelectGroup,
                                groupFilterValues.length ? groupFilterValues : null,
                                networkFilterValues.length ? networkFilterValues : null, statsFIdGroups);
+
+        Plotly.relayout(chromatogramElement, {
+            'xaxis.range': currentXRange,
+            'yaxis.range': currentYRange
+        });
     }
 
     function updateRetainedFeatures(minScore, maxScore, findFeatureId,
