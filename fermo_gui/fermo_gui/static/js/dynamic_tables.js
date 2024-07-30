@@ -448,11 +448,16 @@ function showTables() {
 }
 
 export function hideTables() {
-    document.getElementById('matchTable').style.display = '';
-    document.getElementById('phenotypeTable').style.display = '';
-    document.getElementById('adductTable').style.display = '';
-    document.getElementById('fragmentTable').style.display = '';
-    document.getElementById('lossesTable').style.display = '';
+    // Feature annotation table
+    document.getElementById('matchTable').style.display = 'None';
+    document.getElementById('phenotypeTable').style.display = 'None';
+    document.getElementById('adductTable').style.display = 'None';
+    document.getElementById('fragmentTable').style.display = 'None';
+    document.getElementById('lossesTable').style.display = 'None';
+    // Feature info across samples table
+    document.getElementById("sampleCell").innerHTML =
+    "<tr><td></td><td>Click on any feature in the main chromatogram overview.</td><td></td></tr>";
+    // General feature info table
     document.getElementById('featureIdCell').textContent = '';
     document.getElementById('precMzCell').textContent = '';
     document.getElementById('retTimeCell').textContent = '';
