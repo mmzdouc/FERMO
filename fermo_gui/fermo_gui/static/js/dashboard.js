@@ -216,8 +216,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateRange() {
         const chromatogramElement = document.getElementById('mainChromatogram');
-        const currentXRange = chromatogramElement.layout.xaxis.range;
-        const currentYRange = chromatogramElement.layout.yaxis.range;
+        let currentXRange = chromatogramElement.layout.xaxis.range;
+        let currentYRange = chromatogramElement.layout.yaxis.range;
 
         const minScore = parseFloat(document.getElementById('noveltyRange1').value);
         const maxScore = parseFloat(document.getElementById('noveltyRange2').value);
@@ -415,7 +415,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('selectFoldInput').value = 'null';
         document.getElementById('groupFilter').selectedIndex = -1;
         document.getElementById('networkFilter').selectedIndex = -1;
-        document.getElementById('networkSelect').value = 'modified_cosine';
         updateRange();
     }
 

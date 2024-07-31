@@ -38,7 +38,7 @@ export function getFeaturesWithinRange(sampleData, minScore, maxScore, findFeatu
         const sampleCount = sampleData.samples[index].length;
         const foldChanges = sampleData.fGroupData?.[index]?.[foldSelectGroup] ?? [];
         const featureGroups = Object(statsFIdGroups)?.[findFeature] ?? [];
-        const networkFIds = sampleData.fNetworkCosine?.[index] ?? [];
+        const networkFIds = networkType === 'modified_cosine' ? sampleData.fNetworkCosine?.[index] ?? [] : sampleData.fNetworkDeepScore?.[index] ?? [];
 
         const groupFilterValid = groupFilterValues ? groupFilterValues.some(value => featureGroups.includes(value)) : true;
         const featureIdToBlankId = Object.fromEntries(
