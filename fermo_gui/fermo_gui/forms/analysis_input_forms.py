@@ -67,7 +67,7 @@ class PeaktableForm:
 
     peaktable_file = FileField(
         label="File",
-        description="Upload the peaktable file.",
+        description="Upload the peaktable file (.csv)",
         validators=[Optional(), FileAllowed(["csv"])],
     )
     peaktable_format = SelectField(
@@ -84,10 +84,7 @@ class PeaktableForm:
     )
     peaktable_ppm = DecimalField(
         label="Mass Deviation",
-        description=(
-            "Estimated mass accuracy of data in ppm. Used for annotation of ion "
-            "adducts, MS/MS neutral losses, and MS/MS fragments."
-        ),
+        description=("Estimated mass accuracy of data in ppm."),
         validators=[Optional(), NumberRange(min=0.0)],
     )
     peaktable_adduct_toggle = BooleanField(
@@ -101,8 +98,8 @@ class PeaktableForm:
     peaktable_filter_height_lower = DecimalField(
         label="Filter Height (min)",
         description=(
-            "Set the minimal relative height (=intensity) of a molecular feature. To "
-            "include all, set to '0'."
+            "Set the minimal and maximum relative height (=intensity) of a molecular feature. To "
+            "include all, set to '0' or '1' respectively."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
     )
@@ -117,8 +114,8 @@ class PeaktableForm:
     peaktable_filter_area_lower = DecimalField(
         label="Filter Area (min)",
         description=(
-            "Set the minimal relative area of a molecular feature. To include all, "
-            "set to '0'."
+            "Set the minimal and maximum relative area of a molecular feature. To include all, "
+            "set to '0' or '1' respectively."
         ),
         validators=[Optional(), NumberRange(min=0.0, max=1.0)],
     )
@@ -137,7 +134,7 @@ class MsmsForm:
 
     msms_file = FileField(
         label="File",
-        description="Upload the MS/MS file.",
+        description="Upload the MS/MS file (.mgf)",
         validators=[Optional(), FileAllowed(["mgf"])],
     )
     msms_format = SelectField(
